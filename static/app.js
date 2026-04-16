@@ -1415,7 +1415,8 @@ async function saveRanker() {
             }),
         });
 
-        alert(`${payload.message}\nRating changes: ${payload.ratingChanges}\nRank changes: ${payload.rankChanges}`);
+        const warningLine = payload.historyWarning ? `\nHistory warning: ${payload.historyWarning}` : "";
+        alert(`${payload.message}\nRating changes: ${payload.ratingChanges}\nRank changes: ${payload.rankChanges}${warningLine}`);
         state.ranker.lastSavedByPlayer[player] = new Date().toISOString();
         state.ranker.baselineByPlayer[player] = buildRankerSignature(playerState);
         clearRankerDraft(player);

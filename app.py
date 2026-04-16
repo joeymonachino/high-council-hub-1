@@ -37,6 +37,7 @@ SECRETS_PATH = (
     )
 )
 LOCAL_ACTIVITY_LOG_PATH = BASE_DIR / "local_activity_log.json"
+LOCAL_ACTIVITY_LOG_ENABLED = not bool(os.environ.get("VERCEL"))
 
 # This block keeps the app's core configuration in one place so both the
 # Python backend and the JavaScript frontend can share the same metadata.
@@ -162,7 +163,8 @@ def sb_insert(table: str, records: list[dict]) -> None:
         data=json.dumps(records),
         timeout=20,
     )
-    response.raise_for_status()
+    if not response.ok:
+        raise RuntimeError(f"Supabase insert failed for {table}: {response.status_code} {response.text}")
 
 
 # This helper deletes a player's old personal rankings before rewriting the
@@ -190,6 +192,8 @@ def load_json_snapshot(name: str) -> list[dict]:
 # This helper loads the local activity fallback log so recent changes can still
 # appear in the Activity tab when Supabase history reads are unavailable.
 def load_local_activity_log() -> list[dict]:
+    if not LOCAL_ACTIVITY_LOG_ENABLED:
+        return []
     if not LOCAL_ACTIVITY_LOG_PATH.exists():
         return []
     try:
@@ -203,31 +207,38 @@ def load_local_activity_log() -> list[dict]:
 # This helper appends recent change rows to the local fallback log and trims it
 # so it stays small and fast to read.
 def append_local_activity_log(records: list[dict]) -> None:
+    if not LOCAL_ACTIVITY_LOG_ENABLED:
+        return
     if not records:
         return
 
-    existing = load_local_activity_log()
-    combined = records + existing
-    deduped: list[dict] = []
-    seen: set[tuple] = set()
+    try:
+        existing = load_local_activity_log()
+        combined = records + existing
+        deduped: list[dict] = []
+        seen: set[tuple] = set()
 
-    for row in combined:
-        key = (
-            row.get("player"),
-            row.get("god_name"),
-            row.get("old_value"),
-            row.get("new_value"),
-            row.get("change_type", "rating"),
-            row.get("changed_at"),
-        )
-        if key in seen:
-            continue
-        seen.add(key)
-        deduped.append(row)
+        for row in combined:
+            key = (
+                row.get("player"),
+                row.get("god_name"),
+                row.get("old_value"),
+                row.get("new_value"),
+                row.get("change_type", "rating"),
+                row.get("changed_at"),
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            deduped.append(row)
 
-    deduped.sort(key=lambda row: row.get("changed_at", ""), reverse=True)
-    with LOCAL_ACTIVITY_LOG_PATH.open("w", encoding="utf-8") as handle:
-        json.dump(deduped[:400], handle, indent=2)
+        deduped.sort(key=lambda row: row.get("changed_at", ""), reverse=True)
+        with LOCAL_ACTIVITY_LOG_PATH.open("w", encoding="utf-8") as handle:
+            json.dump(deduped[:400], handle, indent=2)
+    except OSError:
+        # This block intentionally ignores read-only filesystem errors in
+        # serverless production, where Supabase is the only durable history store.
+        return
 
 
 # This helper merges Supabase history rows with the local fallback log so the
@@ -767,6 +778,8 @@ def api_save_rankings():
     if not isinstance(submitted_scores, dict) or not isinstance(submitted_order, list):
         return jsonify({"ok": False, "message": "Invalid payload."}), 400
 
+    history_warning = ""
+
     try:
         meta_rows, rating_rows = load_current_tables()
         old_rank_map = load_player_rankings(player)
@@ -795,10 +808,10 @@ def api_save_rankings():
 
         try:
             sb_insert("rating_history", build_remote_history_records(history_records))
-        except Exception:
+        except Exception as exc:
             # This block keeps the save flow successful even if the remote
             # history table is temporarily unavailable or has an older schema.
-            pass
+            history_warning = str(exc)
 
     except Exception as exc:  # noqa: BLE001
         return jsonify({"ok": False, "message": str(exc)}), 500
@@ -809,6 +822,7 @@ def api_save_rankings():
             "message": f"Saved {player}'s ratings and ranking order.",
             "ratingChanges": len(rating_history),
             "rankChanges": len(rank_history),
+            "historyWarning": history_warning,
         }
     )
 
