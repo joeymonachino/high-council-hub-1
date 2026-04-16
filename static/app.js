@@ -183,6 +183,138 @@ function agreementScore(god) {
     return 100 - (Math.max(...scores) - Math.min(...scores));
 }
 
+// This helper returns one council member's average submitted score so the UI
+// can compare who tends to score most generously or strictly.
+function averagePlayerScore(player) {
+    const scores = state.gods
+        .map((god) => god[player])
+        .filter((value) => Number.isFinite(value) && value > 0);
+    if (!scores.length) return 0;
+    return Math.round(scores.reduce((sum, value) => sum + value, 0) / scores.length);
+}
+
+// This helper finds the player's most-loved category by average score while
+// still requiring enough samples to avoid one-off outliers dominating.
+function favoriteDimensionForPlayer(player, key) {
+    const bucket = new Map();
+
+    state.gods.forEach((god) => {
+        const score = god[player];
+        const label = god[key];
+        if (!Number.isFinite(score) || score <= 0 || !label) return;
+        if (!bucket.has(label)) {
+            bucket.set(label, []);
+        }
+        bucket.get(label).push(score);
+    });
+
+    const ranked = [...bucket.entries()]
+        .map(([label, scores]) => ({
+            label,
+            count: scores.length,
+            average: scores.reduce((sum, value) => sum + value, 0) / scores.length,
+        }))
+        .filter((entry) => entry.count >= 2)
+        .sort((a, b) => b.average - a.average || b.count - a.count || a.label.localeCompare(b.label));
+
+    return ranked[0] || null;
+}
+
+// This helper computes the role where the selected head-to-head pairing is most
+// lopsided, which gives the tab a stronger narrative summary.
+function strongestRoleLean(rows) {
+    const buckets = new Map();
+
+    rows.forEach((god) => {
+        if (!god.Role) return;
+        if (!buckets.has(god.Role)) {
+            buckets.set(god.Role, []);
+        }
+        buckets.get(god.Role).push(god.diff);
+    });
+
+    const ranked = [...buckets.entries()]
+        .map(([role, diffs]) => ({
+            role,
+            count: diffs.length,
+            averageDiff: diffs.reduce((sum, value) => sum + value, 0) / diffs.length,
+        }))
+        .filter((entry) => entry.count >= 2)
+        .sort((a, b) => Math.abs(b.averageDiff) - Math.abs(a.averageDiff));
+
+    return ranked[0] || null;
+}
+
+// This helper summarizes how many gods sit in each tier bucket for the
+// analytics overview and compact visual distribution cards.
+function buildTierDistribution(gods = state.gods) {
+    return state.config.tierOrder.map((tier) => ({
+        tier,
+        count: gods.filter((god) => god.Tier === tier).length,
+    }));
+}
+
+// This helper produces the headline pulse cards shown in the hero so the app
+// opens with stronger narrative takeaways than raw counts alone.
+function buildCouncilPulse() {
+    const pantheonRows = [...new Set(state.gods.map((god) => god.Pantheon).filter(Boolean))]
+        .map((pantheon) => {
+            const gods = state.gods.filter((god) => god.Pantheon === pantheon && god.Rating > 0);
+            const average = gods.length ? Math.round(gods.reduce((sum, god) => sum + god.Rating, 0) / gods.length) : 0;
+            return { pantheon, average, count: gods.length };
+        })
+        .filter((entry) => entry.count >= 2)
+        .sort((a, b) => b.average - a.average || b.count - a.count);
+
+    const mostContested = [...state.gods]
+        .filter((god) => coverageCount(god) >= 2)
+        .sort((a, b) => controversyScore(b) - controversyScore(a))
+        .at(0);
+
+    const incomplete = [...state.gods]
+        .filter((god) => coverageCount(god) < state.config.players.length)
+        .sort((a, b) => coverageCount(a) - coverageCount(b) || b.Rating - a.Rating)
+        .at(0);
+
+    const playerAverages = state.config.players
+        .map((player) => ({ player, average: averagePlayerScore(player) }))
+        .sort((a, b) => b.average - a.average);
+
+    return {
+        topPantheon: pantheonRows[0] || null,
+        mostContested: mostContested || null,
+        watchlist: incomplete || null,
+        generous: playerAverages[0] || null,
+        strict: playerAverages.at(-1) || null,
+    };
+}
+
+// This helper turns tier counts into a compact row of progress bars for the
+// analytics tab without requiring a charting library.
+function renderTierDistributionBars(gods = state.gods) {
+    const total = gods.length || 1;
+    const rows = buildTierDistribution(gods).filter((entry) => entry.count > 0);
+
+    return `
+        <div class="distribution-list">
+            ${rows.map((entry) => `
+                <div class="distribution-row">
+                    <div class="distribution-label-row">
+                        <span class="legend-chip">
+                            <span class="legend-dot" style="background:${tierColor(entry.tier)}"></span>
+                            ${escapeHtml(entry.tier)} Tier
+                        </span>
+                        <strong>${entry.count}</strong>
+                    </div>
+                    <div class="distribution-track">
+                        <span class="distribution-fill" style="width:${Math.max((entry.count / total) * 100, 6)}%;background:${tierColor(entry.tier)}"></span>
+                    </div>
+                </div>
+            `).join("")}
+        </div>
+    `;
+}
+
 // This helper produces a small filter summary row so users can see why lists
 // changed without reopening the filters panel.
 function renderFilterSummary() {
@@ -444,6 +576,7 @@ function renderHeroStats() {
         return;
     }
 
+    const pulse = buildCouncilPulse();
     const topThree = [...state.gods]
         .filter((god) => god.Rating > 0)
         .sort((a, b) => b.Rating - a.Rating || a.God.localeCompare(b.God))
@@ -482,7 +615,19 @@ function renderHeroStats() {
         `
         : "";
 
-    elements.heroStats.innerHTML = `${cardsHtml}${mobilePodium}`;
+    const pulseCard = `
+        <div class="stat-card hero-insight-card">
+            <span class="stat-label">Council Pulse</span>
+            <div class="hero-insight-grid">
+                ${pulse.topPantheon ? `<span class="summary-pill">Top pantheon: ${escapeHtml(pulse.topPantheon.pantheon)} ${pulse.topPantheon.average}</span>` : ""}
+                ${pulse.mostContested ? `<span class="summary-pill warm">Biggest split: ${escapeHtml(pulse.mostContested.God)} ${controversyScore(pulse.mostContested)}</span>` : ""}
+                ${pulse.watchlist ? `<span class="summary-pill">Watchlist: ${escapeHtml(pulse.watchlist.God)} ${coverageCount(pulse.watchlist)}/${state.config.players.length}</span>` : ""}
+                ${pulse.generous && pulse.strict ? `<span class="summary-pill cool">${escapeHtml(pulse.generous.player)} most generous • ${escapeHtml(pulse.strict.player)} most strict</span>` : ""}
+            </div>
+        </div>
+    `;
+
+    elements.heroStats.innerHTML = `${cardsHtml}${pulseCard}${mobilePodium}`;
 }
 
 // This helper renders the backend status banner when any live reads fell back
@@ -699,6 +844,14 @@ function renderIndexTab() {
 function renderRankingsTab() {
     const risers = [...state.gods].filter((god) => Number(god.Movement || 0) > 0).sort((a, b) => Number(b.Movement || 0) - Number(a.Movement || 0)).slice(0, 3);
     const fallers = [...state.gods].filter((god) => Number(god.Movement || 0) < 0).sort((a, b) => Number(a.Movement || 0) - Number(b.Movement || 0)).slice(0, 3);
+    const fullCouncilFavorites = [...state.gods]
+        .filter((god) => coverageCount(god) === state.config.players.length)
+        .sort((a, b) => b.Rating - a.Rating || a.God.localeCompare(b.God))
+        .slice(0, 3);
+    const hiddenGems = [...state.gods]
+        .filter((god) => coverageCount(god) < state.config.players.length && coverageCount(god) >= 2 && god.Rating >= 80)
+        .sort((a, b) => b.Rating - a.Rating || coverageCount(b) - coverageCount(a))
+        .slice(0, 3);
     const rows = [...state.filteredGods]
         .sort((a, b) => (b.Rating - a.Rating) || a.God.localeCompare(b.God))
         .map((god) => `
@@ -744,6 +897,16 @@ function renderRankingsTab() {
                     ${fallers.length ? fallers.map((god) => `<div class="mini-highlight-row"><span>${escapeHtml(god.God)}</span><strong class="movement-down">▼${Math.abs(god.Movement)}</strong></div>`).join("") : `<div class="rank-meta">No fallers yet</div>`}
                 </article>
             </div>
+            <div class="mini-highlight-grid">
+                <article class="mini-highlight-card">
+                    <div class="metric-label">Full Council Locks</div>
+                    ${fullCouncilFavorites.length ? fullCouncilFavorites.map((god) => `<div class="mini-highlight-row"><span>${escapeHtml(god.God)}</span><strong>${god.Rating}</strong></div>`).join("") : `<div class="rank-meta">No full-coverage locks yet</div>`}
+                </article>
+                <article class="mini-highlight-card">
+                    <div class="metric-label">Hidden Gems</div>
+                    ${hiddenGems.length ? hiddenGems.map((god) => `<div class="mini-highlight-row"><span>${escapeHtml(god.God)}</span><strong>${coverageCount(god)}/${state.config.players.length}</strong></div>`).join("") : `<div class="rank-meta">No partial-coverage gems right now</div>`}
+                </article>
+            </div>
             <div class="rankings-list">${rows || emptyState("No Rankings", "No gods match the current filters.")}</div>
             ${renderBackToTop()}
         </div>
@@ -754,6 +917,9 @@ function renderRankingsTab() {
 function renderFavoritesTab() {
     const columns = state.config.players
         .map((player) => {
+            const bestRole = favoriteDimensionForPlayer(player, "Role");
+            const bestPantheon = favoriteDimensionForPlayer(player, "Pantheon");
+            const averageScore = averagePlayerScore(player);
             const topFive = [...state.filteredGods]
                 .filter((god) => Number.isFinite(god[player]) && god[player] > 0)
                 .sort((a, b) => (b[player] - a[player]) || a.God.localeCompare(b.God))
@@ -778,6 +944,15 @@ function renderFavoritesTab() {
                     <div class="panel-heading">
                         <p class="eyebrow" style="color:${playerColor(player)}">${escapeHtml(player)}</p>
                         <h2>${escapeHtml(player)} Top 5</h2>
+                    </div>
+                    <div class="profile-chip-row">
+                        <span class="summary-pill">Avg ${averageScore}</span>
+                        ${bestRole ? `<span class="summary-pill">Role: ${escapeHtml(bestRole.label)}</span>` : ""}
+                        ${bestPantheon ? `<span class="summary-pill">Pantheon: ${escapeHtml(bestPantheon.label)}</span>` : ""}
+                    </div>
+                    <div class="taste-note">
+                        ${bestRole ? `${escapeHtml(player)} leans hardest toward ${escapeHtml(bestRole.label.toLowerCase())}` : `${escapeHtml(player)} is still building a clear taste profile`}
+                        ${bestPantheon ? ` and especially lights up for ${escapeHtml(bestPantheon.label)} picks.` : "."}
                     </div>
                     ${rows}
                 </article>
@@ -948,6 +1123,11 @@ function renderAnalyticsTab() {
     const mostRated = [...state.gods]
         .sort((a, b) => coverageCount(b) - coverageCount(a))
         .slice(0, 3);
+    const playerAverages = [...state.config.players]
+        .map((player) => ({ player, average: averagePlayerScore(player) }))
+        .sort((a, b) => b.average - a.average);
+    const strictest = playerAverages.at(-1);
+    const mostGenerous = playerAverages[0];
     const playerOptions = state.config.players
         .map((player) => `
             <label class="tiny-pill" style="display:inline-flex;align-items:center;gap:8px;">
@@ -977,6 +1157,17 @@ function renderAnalyticsTab() {
                 <article class="mini-highlight-card">
                     <div class="metric-label">Most Rated Gods</div>
                     ${mostRated.length ? mostRated.map((god) => `<div class="mini-highlight-row"><span>${escapeHtml(god.God)}</span><strong>${coverageCount(god)}/${state.config.players.length}</strong></div>`).join("") : `<div class="rank-meta">No ratings yet</div>`}
+                </article>
+            </div>
+            <div class="mini-highlight-grid">
+                <article class="mini-highlight-card">
+                    <div class="metric-label">Council Scoring Style</div>
+                    <div class="mini-highlight-row"><span>Most generous</span><strong style="color:${playerColor(mostGenerous?.player)}">${escapeHtml(mostGenerous?.player || "—")} ${mostGenerous?.average || 0}</strong></div>
+                    <div class="mini-highlight-row"><span>Most strict</span><strong style="color:${playerColor(strictest?.player)}">${escapeHtml(strictest?.player || "—")} ${strictest?.average || 0}</strong></div>
+                </article>
+                <article class="mini-highlight-card">
+                    <div class="metric-label">Tier Distribution</div>
+                    ${renderTierDistributionBars()}
                 </article>
             </div>
 
@@ -1079,10 +1270,17 @@ function renderH2hTab() {
     const agreement = rows.filter((god) => god.absDiff <= 5).length;
     const aHigher = rows.filter((god) => god.diff > 5).length;
     const bHigher = rows.filter((god) => god.diff < -5).length;
+    const averageDiff = rows.length ? Math.round((rows.reduce((sum, god) => sum + god.diff, 0) / rows.length) * 10) / 10 : 0;
     const topDiff = [...rows].sort((a, b) => b.absDiff - a.absDiff).slice(0, 12);
     const agreed = rows
         .filter((god) => god[state.h2h.a] >= 80 && god[state.h2h.b] >= 80 && god.absDiff <= 10)
         .sort((a, b) => ((b[state.h2h.a] + b[state.h2h.b]) / 2) - ((a[state.h2h.a] + a[state.h2h.b]) / 2));
+    const roleLean = strongestRoleLean(rows);
+    const verdict = averageDiff > 2
+        ? `${state.h2h.a} trends higher overall`
+        : averageDiff < -2
+            ? `${state.h2h.b} trends higher overall`
+            : "These two are surprisingly close overall";
 
     elements.tabH2h.innerHTML = `
         <div class="panel">
@@ -1100,6 +1298,17 @@ function renderH2hTab() {
                     <span>Council Member B</span>
                     <select id="h2h-player-b">${options}</select>
                 </label>
+            </div>
+
+            <div class="verdict-banner">
+                <div>
+                    <p class="eyebrow">Match Verdict</p>
+                    <h3>${escapeHtml(verdict)}</h3>
+                </div>
+                <div class="verdict-chip-row">
+                    <span class="summary-pill">Avg delta ${averageDiff > 0 ? "+" : ""}${averageDiff}</span>
+                    ${roleLean ? `<span class="summary-pill ${roleLean.averageDiff > 0 ? "cool" : "warm"}">${escapeHtml(roleLean.role)} leans ${roleLean.averageDiff > 0 ? escapeHtml(state.h2h.a) : escapeHtml(state.h2h.b)}</span>` : ""}
+                </div>
             </div>
 
             <div class="metrics-grid" style="margin-top:18px;">

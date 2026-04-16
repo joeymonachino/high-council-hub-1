@@ -162,6 +162,17 @@ body::before {
     font-weight: 800;
 }
 
+.hero-insight-card {
+    grid-column: 1 / -1;
+}
+
+.hero-insight-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 2px;
+}
+
 .mobile-podium-card {
     display: none;
 }
@@ -974,6 +985,20 @@ body::before {
     padding: 18px;
 }
 
+.profile-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.taste-note {
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
 .favorite-row {
     display: flex;
     justify-content: space-between;
@@ -1080,6 +1105,39 @@ body::before {
     display: block;
 }
 
+.distribution-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.distribution-row {
+    display: grid;
+    gap: 8px;
+}
+
+.distribution-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.distribution-track {
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(190, 159, 101, 0.16);
+}
+
+.distribution-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    box-shadow: 0 6px 12px rgba(91, 69, 21, 0.14);
+}
+
 /* This block styles the H2H comparison views. */
 .h2h-controls,
 .analytics-controls,
@@ -1114,6 +1172,34 @@ body::before {
     font-family: "Cinzel", serif;
     font-size: 2rem;
     font-weight: 800;
+}
+
+.verdict-banner {
+    margin-top: 18px;
+    padding: 18px;
+    border-radius: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    background:
+        linear-gradient(135deg, rgba(255, 248, 230, 0.96), rgba(236, 223, 192, 0.86)),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.14), rgba(205, 164, 87, 0.06));
+    border: 1px solid rgba(177, 141, 72, 0.18);
+    box-shadow: 0 14px 28px rgba(82, 58, 19, 0.08);
+}
+
+.verdict-banner h3 {
+    margin: 0;
+    font-family: "Cinzel", serif;
+    font-size: 1.35rem;
+}
+
+.verdict-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
 }
 
 .h2h-grid,
@@ -1442,6 +1528,15 @@ body::before {
 
     .hero-stats {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .verdict-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .verdict-chip-row {
+        justify-content: flex-start;
     }
 
     .rank-row,
