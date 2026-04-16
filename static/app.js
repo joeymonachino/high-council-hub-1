@@ -193,6 +193,22 @@ function averagePlayerScore(player) {
     return Math.round(scores.reduce((sum, value) => sum + value, 0) / scores.length);
 }
 
+// This helper computes a simple average for numeric arrays used throughout the
+// deeper analytics modules.
+function average(values) {
+    if (!values.length) return 0;
+    return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+// This helper measures spread around an average so we can label players as
+// more steady or more swingy in their scoring habits.
+function standardDeviation(values) {
+    if (values.length < 2) return 0;
+    const avg = average(values);
+    const variance = average(values.map((value) => (value - avg) ** 2));
+    return Math.sqrt(variance);
+}
+
 // This helper finds the player's most-loved category by average score while
 // still requiring enough samples to avoid one-off outliers dominating.
 function favoriteDimensionForPlayer(player, key) {
@@ -218,6 +234,129 @@ function favoriteDimensionForPlayer(player, key) {
         .sort((a, b) => b.average - a.average || b.count - a.count || a.label.localeCompare(b.label));
 
     return ranked[0] || null;
+}
+
+// This helper finds the strongest player bias for a category by comparing
+// personal averages against council consensus on the same set of gods.
+function strongestBiasForPlayer(player, key) {
+    const bucket = new Map();
+
+    state.gods.forEach((god) => {
+        const playerScore = god[player];
+        const label = god[key];
+        if (!Number.isFinite(playerScore) || playerScore <= 0 || !label || !Number.isFinite(god.Rating) || god.Rating <= 0) return;
+        if (!bucket.has(label)) {
+            bucket.set(label, []);
+        }
+        bucket.get(label).push(playerScore - god.Rating);
+    });
+
+    const ranked = [...bucket.entries()]
+        .map(([label, deltas]) => ({
+            label,
+            count: deltas.length,
+            delta: average(deltas),
+        }))
+        .filter((entry) => entry.count >= 2)
+        .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta) || b.count - a.count);
+
+    return ranked[0] || null;
+}
+
+// This helper assigns a simple council archetype based on generosity,
+// steadiness, and overlap with consensus.
+function playerArchetype(player) {
+    const ratedGods = state.gods.filter((god) => Number.isFinite(god[player]) && god[player] > 0 && Number.isFinite(god.Rating) && god.Rating > 0);
+    const scores = ratedGods.map((god) => god[player]);
+    const deltas = ratedGods.map((god) => god[player] - god.Rating);
+    const avgScore = averagePlayerScore(player);
+    const volatility = standardDeviation(scores);
+    const avgDelta = average(deltas);
+
+    let title = "Balanced Evaluator";
+    let note = "Usually tracks close to the room without many dramatic swings.";
+
+    if (avgScore >= 78 && avgDelta > 4) {
+        title = "Sunlight Enthusiast";
+        note = "Hands out optimistic scores and sees upside faster than the rest of the council.";
+    } else if (avgScore <= 68 && avgDelta < -4) {
+        title = "Gatekeeper";
+        note = "Makes gods earn every point and rarely gives away easy praise.";
+    } else if (volatility >= 18) {
+        title = "Chaos Theorist";
+        note = "Owns the widest swing range and is comfortable with dramatic highs and lows.";
+    } else if (Math.abs(avgDelta) <= 2 && volatility <= 12) {
+        title = "Consensus Anchor";
+        note = "Acts like the room's stabilizer with very little drift from council average.";
+    }
+
+    return {
+        player,
+        avgScore: Math.round(avgScore),
+        avgDelta: Math.round(avgDelta * 10) / 10,
+        volatility: Math.round(volatility * 10) / 10,
+        title,
+        note,
+    };
+}
+
+// This helper summarizes recent volatility from the history feed so analytics
+// can call out which gods are moving around most often.
+function buildVolatilityLeaders() {
+    const bucket = new Map();
+
+    state.recentHistory
+        .filter((row) => (row.change_type || "rating") === "rating")
+        .forEach((row) => {
+            const godName = row.god_name;
+            if (!godName) return;
+            const oldValue = Number(row.old_value || 0);
+            const newValue = Number(row.new_value || 0);
+            const delta = Math.abs(newValue - oldValue);
+            if (!bucket.has(godName)) {
+                bucket.set(godName, []);
+            }
+            bucket.get(godName).push(delta);
+        });
+
+    return [...bucket.entries()]
+        .map(([godName, deltas]) => ({
+            godName,
+            touches: deltas.length,
+            swing: Math.round(average(deltas) * 10) / 10,
+        }))
+        .sort((a, b) => b.touches - a.touches || b.swing - a.swing || a.godName.localeCompare(b.godName))
+        .slice(0, 5);
+}
+
+// This helper explains the current ownership picture for the selected god:
+// biggest believer, biggest skeptic, and whether the room broadly agrees.
+function buildOwnershipSnapshot(godName) {
+    const god = state.gods.find((entry) => entry.God === godName);
+    if (!god) return null;
+
+    const scored = state.config.players
+        .map((player) => ({
+            player,
+            score: god[player],
+            delta: Number.isFinite(god[player]) ? god[player] - god.Rating : null,
+        }))
+        .filter((entry) => Number.isFinite(entry.score) && entry.score > 0);
+
+    if (!scored.length) {
+        return { god, owner: null, skeptic: null, spread: 0, coverage: 0 };
+    }
+
+    const owner = [...scored].sort((a, b) => b.delta - a.delta || b.score - a.score)[0];
+    const skeptic = [...scored].sort((a, b) => a.delta - b.delta || a.score - b.score)[0];
+
+    return {
+        god,
+        owner,
+        skeptic,
+        spread: controversyScore(god),
+        coverage: scored.length,
+    };
 }
 
 // This helper computes the role where the selected head-to-head pairing is most
@@ -1128,6 +1267,9 @@ function renderAnalyticsTab() {
         .sort((a, b) => b.average - a.average);
     const strictest = playerAverages.at(-1);
     const mostGenerous = playerAverages[0];
+    const archetypes = state.config.players.map((player) => playerArchetype(player));
+    const volatilityLeaders = buildVolatilityLeaders();
+    const ownership = buildOwnershipSnapshot(state.analytics.god);
     const playerOptions = state.config.players
         .map((player) => `
             <label class="tiny-pill" style="display:inline-flex;align-items:center;gap:8px;">
@@ -1170,6 +1312,34 @@ function renderAnalyticsTab() {
                     ${renderTierDistributionBars()}
                 </article>
             </div>
+            <div class="panel-heading" style="margin-top:18px;">
+                <p class="eyebrow">Council Profiles</p>
+                <h2>Archetypes</h2>
+            </div>
+            <div class="archetype-grid">
+                ${archetypes.map((profile) => {
+                    const roleBias = strongestBiasForPlayer(profile.player, "Role");
+                    const pantheonBias = strongestBiasForPlayer(profile.player, "Pantheon");
+                    return `
+                        <article class="archetype-card">
+                            <div class="archetype-topline">
+                                <span class="summary-pill" style="color:${playerColor(profile.player)}">${escapeHtml(profile.player)}</span>
+                                <span class="summary-pill ${profile.avgDelta > 0 ? "cool" : profile.avgDelta < 0 ? "warm" : ""}">${profile.avgDelta > 0 ? "+" : ""}${profile.avgDelta} vs avg</span>
+                            </div>
+                            <h3 class="archetype-title">${escapeHtml(profile.title)}</h3>
+                            <p class="taste-note">${escapeHtml(profile.note)}</p>
+                            <div class="profile-chip-row">
+                                <span class="summary-pill">Avg ${profile.avgScore}</span>
+                                <span class="summary-pill">Volatility ${profile.volatility}</span>
+                            </div>
+                            <div class="bias-list">
+                                ${roleBias ? `<div class="bias-row"><span>Role bias</span><strong class="${roleBias.delta > 0 ? "movement-up" : "movement-down"}">${escapeHtml(roleBias.label)} ${roleBias.delta > 0 ? "+" : ""}${Math.round(roleBias.delta * 10) / 10}</strong></div>` : ""}
+                                ${pantheonBias ? `<div class="bias-row"><span>Pantheon bias</span><strong class="${pantheonBias.delta > 0 ? "movement-up" : "movement-down"}">${escapeHtml(pantheonBias.label)} ${pantheonBias.delta > 0 ? "+" : ""}${Math.round(pantheonBias.delta * 10) / 10}</strong></div>` : ""}
+                            </div>
+                        </article>
+                    `;
+                }).join("")}
+            </div>
 
             <div class="chart-shell" style="margin-top:18px;">
                 <div class="panel-heading">
@@ -1187,6 +1357,21 @@ function renderAnalyticsTab() {
                     </div>
                 </div>
                 <div id="analytics-chart">${buildTrendChartSvg(state.analytics.rows, state.analytics.players)}</div>
+            </div>
+            <div class="mini-highlight-grid" style="margin-top:18px;">
+                <article class="mini-highlight-card">
+                    <div class="metric-label">Most Volatile Gods</div>
+                    ${volatilityLeaders.length ? volatilityLeaders.map((entry) => `<div class="mini-highlight-row"><span>${escapeHtml(entry.godName)}</span><strong>${entry.touches} edits • ${entry.swing}</strong></div>`).join("") : `<div class="rank-meta">Not enough history yet</div>`}
+                </article>
+                <article class="mini-highlight-card">
+                    <div class="metric-label">Who Owns ${escapeHtml(state.analytics.god || "This God")}</div>
+                    ${ownership?.owner ? `
+                        <div class="mini-highlight-row"><span>Biggest believer</span><strong style="color:${playerColor(ownership.owner.player)}">${escapeHtml(ownership.owner.player)} ${ownership.owner.score}</strong></div>
+                        <div class="mini-highlight-row"><span>Most skeptical</span><strong style="color:${playerColor(ownership.skeptic.player)}">${escapeHtml(ownership.skeptic.player)} ${ownership.skeptic.score}</strong></div>
+                        <div class="mini-highlight-row"><span>Room spread</span><strong>${ownership.spread} pts</strong></div>
+                        <div class="mini-highlight-row"><span>Coverage</span><strong>${ownership.coverage}/${state.config.players.length}</strong></div>
+                    ` : `<div class="rank-meta">Select a god with ratings to see the ownership story.</div>`}
+                </article>
             </div>
 
             <div class="panel-heading" style="margin-top:18px;">
@@ -1861,6 +2046,7 @@ function renderRankerTab() {
 
 // This helper keeps the tab strip and visible panel in sync with state.activeTab.
 function renderTabs() {
+    document.body.dataset.activeTab = state.activeTab;
     elements.tabButtons.forEach((button) => {
         button.classList.toggle("active", button.dataset.tab === state.activeTab);
         const isRanker = button.dataset.tab === "ranker";

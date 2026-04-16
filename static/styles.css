@@ -13,6 +13,8 @@
     --green: #4aa274;
     --red: #c86868;
     --blue: #678cc6;
+    --tab-accent: rgba(204, 164, 87, 0.28);
+    --tab-accent-strong: rgba(244, 212, 142, 0.52);
 }
 
 /* This block resets baseline element sizing so the full page layout behaves
@@ -47,6 +49,58 @@ body::before {
         linear-gradient(transparent, rgba(136, 104, 47, 0.05));
 }
 
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.65;
+    background:
+        radial-gradient(circle at 50% -10%, var(--tab-accent-strong), transparent 26%),
+        radial-gradient(circle at 10% 40%, var(--tab-accent), transparent 24%);
+    transition: opacity 240ms ease, background 280ms ease;
+}
+
+body[data-active-tab="index"] {
+    --tab-accent: rgba(214, 179, 102, 0.24);
+    --tab-accent-strong: rgba(244, 212, 142, 0.44);
+}
+
+body[data-active-tab="rankings"] {
+    --tab-accent: rgba(124, 167, 224, 0.22);
+    --tab-accent-strong: rgba(182, 211, 246, 0.34);
+}
+
+body[data-active-tab="favorites"] {
+    --tab-accent: rgba(212, 111, 162, 0.2);
+    --tab-accent-strong: rgba(240, 189, 214, 0.34);
+}
+
+body[data-active-tab="tierlist"] {
+    --tab-accent: rgba(132, 183, 145, 0.2);
+    --tab-accent-strong: rgba(201, 228, 207, 0.34);
+}
+
+body[data-active-tab="analytics"] {
+    --tab-accent: rgba(103, 140, 198, 0.2);
+    --tab-accent-strong: rgba(181, 205, 239, 0.34);
+}
+
+body[data-active-tab="h2h"] {
+    --tab-accent: rgba(200, 104, 104, 0.18);
+    --tab-accent-strong: rgba(235, 188, 188, 0.32);
+}
+
+body[data-active-tab="activity"] {
+    --tab-accent: rgba(143, 106, 42, 0.18);
+    --tab-accent-strong: rgba(230, 209, 165, 0.34);
+}
+
+body[data-active-tab="ranker"] {
+    --tab-accent: rgba(78, 168, 133, 0.2);
+    --tab-accent-strong: rgba(182, 228, 211, 0.34);
+}
+
 /* This block defines the main page container width and spacing. */
 .app-shell {
     width: min(1500px, calc(100% - 28px));
@@ -75,6 +129,7 @@ body::before {
     border: 1px solid var(--line);
     box-shadow: 0 16px 36px var(--shadow);
     backdrop-filter: blur(10px);
+    transition: transform 200ms ease, box-shadow 220ms ease, border-color 220ms ease, background 220ms ease;
 }
 
 /* This block styles the top hero panel and its split layout. */
@@ -86,6 +141,18 @@ body::before {
     padding: 28px;
     overflow: hidden;
     position: relative;
+}
+
+.hero-panel::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+        linear-gradient(120deg, rgba(255, 255, 255, 0.22), transparent 24%, transparent 76%, rgba(255, 236, 188, 0.18)),
+        radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.18), transparent 24%);
+    mix-blend-mode: screen;
 }
 
 .hero-panel::after {
@@ -130,6 +197,7 @@ body::before {
     color: var(--muted);
     line-height: 1.7;
     margin-top: 18px;
+    text-wrap: pretty;
 }
 
 .hero-stats {
@@ -277,6 +345,11 @@ body::before {
     overflow-x: auto;
     flex-wrap: nowrap;
     scrollbar-width: thin;
+    background:
+        linear-gradient(180deg, rgba(255, 252, 246, 0.92), rgba(241, 230, 206, 0.88)),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(205, 164, 87, 0.06));
+    border: 1px solid rgba(178, 139, 68, 0.18);
+    box-shadow: 0 16px 28px rgba(84, 58, 16, 0.12);
 }
 
 .panel-heading {
@@ -284,6 +357,16 @@ body::before {
     flex-direction: column;
     gap: 4px;
     margin-bottom: 16px;
+    position: relative;
+}
+
+.panel-heading::after {
+    content: "";
+    width: 76px;
+    height: 2px;
+    margin-top: 8px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--gold), rgba(204, 164, 87, 0));
 }
 
 .filter-summary,
@@ -310,6 +393,7 @@ body::before {
     color: #6c5738;
     font-size: 0.74rem;
     font-weight: 800;
+    transition: transform 160ms ease, box-shadow 180ms ease, background 180ms ease;
 }
 
 .summary-pill.muted {
@@ -343,6 +427,22 @@ body::before {
     padding: 14px;
     background: rgba(255, 252, 246, 0.82);
     border: 1px solid rgba(175, 138, 67, 0.14);
+    position: relative;
+    overflow: hidden;
+}
+
+.mini-highlight-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.14) 40%, transparent 62%);
+    transform: translateX(-120%);
+    transition: transform 420ms ease;
+}
+
+.mini-highlight-card:hover::after {
+    transform: translateX(120%);
 }
 
 .mini-highlight-row {
@@ -362,6 +462,7 @@ body::before {
     border-radius: 999px;
     cursor: pointer;
     font-weight: 800;
+    transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
 .collapsible-panel {
@@ -441,6 +542,12 @@ body::before {
     font-weight: 800;
     white-space: nowrap;
     box-shadow: 0 8px 18px rgba(127, 92, 31, 0.08);
+    transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+details[open] > summary .collapse-indicator {
+    background: linear-gradient(180deg, rgba(244, 212, 142, 0.92), rgba(204, 164, 87, 0.9));
+    color: #3d2e17;
 }
 
 .collapsible-panel > :not(summary) {
@@ -471,6 +578,22 @@ body::before {
     transform: scale(1.02);
 }
 
+.god-card:hover,
+.rank-row:hover,
+.activity-item:hover,
+.ranking-list-card:hover,
+.feature-card:hover,
+.metric-card:hover,
+.mini-highlight-card:hover,
+.tier-group:hover,
+.h2h-card:hover,
+.podium-card:hover,
+.sidebar-rank-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 36px rgba(84, 58, 16, 0.16);
+    border-color: rgba(180, 141, 69, 0.24);
+}
+
 .podium-image-wrap,
 .mini-art-wrap,
 .h2h-art-wrap {
@@ -490,6 +613,14 @@ body::before {
     object-fit: cover;
     object-position: center 15%;
     display: block;
+    transition: transform 420ms ease, filter 320ms ease;
+}
+
+.podium-card:hover .podium-image,
+.god-card:hover .god-art,
+.h2h-card:hover .h2h-art {
+    transform: scale(1.04);
+    filter: saturate(1.05) contrast(1.03);
 }
 
 .image-fallback {
@@ -707,12 +838,34 @@ body::before {
     cursor: pointer;
     font-weight: 800;
     flex: 0 0 auto;
+    position: relative;
+    overflow: hidden;
+    transition: transform 180ms ease, box-shadow 220ms ease, background 220ms ease, color 220ms ease, border-color 220ms ease;
+}
+
+.tab-btn::before {
+    content: "";
+    position: absolute;
+    inset: auto 14px 6px;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 180ms ease, transform 180ms ease;
 }
 
 .tab-btn.active {
     color: #2e2416;
     background: linear-gradient(180deg, var(--gold-bright), var(--gold));
     box-shadow: 0 10px 18px rgba(164, 123, 40, 0.2);
+    border-color: rgba(152, 112, 39, 0.28);
+    transform: translateY(-1px);
+}
+
+.tab-btn.active::before {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* This block controls tab visibility. */
@@ -722,6 +875,7 @@ body::before {
 
 .tab-panel.active {
     display: block;
+    animation: panelFadeUp 300ms ease;
 }
 
 /* This block styles the live rankings sidebar list. */
@@ -739,6 +893,7 @@ body::before {
     border-radius: 16px;
     border: 1px solid rgba(171, 136, 63, 0.14);
     background: rgba(255, 252, 246, 0.78);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
 .rank-badge {
@@ -971,7 +1126,8 @@ body::before {
 .h2h-grid,
 .activity-filter-grid,
 .ranker-top-grid,
-.feature-grid-4 {
+.feature-grid-4,
+.archetype-grid {
     display: grid;
     gap: 14px;
 }
@@ -1062,6 +1218,10 @@ body::before {
     grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
 }
 
+.archetype-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
 .metrics-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -1072,6 +1232,47 @@ body::before {
     border-radius: 22px;
     background: rgba(255, 251, 243, 0.76);
     border: 1px solid rgba(177, 141, 72, 0.14);
+}
+
+.archetype-card {
+    border-radius: 22px;
+    padding: 18px;
+    background:
+        linear-gradient(145deg, rgba(255, 251, 243, 0.97), rgba(237, 227, 206, 0.86)),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.14), rgba(205, 164, 87, 0.04));
+    border: 1px solid rgba(177, 141, 72, 0.16);
+    box-shadow: 0 14px 28px rgba(82, 58, 19, 0.08);
+}
+
+.archetype-topline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.archetype-title {
+    margin: 0 0 8px;
+    font-family: "Cinzel", serif;
+    font-size: 1.15rem;
+}
+
+.bias-list {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.bias-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px solid rgba(180, 143, 76, 0.14);
+    font-size: 0.88rem;
 }
 
 .chart-legend {
@@ -1239,6 +1440,44 @@ body::before {
 .activity-stream {
     display: grid;
     gap: 10px;
+}
+
+.summary-pill:hover,
+.legend-chip:hover,
+.tiny-pill:hover,
+.mobile-podium-chip:hover,
+.podium-peek-chip:hover,
+.score-chip:hover,
+.btn-primary:hover,
+.btn-secondary:hover,
+.mini-btn:hover,
+.back-to-top-btn:hover,
+.collapse-indicator:hover,
+.tab-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 22px rgba(84, 58, 16, 0.14);
+}
+
+@keyframes panelFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
 .activity-item {
@@ -1528,6 +1767,10 @@ body::before {
 
     .hero-stats {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body::after {
+        opacity: 0.42;
     }
 
     .verdict-banner {
