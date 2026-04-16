@@ -13,6 +13,12 @@
 
     <!-- This block loads the shared stylesheet for the full custom frontend. -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    <!-- Vercel Web Analytics -->
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
     <!-- This block provides a shell for the single-page app. The backend only
