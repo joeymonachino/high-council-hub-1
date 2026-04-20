@@ -8,6 +8,11 @@ const state = {
     recentHistory: [],
     errors: [],
     stats: {},
+    raterStats: {
+        profiles: {},
+        loaded: false,
+        error: "",
+    },
     activeTab: "index",
     filters: {
         search: "",
@@ -49,6 +54,14 @@ const state = {
 // This block stores the important DOM nodes so the render functions can update
 // them without repeatedly querying the document.
 const elements = {};
+
+const RATER_PROFILE_LINKS = {
+    Joey: 'https://smitesource.com/player/f29ca789-74f0-442f-937a-f72fcba045d3',
+    Darian: 'https://smitesource.com/player/8005a240-cd89-4f14-bc40-db769319cb43',
+    Jami: 'https://smitesource.com/player/8f5f48ca-10d1-4104-ab5d-bb80d4683313',
+    Jamie: '',
+    Mike: 'https://smitesource.com/player/f09127e9-676e-498e-b09e-6e20924a91f5',
+};
 
 // This helper safely escapes text before it is inserted into generated HTML.
 function escapeHtml(value) {
@@ -108,6 +121,18 @@ function formatDateTime(value) {
         hour: "2-digit",
         minute: "2-digit",
     });
+}
+
+// This helper formats numeric values for compact dashboard cards and gracefully
+// falls back to an em dash when live data is not available.
+function formatMetric(value, digits = 0, suffix = "") {
+    if (value === null || value === undefined || value === "") return "—";
+    const number = Number(value);
+    if (!Number.isFinite(number)) return "—";
+    return `${number.toLocaleString(undefined, {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+    })}${suffix}`;
 }
 
 // This helper formats short relative-style save feedback for the ranker.
@@ -530,6 +555,7 @@ function cacheElements() {
     elements.tabFavorites = document.getElementById("tab-favorites");
     elements.tabTierlist = document.getElementById("tab-tierlist");
     elements.tabAnalytics = document.getElementById("tab-analytics");
+    elements.tabRaterStats = document.getElementById("tab-rater-stats");
     elements.tabH2h = document.getElementById("tab-h2h");
     elements.tabActivity = document.getElementById("tab-activity");
     elements.tabRanker = document.getElementById("tab-ranker");
@@ -707,6 +733,20 @@ async function loadBootstrap() {
     state.analytics.players = [...payload.config.players];
     initializeRankerState();
     renderFilterOptions();
+}
+
+// This helper fetches the live SmiteSource-backed profile data used by the
+// Rater Stats tab while keeping the rest of the app responsive if it fails.
+async function loadRaterStats() {
+    try {
+        const payload = await api("/api/rater-stats");
+        state.raterStats.profiles = payload.profiles || {};
+        state.raterStats.error = "";
+    } catch (error) {
+        state.raterStats.profiles = {};
+        state.raterStats.error = error.message || "Rater stats are unavailable right now.";
+    }
+    state.raterStats.loaded = true;
 }
 
 // This helper renders the hero statistic cards.
@@ -1107,6 +1147,207 @@ function renderFavoritesTab() {
             </div>
             ${renderFilterSummary()}
             <div class="favorites-grid">${columns}</div>
+            ${renderBackToTop()}
+        </div>
+    `;
+}
+
+// This helper builds a council-and-SmiteSource profile object so the tab can
+// merge real match stats with the personality data already in this app.
+function buildRaterProfile(player) {
+    const ratedGods = state.gods
+        .filter((god) => Number.isFinite(god[player]) && god[player] > 0)
+        .sort((a, b) => (b[player] - a[player]) || (b.Rating - a.Rating) || a.God.localeCompare(b.God));
+    const councilTopGods = ratedGods.slice(0, 3);
+    const external = state.raterStats.profiles?.[player] || {};
+    const signature = state.gods.find((god) => god.God === external.topGods?.[0]?.name) || councilTopGods[0] || null;
+    const favoriteRole = favoriteDimensionForPlayer(player, "Role");
+    const favoritePantheon = favoriteDimensionForPlayer(player, "Pantheon");
+    const archetype = playerArchetype(player);
+    const avgScore = averagePlayerScore(player);
+    const ratedCount = ratedGods.length;
+    const roleBias = strongestBiasForPlayer(player, "Role");
+    const pantheonBias = strongestBiasForPlayer(player, "Pantheon");
+    const recentHistory = state.recentHistory
+        .filter((row) => row.player === player && (row.change_type || "rating") === "rating")
+        .slice(0, 4)
+        .map((row) => ({
+            god: row.god_name,
+            oldValue: Number(row.old_value || 0),
+            newValue: Number(row.new_value || 0),
+            changedAt: row.changed_at,
+        }));
+
+    return {
+        player,
+        profileLink: external.profileUrl || RATER_PROFILE_LINKS[player] || "",
+        linked: external.linked || Boolean(RATER_PROFILE_LINKS[player]),
+        available: Boolean(external.available),
+        error: external.error || "",
+        displayName: external.displayName || player,
+        metrics: external.metrics || {},
+        topGods: external.topGods || [],
+        topRoles: external.topRoles || [],
+        recentMatches: external.recentMatches || [],
+        insights: external.insights || {},
+        rankSummary: external.rankSummary || "",
+        peakRankSummary: external.peakRankSummary || "",
+        signature,
+        favoriteRole,
+        favoritePantheon,
+        archetype,
+        avgScore,
+        ratedCount,
+        roleBias,
+        pantheonBias,
+        recentHistory,
+    };
+}
+
+// This helper renders the live SmiteSource-backed rater dashboard cards with
+// graceful fallbacks for unlinked or data-light profiles.
+function renderRaterStatsTab() {
+    const cards = state.config.players.map((player) => {
+        const profile = buildRaterProfile(player);
+        const signatureName = profile.topGods[0]?.name || profile.signature?.God || "Unformed Legend";
+        const signatureImage = profile.topGods[0]?.imageUrl || profile.signature?.ImageUrl || "";
+        const recentForm = profile.insights.recentForm || (profile.recentHistory.length >= 3 ? "Actively tuning council scores" : "Quiet week");
+        const buildDna = profile.insights.buildDna || "";
+        const favoritePantheon = profile.favoritePantheon?.label || "";
+        const availabilityNote = profile.available
+            ? "Live SmiteSource overview and recent matches"
+            : (profile.linked ? "Profile linked, but no public match sample was returned yet" : "Profile not linked yet");
+
+        return `
+            <article class="rater-card">
+                <div class="rater-card-hero rater-signature-art">
+                    ${signatureImage ? `<img class="god-art" src="${signatureImage}" alt="${escapeHtml(signatureName)}">` : `<div class="image-fallback">No Art</div>`}
+                    <div class="god-overlay"></div>
+                    <div class="rater-hero-topline">
+                        <div>
+                            <p class="eyebrow" style="color:rgba(255,255,255,0.78)">${profile.available ? "SmiteSource Live" : "Council + Profile Shell"}</p>
+                            <h2>${escapeHtml(player)}</h2>
+                        </div>
+                        <div class="profile-chip-row rater-hero-pills">
+                            <span class="summary-pill">${escapeHtml(profile.archetype.title)}</span>
+                            <span class="summary-pill">${profile.ratedCount} gods rated here</span>
+                            ${profile.rankSummary ? `<span class="summary-pill">${escapeHtml(profile.rankSummary)}</span>` : ""}
+                            ${profile.profileLink ? `<a class="summary-pill" href="${profile.profileLink}" target="_blank" rel="noreferrer">SmiteSource Profile</a>` : `<span class="summary-pill muted">Profile not linked yet</span>`}
+                        </div>
+                    </div>
+                    <div class="rater-signature-copy">
+                        <div>
+                            <span class="chip">Signature God</span>
+                            <h3>${escapeHtml(signatureName)}</h3>
+                            <div class="rank-meta" style="color:rgba(255,255,255,0.78)">
+                                ${profile.topGods[0]
+                                    ? `${formatMetric(profile.topGods[0].gamesPlayed)} games • ${formatMetric(profile.topGods[0].winRate, 1, "%")} WR`
+                                    : (profile.signature ? `${profile.signature[player]} council score` : "No signature yet")}
+                            </div>
+                        </div>
+                        <div class="rater-hero-note">
+                            <div class="metric-label" style="color:rgba(255,255,255,0.72)">Archetype</div>
+                            <div class="rater-hero-archetype">${escapeHtml(profile.archetype.title)}</div>
+                            <p>${escapeHtml(profile.archetype.note)}</p>
+                            <div class="rater-hero-submeta">
+                                <span>${escapeHtml(profile.favoriteRole?.label || "Unknown role")}</span>
+                                ${favoritePantheon ? `<span>${escapeHtml(favoritePantheon)}</span>` : ""}
+                                <span>${escapeHtml(recentForm)}</span>
+                                ${profile.insights.damageProfile ? `<span>${escapeHtml(profile.insights.damageProfile)}</span>` : ""}
+                                ${buildDna ? `<span>${escapeHtml(buildDna)}</span>` : ""}
+                            </div>
+                            <div class="rater-hero-metrics">
+                                <span class="summary-pill">${formatMetric(profile.metrics.winRate, 1, "%")} WR</span>
+                                <span class="summary-pill">${formatMetric(profile.metrics.kdaRatio, 2)} KDA</span>
+                                <span class="summary-pill">${formatMetric(profile.metrics.matches)} matches</span>
+                                <span class="summary-pill">${formatMetric(profile.metrics.hoursPlayed, 1)} hrs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mini-highlight-grid" style="margin-top:14px;">
+                    <article class="mini-highlight-card">
+                        <div class="metric-label">Top Gods</div>
+                        ${profile.topGods.length ? profile.topGods.map((god) => `
+                            <div class="mini-highlight-row">
+                                <span>${escapeHtml(god.name)}</span>
+                                <strong>${formatMetric(god.gamesPlayed)}g • ${formatMetric(god.winRate, 1, "%")}</strong>
+                            </div>
+                        `).join("") : `<div class="rank-meta">${escapeHtml(availabilityNote)}</div>`}
+                    </article>
+                    <article class="mini-highlight-card mini-highlight-card-muted">
+                        <div class="metric-label">Council Lens</div>
+                        <div class="mini-highlight-row"><span>Avg council score</span><strong>${formatMetric(profile.avgScore)}</strong></div>
+                        <div class="mini-highlight-row"><span>Peak rank</span><strong>${escapeHtml(profile.peakRankSummary || "Unranked / unavailable")}</strong></div>
+                        <div class="mini-highlight-row">
+                            <span>Role bias</span>
+                            <strong class="${(profile.roleBias?.delta || 0) >= 0 ? "movement-up" : "movement-down"}">${profile.roleBias ? `${profile.roleBias.label} ${(profile.roleBias.delta || 0) >= 0 ? "+" : ""}${Math.round(profile.roleBias.delta * 10) / 10}` : "None yet"}</strong>
+                        </div>
+                        <div class="mini-highlight-row">
+                            <span>Pantheon bias</span>
+                            <strong class="${(profile.pantheonBias?.delta || 0) >= 0 ? "movement-up" : "movement-down"}">${profile.pantheonBias ? `${profile.pantheonBias.label} ${(profile.pantheonBias.delta || 0) >= 0 ? "+" : ""}${Math.round(profile.pantheonBias.delta * 10) / 10}` : "None yet"}</strong>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="mini-highlight-grid rater-detail-grid" style="margin-top:14px;">
+                    <article class="mini-highlight-card">
+                        <div class="metric-label">Recent Matches</div>
+                        ${profile.recentMatches.length ? profile.recentMatches.map((match) => `
+                            <div class="mini-highlight-row">
+                                <span>${escapeHtml(match.godName)} • ${escapeHtml(match.role || "Role")}</span>
+                                <strong class="${match.won ? "movement-up" : "movement-down"}">${match.won ? "W" : "L"} ${formatMetric(match.kills)}/${formatMetric(match.deaths)}/${formatMetric(match.assists)}</strong>
+                            </div>
+                        `).join("") : `<div class="rank-meta">${escapeHtml(availabilityNote)}</div>`}
+                    </article>
+                    <article class="mini-highlight-card">
+                        <div class="metric-label">Role Snapshot</div>
+                        ${profile.topRoles.length ? profile.topRoles.map((role) => `
+                            <div class="mini-highlight-row">
+                                <span>${escapeHtml(role.role)}</span>
+                                <strong>${formatMetric(role.gamesPlayed)}g • ${formatMetric(role.winRate, 1, "%")}</strong>
+                            </div>
+                        `).join("") : `<div class="rank-meta">No role sample yet</div>`}
+                    </article>
+                </div>
+
+                <div class="mini-highlight-grid rater-detail-grid" style="margin-top:10px;">
+                    <article class="mini-highlight-card">
+                        <div class="metric-label">Council Moves</div>
+                        ${profile.recentHistory.length ? profile.recentHistory.map((entry) => `
+                            <div class="mini-highlight-row">
+                                <span>${escapeHtml(entry.god)}</span>
+                                <strong>${entry.oldValue === 0 ? `new ${entry.newValue}` : `${entry.oldValue} -> ${entry.newValue}`}</strong>
+                            </div>
+                        `).join("") : `<div class="rank-meta">No recent rating changes yet</div>`}
+                    </article>
+                    <article class="mini-highlight-card mini-highlight-card-muted">
+                        <div class="metric-label">Performance Snapshot</div>
+                        <div class="mini-highlight-row"><span>Damage / min</span><strong>${formatMetric(profile.metrics.damagePerMin)}</strong></div>
+                        <div class="mini-highlight-row"><span>Gold / min</span><strong>${formatMetric(profile.metrics.goldPerMin)}</strong></div>
+                        <div class="mini-highlight-row"><span>XP / min</span><strong>${formatMetric(profile.metrics.xpPerMin)}</strong></div>
+                        <div class="mini-highlight-row"><span>Wards / match</span><strong>${formatMetric(profile.metrics.wardsPerMatch, 1)}</strong></div>
+                    </article>
+                </div>
+            </article>
+        `;
+    }).join("");
+
+    const banner = !state.raterStats.loaded
+        ? `<div class="status-banner">Loading live SmiteSource stats in the background. Council-derived profile insights are available immediately.</div>`
+        : (state.raterStats.error
+            ? `<div class="status-banner">SmiteSource live fetch hit an issue: ${escapeHtml(state.raterStats.error)}. Council-derived profile insights are still available below.</div>`
+            : `<div class="status-banner">Live SmiteSource stats are now blended with your internal council data, so this tab shows both actual match behavior and each rater's taste profile.</div>`);
+
+    elements.tabRaterStats.innerHTML = `
+        <div class="panel">
+            <div class="panel-heading">
+                <p class="eyebrow">External Match Identity</p>
+                <h2>Rater Stats</h2>
+            </div>
+            ${banner}
+            <div class="rater-stats-grid">${cards}</div>
             ${renderBackToTop()}
         </div>
     `;
@@ -2068,6 +2309,7 @@ function renderAll() {
     renderIndexTab();
     renderRankingsTab();
     renderFavoritesTab();
+    renderRaterStatsTab();
     renderTierlistTab();
     renderAnalyticsTab();
     renderH2hTab();
@@ -2103,6 +2345,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         await loadBootstrap();
         await loadAnalyticsHistory();
         renderAll();
+        loadRaterStats().then(() => {
+            renderAll();
+        });
     } catch (error) {
         document.querySelector(".app-shell").innerHTML = emptyState("App Failed To Load", error.message);
     }

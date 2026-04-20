@@ -4,12 +4,13 @@ from __future__ import annotations
 # lightweight caching, and configuration parsing.
 import json
 import os
+import time
 import tomllib
 from datetime import datetime, timezone
 from pathlib import Path
 from statistics import mean
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 # This block imports the third-party modules used by the Flask backend and
 # by the direct Supabase REST integration.
@@ -77,6 +78,15 @@ TIER_COLORS = {
     "U": "#8d877d",
 }
 HOT_TAKE_THRESHOLD = 30
+SMITESOURCE_PROFILE_LINKS = {
+    "Joey": "https://smitesource.com/player/f29ca789-74f0-442f-937a-f72fcba045d3",
+    "Darian": "https://smitesource.com/player/8005a240-cd89-4f14-bc40-db769319cb43",
+    "Jami": "https://smitesource.com/player/8f5f48ca-10d1-4104-ab5d-bb80d4683313",
+    "Jamie": "",
+    "Mike": "https://smitesource.com/player/f09127e9-676e-498e-b09e-6e20924a91f5",
+}
+SMITESOURCE_RPC_BASE = "https://smitesource.com/rpc"
+SMITESOURCE_CACHE_TTL_SECONDS = int(os.environ.get("SMITESOURCE_CACHE_TTL_SECONDS", "1800"))
 
 
 # This block creates the Flask application object that owns the routes and
@@ -87,6 +97,7 @@ app = Flask(__name__)
 # This block stores a tiny in-memory cache for asset lookup maps so the app
 # doesn't rescan the same image folders on every request.
 ASSET_INDEX_CACHE: dict[str, dict[str, Path]] = {}
+SMITESOURCE_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
 
 
 # This helper loads secrets from the old Streamlit file so the Flask version
@@ -187,6 +198,269 @@ def load_json_snapshot(name: str) -> list[dict]:
         return []
     with snapshot_path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
+
+
+# This helper extracts the SmiteSource player UUID from a linked profile URL so
+# the backend can call the site's RPC endpoints without hardcoding IDs twice.
+def smitesource_player_uuid(profile_url: str) -> str:
+    if not profile_url:
+        return ""
+    parsed = urlparse(profile_url)
+    parts = [part for part in parsed.path.split("/") if part]
+    if len(parts) >= 2 and parts[-2] == "player":
+        return parts[-1]
+    return ""
+
+
+# This helper turns mixed SmiteSource values into short strings that are safe
+# to show in the UI, even when the API returns nested objects.
+def smitesource_summary(value: Any) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, str):
+        return value.strip()
+    if isinstance(value, (int, float)):
+        return str(value)
+    if isinstance(value, list):
+        parts = [smitesource_summary(item) for item in value]
+        return ", ".join(part for part in parts if part)
+    if isinstance(value, dict):
+        for key in ("summary", "label", "title", "description", "text", "value", "rankName", "tierName", "name"):
+            text = smitesource_summary(value.get(key))
+            if text:
+                return text
+        fragments: list[str] = []
+        for key in ("tier", "division", "mmr", "points", "queueType", "mode"):
+            text = smitesource_summary(value.get(key))
+            if text:
+                fragments.append(text)
+        return " • ".join(fragments)
+    return str(value)
+
+
+# This helper safely rounds one numeric value from SmiteSource into a frontend-
+# friendly float or integer and falls back to None when data is absent.
+def smitesource_number(value: Any, digits: int = 0) -> int | float | None:
+    if not isinstance(value, (int, float)):
+        return None
+    return round(float(value), digits) if digits else int(round(float(value)))
+
+
+# This helper points a SmiteSource god row back at local art when the same god
+# image already exists in the project assets.
+def smitesource_god_image_url(god_name: str) -> str:
+    if not god_name:
+        return ""
+    return f"/god-image/{quote(god_name)}" if resolve_god_image(god_name) else ""
+
+
+# This helper performs one SmiteSource RPC POST in the same wrapped format the
+# live site expects for overview and recent-match data.
+def smitesource_post(endpoint: str, payload: dict[str, Any]) -> dict[str, Any]:
+    response = requests.post(
+        f"{SMITESOURCE_RPC_BASE}/{endpoint}",
+        headers={
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "HighCouncilHub/1.0",
+        },
+        json={"json": payload},
+        timeout=20,
+    )
+    response.raise_for_status()
+    data = response.json()
+    if isinstance(data, dict) and isinstance(data.get("json"), dict):
+        return data["json"]
+    return data if isinstance(data, dict) else {}
+
+
+# This helper normalizes one top-god row from SmiteSource so the frontend can
+# render the same field names for every linked council member.
+def normalize_smitesource_top_god(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "name": row.get("godName") or row.get("godSlug") or "",
+        "title": row.get("godTitle") or "",
+        "pantheon": row.get("godPantheon") or "",
+        "role": row.get("godType") or "",
+        "damageType": row.get("godPrimaryDamageType") or "",
+        "gamesPlayed": smitesource_number(row.get("gamesPlayed")),
+        "wins": smitesource_number(row.get("wins")),
+        "winRate": smitesource_number((row.get("winRate") or 0) * 100, 1) if isinstance(row.get("winRate"), (int, float)) else None,
+        "kdRatio": smitesource_number(row.get("kdRatio"), 2),
+        "kdaRatio": smitesource_number(row.get("kdaRatio"), 2),
+        "damagePerMin": smitesource_number(row.get("damagePerMin"), 0),
+        "goldPerMin": smitesource_number(row.get("goldPerMin"), 0),
+        "xpPerMin": smitesource_number(row.get("xpPerMin"), 0),
+        "imageUrl": smitesource_god_image_url(str(row.get("godName") or "")),
+    }
+
+
+# This helper normalizes one role-performance row from SmiteSource into the
+# compact structure used by the Stats tab.
+def normalize_smitesource_role(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "role": row.get("role") or "Unknown",
+        "gamesPlayed": smitesource_number(row.get("gamesPlayed")),
+        "wins": smitesource_number(row.get("wins")),
+        "winRate": smitesource_number((row.get("winRate") or 0) * 100, 1) if isinstance(row.get("winRate"), (int, float)) else None,
+        "kdRatio": smitesource_number(row.get("kdRatio"), 2),
+        "kdaRatio": smitesource_number(row.get("kdaRatio"), 2),
+        "damagePerMin": smitesource_number(row.get("damagePerMin"), 0),
+        "goldPerMin": smitesource_number(row.get("goldPerMin"), 0),
+        "xpPerMin": smitesource_number(row.get("xpPerMin"), 0),
+    }
+
+
+# This helper converts one recent SmiteSource match into a smaller record that
+# is easy for the frontend to display in compact dashboard rows.
+def normalize_smitesource_match(row: dict[str, Any]) -> dict[str, Any]:
+    duration_seconds = row.get("playerDurationSeconds") or row.get("matchDurationSeconds") or 0
+    return {
+        "matchId": row.get("matchId"),
+        "godName": row.get("godName") or "",
+        "role": row.get("playedRole") or row.get("assignedRole") or "Unknown",
+        "queueType": row.get("queueType") or row.get("gameMode") or "",
+        "won": bool(row.get("won")),
+        "kills": smitesource_number(row.get("kills")),
+        "deaths": smitesource_number(row.get("deaths")),
+        "assists": smitesource_number(row.get("assists")),
+        "damage": smitesource_number(row.get("totalDamage")),
+        "gold": smitesource_number(row.get("totalGoldEarned")),
+        "wards": smitesource_number(row.get("totalWardsPlaced")),
+        "durationMinutes": smitesource_number(duration_seconds / 60, 0) if duration_seconds else None,
+        "startedAt": row.get("startTimestamp") or "",
+        "imageUrl": smitesource_god_image_url(str(row.get("godName") or "")),
+    }
+
+
+# This helper collapses the full SmiteSource overview and matches payloads into
+# one predictable profile object for each linked rater.
+def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
+    player_uuid = smitesource_player_uuid(profile_url)
+    if not profile_url or not player_uuid:
+        return {
+            "player": player,
+            "linked": False,
+            "available": False,
+            "profileUrl": profile_url,
+            "playerUuid": player_uuid,
+            "displayName": player,
+            "error": "",
+            "metrics": {},
+            "topGods": [],
+            "topRoles": [],
+            "recentMatches": [],
+            "insights": {},
+            "rankSummary": "",
+            "peakRankSummary": "",
+        }
+
+    cached = SMITESOURCE_CACHE.get(player)
+    if cached and (time.time() - cached[0]) < SMITESOURCE_CACHE_TTL_SECONDS:
+        return cached[1]
+
+    try:
+        # This block fetches the broader player snapshot used for summary
+        # metrics, top gods, top roles, and rank context.
+        overview = smitesource_post(
+            "matches/getPlayerOverview",
+            {"playerUuid": player_uuid, "mode": "all", "season": "0"},
+        )
+
+        # This block fetches a small recent-match sample so the tab can show
+        # actual recent form instead of only lifetime overview totals.
+        matches_payload = smitesource_post(
+            "matches/getPlayerMatches",
+            {
+                "playerUuid": player_uuid,
+                "mode": "all",
+                "season": "0",
+                "page": 1,
+                "pageSize": 6,
+                "includeTeamDetails": False,
+            },
+        )
+
+        totals = overview.get("totals") if isinstance(overview.get("totals"), dict) else {}
+        top_gods = [
+            normalize_smitesource_top_god(row)
+            for row in (overview.get("topGods") or [])
+            if isinstance(row, dict)
+        ][:5]
+        top_roles = [
+            normalize_smitesource_role(row)
+            for row in (overview.get("topRoles") or [])
+            if isinstance(row, dict)
+        ][:4]
+        recent_matches = [
+            normalize_smitesource_match(row)
+            for row in (matches_payload.get("matches") or [])
+            if isinstance(row, dict)
+        ][:5]
+
+        profile = {
+            "player": player,
+            "linked": True,
+            "available": bool(totals or top_gods or top_roles or recent_matches),
+            "profileUrl": profile_url,
+            "playerUuid": player_uuid,
+            "displayName": overview.get("displayName") or player,
+            "metrics": {
+                "matches": smitesource_number(totals.get("totalMatches")),
+                "wins": smitesource_number(totals.get("wins")),
+                "losses": smitesource_number(totals.get("losses")),
+                "winRate": smitesource_number((totals.get("winRate") or 0) * 100, 1) if isinstance(totals.get("winRate"), (int, float)) else None,
+                "kdRatio": smitesource_number(totals.get("kdRatio"), 2),
+                "kdaRatio": smitesource_number(totals.get("kdaRatio"), 2),
+                "damagePerMin": smitesource_number(totals.get("damagePerMin"), 0),
+                "goldPerMin": smitesource_number(totals.get("goldPerMin"), 0),
+                "xpPerMin": smitesource_number(totals.get("xpPerMin"), 0),
+                "wardsPerMatch": smitesource_number(totals.get("wardsPerMatch"), 1),
+                "hoursPlayed": smitesource_number((totals.get("totalDurationSeconds") or 0) / 3600, 1) if totals.get("totalDurationSeconds") else None,
+            },
+            "topGods": top_gods,
+            "topRoles": top_roles,
+            "recentMatches": recent_matches,
+            "insights": {
+                "recentForm": smitesource_summary((overview.get("insights") or {}).get("recentForm")),
+                "damageProfile": smitesource_summary((overview.get("insights") or {}).get("damageProfile")),
+                "economyProfile": smitesource_summary((overview.get("insights") or {}).get("economyProfile")),
+                "buildDna": smitesource_summary((overview.get("insights") or {}).get("buildDna")),
+                "srMomentum": smitesource_summary((overview.get("insights") or {}).get("srMomentum")),
+            },
+            "rankSummary": smitesource_summary(overview.get("currentRank")),
+            "peakRankSummary": smitesource_summary(overview.get("peakRank")),
+            "error": "",
+        }
+    except Exception as exc:  # noqa: BLE001
+        profile = {
+            "player": player,
+            "linked": True,
+            "available": False,
+            "profileUrl": profile_url,
+            "playerUuid": player_uuid,
+            "displayName": player,
+            "error": str(exc),
+            "metrics": {},
+            "topGods": [],
+            "topRoles": [],
+            "recentMatches": [],
+            "insights": {},
+            "rankSummary": "",
+            "peakRankSummary": "",
+        }
+
+    SMITESOURCE_CACHE[player] = (time.time(), profile)
+    return profile
+
+
+# This helper loads the whole council's SmiteSource profiles in one pass so the
+# frontend can populate the stats tab from a single API request.
+def load_rater_stats() -> dict[str, dict[str, Any]]:
+    return {
+        player: build_smitesource_profile(player, SMITESOURCE_PROFILE_LINKS.get(player, ""))
+        for player in PLAYERS
+    }
 
 
 # This helper loads the local activity fallback log so recent changes can still
@@ -714,6 +988,13 @@ def api_bootstrap():
             "errors": state["errors"],
         }
     )
+
+
+# This route returns the live SmiteSource-derived rater stats used by the
+# dedicated profile tab, while keeping the fetch logic hidden server-side.
+@app.route("/api/rater-stats")
+def api_rater_stats():
+    return jsonify({"profiles": load_rater_stats()})
 
 
 # This route fetches a focused rating-history slice for the analytics chart so
