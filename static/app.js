@@ -135,6 +135,48 @@ function formatMetric(value, digits = 0, suffix = "") {
     })}${suffix}`;
 }
 
+// This helper formats a wins-losses summary with win rate for the chemistry
+// modules so paired records are easy to scan at a glance.
+function formatRecord(record) {
+    if (!record || !Number.isFinite(Number(record.games)) || Number(record.games) <= 0) return "—";
+    return `${record.wins}-${record.losses} • ${formatMetric(record.winRate, 1, "%")}`;
+}
+
+// This helper looks up a god's metadata from the already-loaded council
+// catalog so chemistry modules can derive classes and roles for combo records.
+function godMetaByName(godName) {
+    return state.gods.find((god) => god.God === godName) || null;
+}
+
+// This helper builds a stable pair label like "Guardian + Mage" by sorting the
+// two class names, which keeps mirrored pairings grouped together.
+function classPairLabel(a, b) {
+    return [a || "Unknown", b || "Unknown"].sort((left, right) => left.localeCompare(right)).join(" + ");
+}
+
+// This helper formats "who played what" receipts for chemistry rows without
+// forcing the user to mentally cross-reference names and gods.
+function formatParticipantAssignments(participantGods = {}, participants = []) {
+    return participants
+        .map((player) => `${player}: ${participantGods[player] || "—"}`)
+        .join(" • ");
+}
+
+// This helper renders chemistry leaderboard rows with an optional subline so
+// combo cards can stay compact while still showing the important details.
+function renderChemistryRows(records, { emptyText, main, sub, value, valueClass = "" }) {
+    if (!records.length) return `<div class="rank-meta">${escapeHtml(emptyText)}</div>`;
+    return records.map((record) => `
+        <div class="mini-highlight-row chemistry-detail-row">
+            <span class="chemistry-row-text">
+                <span class="chemistry-row-main">${main(record)}</span>
+                ${sub ? `<span class="chemistry-row-sub">${sub(record)}</span>` : ""}
+            </span>
+            <strong class="${typeof valueClass === "function" ? valueClass(record) : valueClass}">${value ? value(record) : formatRecord(record)}</strong>
+        </div>
+    `).join("");
+}
+
 // This helper formats short relative-style save feedback for the ranker.
 function formatSavedLabel(value) {
     if (!value) return "Not saved yet";
@@ -556,6 +598,7 @@ function cacheElements() {
     elements.tabTierlist = document.getElementById("tab-tierlist");
     elements.tabAnalytics = document.getElementById("tab-analytics");
     elements.tabRaterStats = document.getElementById("tab-rater-stats");
+    elements.tabChemistry = document.getElementById("tab-chemistry");
     elements.tabH2h = document.getElementById("tab-h2h");
     elements.tabActivity = document.getElementById("tab-activity");
     elements.tabRanker = document.getElementById("tab-ranker");
@@ -1189,6 +1232,7 @@ function buildRaterProfile(player) {
         topGods: external.topGods || [],
         topRoles: external.topRoles || [],
         recentMatches: external.recentMatches || [],
+        chemistry: external.chemistry || {},
         insights: external.insights || {},
         rankSummary: external.rankSummary || "",
         peakRankSummary: external.peakRankSummary || "",
@@ -1360,6 +1404,465 @@ function renderRaterStatsTab() {
             </div>
             ${banner}
             <div class="rater-stats-grid">${cards}</div>
+            ${renderBackToTop()}
+        </div>
+    `;
+}
+
+// This helper aggregates per-rater chemistry into council-wide duo, combo,
+// class, and queue leaderboards for the dedicated Chemistry tab.
+function buildChemistryInsights() {
+    const duoMap = new Map();
+    const duoComboMap = new Map();
+    const trioComboMap = new Map();
+    const classMap = new Map();
+    const queueMap = new Map();
+    const sessionMap = new Map();
+    const groupMap = new Map();
+    const trioQueueMap = new Map();
+
+    state.config.players.forEach((player) => {
+        const profile = buildRaterProfile(player);
+        const chemistry = profile.chemistry || {};
+
+        (chemistry.duoOnlyRecords || []).forEach((record) => {
+            const members = [player, record.player].sort((left, right) => left.localeCompare(right));
+            const key = members.join("|");
+            if (duoMap.has(key)) return;
+            duoMap.set(key, {
+                label: members.join(" + "),
+                members,
+                games: record.games,
+                wins: record.wins,
+                losses: record.losses,
+                winRate: record.winRate,
+            });
+        });
+
+        (chemistry.sharedGroups || []).forEach((record) => {
+            const members = [...(record.members || [])].sort((left, right) => left.localeCompare(right));
+            if (members.length < 2) return;
+            const key = members.join("|");
+            if (groupMap.has(key)) return;
+            groupMap.set(key, {
+                label: members.join(" + "),
+                members,
+                games: record.games,
+                wins: record.wins,
+                losses: record.losses,
+                winRate: record.winRate,
+            });
+        });
+
+        (chemistry.groupGodRecords || []).forEach((record) => {
+            const members = [...(record.members || [])].sort((left, right) => left.localeCompare(right));
+            if (members.length < 2) return;
+            const participantGods = members.reduce((accumulator, member) => ({
+                ...accumulator,
+                [member]: record.participantGods?.[member] || "",
+            }), {});
+            const gods = members.map((member) => participantGods[member]).filter(Boolean);
+            if (gods.length !== members.length) return;
+
+            const comboKey = `${members.join("|")}|${gods.join("|")}`;
+            const comboTarget = members.length >= 3 ? trioComboMap : duoComboMap;
+            if (!comboTarget.has(comboKey)) {
+                comboTarget.set(comboKey, {
+                    label: gods.join(" + "),
+                    members,
+                    participantGods,
+                    games: Number(record.games || 0),
+                    wins: Number(record.wins || 0),
+                    losses: Number(record.losses || 0),
+                    winRate: Number(record.winRate || 0),
+                });
+            }
+
+        });
+
+        (chemistry.recentSessions || []).forEach((session) => {
+            const members = [...(session.participants || [])].sort((left, right) => left.localeCompare(right));
+            const participantGods = members.reduce((accumulator, member) => ({
+                ...accumulator,
+                [member]: session.participantGods?.[member] || "",
+            }), {});
+            const key = `${session.startedAt}|${members.join("|")}|${members.map((member) => `${member}:${participantGods[member] || ""}`).join("|")}|${session.queueType}`;
+            if (sessionMap.has(key)) return;
+            sessionMap.set(key, {
+                ...session,
+                participants: members,
+                participantGods,
+            });
+        });
+    });
+
+    [...sessionMap.values()].forEach((session) => {
+        if (!queueMap.has(session.queueType)) {
+            queueMap.set(session.queueType, {
+                label: session.queueType,
+                games: 0,
+                wins: 0,
+                losses: 0,
+                winRate: 0,
+            });
+        }
+        const queueRecord = queueMap.get(session.queueType);
+        queueRecord.games += 1;
+        queueRecord.wins += session.won ? 1 : 0;
+        queueRecord.losses += session.won ? 0 : 1;
+
+        if ((session.participants || []).length >= 3) {
+            const trioQueueKey = session.queueType;
+            if (!trioQueueMap.has(trioQueueKey)) {
+                trioQueueMap.set(trioQueueKey, {
+                    label: session.queueType,
+                    games: 0,
+                    wins: 0,
+                    losses: 0,
+                    winRate: 0,
+                });
+            }
+            const trioQueue = trioQueueMap.get(trioQueueKey);
+            trioQueue.games += 1;
+            trioQueue.wins += session.won ? 1 : 0;
+            trioQueue.losses += session.won ? 0 : 1;
+        }
+    });
+
+    [...duoComboMap.values(), ...trioComboMap.values()].forEach((record) => {
+        const classLabel = (record.members || [])
+            .map((member) => godMetaByName(record.participantGods?.[member] || "")?.Class || "Unknown")
+            .sort((left, right) => left.localeCompare(right))
+            .join(" + ");
+        const classKey = `${(record.members || []).length}|${classLabel}`;
+        if (!classMap.has(classKey)) {
+            classMap.set(classKey, {
+                label: classLabel,
+                size: (record.members || []).length,
+                games: 0,
+                wins: 0,
+                losses: 0,
+                winRate: 0,
+            });
+        }
+        const classRecord = classMap.get(classKey);
+        classRecord.games += Number(record.games || 0);
+        classRecord.wins += Number(record.wins || 0);
+        classRecord.losses += Number(record.losses || 0);
+    });
+
+    const finish = (record) => ({
+        ...record,
+        winRate: record.games ? Math.round((record.wins / record.games) * 1000) / 10 : 0,
+    });
+
+    const duoRecords = [...duoMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const duoComboRecords = [...duoComboMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const trioComboRecords = [...trioComboMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const classRecords = [...classMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const queueRecords = [...queueMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const trioQueueRecords = [...trioQueueMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const groupRecords = [...groupMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const recentSessions = [...sessionMap.values()].sort((a, b) => new Date(b.startedAt) - new Date(a.startedAt));
+
+    const duoFloor = duoRecords.filter((record) => record.games >= 2);
+    const duoComboFloor = duoComboRecords.filter((record) => record.games >= 2);
+    const trioFloor = groupRecords.filter((record) => record.members.length >= 3 && record.games >= 2);
+    const trioComboFloor = trioComboRecords.filter((record) => record.games >= 2);
+    const duoClassFloor = classRecords.filter((record) => record.size === 2 && record.games >= 2);
+    const trioClassFloor = classRecords.filter((record) => record.size >= 3 && record.games >= 2);
+    const winSessions = recentSessions.filter((session) => session.won);
+    const lossSessions = recentSessions.filter((session) => !session.won);
+
+    return {
+        duoRecords,
+        duoComboRecords,
+        classRecords,
+        queueRecords,
+        trioQueueRecords,
+        groupRecords,
+        trioComboRecords,
+        recentSessions,
+        bestDuo: duoFloor[0] || duoRecords[0] || null,
+        worstDuo: [...duoFloor].sort((a, b) => a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label))[0] || null,
+        bestCombo: duoComboFloor[0] || duoComboRecords[0] || null,
+        worstCombo: [...duoComboFloor].sort((a, b) => a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label))[0] || null,
+        bestTrio: trioFloor[0] || null,
+        worstTrio: [...trioFloor].sort((a, b) => a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label))[0] || null,
+        bestTrioCombo: trioComboFloor[0] || null,
+        worstTrioCombo: [...trioComboFloor].sort((a, b) => a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label))[0] || null,
+        bestDuoClass: duoClassFloor[0] || null,
+        worstDuoClass: [...duoClassFloor].sort((a, b) => a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label))[0] || null,
+        bestTrioClass: trioClassFloor[0] || null,
+        worstTrioClass: [...trioClassFloor].sort((a, b) => a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label))[0] || null,
+        recentWins: winSessions.slice(0, 6),
+        recentLosses: lossSessions.slice(0, 6),
+    };
+}
+
+// This helper renders the dedicated Chemistry tab so shared-match stats can
+// breathe without overloading the Rater Stats profile cards.
+function renderChemistryTab() {
+    const isMobile = state.ui.isMobile;
+    const insights = buildChemistryInsights();
+    const heroDuo = insights.bestDuo;
+    const heroWorstDuo = insights.worstDuo;
+    const heroCombo = insights.bestCombo;
+    const heroWorstCombo = insights.worstCombo;
+    const heroTrio = insights.bestTrio;
+    const heroWorstTrio = insights.worstTrio;
+    const heroTrioCombo = insights.bestTrioCombo;
+    const heroWorstTrioCombo = insights.worstTrioCombo;
+    const heroClass = insights.bestTrioClass || insights.bestDuoClass || null;
+    const heroQueue = insights.trioQueueRecords.find((record) => record.games >= 2) || insights.queueRecords.find((record) => record.games >= 2) || insights.queueRecords[0] || null;
+    const chemistryBanner = !state.raterStats.loaded
+        ? `<div class="status-banner">Loading live chemistry records. Council data will fill in as soon as SmiteSource responds.</div>`
+        : (state.raterStats.error
+            ? `<div class="status-banner">Chemistry data hit a live fetch issue: ${escapeHtml(state.raterStats.error)}. Showing the last good council sync we have when available.</div>`
+            : "");
+
+    const playerCards = state.config.players.map((player, index) => {
+        const profile = buildRaterProfile(player);
+        const chemistry = profile.chemistry || {};
+
+        return `
+            <details class="panel collapsible-panel chemistry-person-panel" ${!isMobile && index === 0 ? "open" : ""}>
+                <summary class="collapsible-summary chemistry-person-summary">
+                    <div class="collapsible-title-block">
+                        <p class="eyebrow">Council Sync</p>
+                        <h2>${escapeHtml(player)}</h2>
+                        <div class="profile-chip-row chemistry-person-pills">
+                            <span class="summary-pill">${formatRecord(chemistry.overall)}</span>
+                            ${chemistry.bestDuo ? `<span class="summary-pill">Best Duo: ${escapeHtml(chemistry.bestDuo.player)}</span>` : ""}
+                            ${chemistry.bestGroup ? `<span class="summary-pill">Best Stack: ${escapeHtml(chemistry.bestGroup.label)}</span>` : ""}
+                        </div>
+                    </div>
+                    <span class="collapse-indicator" role="button" aria-hidden="true">Toggle Panel</span>
+                </summary>
+                <div class="chemistry-person-body">
+                    <div class="mini-highlight-grid chemistry-grid">
+                        <article class="mini-highlight-card">
+                            <div class="metric-label">Pair Records</div>
+                            ${(chemistry.pairRecords || []).length ? chemistry.pairRecords.slice(0, isMobile ? 3 : 5).map((record) => `
+                                <div class="mini-highlight-row">
+                                    <span>${escapeHtml(record.player)}</span>
+                                    <strong>${formatRecord(record)}</strong>
+                                </div>
+                            `).join("") : `<div class="rank-meta">No shared council games yet</div>`}
+                        </article>
+                        <article class="mini-highlight-card">
+                            <div class="metric-label">Party Size</div>
+                            ${(chemistry.partySizeRecords || []).length ? chemistry.partySizeRecords.slice(0, 4).map((record) => `
+                                <div class="mini-highlight-row">
+                                    <span>${escapeHtml(record.label)}</span>
+                                    <strong>${formatRecord(record)}</strong>
+                                </div>
+                            `).join("") : `<div class="rank-meta">No party-size sample yet</div>`}
+                        </article>
+                    </div>
+                    <div class="mini-highlight-grid chemistry-grid" style="margin-top:10px;">
+                        <article class="mini-highlight-card">
+                            <div class="metric-label">Best Personal God Combos</div>
+                            ${renderChemistryRows((chemistry.groupGodRecords || []).filter((record) => (record.members || []).length === 2).slice(0, isMobile ? 3 : 4), {
+                                emptyText: "No duo combo sample yet",
+                                main: (record) => escapeHtml(record.label),
+                                sub: (record) => escapeHtml(formatParticipantAssignments(record.participantGods || {}, record.members || [])),
+                            })}
+                        </article>
+                        ${!isMobile ? `
+                        <article class="mini-highlight-card mini-highlight-card-muted">
+                            <div class="metric-label">Recent Sessions</div>
+                            ${renderChemistryRows((chemistry.recentSessions || []).slice(0, 4), {
+                                emptyText: "No shared sessions yet",
+                                main: (session) => `${escapeHtml(session.queueType)} • ${escapeHtml(formatParticipantAssignments(session.participantGods || {}, session.participants || []))}`,
+                                sub: (session) => escapeHtml(formatDateTime(session.startedAt)),
+                                value: (session) => `${session.won ? "W" : "L"} • ${escapeHtml(session.kda || "—")}`,
+                                valueClass: (session) => session.won ? "movement-up" : "movement-down",
+                            })}
+                        </article>
+                        ` : ""}
+                    </div>
+                </div>
+            </details>
+        `;
+    }).join("");
+
+    elements.tabChemistry.innerHTML = `
+        <div class="panel">
+            <div class="panel-heading">
+                <p class="eyebrow">Council Synergy</p>
+                <h2>Chemistry</h2>
+            </div>
+            ${chemistryBanner}
+            <div class="feature-grid-4 chemistry-summary-grid">
+                <article class="metric-card">
+                    <div class="metric-label">Most Dangerous Duo</div>
+                    <div class="metric-value chemistry-metric-value" style="font-size:1.2rem">${heroDuo ? escapeHtml(heroDuo.label) : "—"}</div>
+                    <div class="rank-meta">${heroDuo ? formatRecord(heroDuo) : "No duo sample yet"}</div>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-label">Best God Combo</div>
+                    <div class="metric-value chemistry-metric-value" style="font-size:1.15rem">${heroCombo ? escapeHtml(heroCombo.label) : "—"}</div>
+                    <div class="rank-meta">${heroCombo ? formatRecord(heroCombo) : "No combo sample yet"}</div>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-label">Best Trio</div>
+                    <div class="metric-value chemistry-metric-value" style="font-size:1.05rem">${heroTrio ? escapeHtml(heroTrio.label) : "—"}</div>
+                    <div class="rank-meta">${heroTrio ? formatRecord(heroTrio) : "No trio sample yet"}</div>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-label">Best Comp Shell</div>
+                    <div class="metric-value chemistry-metric-value" style="font-size:1.1rem">${heroClass ? escapeHtml(heroClass.label) : "—"}</div>
+                    <div class="rank-meta">${heroClass ? formatRecord(heroClass) : "No comp sample yet"}</div>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-label">Winning Queue</div>
+                    <div class="metric-value chemistry-metric-value" style="font-size:1.1rem">${heroQueue ? escapeHtml(heroQueue.label) : "—"}</div>
+                    <div class="rank-meta">${heroQueue ? formatRecord(heroQueue) : "No queue sample yet"}</div>
+                </article>
+            </div>
+
+            <div class="chemistry-section-grid" style="margin-top:16px;">
+                <section class="panel chemistry-section-card">
+                    <div class="panel-heading">
+                        <p class="eyebrow">Council-Wide</p>
+                        <h2>Winning Combos</h2>
+                    </div>
+                    <div class="mini-highlight-grid chemistry-grid chemistry-global-grid chemistry-two-col">
+                        <article class="mini-highlight-card">
+                            <div class="metric-label">Top Duo Records</div>
+                            ${renderChemistryRows(insights.duoRecords.slice(0, isMobile ? 4 : 5), {
+                                emptyText: "No duo overlap yet",
+                                main: (record) => escapeHtml(record.label),
+                            })}
+                        </article>
+                        <article class="mini-highlight-card">
+                            <div class="metric-label">Top Duo God Combos</div>
+                            ${renderChemistryRows(insights.duoComboRecords.slice(0, isMobile ? 4 : 5), {
+                                emptyText: "No god combo data yet",
+                                main: (record) => escapeHtml(record.label),
+                                sub: (record) => escapeHtml(formatParticipantAssignments(record.participantGods || {}, record.members || [])),
+                            })}
+                        </article>
+                        <article class="mini-highlight-card">
+                            <div class="metric-label">Best Trio Stacks</div>
+                            ${renderChemistryRows(insights.groupRecords.filter((record) => record.members.length >= 3).slice(0, isMobile ? 4 : 5), {
+                                emptyText: "No trio stack data yet",
+                                main: (record) => escapeHtml(record.label),
+                            })}
+                        </article>
+                        <article class="mini-highlight-card">
+                            <div class="metric-label">Best Trio Comps</div>
+                            ${renderChemistryRows(insights.trioComboRecords.slice(0, isMobile ? 4 : 5), {
+                                emptyText: "No trio comp data yet",
+                                main: (record) => escapeHtml(record.label),
+                                sub: (record) => escapeHtml(formatParticipantAssignments(record.participantGods || {}, record.members || [])),
+                            })}
+                        </article>
+                    </div>
+                </section>
+
+                <section class="panel chemistry-section-card">
+                    <div class="panel-heading">
+                        <p class="eyebrow">Risk Report</p>
+                        <h2>Losing Combos</h2>
+                    </div>
+                    <div class="mini-highlight-grid chemistry-grid chemistry-two-col">
+                        <article class="mini-highlight-card mini-highlight-card-muted">
+                            <div class="metric-label">Worst Duo Records</div>
+                            ${renderChemistryRows(insights.duoRecords.filter((record) => record.games >= 2).slice().sort((a, b) => a.winRate - b.winRate || b.games - a.games).slice(0, isMobile ? 4 : 5), {
+                                emptyText: "Need more games to identify rough pairings",
+                                main: (record) => escapeHtml(record.label),
+                            })}
+                        </article>
+                        <article class="mini-highlight-card mini-highlight-card-muted">
+                            <div class="metric-label">Worst Duo God Combos</div>
+                            ${renderChemistryRows(insights.duoComboRecords.filter((record) => record.games >= 2).slice().sort((a, b) => a.winRate - b.winRate || b.games - a.games).slice(0, isMobile ? 4 : 5), {
+                                emptyText: "Need more combo games to flag rough pairings",
+                                main: (record) => escapeHtml(record.label),
+                                sub: (record) => escapeHtml(formatParticipantAssignments(record.participantGods || {}, record.members || [])),
+                            })}
+                        </article>
+                        <article class="mini-highlight-card">
+                            <div class="metric-label">Worst Trio Comps</div>
+                            ${renderChemistryRows(insights.trioComboRecords.filter((record) => record.games >= 2).slice().sort((a, b) => a.winRate - b.winRate || b.games - a.games).slice(0, isMobile ? 4 : 5), {
+                                emptyText: "Need more trio games to identify rough comps",
+                                main: (record) => escapeHtml(record.label),
+                                sub: (record) => escapeHtml(formatParticipantAssignments(record.participantGods || {}, record.members || [])),
+                            })}
+                        </article>
+                        <article class="mini-highlight-card">
+                            <div class="metric-label">Cold Queues</div>
+                            ${renderChemistryRows(insights.trioQueueRecords.filter((record) => record.games >= 2).slice().sort((a, b) => a.winRate - b.winRate || b.games - a.games).slice(0, isMobile ? 4 : 5), {
+                                emptyText: "No queue chemistry yet",
+                                main: (record) => escapeHtml(record.label),
+                            })}
+                        </article>
+                    </div>
+                </section>
+            </div>
+
+            <div class="chemistry-section-grid" style="margin-top:16px;">
+                <section class="panel chemistry-section-card">
+                    <div class="panel-heading">
+                        <p class="eyebrow">Composition Layer</p>
+                        <h2>Class Comps</h2>
+                    </div>
+                    <div class="mini-highlight-grid chemistry-grid chemistry-two-col">
+                        <article class="mini-highlight-card">
+                            <div class="metric-label">Best Duo Class Pairings</div>
+                            ${renderChemistryRows(insights.classRecords.filter((record) => record.size === 2).slice(0, isMobile ? 4 : 5), {
+                                emptyText: "No duo class data yet",
+                                main: (record) => escapeHtml(record.label),
+                            })}
+                        </article>
+                        <article class="mini-highlight-card">
+                            <div class="metric-label">Best Trio Class Shells</div>
+                            ${renderChemistryRows(insights.classRecords.filter((record) => record.size >= 3).slice(0, isMobile ? 4 : 5), {
+                                emptyText: "No trio class data yet",
+                                main: (record) => escapeHtml(record.label),
+                            })}
+                        </article>
+                    </div>
+                </section>
+
+                <section class="panel chemistry-section-card">
+                    <div class="panel-heading">
+                        <p class="eyebrow">Recent Receipts</p>
+                        <h2>Who Played What</h2>
+                    </div>
+                    <div class="mini-highlight-grid chemistry-grid chemistry-two-col">
+                        <article class="mini-highlight-card">
+                            <div class="metric-label">Recent Council Wins</div>
+                            ${renderChemistryRows(insights.recentWins.slice(0, isMobile ? 4 : 5), {
+                                emptyText: "No shared wins yet",
+                                main: (session) => `${escapeHtml(session.queueType)} • ${escapeHtml(formatParticipantAssignments(session.participantGods || {}, session.participants || []))}`,
+                                sub: (session) => escapeHtml(formatDateTime(session.startedAt)),
+                                value: (session) => `W • ${escapeHtml(session.kda || "—")}`,
+                                valueClass: "movement-up",
+                            })}
+                        </article>
+                        <article class="mini-highlight-card mini-highlight-card-muted">
+                            <div class="metric-label">Recent Council Losses</div>
+                            ${renderChemistryRows(insights.recentLosses.slice(0, isMobile ? 4 : 5), {
+                                emptyText: "No shared losses yet",
+                                main: (session) => `${escapeHtml(session.queueType)} • ${escapeHtml(formatParticipantAssignments(session.participantGods || {}, session.participants || []))}`,
+                                sub: (session) => escapeHtml(formatDateTime(session.startedAt)),
+                                value: (session) => `L • ${escapeHtml(session.kda || "—")}`,
+                                valueClass: "movement-down",
+                            })}
+                        </article>
+                    </div>
+                </section>
+            </div>
+
+            <section class="panel chemistry-section-card" style="margin-top:16px;">
+                <div class="panel-heading">
+                    <p class="eyebrow">By Council Member</p>
+                    <h2>Player Chemistry</h2>
+                </div>
+                <div class="chemistry-player-stack">${playerCards}</div>
+            </section>
             ${renderBackToTop()}
         </div>
     `;
@@ -2322,6 +2825,7 @@ function renderAll() {
     renderRankingsTab();
     renderFavoritesTab();
     renderRaterStatsTab();
+    renderChemistryTab();
     renderTierlistTab();
     renderAnalyticsTab();
     renderH2hTab();

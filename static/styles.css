@@ -456,6 +456,23 @@ body[data-active-tab="ranker"] {
     gap: 12px;
     padding-top: 8px;
     font-size: 0.88rem;
+    align-items: flex-start;
+}
+
+.mini-highlight-row span,
+.mini-highlight-row strong {
+    min-width: 0;
+}
+
+.mini-highlight-row span {
+    flex: 1 1 auto;
+    overflow-wrap: anywhere;
+}
+
+.mini-highlight-row strong {
+    flex: 0 1 auto;
+    text-align: right;
+    overflow-wrap: anywhere;
 }
 
 .back-to-top-btn {
@@ -1522,6 +1539,80 @@ details[open] > summary .collapse-indicator {
     font-weight: 800;
 }
 
+.chemistry-metric-value {
+    line-height: 1.08;
+    overflow-wrap: anywhere;
+}
+
+.chemistry-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.chemistry-summary-grid .metric-card,
+.chemistry-global-grid .mini-highlight-card,
+.chemistry-player-grid .mini-highlight-card {
+    min-width: 0;
+}
+
+.chemistry-section-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.chemistry-section-card {
+    padding: 18px;
+}
+
+.chemistry-two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.chemistry-player-stack {
+    display: grid;
+    gap: 12px;
+}
+
+.chemistry-person-panel {
+    border-radius: 22px;
+}
+
+.chemistry-person-summary {
+    padding: 16px 18px;
+}
+
+.chemistry-person-pills {
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+.chemistry-person-body {
+    padding-top: 4px;
+}
+
+.chemistry-detail-row {
+    gap: 14px;
+}
+
+.chemistry-row-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.chemistry-row-main {
+    font-weight: 600;
+    color: var(--text-strong);
+}
+
+.chemistry-row-sub {
+    font-size: 0.75rem;
+    line-height: 1.35;
+    color: var(--text-soft);
+}
+
 .verdict-banner {
     margin-top: 18px;
     padding: 18px;
@@ -1973,6 +2064,15 @@ details[open] > summary .collapse-indicator {
 
     .mini-highlight-grid {
         grid-template-columns: 1fr;
+    }
+
+.chemistry-section-grid,
+.chemistry-two-col {
+    grid-template-columns: 1fr;
+}
+
+    .chemistry-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .mini-highlight-card {

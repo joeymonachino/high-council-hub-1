@@ -3,6 +3,7 @@ from __future__ import annotations
 # This block imports the standard-library tools used for file access, dates,
 # lightweight caching, and configuration parsing.
 import json
+import math
 import os
 import time
 import tomllib
@@ -87,6 +88,8 @@ SMITESOURCE_PROFILE_LINKS = {
 }
 SMITESOURCE_RPC_BASE = "https://smitesource.com/rpc"
 SMITESOURCE_CACHE_TTL_SECONDS = int(os.environ.get("SMITESOURCE_CACHE_TTL_SECONDS", "1800"))
+SMITESOURCE_MATCH_PAGE_SIZE = int(os.environ.get("SMITESOURCE_MATCH_PAGE_SIZE", "20"))
+SMITESOURCE_MATCH_SAMPLE_SIZE = int(os.environ.get("SMITESOURCE_MATCH_SAMPLE_SIZE", "200"))
 
 
 # This block creates the Flask application object that owns the routes and
@@ -98,6 +101,7 @@ app = Flask(__name__)
 # doesn't rescan the same image folders on every request.
 ASSET_INDEX_CACHE: dict[str, dict[str, Path]] = {}
 SMITESOURCE_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
+RATER_STATS_CACHE: tuple[float, dict[str, dict[str, Any]]] | None = None
 
 
 # This helper loads secrets from the old Streamlit file so the Flask version
@@ -146,6 +150,27 @@ def sb_select(table: str, params: dict[str, str] | None = None) -> list[dict]:
     )
     response.raise_for_status()
     return response.json()
+
+
+# This helper pages through a Supabase table so we can read larger history sets
+# without being limited to one REST page.
+def sb_select_all(table: str, params: dict[str, str] | None = None, page_size: int = 1000) -> list[dict]:
+    params = dict(params or {})
+    base_limit = max(1, min(page_size, 1000))
+    offset = 0
+    rows: list[dict] = []
+
+    while True:
+        page_params = dict(params)
+        page_params["limit"] = str(base_limit)
+        page_params["offset"] = str(offset)
+        batch = sb_select(table, page_params)
+        rows.extend(batch)
+        if len(batch) < base_limit:
+            break
+        offset += base_limit
+
+    return rows
 
 
 # This helper performs a generic Supabase UPSERT so we can preserve the same
@@ -265,13 +290,142 @@ def smitesource_post(endpoint: str, payload: dict[str, Any]) -> dict[str, Any]:
             "User-Agent": "HighCouncilHub/1.0",
         },
         json={"json": payload},
-        timeout=20,
+        timeout=30,
     )
     response.raise_for_status()
     data = response.json()
     if isinstance(data, dict) and isinstance(data.get("json"), dict):
         return data["json"]
     return data if isinstance(data, dict) else {}
+
+
+# This helper builds a stable key for one SmiteSource match row so we can dedupe
+# paginated responses and safely upsert them into Supabase.
+def smitesource_match_key(row: dict[str, Any]) -> str:
+    return str(
+        row.get("matchId")
+        or row.get("matchUuid")
+        or f"{row.get('startTimestamp')}|{row.get('queueType') or row.get('gameMode')}|{row.get('godName')}|{row.get('hirezPlayerUuid')}"
+    )
+
+
+# This helper walks SmiteSource match pages for one linked player. When
+# `target_count` is None, it keeps going until history runs out or until it hits
+# already-synced keys from Supabase.
+def fetch_smitesource_match_rows(player_uuid: str, target_count: int | None = None, stop_keys: set[str] | None = None) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    seen_match_keys: set[str] = set()
+    stop_keys = stop_keys or set()
+    page_size = max(1, SMITESOURCE_MATCH_PAGE_SIZE)
+    max_pages = max(1, math.ceil(target_count / page_size)) if target_count else None
+    page_number = 1
+
+    while True:
+        matches_payload = smitesource_post(
+            "matches/getPlayerMatches",
+            {
+                "playerUuid": player_uuid,
+                "mode": "all",
+                "season": "0",
+                "page": page_number,
+                "pageSize": page_size,
+                "includeTeamDetails": True,
+            },
+        )
+        page_rows = [row for row in (matches_payload.get("matches") or []) if isinstance(row, dict)]
+        if not page_rows:
+            break
+
+        should_stop = False
+        for row in page_rows:
+            match_key = smitesource_match_key(row)
+            if match_key in seen_match_keys:
+                continue
+            if stop_keys and match_key in stop_keys:
+                should_stop = True
+                continue
+
+            seen_match_keys.add(match_key)
+            rows.append(row)
+            if target_count and len(rows) >= target_count:
+                should_stop = True
+                break
+
+        if should_stop or len(page_rows) < page_size:
+            break
+        if max_pages and page_number >= max_pages:
+            break
+        page_number += 1
+
+    return rows
+
+
+# This helper reshapes one SmiteSource match row into a Supabase-friendly record
+# with both indexed fields and the original JSON payload preserved.
+def normalize_smitesource_history_record(player: str, profile_player_uuid: str, row: dict[str, Any]) -> dict[str, Any]:
+    match_key = smitesource_match_key(row)
+    return {
+        "record_key": f"{player}:{match_key}",
+        "player": player,
+        "profile_player_uuid": profile_player_uuid,
+        "hirez_player_uuid": str(row.get("hirezPlayerUuid") or ""),
+        "match_key": match_key,
+        "match_id": str(row.get("matchId") or row.get("matchUuid") or ""),
+        "god_name": str(row.get("godName") or ""),
+        "queue_type": str(row.get("queueType") or row.get("gameMode") or ""),
+        "won": bool(row.get("won")),
+        "party_size": int(row.get("partySize") or 0) if str(row.get("partySize") or "").strip() else None,
+        "party_label": str(row.get("partyLabel") or ""),
+        "team_id": int(row.get("teamId") or 0) if str(row.get("teamId") or "").strip() else None,
+        "started_at": row.get("startTimestamp") or None,
+        "raw_match": row,
+        "synced_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+# This helper loads one player's stored SmiteSource history from Supabase. It
+# powers full-history chemistry once the backfill has been run.
+def load_stored_match_history(player: str) -> list[dict[str, Any]]:
+    rows = sb_select_all(
+        "smitesource_match_history",
+        {
+            "select": "record_key,player,profile_player_uuid,hirez_player_uuid,match_key,started_at,raw_match",
+            "player": f"eq.{player}",
+            "order": "started_at.desc",
+        },
+    )
+    return [row for row in rows if isinstance(row, dict)]
+
+
+# This helper backfills one player's full SmiteSource history into Supabase and
+# returns a compact sync summary for the API route.
+def sync_smitesource_history_for_player(player: str, profile_url: str) -> dict[str, Any]:
+    player_uuid = smitesource_player_uuid(profile_url)
+    if not profile_url or not player_uuid:
+        return {"player": player, "linked": False, "inserted": 0, "stored": 0}
+
+    try:
+        stored_rows = load_stored_match_history(player)
+    except Exception:
+        stored_rows = []
+
+    existing_match_keys = {
+        str(row.get("match_key") or "")
+        for row in stored_rows
+        if str(row.get("match_key") or "")
+    }
+    fetched_rows = fetch_smitesource_match_rows(player_uuid, target_count=None, stop_keys=existing_match_keys)
+    records = [normalize_smitesource_history_record(player, player_uuid, row) for row in fetched_rows]
+    if records:
+        sb_upsert("smitesource_match_history", records, "record_key")
+
+    return {
+        "player": player,
+        "linked": True,
+        "inserted": len(records),
+        "stored": len(stored_rows) + len(records),
+        "stoppedOnExisting": bool(existing_match_keys),
+    }
 
 
 # This helper normalizes one top-god row from SmiteSource so the frontend can
@@ -333,10 +487,261 @@ def normalize_smitesource_match(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+# This helper inspects a SmiteSource match row and returns the named council
+# teammates who were on the same team as the current player.
+def council_teammates_in_match(player: str, player_hirez_uuid: str, identity_map: dict[str, dict[str, str]], row: dict[str, Any]) -> list[str]:
+    if not player_hirez_uuid:
+        return []
+
+    target_team_id = row.get("teamId")
+    team_arrays = [row.get("team1Players") or [], row.get("team2Players") or []]
+    teammates: list[str] = []
+
+    for team in team_arrays:
+        if not isinstance(team, list):
+            continue
+        for teammate in team:
+            if not isinstance(teammate, dict):
+                continue
+            teammate_uuid = teammate.get("hirezPlayerUuid")
+            teammate_team_id = teammate.get("teamId")
+            teammate_display = str(teammate.get("displayName") or teammate.get("personDisplayName") or "").strip().lower()
+            if teammate_team_id != target_team_id or teammate_uuid == player_hirez_uuid:
+                continue
+            for council_player, identity in identity_map.items():
+                identity_uuid = identity.get("hirezPlayerUuid", "")
+                identity_name = identity.get("displayName", "").strip().lower()
+                if council_player != player and (
+                    (identity_uuid and identity_uuid == teammate_uuid)
+                    or (identity_name and identity_name == teammate_display)
+                ) and council_player not in teammates:
+                    teammates.append(council_player)
+
+    teammates.sort(key=PLAYERS.index)
+    return teammates
+
+
+# This helper aggregates party, duo, trio, queue, and recent shared-session
+# chemistry records from a larger recent match sample.
+def build_council_chemistry(player: str, player_hirez_uuid: str, identity_map: dict[str, dict[str, str]], match_rows: list[dict[str, Any]]) -> dict[str, Any]:
+    pair_records: dict[str, dict[str, Any]] = {}
+    duo_only_records: dict[str, dict[str, Any]] = {}
+    party_size_records: dict[str, dict[str, Any]] = {}
+    queue_records: dict[str, dict[str, Any]] = {}
+    shared_group_records: dict[str, dict[str, Any]] = {}
+    duo_god_records: dict[str, dict[str, Any]] = {}
+    group_god_records: dict[str, dict[str, Any]] = {}
+    recent_sessions: list[dict[str, Any]] = []
+    overall_wins = 0
+    overall_losses = 0
+
+    for row in match_rows:
+        if not isinstance(row, dict):
+            continue
+
+        teammates = council_teammates_in_match(player, player_hirez_uuid, identity_map, row)
+        if not teammates:
+            continue
+
+        won = bool(row.get("won"))
+        if won:
+            overall_wins += 1
+        else:
+            overall_losses += 1
+
+        # This block builds per-council-member records for duo chemistry and
+        # most-played-with summaries.
+        for teammate in teammates:
+            record = pair_records.setdefault(teammate, {"player": teammate, "games": 0, "wins": 0, "losses": 0})
+            record["games"] += 1
+            record["wins"] += 1 if won else 0
+            record["losses"] += 0 if won else 1
+
+        # This block separately tracks true duo sessions so "Best Duo" only
+        # reflects games where exactly two council members queued together.
+        if len(teammates) == 1:
+            teammate = teammates[0]
+            duo_record = duo_only_records.setdefault(teammate, {"player": teammate, "games": 0, "wins": 0, "losses": 0})
+            duo_record["games"] += 1
+            duo_record["wins"] += 1 if won else 0
+            duo_record["losses"] += 0 if won else 1
+
+        # This block groups shared matches by party size label so we can show
+        # solo/duo/trio style council records.
+        party_label = str(row.get("partyLabel") or f"Party {int(row.get('partySize') or 0)}").strip()
+        party_record = party_size_records.setdefault(party_label, {"label": party_label, "games": 0, "wins": 0, "losses": 0})
+        party_record["games"] += 1
+        party_record["wins"] += 1 if won else 0
+        party_record["losses"] += 0 if won else 1
+
+        # This block tracks queue-specific chemistry so the UI can call out
+        # council performance in Joust, Arena, and similar queues.
+        queue_label = str(row.get("queueType") or row.get("gameMode") or "Unknown Queue").replace("_", " ").title()
+        queue_record = queue_records.setdefault(queue_label, {"label": queue_label, "games": 0, "wins": 0, "losses": 0})
+        queue_record["games"] += 1
+        queue_record["wins"] += 1 if won else 0
+        queue_record["losses"] += 0 if won else 1
+
+        # This block keeps group-composition records like "Jami + Mike" so we
+        # can surface favorite duos and trios from one player's perspective.
+        group_key_members = sorted([player] + teammates)
+        group_key = " + ".join(group_key_members)
+        group_record = shared_group_records.setdefault(
+            group_key,
+            {"label": group_key, "members": group_key_members, "games": 0, "wins": 0, "losses": 0},
+        )
+        group_record["games"] += 1
+        group_record["wins"] += 1 if won else 0
+        group_record["losses"] += 0 if won else 1
+
+        # This block looks for signature god pairings in true duo sessions,
+        # which creates a fun "best god combo" receipt for the council.
+        if len(teammates) == 1:
+            teammate = teammates[0]
+            god_name = str(row.get("godName") or "")
+            teammate_god = ""
+            teammate_display_name = ""
+            for team in [row.get("team1Players") or [], row.get("team2Players") or []]:
+                if not isinstance(team, list):
+                    continue
+                for teammate_row in team:
+                    if not isinstance(teammate_row, dict):
+                        continue
+                    teammate_uuid = teammate_row.get("hirezPlayerUuid")
+                    if teammate_uuid == identity_map.get(teammate, {}).get("hirezPlayerUuid"):
+                        teammate_god = str(teammate_row.get("godName") or "")
+                        teammate_display_name = str(teammate_row.get("displayName") or teammate_row.get("personDisplayName") or "")
+                        break
+                if teammate_god:
+                    break
+
+            combo_key = f"{teammate}|{god_name}|{teammate_god}"
+            duo_combo = duo_god_records.setdefault(
+                combo_key,
+                {
+                    "teammate": teammate,
+                    "teammateDisplayName": teammate_display_name,
+                    "playerGod": god_name,
+                    "teammateGod": teammate_god,
+                    "games": 0,
+                    "wins": 0,
+                    "losses": 0,
+                },
+            )
+            duo_combo["games"] += 1
+            duo_combo["wins"] += 1 if won else 0
+            duo_combo["losses"] += 0 if won else 1
+
+        # This block stores the most recent shared council sessions so the tab
+        # can show concrete recent duo/trio examples instead of only aggregates.
+        participant_gods: dict[str, str] = {player: str(row.get("godName") or "")}
+        for teammate in teammates:
+            teammate_god = ""
+            for team in [row.get("team1Players") or [], row.get("team2Players") or []]:
+                if not isinstance(team, list):
+                    continue
+                for teammate_row in team:
+                    if not isinstance(teammate_row, dict):
+                        continue
+                    teammate_uuid = teammate_row.get("hirezPlayerUuid")
+                    if teammate_uuid == identity_map.get(teammate, {}).get("hirezPlayerUuid"):
+                        teammate_god = str(teammate_row.get("godName") or "")
+                        break
+                if teammate_god:
+                    break
+            participant_gods[teammate] = teammate_god
+
+        # This block tracks the full shared god comp for any council session so
+        # the frontend can surface true winning/losing duo and trio receipts
+        # with clear "who played what" context.
+        comp_members = sorted([player] + teammates)
+        ordered_assignments = [(member, participant_gods.get(member, "")) for member in comp_members]
+        if len(comp_members) >= 2 and all(god_name for _, god_name in ordered_assignments):
+            god_label = " + ".join(god_name for _, god_name in ordered_assignments)
+            comp_key = f"{'|'.join(comp_members)}|{god_label}"
+            group_god_record = group_god_records.setdefault(
+                comp_key,
+                {
+                    "label": god_label,
+                    "members": comp_members,
+                    "participantGods": {member: god_name for member, god_name in ordered_assignments},
+                    "games": 0,
+                    "wins": 0,
+                    "losses": 0,
+                },
+            )
+            group_god_record["games"] += 1
+            group_god_record["wins"] += 1 if won else 0
+            group_god_record["losses"] += 0 if won else 1
+
+        recent_sessions.append(
+            {
+                "godName": row.get("godName") or "",
+                "queueType": queue_label,
+                "won": won,
+                "participants": [player] + teammates,
+                "participantGods": participant_gods,
+                "partyLabel": party_label,
+                "startedAt": row.get("startTimestamp") or "",
+                "kda": f"{int(row.get('kills') or 0)}/{int(row.get('deaths') or 0)}/{int(row.get('assists') or 0)}",
+            }
+        )
+
+    # This helper finishes one record with a display win rate.
+    def finish_record(record: dict[str, Any]) -> dict[str, Any]:
+        games = int(record.get("games") or 0)
+        wins = int(record.get("wins") or 0)
+        record["winRate"] = round((wins / games) * 100, 1) if games else 0.0
+        return record
+
+    pair_list = [finish_record(record) for record in pair_records.values()]
+    pair_list.sort(key=lambda item: (-item["games"], -item["winRate"], item["player"]))
+
+    duo_only_list = [finish_record(record) for record in duo_only_records.values()]
+    duo_only_list.sort(key=lambda item: (-item["games"], -item["winRate"], item["player"]))
+
+    party_list = [finish_record(record) for record in party_size_records.values()]
+    party_list.sort(key=lambda item: (-item["games"], item["label"]))
+
+    queue_list = [finish_record(record) for record in queue_records.values()]
+    queue_list.sort(key=lambda item: (-item["games"], -item["winRate"], item["label"]))
+
+    shared_groups = [finish_record(record) for record in shared_group_records.values()]
+    shared_groups.sort(key=lambda item: (-item["games"], -item["winRate"], item["label"]))
+
+    duo_combos = [finish_record(record) for record in duo_god_records.values() if record.get("playerGod") and record.get("teammateGod")]
+    duo_combos.sort(key=lambda item: (-item["games"], -item["winRate"], item["teammate"], item["playerGod"]))
+
+    group_god_list = [finish_record(record) for record in group_god_records.values() if len(record.get("members") or []) >= 2]
+    group_god_list.sort(key=lambda item: (-item["games"], -item["winRate"], item["label"]))
+
+    recent_sessions.sort(key=lambda item: item.get("startedAt", ""), reverse=True)
+
+    most_played_with = pair_list[0] if pair_list else None
+    best_duo = next((record for record in duo_only_list if record["games"] >= 2), duo_only_list[0] if duo_only_list else None)
+    best_group = next((record for record in shared_groups if record["games"] >= 2), shared_groups[0] if shared_groups else None)
+
+    return {
+        "overall": finish_record({"games": overall_wins + overall_losses, "wins": overall_wins, "losses": overall_losses}),
+        "pairRecords": pair_list,
+        "duoOnlyRecords": duo_only_list,
+        "partySizeRecords": party_list,
+        "queueRecords": queue_list,
+        "sharedGroups": shared_groups,
+        "duoCombos": duo_combos[:5],
+        "groupGodRecords": group_god_list,
+        "recentSessions": recent_sessions[:10],
+        "mostPlayedWith": most_played_with,
+        "bestDuo": best_duo,
+        "bestGroup": best_group,
+    }
+
+
 # This helper collapses the full SmiteSource overview and matches payloads into
 # one predictable profile object for each linked rater.
 def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
     player_uuid = smitesource_player_uuid(profile_url)
+    cached = SMITESOURCE_CACHE.get(player)
     if not profile_url or not player_uuid:
         return {
             "player": player,
@@ -350,16 +755,33 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
             "topGods": [],
             "topRoles": [],
             "recentMatches": [],
+            "chemistry": {},
+            "selfHirezPlayerUuid": "",
             "insights": {},
             "rankSummary": "",
             "peakRankSummary": "",
         }
 
-    cached = SMITESOURCE_CACHE.get(player)
     if cached and (time.time() - cached[0]) < SMITESOURCE_CACHE_TTL_SECONDS:
         return cached[1]
 
     try:
+        # This block prefers durable Supabase-backed match history when it has
+        # been synced already, which gives chemistry access to full history
+        # while still allowing the app to fall back to live recent samples.
+        stored_history_rows: list[dict[str, Any]] = []
+        stored_raw_match_rows: list[dict[str, Any]] = []
+        try:
+            stored_history_rows = load_stored_match_history(player)
+            stored_raw_match_rows = [
+                row.get("raw_match")
+                for row in stored_history_rows
+                if isinstance(row.get("raw_match"), dict)
+            ]
+        except Exception:
+            stored_history_rows = []
+            stored_raw_match_rows = []
+
         # This block fetches the broader player snapshot used for summary
         # metrics, top gods, top roles, and rank context.
         overview = smitesource_post(
@@ -367,18 +789,13 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
             {"playerUuid": player_uuid, "mode": "all", "season": "0"},
         )
 
-        # This block fetches a small recent-match sample so the tab can show
-        # actual recent form instead of only lifetime overview totals.
-        matches_payload = smitesource_post(
-            "matches/getPlayerMatches",
-            {
-                "playerUuid": player_uuid,
-                "mode": "all",
-                "season": "0",
-                "page": 1,
-                "pageSize": 6,
-                "includeTeamDetails": False,
-            },
+        raw_match_rows = (
+            stored_raw_match_rows
+            if stored_raw_match_rows
+            else fetch_smitesource_match_rows(
+                player_uuid,
+                target_count=max(SMITESOURCE_MATCH_SAMPLE_SIZE, SMITESOURCE_MATCH_PAGE_SIZE),
+            )
         )
 
         totals = overview.get("totals") if isinstance(overview.get("totals"), dict) else {}
@@ -394,9 +811,9 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
         ][:4]
         recent_matches = [
             normalize_smitesource_match(row)
-            for row in (matches_payload.get("matches") or [])
-            if isinstance(row, dict)
+            for row in raw_match_rows
         ][:5]
+        self_hirez_uuid = next((str(row.get("hirezPlayerUuid") or "") for row in raw_match_rows if row.get("hirezPlayerUuid")), "")
 
         profile = {
             "player": player,
@@ -421,6 +838,9 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
             "topGods": top_gods,
             "topRoles": top_roles,
             "recentMatches": recent_matches,
+            "chemistry": {},
+            "selfHirezPlayerUuid": self_hirez_uuid,
+            "_rawMatchRows": raw_match_rows,
             "insights": {
                 "recentForm": smitesource_summary((overview.get("insights") or {}).get("recentForm")),
                 "damageProfile": smitesource_summary((overview.get("insights") or {}).get("damageProfile")),
@@ -431,12 +851,16 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
             "rankSummary": smitesource_summary(overview.get("currentRank")),
             "peakRankSummary": smitesource_summary(overview.get("peakRank")),
             "error": "",
+            "historySource": "supabase" if stored_raw_match_rows else "live-sample",
         }
     except Exception as exc:  # noqa: BLE001
+        if cached and cached[1].get("available"):
+            return cached[1]
+        self_hirez_uuid = next((str(row.get("hirezPlayerUuid") or "") for row in stored_raw_match_rows if row.get("hirezPlayerUuid")), "")
         profile = {
             "player": player,
             "linked": True,
-            "available": False,
+            "available": bool(stored_raw_match_rows),
             "profileUrl": profile_url,
             "playerUuid": player_uuid,
             "displayName": player,
@@ -444,10 +868,14 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
             "metrics": {},
             "topGods": [],
             "topRoles": [],
-            "recentMatches": [],
+            "recentMatches": [normalize_smitesource_match(row) for row in stored_raw_match_rows[:5]],
+            "chemistry": {},
+            "selfHirezPlayerUuid": self_hirez_uuid,
+            "_rawMatchRows": stored_raw_match_rows,
             "insights": {},
             "rankSummary": "",
             "peakRankSummary": "",
+            "historySource": "supabase" if stored_raw_match_rows else "unavailable",
         }
 
     SMITESOURCE_CACHE[player] = (time.time(), profile)
@@ -457,10 +885,44 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
 # This helper loads the whole council's SmiteSource profiles in one pass so the
 # frontend can populate the stats tab from a single API request.
 def load_rater_stats() -> dict[str, dict[str, Any]]:
-    return {
+    global RATER_STATS_CACHE
+
+    if RATER_STATS_CACHE and (time.time() - RATER_STATS_CACHE[0]) < SMITESOURCE_CACHE_TTL_SECONDS:
+        return RATER_STATS_CACHE[1]
+
+    profiles = {
         player: build_smitesource_profile(player, SMITESOURCE_PROFILE_LINKS.get(player, ""))
         for player in PLAYERS
     }
+
+    identity_map = {
+        player: {
+            "displayName": str(profile.get("displayName") or ""),
+            "hirezPlayerUuid": str(profile.get("selfHirezPlayerUuid") or ""),
+        }
+        for player, profile in profiles.items()
+        if profile.get("linked")
+    }
+
+    for player, profile in profiles.items():
+        raw_match_rows = profile.pop("_rawMatchRows", [])
+        profile["chemistry"] = build_council_chemistry(
+            player,
+            str(profile.get("selfHirezPlayerUuid") or ""),
+            identity_map,
+            raw_match_rows if isinstance(raw_match_rows, list) else [],
+        )
+        profile.pop("selfHirezPlayerUuid", None)
+
+    available_count = sum(1 for profile in profiles.values() if profile.get("available"))
+    if available_count >= 2:
+        RATER_STATS_CACHE = (time.time(), profiles)
+        return profiles
+
+    if RATER_STATS_CACHE:
+        return RATER_STATS_CACHE[1]
+
+    return profiles
 
 
 # This helper loads the local activity fallback log so recent changes can still
@@ -608,6 +1070,13 @@ def get_tier_from_rating(rating: int) -> str:
 def check_pin(player: str, entered_pin: str) -> bool:
     expected = get_secret(f"PIN_{player.upper()}")
     return entered_pin.strip() == expected
+
+
+# This helper protects the full-history sync route so production backfills are
+# only triggered by someone who knows the dedicated sync secret.
+def check_sync_key(entered_key: str) -> bool:
+    expected = get_secret("RATER_STATS_SYNC_KEY")
+    return bool(expected) and entered_key.strip() == expected
 
 
 # This helper turns raw personal ranking rows into the nested dictionary shape
@@ -995,6 +1464,47 @@ def api_bootstrap():
 @app.route("/api/rater-stats")
 def api_rater_stats():
     return jsonify({"profiles": load_rater_stats()})
+
+
+# This route backfills full SmiteSource match history into Supabase so the
+# Chemistry tab can run on durable all-time data instead of recent samples.
+@app.post("/api/rater-stats/sync")
+def api_rater_stats_sync():
+    global RATER_STATS_CACHE
+
+    payload = request.get_json(silent=True) or {}
+    sync_key = str(payload.get("syncKey") or request.headers.get("X-Sync-Key") or "")
+    player = str(payload.get("player") or "").strip()
+
+    if not check_sync_key(sync_key):
+        return jsonify({"ok": False, "message": "Unauthorized sync request."}), 401
+
+    targets = [player] if player in PLAYERS else PLAYERS
+    if player and player not in PLAYERS:
+        return jsonify({"ok": False, "message": "Unknown player."}), 400
+
+    try:
+        results = [
+            sync_smitesource_history_for_player(target, SMITESOURCE_PROFILE_LINKS.get(target, ""))
+            for target in targets
+        ]
+    except Exception as exc:  # noqa: BLE001
+        return jsonify({"ok": False, "message": str(exc)}), 500
+
+    # This block clears the in-memory caches so the next stats request reflects
+    # the freshly synced durable history immediately.
+    RATER_STATS_CACHE = None
+    for target in targets:
+        SMITESOURCE_CACHE.pop(target, None)
+
+    return jsonify(
+        {
+            "ok": True,
+            "results": results,
+            "players": targets,
+            "historySource": "supabase",
+        }
+    )
 
 
 # This route fetches a focused rating-history slice for the analytics chart so
