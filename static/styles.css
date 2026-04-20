@@ -1913,23 +1913,58 @@ details[open] > summary .collapse-indicator {
         grid-template-columns: 1fr;
     }
 
+    .rater-card {
+        padding: 10px;
+        border-radius: 20px;
+    }
+
     .rater-card-hero {
-        min-height: 220px;
+        min-height: 188px;
+        border-radius: 18px;
     }
 
     .rater-hero-topline,
     .rater-signature-copy {
         flex-direction: column;
         align-items: flex-start;
+        gap: 8px;
+    }
+
+    .rater-card-hero h2 {
+        font-size: 1.25rem;
     }
 
     .rater-hero-pills {
         justify-content: flex-start;
         max-width: none;
+        gap: 6px;
+    }
+
+    .rater-hero-pills .summary-pill,
+    .rater-hero-metrics .summary-pill {
+        padding: 4px 7px;
+        font-size: 0.62rem;
     }
 
     .rater-hero-note {
         max-width: none;
+        padding: 7px 8px;
+        border-radius: 14px;
+        background: rgba(31, 23, 12, 0.42);
+    }
+
+    .rater-hero-archetype {
+        font-size: 0.8rem;
+    }
+
+    .rater-hero-submeta {
+        gap: 5px 6px;
+        margin-top: 6px;
+        font-size: 0.62rem;
+    }
+
+    .rater-hero-submeta span {
+        padding: 2px 6px;
     }
 
     .rater-detail-grid {
@@ -1938,6 +1973,17 @@ details[open] > summary .collapse-indicator {
 
     .mini-highlight-grid {
         grid-template-columns: 1fr;
+    }
+
+    .mini-highlight-card {
+        padding: 10px;
+        border-radius: 16px;
+    }
+
+    .mini-highlight-row {
+        gap: 10px;
+        padding-top: 6px;
+        font-size: 0.8rem;
     }
 
     .hero-stats {

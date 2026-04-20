@@ -1207,6 +1207,7 @@ function buildRaterProfile(player) {
 // This helper renders the live SmiteSource-backed rater dashboard cards with
 // graceful fallbacks for unlinked or data-light profiles.
 function renderRaterStatsTab() {
+    const isMobile = state.ui.isMobile;
     const cards = state.config.players.map((player) => {
         const profile = buildRaterProfile(player);
         const signatureName = profile.topGods[0]?.name || profile.signature?.God || "Unformed Legend";
@@ -1214,6 +1215,11 @@ function renderRaterStatsTab() {
         const recentForm = profile.insights.recentForm || (profile.recentHistory.length >= 3 ? "Actively tuning council scores" : "Quiet week");
         const buildDna = profile.insights.buildDna || "";
         const favoritePantheon = profile.favoritePantheon?.label || "";
+        const mobileSubmeta = [
+            profile.favoriteRole?.label || "Unknown role",
+            recentForm,
+            profile.insights.damageProfile || "",
+        ].filter(Boolean).slice(0, 2);
         const availabilityNote = profile.available
             ? "Live SmiteSource overview and recent matches"
             : (profile.linked ? "Profile linked, but no public match sample was returned yet" : "Profile not linked yet");
@@ -1230,9 +1236,9 @@ function renderRaterStatsTab() {
                         </div>
                         <div class="profile-chip-row rater-hero-pills">
                             <span class="summary-pill">${escapeHtml(profile.archetype.title)}</span>
-                            <span class="summary-pill">${profile.ratedCount} gods rated here</span>
-                            ${profile.rankSummary ? `<span class="summary-pill">${escapeHtml(profile.rankSummary)}</span>` : ""}
-                            ${profile.profileLink ? `<a class="summary-pill" href="${profile.profileLink}" target="_blank" rel="noreferrer">SmiteSource Profile</a>` : `<span class="summary-pill muted">Profile not linked yet</span>`}
+                            ${!isMobile ? `<span class="summary-pill">${profile.ratedCount} gods rated here</span>` : ""}
+                            ${!isMobile && profile.rankSummary ? `<span class="summary-pill">${escapeHtml(profile.rankSummary)}</span>` : ""}
+                            ${profile.profileLink ? `<a class="summary-pill" href="${profile.profileLink}" target="_blank" rel="noreferrer">${isMobile ? "Profile" : "SmiteSource Profile"}</a>` : `<span class="summary-pill muted">Profile not linked yet</span>`}
                         </div>
                     </div>
                     <div class="rater-signature-copy">
@@ -1248,19 +1254,21 @@ function renderRaterStatsTab() {
                         <div class="rater-hero-note">
                             <div class="metric-label" style="color:rgba(255,255,255,0.72)">Archetype</div>
                             <div class="rater-hero-archetype">${escapeHtml(profile.archetype.title)}</div>
-                            <p>${escapeHtml(profile.archetype.note)}</p>
+                            ${!isMobile ? `<p>${escapeHtml(profile.archetype.note)}</p>` : ""}
                             <div class="rater-hero-submeta">
-                                <span>${escapeHtml(profile.favoriteRole?.label || "Unknown role")}</span>
-                                ${favoritePantheon ? `<span>${escapeHtml(favoritePantheon)}</span>` : ""}
-                                <span>${escapeHtml(recentForm)}</span>
-                                ${profile.insights.damageProfile ? `<span>${escapeHtml(profile.insights.damageProfile)}</span>` : ""}
-                                ${buildDna ? `<span>${escapeHtml(buildDna)}</span>` : ""}
+                                ${(isMobile ? mobileSubmeta : [
+                                    profile.favoriteRole?.label || "Unknown role",
+                                    favoritePantheon,
+                                    recentForm,
+                                    profile.insights.damageProfile || "",
+                                    buildDna,
+                                ].filter(Boolean)).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
                             </div>
                             <div class="rater-hero-metrics">
                                 <span class="summary-pill">${formatMetric(profile.metrics.winRate, 1, "%")} WR</span>
                                 <span class="summary-pill">${formatMetric(profile.metrics.kdaRatio, 2)} KDA</span>
-                                <span class="summary-pill">${formatMetric(profile.metrics.matches)} matches</span>
-                                <span class="summary-pill">${formatMetric(profile.metrics.hoursPlayed, 1)} hrs</span>
+                                <span class="summary-pill">${isMobile ? formatMetric(profile.metrics.matches) : `${formatMetric(profile.metrics.matches)} matches`}</span>
+                                ${!isMobile ? `<span class="summary-pill">${formatMetric(profile.metrics.hoursPlayed, 1)} hrs</span>` : ""}
                             </div>
                         </div>
                     </div>
@@ -1301,6 +1309,7 @@ function renderRaterStatsTab() {
                             </div>
                         `).join("") : `<div class="rank-meta">${escapeHtml(availabilityNote)}</div>`}
                     </article>
+                    ${!isMobile ? `
                     <article class="mini-highlight-card">
                         <div class="metric-label">Role Snapshot</div>
                         ${profile.topRoles.length ? profile.topRoles.map((role) => `
@@ -1310,8 +1319,10 @@ function renderRaterStatsTab() {
                             </div>
                         `).join("") : `<div class="rank-meta">No role sample yet</div>`}
                     </article>
+                    ` : ""}
                 </div>
 
+                ${!isMobile ? `
                 <div class="mini-highlight-grid rater-detail-grid" style="margin-top:10px;">
                     <article class="mini-highlight-card">
                         <div class="metric-label">Council Moves</div>
@@ -1330,6 +1341,7 @@ function renderRaterStatsTab() {
                         <div class="mini-highlight-row"><span>Wards / match</span><strong>${formatMetric(profile.metrics.wardsPerMatch, 1)}</strong></div>
                     </article>
                 </div>
+                ` : ""}
             </article>
         `;
     }).join("");
