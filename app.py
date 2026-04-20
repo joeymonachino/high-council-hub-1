@@ -419,12 +419,74 @@ def sync_smitesource_history_for_player(player: str, profile_url: str) -> dict[s
     if records:
         sb_upsert("smitesource_match_history", records, "record_key")
 
+    try:
+        overview = smitesource_post(
+            "matches/getPlayerOverview",
+            {"playerUuid": player_uuid, "mode": "all", "season": "0"},
+        )
+        totals = overview.get("totals") if isinstance(overview.get("totals"), dict) else {}
+        overview_total_matches = smitesource_number(totals.get("totalMatches"))
+    except Exception:
+        overview_total_matches = None
+
     return {
         "player": player,
         "linked": True,
         "inserted": len(records),
         "stored": len(stored_rows) + len(records),
         "stoppedOnExisting": bool(existing_match_keys),
+        "overviewTotalMatches": overview_total_matches,
+    }
+
+
+# This helper summarizes stored-vs-overview coverage so we can tell whether the
+# sync captured full lifetime history or only the portion SmiteSource exposes.
+def smitesource_history_status_for_player(player: str, profile_url: str) -> dict[str, Any]:
+    player_uuid = smitesource_player_uuid(profile_url)
+    if not profile_url or not player_uuid:
+        return {"player": player, "linked": False, "stored": 0}
+
+    stored_rows = load_stored_match_history(player)
+    started_values = [row.get("started_at") for row in stored_rows if row.get("started_at")]
+    oldest_started_at = min(started_values) if started_values else ""
+    newest_started_at = max(started_values) if started_values else ""
+
+    try:
+        overview = smitesource_post(
+            "matches/getPlayerOverview",
+            {"playerUuid": player_uuid, "mode": "all", "season": "0"},
+        )
+        totals = overview.get("totals") if isinstance(overview.get("totals"), dict) else {}
+        overview_total_matches = smitesource_number(totals.get("totalMatches"))
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "player": player,
+            "linked": True,
+            "stored": len(stored_rows),
+            "oldestStartedAt": oldest_started_at,
+            "newestStartedAt": newest_started_at,
+            "overviewTotalMatches": None,
+            "coverageRatio": None,
+            "error": str(exc),
+        }
+
+    coverage_ratio = None
+    if isinstance(overview_total_matches, int) and overview_total_matches > 0:
+        coverage_ratio = round((len(stored_rows) / overview_total_matches) * 100, 1)
+
+    return {
+        "player": player,
+        "linked": True,
+        "stored": len(stored_rows),
+        "oldestStartedAt": oldest_started_at,
+        "newestStartedAt": newest_started_at,
+        "overviewTotalMatches": overview_total_matches,
+        "coverageRatio": coverage_ratio,
+        "historyLikelyCapped": bool(
+            isinstance(overview_total_matches, int)
+            and overview_total_matches > 0
+            and len(stored_rows) < overview_total_matches
+        ),
     }
 
 
@@ -484,6 +546,163 @@ def normalize_smitesource_match(row: dict[str, Any]) -> dict[str, Any]:
         "durationMinutes": smitesource_number(duration_seconds / 60, 0) if duration_seconds else None,
         "startedAt": row.get("startTimestamp") or "",
         "imageUrl": smitesource_god_image_url(str(row.get("godName") or "")),
+    }
+
+
+# This helper derives a compact profile summary from stored match history so the
+# app can render quickly from Supabase without waiting on live SmiteSource RPCs.
+def summarize_stored_match_rows(player: str, raw_match_rows: list[dict[str, Any]], profile_url: str, player_uuid: str) -> dict[str, Any]:
+    valid_rows = [row for row in raw_match_rows if isinstance(row, dict)]
+    recent_matches = [normalize_smitesource_match(row) for row in valid_rows[:5]]
+    total_matches = len(valid_rows)
+    wins = sum(1 for row in valid_rows if row.get("won"))
+    losses = total_matches - wins
+    total_kills = sum(int(row.get("kills") or 0) for row in valid_rows)
+    total_deaths = sum(int(row.get("deaths") or 0) for row in valid_rows)
+    total_assists = sum(int(row.get("assists") or 0) for row in valid_rows)
+    total_damage = sum(float(row.get("totalDamage") or 0) for row in valid_rows)
+    total_gold = sum(float(row.get("totalGoldEarned") or 0) for row in valid_rows)
+    total_xp = sum(float(row.get("totalXp") or 0) for row in valid_rows)
+    total_wards = sum(float(row.get("totalWardsPlaced") or 0) for row in valid_rows)
+    total_duration_seconds = sum(float(row.get("playerDurationSeconds") or row.get("matchDurationSeconds") or 0) for row in valid_rows)
+    total_minutes = total_duration_seconds / 60 if total_duration_seconds else 0
+    kd_ratio = round(total_kills / max(total_deaths, 1), 2) if total_matches else None
+    kda_ratio = round((total_kills + (total_assists / 2)) / max(total_deaths, 1), 2) if total_matches else None
+
+    god_buckets: dict[str, dict[str, Any]] = {}
+    role_buckets: dict[str, dict[str, Any]] = {}
+
+    for row in valid_rows:
+        god_name = str(row.get("godName") or "")
+        role_name = str(row.get("playedRole") or row.get("assignedRole") or "Unknown")
+        won = bool(row.get("won"))
+
+        if god_name:
+            god_bucket = god_buckets.setdefault(
+                god_name,
+                {
+                    "name": god_name,
+                    "gamesPlayed": 0,
+                    "wins": 0,
+                    "kills": 0,
+                    "deaths": 0,
+                    "assists": 0,
+                    "damage": 0.0,
+                    "gold": 0.0,
+                    "xp": 0.0,
+                    "duration": 0.0,
+                },
+            )
+            god_bucket["gamesPlayed"] += 1
+            god_bucket["wins"] += 1 if won else 0
+            god_bucket["kills"] += int(row.get("kills") or 0)
+            god_bucket["deaths"] += int(row.get("deaths") or 0)
+            god_bucket["assists"] += int(row.get("assists") or 0)
+            god_bucket["damage"] += float(row.get("totalDamage") or 0)
+            god_bucket["gold"] += float(row.get("totalGoldEarned") or 0)
+            god_bucket["xp"] += float(row.get("totalXp") or 0)
+            god_bucket["duration"] += float(row.get("playerDurationSeconds") or row.get("matchDurationSeconds") or 0)
+
+        role_bucket = role_buckets.setdefault(
+            role_name,
+            {
+                "role": role_name,
+                "gamesPlayed": 0,
+                "wins": 0,
+                "kills": 0,
+                "deaths": 0,
+                "assists": 0,
+                "damage": 0.0,
+                "gold": 0.0,
+                "xp": 0.0,
+                "duration": 0.0,
+            },
+        )
+        role_bucket["gamesPlayed"] += 1
+        role_bucket["wins"] += 1 if won else 0
+        role_bucket["kills"] += int(row.get("kills") or 0)
+        role_bucket["deaths"] += int(row.get("deaths") or 0)
+        role_bucket["assists"] += int(row.get("assists") or 0)
+        role_bucket["damage"] += float(row.get("totalDamage") or 0)
+        role_bucket["gold"] += float(row.get("totalGoldEarned") or 0)
+        role_bucket["xp"] += float(row.get("totalXp") or 0)
+        role_bucket["duration"] += float(row.get("playerDurationSeconds") or row.get("matchDurationSeconds") or 0)
+
+    top_gods = []
+    for bucket in god_buckets.values():
+        duration_minutes = bucket["duration"] / 60 if bucket["duration"] else 0
+        god_meta = next((god for god in load_gods_catalog() if god.get("God") == bucket["name"]), {})
+        top_gods.append(
+            {
+                "name": bucket["name"],
+                "title": god_meta.get("Title") or "",
+                "pantheon": god_meta.get("Pantheon") or "",
+                "role": god_meta.get("Role") or "",
+                "damageType": god_meta.get("Damage Type") or "",
+                "gamesPlayed": bucket["gamesPlayed"],
+                "wins": bucket["wins"],
+                "winRate": round((bucket["wins"] / bucket["gamesPlayed"]) * 100, 1) if bucket["gamesPlayed"] else None,
+                "kdRatio": round(bucket["kills"] / max(bucket["deaths"], 1), 2) if bucket["gamesPlayed"] else None,
+                "kdaRatio": round((bucket["kills"] + (bucket["assists"] / 2)) / max(bucket["deaths"], 1), 2) if bucket["gamesPlayed"] else None,
+                "damagePerMin": round(bucket["damage"] / duration_minutes) if duration_minutes else None,
+                "goldPerMin": round(bucket["gold"] / duration_minutes) if duration_minutes else None,
+                "xpPerMin": round(bucket["xp"] / duration_minutes) if duration_minutes else None,
+                "imageUrl": smitesource_god_image_url(bucket["name"]),
+            }
+        )
+    top_gods.sort(key=lambda item: (-int(item.get("gamesPlayed") or 0), -float(item.get("winRate") or 0), item["name"]))
+
+    top_roles = []
+    for bucket in role_buckets.values():
+        duration_minutes = bucket["duration"] / 60 if bucket["duration"] else 0
+        top_roles.append(
+            {
+                "role": bucket["role"],
+                "gamesPlayed": bucket["gamesPlayed"],
+                "wins": bucket["wins"],
+                "winRate": round((bucket["wins"] / bucket["gamesPlayed"]) * 100, 1) if bucket["gamesPlayed"] else None,
+                "kdRatio": round(bucket["kills"] / max(bucket["deaths"], 1), 2) if bucket["gamesPlayed"] else None,
+                "kdaRatio": round((bucket["kills"] + (bucket["assists"] / 2)) / max(bucket["deaths"], 1), 2) if bucket["gamesPlayed"] else None,
+                "damagePerMin": round(bucket["damage"] / duration_minutes) if duration_minutes else None,
+                "goldPerMin": round(bucket["gold"] / duration_minutes) if duration_minutes else None,
+                "xpPerMin": round(bucket["xp"] / duration_minutes) if duration_minutes else None,
+            }
+        )
+    top_roles.sort(key=lambda item: (-int(item.get("gamesPlayed") or 0), -float(item.get("winRate") or 0), item["role"]))
+
+    self_hirez_uuid = next((str(row.get("hirezPlayerUuid") or "") for row in valid_rows if row.get("hirezPlayerUuid")), "")
+
+    return {
+        "player": player,
+        "linked": True,
+        "available": bool(valid_rows),
+        "profileUrl": profile_url,
+        "playerUuid": player_uuid,
+        "displayName": player,
+        "metrics": {
+            "matches": total_matches,
+            "wins": wins,
+            "losses": losses,
+            "winRate": round((wins / total_matches) * 100, 1) if total_matches else None,
+            "kdRatio": kd_ratio,
+            "kdaRatio": kda_ratio,
+            "damagePerMin": round(total_damage / total_minutes) if total_minutes else None,
+            "goldPerMin": round(total_gold / total_minutes) if total_minutes else None,
+            "xpPerMin": round(total_xp / total_minutes) if total_minutes else None,
+            "wardsPerMatch": round(total_wards / total_matches, 1) if total_matches else None,
+            "hoursPlayed": round(total_duration_seconds / 3600, 1) if total_duration_seconds else None,
+        },
+        "topGods": top_gods[:5],
+        "topRoles": top_roles[:4],
+        "recentMatches": recent_matches,
+        "chemistry": {},
+        "selfHirezPlayerUuid": self_hirez_uuid,
+        "_rawMatchRows": valid_rows,
+        "insights": {},
+        "rankSummary": "",
+        "peakRankSummary": "",
+        "error": "",
+        "historySource": "supabase",
     }
 
 
@@ -768,7 +987,7 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
     try:
         # This block prefers durable Supabase-backed match history when it has
         # been synced already, which gives chemistry access to full history
-        # while still allowing the app to fall back to live recent samples.
+        # and avoids waiting on live SmiteSource RPCs in production.
         stored_history_rows: list[dict[str, Any]] = []
         stored_raw_match_rows: list[dict[str, Any]] = []
         try:
@@ -782,6 +1001,11 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
             stored_history_rows = []
             stored_raw_match_rows = []
 
+        if stored_raw_match_rows:
+            profile = summarize_stored_match_rows(player, stored_raw_match_rows, profile_url, player_uuid)
+            SMITESOURCE_CACHE[player] = (time.time(), profile)
+            return profile
+
         # This block fetches the broader player snapshot used for summary
         # metrics, top gods, top roles, and rank context.
         overview = smitesource_post(
@@ -789,13 +1013,9 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
             {"playerUuid": player_uuid, "mode": "all", "season": "0"},
         )
 
-        raw_match_rows = (
-            stored_raw_match_rows
-            if stored_raw_match_rows
-            else fetch_smitesource_match_rows(
-                player_uuid,
-                target_count=max(SMITESOURCE_MATCH_SAMPLE_SIZE, SMITESOURCE_MATCH_PAGE_SIZE),
-            )
+        raw_match_rows = fetch_smitesource_match_rows(
+            player_uuid,
+            target_count=max(SMITESOURCE_MATCH_SAMPLE_SIZE, SMITESOURCE_MATCH_PAGE_SIZE),
         )
 
         totals = overview.get("totals") if isinstance(overview.get("totals"), dict) else {}
@@ -851,7 +1071,7 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
             "rankSummary": smitesource_summary(overview.get("currentRank")),
             "peakRankSummary": smitesource_summary(overview.get("peakRank")),
             "error": "",
-            "historySource": "supabase" if stored_raw_match_rows else "live-sample",
+            "historySource": "live-sample",
         }
     except Exception as exc:  # noqa: BLE001
         if cached and cached[1].get("available"):
@@ -1505,6 +1725,26 @@ def api_rater_stats_sync():
             "historySource": "supabase",
         }
     )
+
+
+# This route reports how much SmiteSource history is actually stored for each
+# linked player versus the overview match count, which helps diagnose caps.
+@app.route("/api/rater-stats/status")
+def api_rater_stats_status():
+    player = request.args.get("player", "").strip()
+    targets = [player] if player in PLAYERS else PLAYERS
+    if player and player not in PLAYERS:
+        return jsonify({"ok": False, "message": "Unknown player."}), 400
+
+    try:
+        results = [
+            smitesource_history_status_for_player(target, SMITESOURCE_PROFILE_LINKS.get(target, ""))
+            for target in targets
+        ]
+    except Exception as exc:  # noqa: BLE001
+        return jsonify({"ok": False, "message": str(exc)}), 500
+
+    return jsonify({"ok": True, "results": results})
 
 
 # This route fetches a focused rating-history slice for the analytics chart so

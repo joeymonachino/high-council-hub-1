@@ -12,6 +12,8 @@ const state = {
         profiles: {},
         loaded: false,
         error: "",
+        syncing: false,
+        syncMessage: "",
     },
     activeTab: "index",
     filters: {
@@ -183,6 +185,22 @@ function formatSavedLabel(value) {
     const parsed = new Date(value);
     if (Number.isNaN(parsed.getTime())) return "Saved";
     return `Saved ${parsed.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}`;
+}
+
+// This helper inspects the loaded rater profiles and summarizes whether the tab
+// is currently reading from durable Supabase history or a live fallback sample.
+function raterStatsSourceSummary() {
+    const profiles = Object.values(state.raterStats.profiles || {});
+    const sourced = profiles.filter((profile) => profile?.linked);
+    const supabaseCount = sourced.filter((profile) => profile?.historySource === "supabase").length;
+    const liveCount = sourced.filter((profile) => profile?.historySource === "live-sample").length;
+    return {
+        total: sourced.length,
+        supabaseCount,
+        liveCount,
+        usingSupabase: supabaseCount > 0 && liveCount === 0,
+        mixed: supabaseCount > 0 && liveCount > 0,
+    };
 }
 
 // This helper builds a stable localStorage key for each player's in-progress draft.
@@ -656,8 +674,15 @@ function bindStaticEvents() {
 
     document.addEventListener("click", (event) => {
         const trigger = event.target.closest("[data-back-to-top='true']");
-        if (!trigger) return;
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (trigger) {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            return;
+        }
+
+        const syncTrigger = event.target.closest("[data-sync-rater-stats]");
+        if (syncTrigger) {
+            syncRaterStats(syncTrigger.dataset.syncRaterStats === "all" ? "" : syncTrigger.dataset.syncRaterStats);
+        }
     });
 
     document.addEventListener("keydown", (event) => {
@@ -790,6 +815,38 @@ async function loadRaterStats() {
         state.raterStats.error = error.message || "Rater stats are unavailable right now.";
     }
     state.raterStats.loaded = true;
+}
+
+// This helper triggers the protected backend history sync and then refreshes
+// the in-memory rater stats so the UI immediately reflects stored data.
+async function syncRaterStats(player = "") {
+    const savedKey = sessionStorage.getItem("highCouncilSyncKey") || "";
+    const syncKey = window.prompt("Enter your SmiteSource sync key", savedKey);
+    if (!syncKey) return;
+
+    sessionStorage.setItem("highCouncilSyncKey", syncKey);
+    state.raterStats.syncing = true;
+    state.raterStats.syncMessage = player ? `Syncing ${player}...` : "Syncing all linked profiles...";
+    renderAll();
+
+    try {
+        const payload = await api("/api/rater-stats/sync", {
+            method: "POST",
+            body: JSON.stringify({
+                syncKey,
+                ...(player ? { player } : {}),
+            }),
+        });
+        await loadRaterStats();
+        const inserted = (payload.results || []).reduce((sum, row) => sum + Number(row.inserted || 0), 0);
+        const stored = (payload.results || []).reduce((sum, row) => sum + Number(row.stored || 0), 0);
+        state.raterStats.syncMessage = `Sync complete: ${inserted} new matches, ${stored} stored rows across ${(payload.results || []).length} profile(s).`;
+    } catch (error) {
+        state.raterStats.syncMessage = error.message || "Sync failed.";
+    } finally {
+        state.raterStats.syncing = false;
+        renderAll();
+    }
 }
 
 // This helper renders the hero statistic cards.
@@ -1236,6 +1293,7 @@ function buildRaterProfile(player) {
         insights: external.insights || {},
         rankSummary: external.rankSummary || "",
         peakRankSummary: external.peakRankSummary || "",
+        historySource: external.historySource || "",
         signature,
         favoriteRole,
         favoritePantheon,
@@ -1252,6 +1310,7 @@ function buildRaterProfile(player) {
 // graceful fallbacks for unlinked or data-light profiles.
 function renderRaterStatsTab() {
     const isMobile = state.ui.isMobile;
+    const sourceSummary = raterStatsSourceSummary();
     const cards = state.config.players.map((player) => {
         const profile = buildRaterProfile(player);
         const signatureName = profile.topGods[0]?.name || profile.signature?.God || "Unformed Legend";
@@ -1265,7 +1324,7 @@ function renderRaterStatsTab() {
             profile.insights.damageProfile || "",
         ].filter(Boolean).slice(0, 2);
         const availabilityNote = profile.available
-            ? "Live SmiteSource overview and recent matches"
+            ? (profile.historySource === "supabase" ? "Supabase-backed stored history" : "Live SmiteSource overview and recent matches")
             : (profile.linked ? "Profile linked, but no public match sample was returned yet" : "Profile not linked yet");
 
         return `
@@ -1275,7 +1334,7 @@ function renderRaterStatsTab() {
                     <div class="god-overlay"></div>
                     <div class="rater-hero-topline">
                         <div>
-                            <p class="eyebrow" style="color:rgba(255,255,255,0.78)">${profile.available ? "SmiteSource Live" : "Council + Profile Shell"}</p>
+                            <p class="eyebrow" style="color:rgba(255,255,255,0.78)">${profile.historySource === "supabase" ? "Supabase History" : (profile.available ? "SmiteSource Live" : "Council + Profile Shell")}</p>
                             <h2>${escapeHtml(player)}</h2>
                         </div>
                         <div class="profile-chip-row rater-hero-pills">
@@ -1390,11 +1449,22 @@ function renderRaterStatsTab() {
         `;
     }).join("");
 
+    const syncButtonLabel = state.raterStats.syncing ? "Syncing..." : "Sync SmiteSource";
+    const syncControls = `
+        <div class="sync-toolbar">
+            <button class="sync-button" type="button" data-sync-rater-stats="all" ${state.raterStats.syncing ? "disabled" : ""}>${syncButtonLabel}</button>
+            ${state.raterStats.syncMessage ? `<span class="sync-message">${escapeHtml(state.raterStats.syncMessage)}</span>` : ""}
+        </div>
+    `;
     const banner = !state.raterStats.loaded
-        ? `<div class="status-banner">Loading live SmiteSource stats in the background. Council-derived profile insights are available immediately.</div>`
+        ? `<div class="status-banner">Loading stored rater stats in the background. Council-derived profile insights are available immediately.</div>`
         : (state.raterStats.error
-            ? `<div class="status-banner">SmiteSource live fetch hit an issue: ${escapeHtml(state.raterStats.error)}. Council-derived profile insights are still available below.</div>`
-            : `<div class="status-banner">Live SmiteSource stats are now blended with your internal council data, so this tab shows both actual match behavior and each rater's taste profile.</div>`);
+            ? `<div class="status-banner">Rater stats hit an issue: ${escapeHtml(state.raterStats.error)}. Council-derived profile insights are still available below.</div>`
+            : sourceSummary.usingSupabase
+                ? `<div class="status-banner">Rater Stats is currently reading from Supabase-backed SmiteSource history, so it should not wait on live SmiteSource in normal use.</div>`
+                : sourceSummary.mixed
+                    ? `<div class="status-banner">Most linked profiles are reading from Supabase history, but some still fall back to live samples until they are synced.</div>`
+                    : `<div class="status-banner">This tab is still using live SmiteSource samples. Run a sync to move it onto stored Supabase history.</div>`);
 
     elements.tabRaterStats.innerHTML = `
         <div class="panel">
@@ -1402,6 +1472,7 @@ function renderRaterStatsTab() {
                 <p class="eyebrow">External Match Identity</p>
                 <h2>Rater Stats</h2>
             </div>
+            ${syncControls}
             ${banner}
             <div class="rater-stats-grid">${cards}</div>
             ${renderBackToTop()}
@@ -1605,6 +1676,14 @@ function buildChemistryInsights() {
 function renderChemistryTab() {
     const isMobile = state.ui.isMobile;
     const insights = buildChemistryInsights();
+    const sourceSummary = raterStatsSourceSummary();
+    const syncButtonLabel = state.raterStats.syncing ? "Syncing..." : "Sync SmiteSource";
+    const syncControls = `
+        <div class="sync-toolbar">
+            <button class="sync-button" type="button" data-sync-rater-stats="all" ${state.raterStats.syncing ? "disabled" : ""}>${syncButtonLabel}</button>
+            ${state.raterStats.syncMessage ? `<span class="sync-message">${escapeHtml(state.raterStats.syncMessage)}</span>` : ""}
+        </div>
+    `;
     const heroDuo = insights.bestDuo;
     const heroWorstDuo = insights.worstDuo;
     const heroCombo = insights.bestCombo;
@@ -1616,10 +1695,14 @@ function renderChemistryTab() {
     const heroClass = insights.bestTrioClass || insights.bestDuoClass || null;
     const heroQueue = insights.trioQueueRecords.find((record) => record.games >= 2) || insights.queueRecords.find((record) => record.games >= 2) || insights.queueRecords[0] || null;
     const chemistryBanner = !state.raterStats.loaded
-        ? `<div class="status-banner">Loading live chemistry records. Council data will fill in as soon as SmiteSource responds.</div>`
+        ? `<div class="status-banner">Loading chemistry records from stored history.</div>`
         : (state.raterStats.error
-            ? `<div class="status-banner">Chemistry data hit a live fetch issue: ${escapeHtml(state.raterStats.error)}. Showing the last good council sync we have when available.</div>`
-            : "");
+            ? `<div class="status-banner">Chemistry data hit an issue: ${escapeHtml(state.raterStats.error)}. Showing the last good council sync we have when available.</div>`
+            : sourceSummary.usingSupabase
+                ? `<div class="status-banner">Chemistry is currently running on Supabase-backed SmiteSource history.</div>`
+                : sourceSummary.mixed
+                    ? `<div class="status-banner">Chemistry is using a mix of Supabase history and live fallback samples. Run sync again if you want everyone fully on stored history.</div>`
+                    : `<div class="status-banner">Chemistry is still running on live fallback samples. Sync SmiteSource to store full history.</div>`);
 
     const playerCards = state.config.players.map((player, index) => {
         const profile = buildRaterProfile(player);
@@ -1693,6 +1776,7 @@ function renderChemistryTab() {
                 <p class="eyebrow">Council Synergy</p>
                 <h2>Chemistry</h2>
             </div>
+            ${syncControls}
             ${chemistryBanner}
             <div class="feature-grid-4 chemistry-summary-grid">
                 <article class="metric-card">
