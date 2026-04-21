@@ -1550,10 +1550,428 @@ details[open] > summary .collapse-indicator {
     gap: 12px;
 }
 
+.chemistry-spotlight-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.chemistry-story-banner {
+    margin-bottom: 14px;
+    padding: 18px 20px;
+    border-radius: 24px;
+    background:
+        linear-gradient(135deg, rgba(255, 249, 235, 0.98), rgba(237, 223, 193, 0.9)),
+        radial-gradient(circle at top right, rgba(207, 166, 86, 0.18), transparent 34%);
+    border: 1px solid rgba(179, 143, 74, 0.16);
+    box-shadow: 0 14px 30px rgba(82, 58, 19, 0.08);
+}
+
+.chemistry-story-banner h3 {
+    margin: 4px 0 10px;
+}
+
+.chemistry-story-copy {
+    display: grid;
+    gap: 8px;
+}
+
+.chemistry-story-copy p {
+    margin: 0;
+    color: var(--text-strong);
+    line-height: 1.5;
+}
+
+.chemistry-spotlight {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    padding: 18px;
+    border: 1px solid rgba(179, 143, 74, 0.16);
+    box-shadow: 0 16px 34px rgba(85, 62, 25, 0.09);
+}
+
+.chemistry-spotlight::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), transparent 58%);
+    opacity: 0.9;
+}
+
+.chemistry-spotlight-gold {
+    background:
+        linear-gradient(145deg, rgba(255, 248, 227, 0.98), rgba(236, 217, 174, 0.88)),
+        radial-gradient(circle at top right, rgba(220, 173, 77, 0.22), transparent 36%);
+}
+
+.chemistry-spotlight-ivory {
+    background:
+        linear-gradient(145deg, rgba(255, 252, 246, 0.98), rgba(240, 233, 219, 0.92)),
+        radial-gradient(circle at top right, rgba(162, 136, 88, 0.14), transparent 38%);
+}
+
+.chemistry-spotlight-marble {
+    background:
+        linear-gradient(145deg, rgba(250, 249, 245, 0.98), rgba(225, 227, 226, 0.92)),
+        radial-gradient(circle at top right, rgba(180, 188, 190, 0.18), transparent 40%);
+}
+
+.chemistry-spotlight h3 {
+    margin: 4px 0 8px;
+    font-size: 1.05rem;
+}
+
+.chemistry-spotlight-label {
+    font-size: 1.12rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--text-strong);
+}
+
+.chemistry-spotlight-subline {
+    margin-top: 8px;
+    font-size: 0.82rem;
+    color: var(--text-soft);
+}
+
+.chemistry-spotlight-record {
+    margin-top: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.52);
+    border: 1px solid rgba(170, 136, 70, 0.12);
+    font-weight: 800;
+    color: #735b34;
+}
+
+.chemistry-spotlight-empty {
+    margin-top: 12px;
+    color: var(--text-soft);
+}
+
+.chemistry-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.chemistry-chip-row-tight {
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.chemistry-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    line-height: 1;
+    border: 1px solid rgba(179, 143, 74, 0.14);
+    background: rgba(255, 255, 255, 0.5);
+    color: #6c5738;
+}
+
+.chemistry-chip-gold {
+    background: rgba(255, 248, 228, 0.78);
+}
+
+.chemistry-chip-ivory,
+.chemistry-chip-marble,
+.chemistry-chip-neutral {
+    background: rgba(255, 255, 255, 0.62);
+}
+
+.chemistry-meta-strip {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 20px;
+    background: rgba(255, 252, 246, 0.84);
+    border: 1px solid rgba(179, 143, 74, 0.12);
+}
+
+.chemistry-meta-strip-hero {
+    margin-top: 10px;
+    padding: 10px 12px;
+}
+
 .chemistry-summary-grid .metric-card,
 .chemistry-global-grid .mini-highlight-card,
 .chemistry-player-grid .mini-highlight-card {
     min-width: 0;
+}
+
+.chemistry-trinity-shell {
+    margin-top: 14px;
+    display: grid;
+    gap: 12px;
+}
+
+.chemistry-trinity-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(250px, 0.9fr);
+    gap: 14px;
+    padding: 18px;
+    border-radius: 28px;
+    background:
+        linear-gradient(135deg, rgba(255, 250, 236, 0.98), rgba(237, 223, 192, 0.9)),
+        radial-gradient(circle at top right, rgba(214, 166, 74, 0.22), transparent 34%),
+        radial-gradient(circle at bottom left, rgba(172, 138, 82, 0.12), transparent 38%);
+    border: 1px solid rgba(179, 143, 74, 0.18);
+    box-shadow: 0 18px 36px rgba(82, 58, 19, 0.1);
+}
+
+.chemistry-trinity-copy h3 {
+    margin: 4px 0 8px;
+    font-size: 1.28rem;
+}
+
+.chemistry-trinity-blurb {
+    margin: 0;
+    max-width: 62ch;
+    color: var(--text-strong);
+    line-height: 1.55;
+}
+
+.chemistry-trinity-pillrow .chemistry-chip-row {
+    margin-top: 12px;
+}
+
+.chemistry-trinity-metrics {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.chemistry-trinity-side {
+    display: grid;
+    gap: 12px;
+}
+
+.chemistry-trinity-card {
+    min-width: 0;
+    padding: 14px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.58);
+    border: 1px solid rgba(179, 143, 74, 0.14);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.chemistry-trinity-card-best {
+    background:
+        linear-gradient(145deg, rgba(255, 248, 227, 0.9), rgba(243, 229, 198, 0.88));
+}
+
+.chemistry-trinity-card-watch {
+    background:
+        linear-gradient(145deg, rgba(247, 242, 235, 0.92), rgba(233, 224, 215, 0.86));
+}
+
+.chemistry-trinity-card h4 {
+    margin: 4px 0 8px;
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+.chemistry-trinity-record {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.62);
+    border: 1px solid rgba(179, 143, 74, 0.14);
+    font-weight: 800;
+    color: #6c5738;
+}
+
+.chemistry-trinity-footer {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.chemistry-trinity-strip {
+    padding: 14px 16px;
+    border-radius: 20px;
+    background: rgba(255, 252, 246, 0.88);
+}
+
+.chemistry-subeyebrow {
+    margin-top: 14px;
+    margin-bottom: 0;
+}
+
+.chemistry-mini-stack {
+    display: grid;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.chemistry-matrix-layout {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.chemistry-matrix-card {
+    padding: 15px;
+    border-radius: 20px;
+    background:
+        linear-gradient(145deg, rgba(255, 252, 246, 0.98), rgba(239, 232, 220, 0.9)),
+        radial-gradient(circle at top right, rgba(199, 165, 91, 0.12), transparent 38%);
+    border: 1px solid rgba(179, 143, 74, 0.14);
+}
+
+.chemistry-matrix-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.chemistry-matrix-head h3 {
+    margin: 4px 0 0;
+}
+
+.chemistry-matrix-record {
+    white-space: nowrap;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.66);
+    border: 1px solid rgba(179, 143, 74, 0.12);
+    font-weight: 800;
+    color: #725a34;
+}
+
+.chemistry-matrix-grid {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.chemistry-matrix-cell {
+    display: grid;
+    gap: 3px;
+    padding: 10px 11px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.58);
+    border: 1px solid rgba(179, 143, 74, 0.1);
+}
+
+.chemistry-matrix-cell strong {
+    color: var(--text-strong);
+    line-height: 1.25;
+}
+
+.chemistry-matrix-cell-muted {
+    background: rgba(246, 239, 232, 0.78);
+}
+
+.chemistry-matrix-cell-picks .chemistry-chip-row {
+    margin-top: 4px;
+}
+
+.chemistry-matrix-section {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(179, 143, 74, 0.1);
+}
+
+.chemistry-matrix-section-muted {
+    opacity: 0.92;
+}
+
+.chemistry-timeline {
+    display: grid;
+    gap: 12px;
+}
+
+.chemistry-timeline-item {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 12px;
+    align-items: stretch;
+}
+
+.chemistry-timeline-rail {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.chemistry-timeline-rail::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: -12px;
+    width: 2px;
+    background: linear-gradient(180deg, rgba(195, 158, 88, 0.5), rgba(195, 158, 88, 0.05));
+}
+
+.chemistry-timeline-item:last-child .chemistry-timeline-rail::before {
+    bottom: 50%;
+}
+
+.chemistry-timeline-dot {
+    position: relative;
+    z-index: 1;
+    width: 12px;
+    height: 12px;
+    margin-top: 18px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #dfb25e, #f4ddb0);
+    box-shadow: 0 0 0 4px rgba(255, 248, 231, 0.82);
+}
+
+.chemistry-timeline-card {
+    padding: 16px 18px;
+    border-radius: 22px;
+    background: rgba(255, 252, 246, 0.92);
+    border: 1px solid rgba(179, 143, 74, 0.12);
+    box-shadow: 0 14px 26px rgba(87, 63, 22, 0.07);
+}
+
+.chemistry-timeline-topline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.chemistry-timeline-result,
+.chemistry-timeline-queue,
+.chemistry-timeline-date {
+    font-size: 0.78rem;
+    line-height: 1;
+}
+
+.chemistry-timeline-queue,
+.chemistry-timeline-date {
+    color: var(--text-soft);
+}
+
+.chemistry-timeline-card h3 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.chemistry-timeline-meta {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    color: var(--text-soft);
+    font-size: 0.8rem;
 }
 
 .chemistry-section-grid {
@@ -2109,6 +2527,37 @@ details[open] > summary .collapse-indicator {
 
     .chemistry-summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .chemistry-spotlight-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chemistry-story-banner {
+        padding: 16px;
+    }
+
+    .chemistry-trinity-hero,
+    .chemistry-trinity-footer,
+    .chemistry-matrix-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .chemistry-trinity-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .chemistry-timeline-item {
+        grid-template-columns: 14px minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .chemistry-timeline-card,
+    .chemistry-matrix-card,
+    .chemistry-trinity-card,
+    .chemistry-trinity-strip {
+        padding: 14px;
+        border-radius: 18px;
     }
 
     .mini-highlight-card {

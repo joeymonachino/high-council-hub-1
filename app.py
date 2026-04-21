@@ -51,6 +51,32 @@ PLAYER_ABBR = {
     "Jamie": "Je",
     "Mike": "Mi",
 }
+
+# This map lets Chemistry recognize the same council member across SmiteSource,
+# Tracker backfills, and any future manual imports that use alternate handles or
+# platform identifiers.
+COUNCIL_PLAYER_ALIASES = {
+    "Joey": {
+        "names": ["Joey", "littlem0nk"],
+        "ids": ["76561198000048896"],
+    },
+    "Darian": {
+        "names": ["Darian", "AntiSocialElf"],
+        "ids": ["76561198881409884"],
+    },
+    "Jami": {
+        "names": ["Jami", "crispyplug"],
+        "ids": ["76561198045467382"],
+    },
+    "Jamie": {
+        "names": ["Jamie"],
+        "ids": [],
+    },
+    "Mike": {
+        "names": ["Mike"],
+        "ids": [],
+    },
+}
 COUNCIL_COLORS = {
     "Joey": "#d7a33d",
     "Darian": "#4c8dd8",
@@ -101,7 +127,31 @@ app = Flask(__name__)
 # doesn't rescan the same image folders on every request.
 ASSET_INDEX_CACHE: dict[str, dict[str, Path]] = {}
 SMITESOURCE_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
-RATER_STATS_CACHE: tuple[float, dict[str, dict[str, Any]]] | None = None
+RATER_STATS_CACHE: tuple[float, str, dict[str, dict[str, Any]]] | None = None
+HTTP = requests.Session()
+HTTP.trust_env = False
+
+
+# This helper rounds timestamps to the minute in UTC so chemistry can dedupe
+# overlapping sessions pulled from different sources.
+def normalize_history_timestamp(value: str) -> str:
+    if not value:
+        return ""
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(timezone.utc)
+        return parsed.replace(second=0, microsecond=0).isoformat()
+    except ValueError:
+        return value.strip()
+
+
+# This helper normalizes queue labels across SmiteSource and Tracker so
+# overlapping sessions like "casual_joust" and "Joust" dedupe correctly.
+def normalize_queue_key(value: str) -> str:
+    cleaned = str(value or "").strip().lower().replace("_", " ")
+    for prefix in ("casual ", "ranked "):
+        if cleaned.startswith(prefix):
+            cleaned = cleaned[len(prefix):]
+    return " ".join(cleaned.split())
 
 
 # This helper loads secrets from the old Streamlit file so the Flask version
@@ -142,7 +192,7 @@ def sb_url(table: str) -> str:
 
 # This helper performs a generic Supabase GET query and returns JSON rows.
 def sb_select(table: str, params: dict[str, str] | None = None) -> list[dict]:
-    response = requests.get(
+    response = HTTP.get(
         sb_url(table),
         headers=sb_headers("return=representation"),
         params=params or {"select": "*"},
@@ -179,7 +229,7 @@ def sb_upsert(table: str, records: list[dict], on_conflict: str) -> None:
     if not records:
         return
     params = {"on_conflict": on_conflict} if on_conflict else {}
-    response = requests.post(
+    response = HTTP.post(
         sb_url(table),
         headers=sb_headers("resolution=merge-duplicates,return=minimal"),
         params=params,
@@ -193,7 +243,7 @@ def sb_upsert(table: str, records: list[dict], on_conflict: str) -> None:
 def sb_insert(table: str, records: list[dict]) -> None:
     if not records:
         return
-    response = requests.post(
+    response = HTTP.post(
         sb_url(table),
         headers=sb_headers("return=minimal"),
         data=json.dumps(records),
@@ -206,7 +256,7 @@ def sb_insert(table: str, records: list[dict]) -> None:
 # This helper deletes a player's old personal rankings before rewriting the
 # current ordering, which avoids leaving stale rows behind.
 def sb_delete_player_rankings(player: str) -> None:
-    response = requests.delete(
+    response = HTTP.delete(
         sb_url("personal_rankings"),
         headers=sb_headers("return=minimal"),
         params={"player": f"eq.{player}"},
@@ -282,7 +332,7 @@ def smitesource_god_image_url(god_name: str) -> str:
 # This helper performs one SmiteSource RPC POST in the same wrapped format the
 # live site expects for overview and recent-match data.
 def smitesource_post(endpoint: str, payload: dict[str, Any]) -> dict[str, Any]:
-    response = requests.post(
+    response = HTTP.post(
         f"{SMITESOURCE_RPC_BASE}/{endpoint}",
         headers={
             "Content-Type": "application/json",
@@ -395,6 +445,26 @@ def load_stored_match_history(player: str) -> list[dict[str, Any]]:
         },
     )
     return [row for row in rows if isinstance(row, dict)]
+
+
+# This helper returns a lightweight freshness token for the stored match-history
+# table so in-memory rater caches can invalidate after manual backfills.
+def latest_match_history_sync_token() -> str:
+    try:
+        rows = sb_select(
+            "smitesource_match_history",
+            {
+                "select": "synced_at",
+                "order": "synced_at.desc",
+                "limit": "1",
+            },
+        )
+    except Exception:
+        return ""
+
+    if not rows:
+        return ""
+    return str(rows[0].get("synced_at") or "")
 
 
 # This helper backfills one player's full SmiteSource history into Supabase and
@@ -708,7 +778,7 @@ def summarize_stored_match_rows(player: str, raw_match_rows: list[dict[str, Any]
 
 # This helper inspects a SmiteSource match row and returns the named council
 # teammates who were on the same team as the current player.
-def council_teammates_in_match(player: str, player_hirez_uuid: str, identity_map: dict[str, dict[str, str]], row: dict[str, Any]) -> list[str]:
+def council_teammates_in_match(player: str, player_hirez_uuid: str, identity_map: dict[str, dict[str, Any]], row: dict[str, Any]) -> list[str]:
     if not player_hirez_uuid:
         return []
 
@@ -729,15 +799,41 @@ def council_teammates_in_match(player: str, player_hirez_uuid: str, identity_map
                 continue
             for council_player, identity in identity_map.items():
                 identity_uuid = identity.get("hirezPlayerUuid", "")
+                identity_ids = {
+                    str(value).strip()
+                    for value in (identity.get("ids") or [])
+                    if str(value).strip()
+                }
+                identity_names = {
+                    str(value).strip().lower()
+                    for value in (identity.get("names") or [])
+                    if str(value).strip()
+                }
                 identity_name = identity.get("displayName", "").strip().lower()
+                if identity_name:
+                    identity_names.add(identity_name)
+                if identity_uuid:
+                    identity_ids.add(identity_uuid)
                 if council_player != player and (
-                    (identity_uuid and identity_uuid == teammate_uuid)
-                    or (identity_name and identity_name == teammate_display)
+                    (teammate_uuid and teammate_uuid in identity_ids)
+                    or (teammate_display and teammate_display in identity_names)
                 ) and council_player not in teammates:
                     teammates.append(council_player)
 
     teammates.sort(key=PLAYERS.index)
     return teammates
+
+
+# This helper builds a cross-source chemistry session key so one real shared
+# match only counts once even if both SmiteSource and Tracker versions exist in
+# stored history.
+def chemistry_session_key(player: str, teammates: list[str], row: dict[str, Any], participant_gods: dict[str, str] | None = None) -> str:
+    queue_value = normalize_queue_key(str(row.get("queueType") or row.get("gameMode") or ""))
+    timestamp_value = normalize_history_timestamp(str(row.get("startTimestamp") or row.get("startedAt") or ""))
+    members = sorted([player] + [member for member in teammates if member])
+    assignments = participant_gods or {}
+    god_block = "|".join(f"{member}:{str(assignments.get(member) or '').strip().lower()}" for member in members)
+    return f"{queue_value}|{timestamp_value}|{god_block}"
 
 
 # This helper aggregates party, duo, trio, queue, and recent shared-session
@@ -753,6 +849,7 @@ def build_council_chemistry(player: str, player_hirez_uuid: str, identity_map: d
     recent_sessions: list[dict[str, Any]] = []
     overall_wins = 0
     overall_losses = 0
+    seen_session_keys: set[str] = set()
 
     for row in match_rows:
         if not isinstance(row, dict):
@@ -763,6 +860,44 @@ def build_council_chemistry(player: str, player_hirez_uuid: str, identity_map: d
             continue
 
         won = bool(row.get("won"))
+        participant_gods: dict[str, str] = {player: str(row.get("godName") or "")}
+        for teammate in teammates:
+            teammate_god = ""
+            for team in [row.get("team1Players") or [], row.get("team2Players") or []]:
+                if not isinstance(team, list):
+                    continue
+                for teammate_row in team:
+                    if not isinstance(teammate_row, dict):
+                        continue
+                    teammate_uuid = str(teammate_row.get("hirezPlayerUuid") or "").strip()
+                    teammate_name = str(teammate_row.get("displayName") or teammate_row.get("personDisplayName") or "").strip().lower()
+                    teammate_identity = identity_map.get(teammate, {})
+                    teammate_ids = {
+                        str(value).strip()
+                        for value in (teammate_identity.get("ids") or [])
+                        if str(value).strip()
+                    }
+                    teammate_names = {
+                        str(value).strip().lower()
+                        for value in (teammate_identity.get("names") or [])
+                        if str(value).strip()
+                    }
+                    if str(teammate_identity.get("hirezPlayerUuid") or "").strip():
+                        teammate_ids.add(str(teammate_identity.get("hirezPlayerUuid") or "").strip())
+                    if str(teammate_identity.get("displayName") or "").strip():
+                        teammate_names.add(str(teammate_identity.get("displayName") or "").strip().lower())
+                    if (teammate_uuid and teammate_uuid in teammate_ids) or (teammate_name and teammate_name in teammate_names):
+                        teammate_god = str(teammate_row.get("godName") or "")
+                        break
+                if teammate_god:
+                    break
+            participant_gods[teammate] = teammate_god
+
+        session_key = chemistry_session_key(player, teammates, row, participant_gods)
+        if session_key in seen_session_keys:
+            continue
+        seen_session_keys.add(session_key)
+
         if won:
             overall_wins += 1
         else:
@@ -826,8 +961,24 @@ def build_council_chemistry(player: str, player_hirez_uuid: str, identity_map: d
                 for teammate_row in team:
                     if not isinstance(teammate_row, dict):
                         continue
-                    teammate_uuid = teammate_row.get("hirezPlayerUuid")
-                    if teammate_uuid == identity_map.get(teammate, {}).get("hirezPlayerUuid"):
+                    teammate_uuid = str(teammate_row.get("hirezPlayerUuid") or "").strip()
+                    teammate_name = str(teammate_row.get("displayName") or teammate_row.get("personDisplayName") or "").strip().lower()
+                    teammate_identity = identity_map.get(teammate, {})
+                    teammate_ids = {
+                        str(value).strip()
+                        for value in (teammate_identity.get("ids") or [])
+                        if str(value).strip()
+                    }
+                    teammate_names = {
+                        str(value).strip().lower()
+                        for value in (teammate_identity.get("names") or [])
+                        if str(value).strip()
+                    }
+                    if str(teammate_identity.get("hirezPlayerUuid") or "").strip():
+                        teammate_ids.add(str(teammate_identity.get("hirezPlayerUuid") or "").strip())
+                    if str(teammate_identity.get("displayName") or "").strip():
+                        teammate_names.add(str(teammate_identity.get("displayName") or "").strip().lower())
+                    if (teammate_uuid and teammate_uuid in teammate_ids) or (teammate_name and teammate_name in teammate_names):
                         teammate_god = str(teammate_row.get("godName") or "")
                         teammate_display_name = str(teammate_row.get("displayName") or teammate_row.get("personDisplayName") or "")
                         break
@@ -850,25 +1001,6 @@ def build_council_chemistry(player: str, player_hirez_uuid: str, identity_map: d
             duo_combo["games"] += 1
             duo_combo["wins"] += 1 if won else 0
             duo_combo["losses"] += 0 if won else 1
-
-        # This block stores the most recent shared council sessions so the tab
-        # can show concrete recent duo/trio examples instead of only aggregates.
-        participant_gods: dict[str, str] = {player: str(row.get("godName") or "")}
-        for teammate in teammates:
-            teammate_god = ""
-            for team in [row.get("team1Players") or [], row.get("team2Players") or []]:
-                if not isinstance(team, list):
-                    continue
-                for teammate_row in team:
-                    if not isinstance(teammate_row, dict):
-                        continue
-                    teammate_uuid = teammate_row.get("hirezPlayerUuid")
-                    if teammate_uuid == identity_map.get(teammate, {}).get("hirezPlayerUuid"):
-                        teammate_god = str(teammate_row.get("godName") or "")
-                        break
-                if teammate_god:
-                    break
-            participant_gods[teammate] = teammate_god
 
         # This block tracks the full shared god comp for any council session so
         # the frontend can surface true winning/losing duo and trio receipts
@@ -1107,8 +1239,13 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
 def load_rater_stats() -> dict[str, dict[str, Any]]:
     global RATER_STATS_CACHE
 
-    if RATER_STATS_CACHE and (time.time() - RATER_STATS_CACHE[0]) < SMITESOURCE_CACHE_TTL_SECONDS:
-        return RATER_STATS_CACHE[1]
+    current_sync_token = latest_match_history_sync_token()
+    if (
+        RATER_STATS_CACHE
+        and (time.time() - RATER_STATS_CACHE[0]) < SMITESOURCE_CACHE_TTL_SECONDS
+        and RATER_STATS_CACHE[1] == current_sync_token
+    ):
+        return RATER_STATS_CACHE[2]
 
     profiles = {
         player: build_smitesource_profile(player, SMITESOURCE_PROFILE_LINKS.get(player, ""))
@@ -1119,6 +1256,14 @@ def load_rater_stats() -> dict[str, dict[str, Any]]:
         player: {
             "displayName": str(profile.get("displayName") or ""),
             "hirezPlayerUuid": str(profile.get("selfHirezPlayerUuid") or ""),
+            "names": list({
+                str(profile.get("displayName") or "").strip(),
+                *[str(name).strip() for name in (COUNCIL_PLAYER_ALIASES.get(player, {}).get("names") or []) if str(name).strip()],
+            }),
+            "ids": list({
+                str(profile.get("selfHirezPlayerUuid") or "").strip(),
+                *[str(value).strip() for value in (COUNCIL_PLAYER_ALIASES.get(player, {}).get("ids") or []) if str(value).strip()],
+            }),
         }
         for player, profile in profiles.items()
         if profile.get("linked")
@@ -1136,11 +1281,11 @@ def load_rater_stats() -> dict[str, dict[str, Any]]:
 
     available_count = sum(1 for profile in profiles.values() if profile.get("available"))
     if available_count >= 2:
-        RATER_STATS_CACHE = (time.time(), profiles)
+        RATER_STATS_CACHE = (time.time(), current_sync_token, profiles)
         return profiles
 
     if RATER_STATS_CACHE:
-        return RATER_STATS_CACHE[1]
+        return RATER_STATS_CACHE[2]
 
     return profiles
 
