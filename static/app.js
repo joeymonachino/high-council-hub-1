@@ -276,6 +276,23 @@ function aggregateChemistryMemberPicks(records = [], members = []) {
         .sort((a, b) => b.games - a.games || a.member.localeCompare(b.member) || a.god.localeCompare(b.god));
 }
 
+
+function chemistryClassAssignments(participantGods = {}, members = []) {
+    const assignments = members.map((member) => {
+        const godName = participantGods?.[member] || "";
+        const meta = godMetaByName(godName);
+        return {
+            member,
+            className: meta?.Class || "Unknown",
+        };
+    });
+    return {
+        assignments,
+        label: assignments.map((entry) => `${entry.member} ${entry.className}`).join(" + "),
+        key: assignments.map((entry) => `${entry.member}:${entry.className}`).join("|"),
+    };
+}
+
 function aggregateChemistryMemberRecords(records = [], members = []) {
     const counts = new Map();
     records.forEach((record) => {
@@ -363,10 +380,6 @@ function renderChemistryTrinityShowcase(insights, isMobile) {
     const trinityKey = chemistryMembersKey(CHEMISTRY_TRINITY);
     const trioRecord = (insights.groupRecords || []).find((record) => chemistryMembersKey(record.members || []) === trinityKey) || null;
     const trioCombos = (insights.trioComboRecords || []).filter((record) => chemistryMembersKey(record.members || []) === trinityKey);
-    const trinityDuoCombos = (insights.duoComboRecords || []).filter((record) => {
-        const members = record.members || [];
-        return members.every((member) => CHEMISTRY_TRINITY.includes(member));
-    });
     const trinitySessions = trioSessionsFromInsights(insights);
     const mostPlayedCombo = trioCombos.slice().sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label))[0] || null;
     const bestCombo = trioCombos.find((record) => record.games >= 2) || mostPlayedCombo;
@@ -386,11 +399,17 @@ function renderChemistryTrinityShowcase(insights, isMobile) {
         .map((record) => ({ ...record, winRate: record.games ? Math.round((record.wins / record.games) * 1000) / 10 : 0 }))
         .sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
     const comfortPicks = buildReliableComfortPicks(trioCombos, CHEMISTRY_TRINITY, { minGames: 2, limit: isMobile ? 3 : 5 });
-    const contextTags = buildContextTags(trioCombos, trinityDuoCombos, CHEMISTRY_TRINITY, {
-        primaryLabel: "Trio",
-        secondaryLabel: "Duo",
-        limit: isMobile ? 2 : 4,
-    });
+    const trioClassCombos = (insights.trioClassComboRecords || []).filter((record) => chemistryMembersKey(record.members || []) === trinityKey);
+    const trioClassWinners = trioClassCombos
+        .filter((record) => Number(record.wins || 0) > 0)
+        .slice()
+        .sort((a, b) => b.winRate - a.winRate || b.wins - a.wins || b.games - a.games || a.label.localeCompare(b.label));
+    const bestTrioClass = trioClassWinners[0] || trioClassCombos[0] || null;
+    const trioClassLosses = trioClassCombos
+        .filter((record) => Number(record.losses || 0) > 0)
+        .slice()
+        .sort((a, b) => b.losses - a.losses || a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label));
+    const worstTrioClass = trioClassLosses.find((record) => record.label !== bestTrioClass?.label) || trioClassLosses[0] || null;
     const winningCombos = trioCombos.slice().sort((a, b) => b.winRate - a.winRate || b.games - a.games || a.label.localeCompare(b.label)).slice(0, isMobile ? 2 : 3);
     const shakyCombos = trioCombos
         .filter((record) => Number(record.losses || 0) > 0)
@@ -450,9 +469,10 @@ function renderChemistryTrinityShowcase(insights, isMobile) {
                     <div class="chemistry-chip-row">
                         ${renderComfortChips(comfortPicks, "neutral", "No reliable trio comfort picks yet")}
                     </div>
-                    <p class="eyebrow chemistry-subeyebrow">Context Reads</p>
-                    <div class="chemistry-chip-row chemistry-chip-row-tight">
-                        ${renderContextChips(contextTags, "marble", "No strong trio-specific split yet")}
+                    <p class="eyebrow chemistry-subeyebrow">Class Shell</p>
+                    <div class="chemistry-mini-stack">
+                        ${bestTrioClass ? `<div class="mini-highlight-row chemistry-detail-row"><span class="chemistry-row-text"><span class="chemistry-row-main">Winning shell</span><span class="chemistry-row-sub">${escapeHtml(bestTrioClass.label)}</span></span><strong>${formatRecord(bestTrioClass)}</strong></div>` : `<div class="rank-meta">No trio class shell yet</div>`}
+                        ${worstTrioClass ? `<div class="mini-highlight-row chemistry-detail-row"><span class="chemistry-row-text"><span class="chemistry-row-main">Losing shell</span><span class="chemistry-row-sub">${escapeHtml(worstTrioClass.label)}</span></span><strong>${formatRecord(worstTrioClass)}</strong></div>` : ``}
                     </div>
                 </article>
                 <article class="chemistry-trinity-strip panel">
@@ -481,10 +501,6 @@ function renderChemistryTrinityShowcase(insights, isMobile) {
 }
 
 function renderChemistrySynergyMatrix(insights, isMobile) {
-    const trinityCombos = (insights.trioComboRecords || []).filter((record) => {
-        const members = record.members || [];
-        return members.every((member) => CHEMISTRY_TRINITY.includes(member));
-    });
     const pairs = [
         ["Joey", "Jami"],
         ["Joey", "Darian"],
@@ -504,11 +520,17 @@ function renderChemistrySynergyMatrix(insights, isMobile) {
             .sort((a, b) => b.losses - a.losses || a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label))
             .slice(0, isMobile ? 2 : 3);
         const comfortPicks = buildReliableComfortPicks(combos, [left, right], { minGames: 2, limit: isMobile ? 2 : 4 });
-        const contextTags = buildContextTags(combos, trinityCombos, [left, right], {
-            primaryLabel: "Duo",
-            secondaryLabel: "Trio",
-            limit: isMobile ? 2 : 3,
-        });
+        const classCombos = (insights.duoClassComboRecords || []).filter((record) => chemistryMembersKey(record.members || []) === key);
+        const classComboWinners = classCombos
+            .filter((record) => Number(record.wins || 0) > 0)
+            .slice()
+            .sort((a, b) => b.winRate - a.winRate || b.wins - a.wins || b.games - a.games || a.label.localeCompare(b.label));
+        const bestClassCombo = classComboWinners[0] || classCombos[0] || null;
+        const classComboLosses = classCombos
+            .filter((record) => Number(record.losses || 0) > 0)
+            .slice()
+            .sort((a, b) => b.losses - a.losses || a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label));
+        const worstClassCombo = classComboLosses.find((record) => record.label !== bestClassCombo?.label) || classComboLosses[0] || null;
         return `
             <article class="chemistry-matrix-card panel">
                 <div class="chemistry-matrix-head">
@@ -564,9 +586,10 @@ function renderChemistrySynergyMatrix(insights, isMobile) {
                     </div>
                 </div>
                 <div class="chemistry-matrix-section">
-                    <span class="metric-label">Context Reads</span>
-                    <div class="chemistry-chip-row chemistry-chip-row-tight">
-                        ${renderContextChips(contextTags, "marble", "No strong duo/trio split yet")}
+                    <span class="metric-label">Class Shells</span>
+                    <div class="chemistry-mini-stack">
+                        ${bestClassCombo ? `<div class="mini-highlight-row chemistry-detail-row"><span class="chemistry-row-text"><span class="chemistry-row-main">Winning shell</span><span class="chemistry-row-sub">${escapeHtml(bestClassCombo.label)}</span></span><strong>${formatRecord(bestClassCombo)}</strong></div>` : `<div class="rank-meta">No class shell yet</div>`}
+                        ${worstClassCombo ? `<div class="mini-highlight-row chemistry-detail-row"><span class="chemistry-row-text"><span class="chemistry-row-main">Losing shell</span><span class="chemistry-row-sub">${escapeHtml(worstClassCombo.label)}</span></span><strong>${formatRecord(worstClassCombo)}</strong></div>` : ``}
                     </div>
                 </div>
             </article>
@@ -1933,6 +1956,8 @@ function buildChemistryInsights() {
     const duoComboMap = new Map();
     const trioComboMap = new Map();
     const classMap = new Map();
+    const duoClassComboMap = new Map();
+    const trioClassComboMap = new Map();
     const queueMap = new Map();
     const sessionMap = new Map();
     const groupMap = new Map();
@@ -2047,15 +2072,35 @@ function buildChemistryInsights() {
     });
 
     [...duoComboMap.values(), ...trioComboMap.values()].forEach((record) => {
-        const classLabel = (record.members || [])
+        const members = record.members || [];
+        const { label: assignmentLabel, key: assignmentKey, assignments } = chemistryClassAssignments(record.participantGods || {}, members);
+        const assignmentTarget = members.length >= 3 ? trioClassComboMap : duoClassComboMap;
+        const assignmentRecordKey = `${chemistryMembersKey(members)}|${assignmentKey}`;
+        if (!assignmentTarget.has(assignmentRecordKey)) {
+            assignmentTarget.set(assignmentRecordKey, {
+                label: assignmentLabel,
+                members,
+                classAssignments: assignments,
+                games: 0,
+                wins: 0,
+                losses: 0,
+                winRate: 0,
+            });
+        }
+        const assignmentRecord = assignmentTarget.get(assignmentRecordKey);
+        assignmentRecord.games += Number(record.games || 0);
+        assignmentRecord.wins += Number(record.wins || 0);
+        assignmentRecord.losses += Number(record.losses || 0);
+
+        const classLabel = members
             .map((member) => godMetaByName(record.participantGods?.[member] || "")?.Class || "Unknown")
             .sort((left, right) => left.localeCompare(right))
             .join(" + ");
-        const classKey = `${(record.members || []).length}|${classLabel}`;
+        const classKey = `${members.length}|${classLabel}`;
         if (!classMap.has(classKey)) {
             classMap.set(classKey, {
                 label: classLabel,
-                size: (record.members || []).length,
+                size: members.length,
                 games: 0,
                 wins: 0,
                 losses: 0,
@@ -2077,6 +2122,8 @@ function buildChemistryInsights() {
     const duoComboRecords = [...duoComboMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
     const trioComboRecords = [...trioComboMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
     const classRecords = [...classMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const duoClassComboRecords = [...duoClassComboMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const trioClassComboRecords = [...trioClassComboMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
     const queueRecords = [...queueMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
     const trioQueueRecords = [...trioQueueMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
     const groupRecords = [...groupMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
@@ -2094,11 +2141,13 @@ function buildChemistryInsights() {
     return {
         duoRecords,
         duoComboRecords,
+        duoClassComboRecords,
         classRecords,
         queueRecords,
         trioQueueRecords,
         groupRecords,
         trioComboRecords,
+        trioClassComboRecords,
         recentSessions,
         bestDuo: duoFloor[0] || duoRecords[0] || null,
         worstDuo: [...duoFloor].sort((a, b) => a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label))[0] || null,
