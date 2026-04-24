@@ -1116,6 +1116,18 @@
         "Movement":null
     },
     {
+        "God":"Charon",
+        "Title":"The Ferryman",
+        "Pantheon":"Greek",
+        "Role":"Support",
+        "Class":"Guardian",
+        "Attack Type":"Ranged",
+        "Damage Type":"Magical",
+        "Tier":null,
+        "Rank":null,
+        "Movement":null
+    },
+    {
         "God":"Lancelot",
         "Title":"First Knight of the Round Table",
         "Pantheon":"Arthurian",
