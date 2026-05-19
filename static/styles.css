@@ -1295,6 +1295,24 @@ details[open] > summary .collapse-indicator {
     gap: 10px;
 }
 
+.rater-topgod-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.rater-topgod-grid .mini-highlight-row span,
+.rater-detail-grid .mini-highlight-row span {
+    display: grid;
+    gap: 2px;
+}
+
+.rater-topgod-grid .mini-highlight-row small,
+.rater-detail-grid .mini-highlight-row small {
+    color: rgba(100, 78, 44, 0.72);
+    font-size: 0.72rem;
+    line-height: 1.3;
+}
+
 .ranking-list-card {
     border-radius: 22px;
     padding: 18px;
@@ -2513,6 +2531,10 @@ details[open] > summary .collapse-indicator {
     }
 
     .rater-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rater-topgod-grid {
         grid-template-columns: 1fr;
     }
 

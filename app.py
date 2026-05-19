@@ -154,6 +154,12 @@ def normalize_queue_key(value: str) -> str:
     return " ".join(cleaned.split())
 
 
+# This helper keeps the Rater Stats tab scoped to Joust regardless of whether
+# the source row came from SmiteSource labels like casual_joust or Tracker's Joust.
+def is_joust_queue(value: str) -> bool:
+    return normalize_queue_key(value) == "joust"
+
+
 # This helper loads secrets from the old Streamlit file so the Flask version
 # can keep using the same Supabase URL, API key, and player PINs.
 def load_streamlit_secrets() -> dict[str, Any]:
@@ -622,7 +628,11 @@ def normalize_smitesource_match(row: dict[str, Any]) -> dict[str, Any]:
 # This helper derives a compact profile summary from stored match history so the
 # app can render quickly from Supabase without waiting on live SmiteSource RPCs.
 def summarize_stored_match_rows(player: str, raw_match_rows: list[dict[str, Any]], profile_url: str, player_uuid: str) -> dict[str, Any]:
-    valid_rows = [row for row in raw_match_rows if isinstance(row, dict)]
+    valid_rows = [
+        row for row in raw_match_rows
+        if isinstance(row, dict)
+        and is_joust_queue(str(row.get("queueType") or row.get("gameMode") or ""))
+    ]
     recent_matches = [normalize_smitesource_match(row) for row in valid_rows[:5]]
     total_matches = len(valid_rows)
     wins = sum(1 for row in valid_rows if row.get("won"))
@@ -701,7 +711,7 @@ def summarize_stored_match_rows(player: str, raw_match_rows: list[dict[str, Any]
     top_gods = []
     for bucket in god_buckets.values():
         duration_minutes = bucket["duration"] / 60 if bucket["duration"] else 0
-        god_meta = next((god for god in load_gods_catalog() if god.get("God") == bucket["name"]), {})
+        god_meta = next((god for god in load_json_snapshot("gods_metadata.json") if god.get("God") == bucket["name"]), {})
         top_gods.append(
             {
                 "name": bucket["name"],
@@ -1138,73 +1148,20 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
             SMITESOURCE_CACHE[player] = (time.time(), profile)
             return profile
 
-        # This block fetches the broader player snapshot used for summary
-        # metrics, top gods, top roles, and rank context.
-        overview = smitesource_post(
-            "matches/getPlayerOverview",
-            {"playerUuid": player_uuid, "mode": "all", "season": "0"},
-        )
-
+        # This block falls back to live SmiteSource rows when Supabase history
+        # has not been synced yet. The Stats tab is intentionally Joust-only.
         raw_match_rows = fetch_smitesource_match_rows(
             player_uuid,
             target_count=max(SMITESOURCE_MATCH_SAMPLE_SIZE, SMITESOURCE_MATCH_PAGE_SIZE),
         )
+        joust_match_rows = [
+            row for row in raw_match_rows
+            if is_joust_queue(str(row.get("queueType") or row.get("gameMode") or ""))
+        ]
 
-        totals = overview.get("totals") if isinstance(overview.get("totals"), dict) else {}
-        top_gods = [
-            normalize_smitesource_top_god(row)
-            for row in (overview.get("topGods") or [])
-            if isinstance(row, dict)
-        ][:5]
-        top_roles = [
-            normalize_smitesource_role(row)
-            for row in (overview.get("topRoles") or [])
-            if isinstance(row, dict)
-        ][:4]
-        recent_matches = [
-            normalize_smitesource_match(row)
-            for row in raw_match_rows
-        ][:5]
-        self_hirez_uuid = next((str(row.get("hirezPlayerUuid") or "") for row in raw_match_rows if row.get("hirezPlayerUuid")), "")
-
-        profile = {
-            "player": player,
-            "linked": True,
-            "available": bool(totals or top_gods or top_roles or recent_matches),
-            "profileUrl": profile_url,
-            "playerUuid": player_uuid,
-            "displayName": overview.get("displayName") or player,
-            "metrics": {
-                "matches": smitesource_number(totals.get("totalMatches")),
-                "wins": smitesource_number(totals.get("wins")),
-                "losses": smitesource_number(totals.get("losses")),
-                "winRate": smitesource_number((totals.get("winRate") or 0) * 100, 1) if isinstance(totals.get("winRate"), (int, float)) else None,
-                "kdRatio": smitesource_number(totals.get("kdRatio"), 2),
-                "kdaRatio": smitesource_number(totals.get("kdaRatio"), 2),
-                "damagePerMin": smitesource_number(totals.get("damagePerMin"), 0),
-                "goldPerMin": smitesource_number(totals.get("goldPerMin"), 0),
-                "xpPerMin": smitesource_number(totals.get("xpPerMin"), 0),
-                "wardsPerMatch": smitesource_number(totals.get("wardsPerMatch"), 1),
-                "hoursPlayed": smitesource_number((totals.get("totalDurationSeconds") or 0) / 3600, 1) if totals.get("totalDurationSeconds") else None,
-            },
-            "topGods": top_gods,
-            "topRoles": top_roles,
-            "recentMatches": recent_matches,
-            "chemistry": {},
-            "selfHirezPlayerUuid": self_hirez_uuid,
-            "_rawMatchRows": raw_match_rows,
-            "insights": {
-                "recentForm": smitesource_summary((overview.get("insights") or {}).get("recentForm")),
-                "damageProfile": smitesource_summary((overview.get("insights") or {}).get("damageProfile")),
-                "economyProfile": smitesource_summary((overview.get("insights") or {}).get("economyProfile")),
-                "buildDna": smitesource_summary((overview.get("insights") or {}).get("buildDna")),
-                "srMomentum": smitesource_summary((overview.get("insights") or {}).get("srMomentum")),
-            },
-            "rankSummary": smitesource_summary(overview.get("currentRank")),
-            "peakRankSummary": smitesource_summary(overview.get("peakRank")),
-            "error": "",
-            "historySource": "live-sample",
-        }
+        profile = summarize_stored_match_rows(player, joust_match_rows, profile_url, player_uuid)
+        profile["displayName"] = player
+        profile["historySource"] = "live-joust-sample"
     except Exception as exc:  # noqa: BLE001
         if cached and cached[1].get("available"):
             return cached[1]

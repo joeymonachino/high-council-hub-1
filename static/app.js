@@ -1775,6 +1775,39 @@ function buildRaterProfile(player) {
     };
 }
 
+// This helper formats a compact wins-losses record for the stat rows.
+function formatRecord(wins, gamesPlayed) {
+    const safeGames = Number(gamesPlayed) || 0;
+    const safeWins = Number(wins) || 0;
+    const losses = Math.max(safeGames - safeWins, 0);
+    return `${safeWins}-${losses}`;
+}
+
+// This helper surfaces the gods each rater actually queues the most so the tab
+// can answer "who do they play?" at a glance.
+function mostPlayedGods(topGods, limit = 5) {
+    return [...(topGods || [])]
+        .sort((left, right) =>
+            (Number(right.gamesPlayed) - Number(left.gamesPlayed))
+            || (Number(right.winRate) - Number(left.winRate))
+            || String(left.name || "").localeCompare(String(right.name || ""))
+        )
+        .slice(0, limit);
+}
+
+// This helper highlights winning gods while filtering out tiny one-off samples.
+function bestGodsByWinRate(topGods, limit = 4, minimumGames = 3) {
+    return [...(topGods || [])]
+        .filter((god) => Number(god.gamesPlayed) >= minimumGames)
+        .sort((left, right) =>
+            (Number(right.winRate) - Number(left.winRate))
+            || (Number(right.wins) - Number(left.wins))
+            || (Number(right.gamesPlayed) - Number(left.gamesPlayed))
+            || String(left.name || "").localeCompare(String(right.name || ""))
+        )
+        .slice(0, limit);
+}
+
 // This helper renders the live SmiteSource-backed rater dashboard cards with
 // graceful fallbacks for unlinked or data-light profiles.
 function renderRaterStatsTab() {
@@ -1782,19 +1815,21 @@ function renderRaterStatsTab() {
     const sourceSummary = raterStatsSourceSummary();
     const cards = state.config.players.map((player) => {
         const profile = buildRaterProfile(player);
-        const signatureName = profile.topGods[0]?.name || profile.signature?.God || "Unformed Legend";
-        const signatureImage = profile.topGods[0]?.imageUrl || profile.signature?.ImageUrl || "";
-        const recentForm = profile.insights.recentForm || (profile.recentHistory.length >= 3 ? "Actively tuning council scores" : "Quiet week");
-        const buildDna = profile.insights.buildDna || "";
-        const favoritePantheon = profile.favoritePantheon?.label || "";
+        const mostPlayed = mostPlayedGods(profile.topGods, isMobile ? 4 : 5);
+        const bestWinRate = bestGodsByWinRate(profile.topGods, isMobile ? 3 : 4, 3);
+        const signatureName = profile.topGods[0]?.name || profile.signature?.God || 'Unformed Legend';
+        const signatureImage = profile.topGods[0]?.imageUrl || profile.signature?.ImageUrl || '';
+        const recentForm = profile.insights.recentForm || (profile.recentHistory.length >= 3 ? 'Actively tuning council scores' : 'Quiet week');
+        const buildDna = profile.insights.buildDna || '';
+        const favoritePantheon = profile.favoritePantheon?.label || '';
         const mobileSubmeta = [
-            profile.favoriteRole?.label || "Unknown role",
+            profile.favoriteRole?.label || 'Unknown role',
             recentForm,
-            profile.insights.damageProfile || "",
+            profile.insights.damageProfile || '',
         ].filter(Boolean).slice(0, 2);
         const availabilityNote = profile.available
-            ? (profile.historySource === "supabase" ? "Supabase-backed stored history" : "Live SmiteSource overview and recent matches")
-            : (profile.linked ? "Profile linked, but no public match sample was returned yet" : "Profile not linked yet");
+            ? (profile.historySource === 'supabase' ? 'Supabase-backed stored history' : 'Live SmiteSource overview and recent matches')
+            : (profile.linked ? 'Profile linked, but no public match sample was returned yet' : 'Profile not linked yet');
 
         return `
             <article class="rater-card">
@@ -1803,14 +1838,14 @@ function renderRaterStatsTab() {
                     <div class="god-overlay"></div>
                     <div class="rater-hero-topline">
                         <div>
-                            <p class="eyebrow" style="color:rgba(255,255,255,0.78)">${profile.historySource === "supabase" ? "Supabase History" : (profile.available ? "SmiteSource Live" : "Council + Profile Shell")}</p>
+                            <p class="eyebrow" style="color:rgba(255,255,255,0.78)">${profile.historySource === 'supabase' ? 'Supabase History' : (profile.available ? 'SmiteSource Live' : 'Council + Profile Shell')}</p>
                             <h2>${escapeHtml(player)}</h2>
                         </div>
                         <div class="profile-chip-row rater-hero-pills">
                             <span class="summary-pill">${escapeHtml(profile.archetype.title)}</span>
-                            ${!isMobile ? `<span class="summary-pill">${profile.ratedCount} gods rated here</span>` : ""}
-                            ${!isMobile && profile.rankSummary ? `<span class="summary-pill">${escapeHtml(profile.rankSummary)}</span>` : ""}
-                            ${profile.profileLink ? `<a class="summary-pill" href="${profile.profileLink}" target="_blank" rel="noreferrer">${isMobile ? "Profile" : "SmiteSource Profile"}</a>` : `<span class="summary-pill muted">Profile not linked yet</span>`}
+                            ${!isMobile ? `<span class="summary-pill">${profile.ratedCount} gods rated here</span>` : ''}
+                            ${!isMobile && profile.rankSummary ? `<span class="summary-pill">${escapeHtml(profile.rankSummary)}</span>` : ''}
+                            ${profile.profileLink ? `<a class="summary-pill" href="${profile.profileLink}" target="_blank" rel="noreferrer">${isMobile ? 'Profile' : 'SmiteSource Profile'}</a>` : `<span class="summary-pill muted">Profile not linked yet</span>`}
                         </div>
                     </div>
                     <div class="rater-signature-copy">
@@ -1819,54 +1854,67 @@ function renderRaterStatsTab() {
                             <h3>${escapeHtml(signatureName)}</h3>
                             <div class="rank-meta" style="color:rgba(255,255,255,0.78)">
                                 ${profile.topGods[0]
-                                    ? `${formatMetric(profile.topGods[0].gamesPlayed)} games • ${formatMetric(profile.topGods[0].winRate, 1, "%")} WR`
-                                    : (profile.signature ? `${profile.signature[player]} council score` : "No signature yet")}
+                                    ? `${formatRecord(profile.topGods[0].wins, profile.topGods[0].gamesPlayed)} | ${formatMetric(profile.topGods[0].gamesPlayed)} games | ${formatMetric(profile.topGods[0].winRate, 1, '%')} WR`
+                                    : (profile.signature ? `${profile.signature[player]} council score` : 'No signature yet')}
                             </div>
                         </div>
                         <div class="rater-hero-note">
                             <div class="metric-label" style="color:rgba(255,255,255,0.72)">Archetype</div>
                             <div class="rater-hero-archetype">${escapeHtml(profile.archetype.title)}</div>
-                            ${!isMobile ? `<p>${escapeHtml(profile.archetype.note)}</p>` : ""}
+                            ${!isMobile ? `<p>${escapeHtml(profile.archetype.note)}</p>` : ''}
                             <div class="rater-hero-submeta">
                                 ${(isMobile ? mobileSubmeta : [
-                                    profile.favoriteRole?.label || "Unknown role",
+                                    profile.favoriteRole?.label || 'Unknown role',
                                     favoritePantheon,
                                     recentForm,
-                                    profile.insights.damageProfile || "",
+                                    profile.insights.damageProfile || '',
                                     buildDna,
-                                ].filter(Boolean)).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+                                ].filter(Boolean)).map((item) => `<span>${escapeHtml(item)}</span>`).join('')}
                             </div>
                             <div class="rater-hero-metrics">
-                                <span class="summary-pill">${formatMetric(profile.metrics.winRate, 1, "%")} WR</span>
+                                <span class="summary-pill">${formatMetric(profile.metrics.winRate, 1, '%')} WR</span>
                                 <span class="summary-pill">${formatMetric(profile.metrics.kdaRatio, 2)} KDA</span>
                                 <span class="summary-pill">${isMobile ? formatMetric(profile.metrics.matches) : `${formatMetric(profile.metrics.matches)} matches`}</span>
-                                ${!isMobile ? `<span class="summary-pill">${formatMetric(profile.metrics.hoursPlayed, 1)} hrs</span>` : ""}
+                                ${!isMobile ? `<span class="summary-pill">${formatMetric(profile.metrics.hoursPlayed, 1)} hrs</span>` : ''}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="mini-highlight-grid" style="margin-top:14px;">
+                <div class="mini-highlight-grid rater-topgod-grid" style="margin-top:14px;">
                     <article class="mini-highlight-card">
-                        <div class="metric-label">Top Gods</div>
-                        ${profile.topGods.length ? profile.topGods.map((god) => `
+                        <div class="metric-label">Most Played</div>
+                        ${mostPlayed.length ? mostPlayed.map((god) => `
                             <div class="mini-highlight-row">
-                                <span>${escapeHtml(god.name)}</span>
-                                <strong>${formatMetric(god.gamesPlayed)}g • ${formatMetric(god.winRate, 1, "%")}</strong>
+                                <span>
+                                    <strong>${escapeHtml(god.name)}</strong>
+                                    <small>${formatRecord(god.wins, god.gamesPlayed)} | ${formatMetric(god.winRate, 1, '%')} WR</small>
+                                </span>
+                                <strong>${formatMetric(god.gamesPlayed)} games</strong>
                             </div>
-                        `).join("") : `<div class="rank-meta">${escapeHtml(availabilityNote)}</div>`}
+                        `).join('') : `<div class="rank-meta">${escapeHtml(availabilityNote)}</div>`}
+                    </article>
+                    <article class="mini-highlight-card">
+                        <div class="metric-label">Best Win Rates</div>
+                        ${bestWinRate.length ? bestWinRate.map((god) => `
+                            <div class="mini-highlight-row">
+                                <span>
+                                    <strong>${escapeHtml(god.name)}</strong>
+                                    <small>${formatRecord(god.wins, god.gamesPlayed)} over ${formatMetric(god.gamesPlayed)} games</small>
+                                </span>
+                                <strong>${formatMetric(god.winRate, 1, '%')}</strong>
+                            </div>
+                        `).join('') : `<div class="rank-meta">Need at least 3 games on a god to crown a real win-rate pick.</div>`}
                     </article>
                     <article class="mini-highlight-card mini-highlight-card-muted">
-                        <div class="metric-label">Council Lens</div>
+                        <div class="metric-label">Player Snapshot</div>
+                        <div class="mini-highlight-row"><span>Most queued role</span><strong>${escapeHtml(profile.topRoles[0]?.role || profile.favoriteRole?.label || 'Unknown')}</strong></div>
+                        <div class="mini-highlight-row"><span>Current signature</span><strong>${escapeHtml(signatureName)}</strong></div>
                         <div class="mini-highlight-row"><span>Avg council score</span><strong>${formatMetric(profile.avgScore)}</strong></div>
-                        <div class="mini-highlight-row"><span>Peak rank</span><strong>${escapeHtml(profile.peakRankSummary || "Unranked / unavailable")}</strong></div>
+                        <div class="mini-highlight-row"><span>Peak rank</span><strong>${escapeHtml(profile.peakRankSummary || 'Unranked / unavailable')}</strong></div>
                         <div class="mini-highlight-row">
                             <span>Role bias</span>
-                            <strong class="${(profile.roleBias?.delta || 0) >= 0 ? "movement-up" : "movement-down"}">${profile.roleBias ? `${profile.roleBias.label} ${(profile.roleBias.delta || 0) >= 0 ? "+" : ""}${Math.round(profile.roleBias.delta * 10) / 10}` : "None yet"}</strong>
-                        </div>
-                        <div class="mini-highlight-row">
-                            <span>Pantheon bias</span>
-                            <strong class="${(profile.pantheonBias?.delta || 0) >= 0 ? "movement-up" : "movement-down"}">${profile.pantheonBias ? `${profile.pantheonBias.label} ${(profile.pantheonBias.delta || 0) >= 0 ? "+" : ""}${Math.round(profile.pantheonBias.delta * 10) / 10}` : "None yet"}</strong>
+                            <strong class="${(profile.roleBias?.delta || 0) >= 0 ? 'movement-up' : 'movement-down'}">${profile.roleBias ? `${profile.roleBias.label} ${(profile.roleBias.delta || 0) >= 0 ? '+' : ''}${Math.round(profile.roleBias.delta * 10) / 10}` : 'None yet'}</strong>
                         </div>
                     </article>
                 </div>
@@ -1876,22 +1924,25 @@ function renderRaterStatsTab() {
                         <div class="metric-label">Recent Matches</div>
                         ${profile.recentMatches.length ? profile.recentMatches.map((match) => `
                             <div class="mini-highlight-row">
-                                <span>${escapeHtml(match.godName)} • ${escapeHtml(match.role || "Role")}</span>
-                                <strong class="${match.won ? "movement-up" : "movement-down"}">${match.won ? "W" : "L"} ${formatMetric(match.kills)}/${formatMetric(match.deaths)}/${formatMetric(match.assists)}</strong>
+                                <span>${escapeHtml(match.godName)} | ${escapeHtml(match.role || 'Role')}</span>
+                                <strong class="${match.won ? 'movement-up' : 'movement-down'}">${match.won ? 'W' : 'L'} ${formatMetric(match.kills)}/${formatMetric(match.deaths)}/${formatMetric(match.assists)}</strong>
                             </div>
-                        `).join("") : `<div class="rank-meta">${escapeHtml(availabilityNote)}</div>`}
+                        `).join('') : `<div class="rank-meta">${escapeHtml(availabilityNote)}</div>`}
                     </article>
                     ${!isMobile ? `
                     <article class="mini-highlight-card">
                         <div class="metric-label">Role Snapshot</div>
                         ${profile.topRoles.length ? profile.topRoles.map((role) => `
                             <div class="mini-highlight-row">
-                                <span>${escapeHtml(role.role)}</span>
-                                <strong>${formatMetric(role.gamesPlayed)}g • ${formatMetric(role.winRate, 1, "%")}</strong>
+                                <span>
+                                    <strong>${escapeHtml(role.role)}</strong>
+                                    <small>${formatRecord(role.wins, role.gamesPlayed)} | ${formatMetric(role.winRate, 1, '%')} WR</small>
+                                </span>
+                                <strong>${formatMetric(role.gamesPlayed)} games</strong>
                             </div>
-                        `).join("") : `<div class="rank-meta">No role sample yet</div>`}
+                        `).join('') : `<div class="rank-meta">No role sample yet</div>`}
                     </article>
-                    ` : ""}
+                    ` : ''}
                 </div>
 
                 ${!isMobile ? `
@@ -1903,7 +1954,7 @@ function renderRaterStatsTab() {
                                 <span>${escapeHtml(entry.god)}</span>
                                 <strong>${entry.oldValue === 0 ? `new ${entry.newValue}` : `${entry.oldValue} -> ${entry.newValue}`}</strong>
                             </div>
-                        `).join("") : `<div class="rank-meta">No recent rating changes yet</div>`}
+                        `).join('') : `<div class="rank-meta">No recent rating changes yet</div>`}
                     </article>
                     <article class="mini-highlight-card mini-highlight-card-muted">
                         <div class="metric-label">Performance Snapshot</div>
@@ -1913,16 +1964,16 @@ function renderRaterStatsTab() {
                         <div class="mini-highlight-row"><span>Wards / match</span><strong>${formatMetric(profile.metrics.wardsPerMatch, 1)}</strong></div>
                     </article>
                 </div>
-                ` : ""}
+                ` : ''}
             </article>
         `;
-    }).join("");
+    }).join('');
 
-    const syncButtonLabel = state.raterStats.syncing ? "Syncing..." : "Sync SmiteSource";
+    const syncButtonLabel = state.raterStats.syncing ? 'Syncing...' : 'Sync SmiteSource';
     const syncControls = `
         <div class="sync-toolbar">
-            <button class="sync-button" type="button" data-sync-rater-stats="all" ${state.raterStats.syncing ? "disabled" : ""}>${syncButtonLabel}</button>
-            ${state.raterStats.syncMessage ? `<span class="sync-message">${escapeHtml(state.raterStats.syncMessage)}</span>` : ""}
+            <button class="sync-button" type="button" data-sync-rater-stats="all" ${state.raterStats.syncing ? 'disabled' : ''}>${syncButtonLabel}</button>
+            ${state.raterStats.syncMessage ? `<span class="sync-message">${escapeHtml(state.raterStats.syncMessage)}</span>` : ''}
         </div>
     `;
     const banner = !state.raterStats.loaded
