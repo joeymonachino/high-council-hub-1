@@ -103,7 +103,7 @@ body[data-active-tab="ranker"] {
 
 /* This block defines the main page container width and spacing. */
 .app-shell {
-    width: min(1500px, calc(100% - 28px));
+    width: min(1880px, calc(100% - 32px));
     margin: 0 auto;
     padding: 28px 0 60px;
     display: flex;
@@ -738,7 +738,7 @@ details[open] > summary .collapse-indicator {
 .workspace-layout {
     margin-top: 22px;
     display: grid;
-    grid-template-columns: 320px 1fr;
+    grid-template-columns: 340px minmax(0, 1fr);
     gap: 16px;
     align-items: start;
 }
@@ -2427,7 +2427,7 @@ details[open] > summary .collapse-indicator {
 
 @media (max-width: 860px) {
     .app-shell {
-        width: min(calc(100% - 18px), 1500px);
+        width: min(calc(100% - 18px), 1880px);
         padding-top: 12px;
     }
 
