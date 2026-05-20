@@ -1776,7 +1776,7 @@ function buildRaterProfile(player) {
 }
 
 // This helper formats a compact wins-losses record for the stat rows.
-function formatRecord(wins, gamesPlayed) {
+function formatWinLossRecord(wins, gamesPlayed) {
     const safeGames = Number(gamesPlayed) || 0;
     const safeWins = Number(wins) || 0;
     const losses = Math.max(safeGames - safeWins, 0);
@@ -1854,7 +1854,7 @@ function renderRaterStatsTab() {
                             <h3>${escapeHtml(signatureName)}</h3>
                             <div class="rank-meta" style="color:rgba(255,255,255,0.78)">
                                 ${profile.topGods[0]
-                                    ? `${formatRecord(profile.topGods[0].wins, profile.topGods[0].gamesPlayed)} | ${formatMetric(profile.topGods[0].gamesPlayed)} games | ${formatMetric(profile.topGods[0].winRate, 1, '%')} WR`
+                                    ? `${formatWinLossRecord(profile.topGods[0].wins, profile.topGods[0].gamesPlayed)} | ${formatMetric(profile.topGods[0].gamesPlayed)} games | ${formatMetric(profile.topGods[0].winRate, 1, '%')} WR`
                                     : (profile.signature ? `${profile.signature[player]} council score` : 'No signature yet')}
                             </div>
                         </div>
@@ -1888,7 +1888,7 @@ function renderRaterStatsTab() {
                             <div class="mini-highlight-row">
                                 <span>
                                     <strong>${escapeHtml(god.name)}</strong>
-                                    <small>${formatRecord(god.wins, god.gamesPlayed)} | ${formatMetric(god.winRate, 1, '%')} WR</small>
+                                    <small>${formatWinLossRecord(god.wins, god.gamesPlayed)} | ${formatMetric(god.winRate, 1, '%')} WR</small>
                                 </span>
                                 <strong>${formatMetric(god.gamesPlayed)} games</strong>
                             </div>
@@ -1900,7 +1900,7 @@ function renderRaterStatsTab() {
                             <div class="mini-highlight-row">
                                 <span>
                                     <strong>${escapeHtml(god.name)}</strong>
-                                    <small>${formatRecord(god.wins, god.gamesPlayed)} over ${formatMetric(god.gamesPlayed)} games</small>
+                                    <small>${formatWinLossRecord(god.wins, god.gamesPlayed)} over ${formatMetric(god.gamesPlayed)} games</small>
                                 </span>
                                 <strong>${formatMetric(god.winRate, 1, '%')}</strong>
                             </div>
@@ -1936,7 +1936,7 @@ function renderRaterStatsTab() {
                             <div class="mini-highlight-row">
                                 <span>
                                     <strong>${escapeHtml(role.role)}</strong>
-                                    <small>${formatRecord(role.wins, role.gamesPlayed)} | ${formatMetric(role.winRate, 1, '%')} WR</small>
+                                    <small>${formatWinLossRecord(role.wins, role.gamesPlayed)} | ${formatMetric(role.winRate, 1, '%')} WR</small>
                                 </span>
                                 <strong>${formatMetric(role.gamesPlayed)} games</strong>
                             </div>
