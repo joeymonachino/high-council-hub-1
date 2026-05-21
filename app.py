@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from statistics import mean
 from typing import Any
-from urllib.parse import quote, urlparse
+from urllib.parse import quote, unquote, urlparse
 
 # This block imports the third-party modules used by the Flask backend and
 # by the direct Supabase REST integration.
@@ -1998,7 +1998,7 @@ def api_save_rankings():
 # Flask port can reuse the same visuals without duplicating files.
 @app.route("/god-image/<path:god_name>")
 def god_image(god_name: str):
-    asset = resolve_god_image(god_name)
+    asset = resolve_god_image(unquote(god_name))
     if not asset:
         abort(404)
     return send_file(asset)
@@ -2007,7 +2007,7 @@ def god_image(god_name: str):
 # This route serves pantheon icons used in the rankings tab.
 @app.route("/pantheon-image/<path:pantheon_name>")
 def pantheon_image(pantheon_name: str):
-    asset = resolve_pantheon_image(pantheon_name)
+    asset = resolve_pantheon_image(unquote(pantheon_name))
     if not asset:
         abort(404)
     return send_file(asset)
