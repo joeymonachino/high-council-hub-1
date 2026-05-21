@@ -281,6 +281,33 @@ def load_json_snapshot(name: str) -> list[dict]:
         return json.load(handle)
 
 
+# This helper uses a preferred key order to merge partial Supabase tables with
+# the local JSON snapshots so missing gods still appear without replacing live rows.
+def merge_snapshot_rows(primary_rows: list[dict], fallback_rows: list[dict], key_names: tuple[str, ...]) -> list[dict]:
+    merged: list[dict] = []
+    seen: set[str] = set()
+
+    def row_key(row: dict) -> str:
+        for key_name in key_names:
+            value = row.get(key_name)
+            if value is not None and str(value).strip():
+                return str(value).strip().lower()
+        return ""
+
+    for source in (primary_rows or []), (fallback_rows or []):
+        for row in source:
+            if not isinstance(row, dict):
+                continue
+            key = row_key(row)
+            if key and key in seen:
+                continue
+            if key:
+                seen.add(key)
+            merged.append(dict(row))
+
+    return merged
+
+
 # This helper extracts the SmiteSource player UUID from a linked profile URL so
 # the backend can call the site's RPC endpoints without hardcoding IDs twice.
 def smitesource_player_uuid(profile_url: str) -> str:
@@ -1521,17 +1548,24 @@ def load_app_state() -> dict[str, Any]:
     errors: list[str] = []
     local_history_rows = load_local_activity_log()
 
+    json_meta_rows = load_json_snapshot("gods_metadata.json")
+    json_rating_rows = load_json_snapshot("council_ratings.json")
+
     try:
         meta_rows = sb_select("gods_metadata", {"select": "*"})
     except Exception as exc:  # noqa: BLE001
-        meta_rows = load_json_snapshot("gods_metadata.json")
+        meta_rows = json_meta_rows
         errors.append(f"metadata fallback: {exc}")
+    else:
+        meta_rows = merge_snapshot_rows(meta_rows, json_meta_rows, ("god_name", "God"))
 
     try:
         rating_rows = sb_select("council_ratings", {"select": "*"})
     except Exception as exc:  # noqa: BLE001
-        rating_rows = load_json_snapshot("council_ratings.json")
+        rating_rows = json_rating_rows
         errors.append(f"ratings fallback: {exc}")
+    else:
+        rating_rows = merge_snapshot_rows(rating_rows, json_rating_rows, ("god_name", "God"))
 
     try:
         ranking_rows = sb_select("personal_rankings", {"select": "*"})
