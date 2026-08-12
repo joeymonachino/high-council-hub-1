@@ -1,4 +1,4 @@
-// This block stores the full client-side app state so every tab can render
+﻿// This block stores the full client-side app state so every tab can render
 // from one source of truth instead of each feature managing isolated data.
 const state = {
     config: null,
@@ -8,12 +8,24 @@ const state = {
     recentHistory: [],
     errors: [],
     stats: {},
+    dataHealth: {
+        report: null,
+        loaded: false,
+        loading: false,
+        error: "",
+    },
     raterStats: {
         profiles: {},
         loaded: false,
         error: "",
         syncing: false,
         syncMessage: "",
+        selectedPlayer: "Joey",
+        section: "profile",
+    },
+    chemistry: {
+        section: "trinity",
+        pairSection: "overview",
     },
     activeTab: "index",
     filters: {
@@ -28,10 +40,12 @@ const state = {
         god: "",
         players: [],
         rows: [],
+        section: "overview",
     },
     h2h: {
         a: "Joey",
         b: "Darian",
+        mode: "performance",
     },
     activity: {
         player: "All",
@@ -47,6 +61,12 @@ const state = {
         search: "",
         sort: "#1 first",
         mode: "all",
+        section: "editor",
+    },
+    godDetail: {
+        god: "",
+        section: "council",
+        editPlayer: "Joey",
     },
     ui: {
         isMobile: false,
@@ -469,11 +489,6 @@ function renderChemistryTrinityShowcase(insights, isMobile) {
                     <div class="chemistry-chip-row">
                         ${renderComfortChips(comfortPicks, "neutral", "No reliable trio comfort picks yet")}
                     </div>
-                    <p class="eyebrow chemistry-subeyebrow">Class Shell</p>
-                    <div class="chemistry-mini-stack">
-                        ${bestTrioClass ? `<div class="mini-highlight-row chemistry-detail-row"><span class="chemistry-row-text"><span class="chemistry-row-main">Winning shell</span><span class="chemistry-row-sub">${escapeHtml(bestTrioClass.label)}</span></span><strong>${formatRecord(bestTrioClass)}</strong></div>` : `<div class="rank-meta">No trio class shell yet</div>`}
-                        ${worstTrioClass ? `<div class="mini-highlight-row chemistry-detail-row"><span class="chemistry-row-text"><span class="chemistry-row-main">Losing shell</span><span class="chemistry-row-sub">${escapeHtml(worstTrioClass.label)}</span></span><strong>${formatRecord(worstTrioClass)}</strong></div>` : ``}
-                    </div>
                 </article>
                 <article class="chemistry-trinity-strip panel">
                     <p class="eyebrow">Winning Trio Comps</p>
@@ -506,104 +521,121 @@ function renderChemistrySynergyMatrix(insights, isMobile) {
         ["Joey", "Darian"],
         ["Jami", "Darian"],
     ];
-    const cards = pairs.map(([left, right]) => {
-        const key = chemistryMembersKey([left, right]);
+    const pairTabs = pairs.map(([left, right]) => ({
+        key: chemistryMembersKey([left, right]),
+        label: `${left} + ${right}`,
+        left,
+        right,
+    }));
+    if (!pairTabs.some((tab) => tab.key === state.chemistry.pairSection)) {
+        state.chemistry.pairSection = pairTabs[0]?.key || "overview";
+    }
+
+    const pairCards = pairTabs.filter((tab) => tab.key === state.chemistry.pairSection).map(({ key, label, left, right }) => {
         const pairRecord = (insights.duoRecords || []).find((record) => chemistryMembersKey(record.members || []) === key) || null;
         const combos = (insights.duoComboRecords || []).filter((record) => chemistryMembersKey(record.members || []) === key);
         const bestCombo = combos.find((record) => record.games >= 2) || combos[0] || null;
         const mostPlayed = combos.slice().sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label))[0] || null;
-        const watchCombo = combos.filter((record) => record.games >= 2).slice().sort((a, b) => a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label))[0] || null;
-        const winningCombos = combos.slice().sort((a, b) => b.winRate - a.winRate || b.games - a.games || a.label.localeCompare(b.label)).slice(0, isMobile ? 2 : 3);
+        const watchCombo = combos.filter((record) => record.losses > 0).slice().sort((a, b) => b.losses - a.losses || a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label))[0] || null;
+        const winningCombos = combos.slice().sort((a, b) => b.winRate - a.winRate || b.games - a.games || a.label.localeCompare(b.label)).slice(0, isMobile ? 4 : 6);
         const shakyCombos = combos
             .filter((record) => Number(record.losses || 0) > 0)
             .slice()
             .sort((a, b) => b.losses - a.losses || a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label))
-            .slice(0, isMobile ? 2 : 3);
-        const comfortPicks = buildReliableComfortPicks(combos, [left, right], { minGames: 2, limit: isMobile ? 2 : 4 });
-        const classCombos = (insights.duoClassComboRecords || []).filter((record) => chemistryMembersKey(record.members || []) === key);
-        const classComboWinners = classCombos
-            .filter((record) => Number(record.wins || 0) > 0)
+            .slice(0, isMobile ? 4 : 6);
+        const comfortPicks = buildReliableComfortPicks(combos, [left, right], { minGames: 2, limit: isMobile ? 4 : 6 });
+        const swingCombos = combos
+            .filter((record) => Number(record.games || 0) >= 2)
             .slice()
-            .sort((a, b) => b.winRate - a.winRate || b.wins - a.wins || b.games - a.games || a.label.localeCompare(b.label));
-        const bestClassCombo = classComboWinners[0] || classCombos[0] || null;
-        const classComboLosses = classCombos
-            .filter((record) => Number(record.losses || 0) > 0)
-            .slice()
-            .sort((a, b) => b.losses - a.losses || a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label));
-        const worstClassCombo = classComboLosses.find((record) => record.label !== bestClassCombo?.label) || classComboLosses[0] || null;
+            .sort((a, b) => Math.abs((b.winRate || 0) - 50) - Math.abs((a.winRate || 0) - 50) || b.games - a.games)
+            .slice(0, isMobile ? 3 : 5);
+
         return `
-            <article class="chemistry-matrix-card panel">
-                <div class="chemistry-matrix-head">
-                    <div>
-                        <p class="eyebrow">Pairing</p>
-                        <h3>${escapeHtml(left)} + ${escapeHtml(right)}</h3>
+            <section class="chemistry-pair-focus" data-pair-panel="${escapeHtml(key)}">
+                <article class="chemistry-matrix-card chemistry-pair-hero panel">
+                    <div class="chemistry-matrix-head">
+                        <div>
+                            <p class="eyebrow">Focused Pairing</p>
+                            <h3>${escapeHtml(label)}</h3>
+                        </div>
+                        <div class="chemistry-matrix-record">${pairRecord ? formatRecord(pairRecord) : "?"}</div>
                     </div>
-                    <div class="chemistry-matrix-record">${pairRecord ? formatRecord(pairRecord) : "—"}</div>
-                </div>
-                <div class="chemistry-matrix-grid">
-                    <div class="chemistry-matrix-cell">
-                        <span class="metric-label">Best Combo</span>
-                        <strong>${escapeHtml(bestCombo?.label || "—")}</strong>
-                        ${bestCombo ? `<span class="chemistry-row-sub">${escapeHtml(formatRecord(bestCombo))}</span>` : `<span class="chemistry-row-sub">Need more pair games</span>`}
+                    <div class="chemistry-matrix-grid chemistry-pair-summary-grid">
+                        <div class="chemistry-matrix-cell">
+                            <span class="metric-label">Best Combo</span>
+                            <strong>${escapeHtml(bestCombo?.label || "?")}</strong>
+                            ${bestCombo ? `<span class="chemistry-row-sub">${escapeHtml(formatRecord(bestCombo))}</span>` : `<span class="chemistry-row-sub">Need more pair games</span>`}
+                        </div>
+                        <div class="chemistry-matrix-cell">
+                            <span class="metric-label">Most Played</span>
+                            <strong>${escapeHtml(mostPlayed?.label || "?")}</strong>
+                            ${mostPlayed ? `<span class="chemistry-row-sub">${mostPlayed.games} games | ${formatRecord(mostPlayed)}</span>` : `<span class="chemistry-row-sub">No stored pair history yet</span>`}
+                        </div>
+                        <div class="chemistry-matrix-cell chemistry-matrix-cell-muted">
+                            <span class="metric-label">Watchlist</span>
+                            <strong>${escapeHtml(watchCombo?.label || "?")}</strong>
+                            ${watchCombo ? `<span class="chemistry-row-sub">${escapeHtml(formatRecord(watchCombo))}</span>` : `<span class="chemistry-row-sub">No weak spot yet</span>`}
+                        </div>
                     </div>
-                    <div class="chemistry-matrix-cell">
-                        <span class="metric-label">Most Played</span>
-                        <strong>${escapeHtml(mostPlayed?.label || "—")}</strong>
-                        ${mostPlayed ? `<span class="chemistry-row-sub">${mostPlayed.games} games • ${formatRecord(mostPlayed)}</span>` : `<span class="chemistry-row-sub">No stored pair history yet</span>`}
-                    </div>
-                    <div class="chemistry-matrix-cell chemistry-matrix-cell-muted">
-                        <span class="metric-label">Watchlist</span>
-                        <strong>${escapeHtml(watchCombo?.label || "—")}</strong>
-                        ${watchCombo ? `<span class="chemistry-row-sub">${escapeHtml(formatRecord(watchCombo))}</span>` : `<span class="chemistry-row-sub">No weak spot yet</span>`}
-                    </div>
-                    <div class="chemistry-matrix-cell chemistry-matrix-cell-picks">
+                </article>
+                <div class="chemistry-pair-detail-grid">
+                    <article class="chemistry-matrix-card panel">
+                        <span class="metric-label">Winning God Combos</span>
+                        <div class="chemistry-mini-stack">
+                            ${renderChemistryRows(winningCombos, {
+                                emptyText: "No winning pairings yet",
+                                main: (record) => escapeHtml(record.label),
+                                sub: (record) => escapeHtml(formatParticipantAssignments(record.participantGods || {}, record.members || [])),
+                                value: (record) => formatRecord(record),
+                            })}
+                        </div>
+                    </article>
+                    <article class="chemistry-matrix-card panel chemistry-matrix-section-muted">
+                        <span class="metric-label">Losing God Combos</span>
+                        <div class="chemistry-mini-stack">
+                            ${renderChemistryRows(shakyCombos, {
+                                emptyText: "No losing pairings yet",
+                                main: (record) => escapeHtml(record.label),
+                                sub: (record) => escapeHtml(formatParticipantAssignments(record.participantGods || {}, record.members || [])),
+                                value: (record) => formatRecord(record),
+                            })}
+                        </div>
+                    </article>
+                    <article class="chemistry-matrix-card panel">
                         <span class="metric-label">Reliable Comfort Picks</span>
                         <div class="chemistry-chip-row chemistry-chip-row-tight">
                             ${renderComfortChips(comfortPicks, "neutral", "No reliable pair comfort yet")}
                         </div>
-                    </div>
+                    </article>
+                    <article class="chemistry-matrix-card panel">
+                        <span class="metric-label">High-Signal Swings</span>
+                        <div class="chemistry-mini-stack">
+                            ${renderChemistryRows(swingCombos, {
+                                emptyText: "Need repeat games to identify swing picks",
+                                main: (record) => escapeHtml(record.label),
+                                sub: (record) => escapeHtml(`${record.games} games | ${formatParticipantAssignments(record.participantGods || {}, record.members || [])}`),
+                                value: (record) => formatRecord(record),
+                            })}
+                        </div>
+                    </article>
                 </div>
-                <div class="chemistry-matrix-section">
-                    <span class="metric-label">Winning Pairings</span>
-                    <div class="chemistry-mini-stack">
-                        ${renderChemistryRows(winningCombos, {
-                            emptyText: "No pairings yet",
-                            main: (record) => escapeHtml(record.label),
-                            sub: (record) => escapeHtml(formatParticipantAssignments(record.participantGods || {}, record.members || [])),
-                            value: (record) => formatRecord(record),
-                        })}
-                    </div>
-                </div>
-                <div class="chemistry-matrix-section chemistry-matrix-section-muted">
-                    <span class="metric-label">Worst Pairings</span>
-                    <div class="chemistry-mini-stack">
-                        ${renderChemistryRows(shakyCombos, {
-                            emptyText: "No shaky pairings yet",
-                            main: (record) => escapeHtml(record.label),
-                            sub: (record) => escapeHtml(formatParticipantAssignments(record.participantGods || {}, record.members || [])),
-                            value: (record) => formatRecord(record),
-                        })}
-                    </div>
-                </div>
-                <div class="chemistry-matrix-section">
-                    <span class="metric-label">Class Shells</span>
-                    <div class="chemistry-mini-stack">
-                        ${bestClassCombo ? `<div class="mini-highlight-row chemistry-detail-row"><span class="chemistry-row-text"><span class="chemistry-row-main">Winning shell</span><span class="chemistry-row-sub">${escapeHtml(bestClassCombo.label)}</span></span><strong>${formatRecord(bestClassCombo)}</strong></div>` : `<div class="rank-meta">No class shell yet</div>`}
-                        ${worstClassCombo ? `<div class="mini-highlight-row chemistry-detail-row"><span class="chemistry-row-text"><span class="chemistry-row-main">Losing shell</span><span class="chemistry-row-sub">${escapeHtml(worstClassCombo.label)}</span></span><strong>${formatRecord(worstClassCombo)}</strong></div>` : ``}
-                    </div>
-                </div>
-            </article>
+            </section>
         `;
     }).join("");
 
     return `
-        <section class="panel chemistry-section-card" style="margin-top:16px;">
+        <section class="panel chemistry-section-card chemistry-pairing-section" style="margin-top:16px;">
             <div class="panel-heading">
                 <p class="eyebrow">God Synergy Matrix</p>
                 <h2>Pair Strengths and Weaknesses</h2>
             </div>
-            <div class="chemistry-matrix-layout">
-                ${cards}
+            <div class="subtab-shell chemistry-pair-subtab-shell">
+                <div class="subtab-bar chemistry-pair-tabs" role="tablist" aria-label="Pairing focus">
+                    ${pairTabs.map((tab) => `<button class="subtab-btn ${state.chemistry.pairSection === tab.key ? "active" : ""}" type="button" data-chemistry-pair="${escapeHtml(tab.key)}" role="tab" aria-selected="${state.chemistry.pairSection === tab.key ? "true" : "false"}">${escapeHtml(tab.label)}</button>`).join("")}
+                </div>
+                <div class="subtab-content">
+                    ${pairCards}
+                </div>
             </div>
         </section>
     `;
@@ -890,11 +922,20 @@ function buildOwnershipSnapshot(godName) {
     if (!god) return null;
 
     const scored = state.config.players
-        .map((player) => ({
-            player,
-            score: god[player],
-            delta: Number.isFinite(god[player]) ? god[player] - god.Rating : null,
-        }))
+        .map((player) => {
+            const profile = buildRaterProfile(player);
+            const godStat = profile.godStats?.[godName] || (profile.topGods || []).find((row) => row.name === godName) || null;
+            const games = Number(godStat?.gamesPlayed || 0);
+            const wins = Number(godStat?.wins || 0);
+            return {
+                player,
+                score: god[player],
+                delta: Number.isFinite(god[player]) ? god[player] - god.Rating : null,
+                games,
+                wins,
+                winRate: godStat?.winRate,
+            };
+        })
         .filter((entry) => Number.isFinite(entry.score) && entry.score > 0);
 
     if (!scored.length) {
@@ -1087,8 +1128,13 @@ function cacheElements() {
     elements.tabRaterStats = document.getElementById("tab-rater-stats");
     elements.tabChemistry = document.getElementById("tab-chemistry");
     elements.tabH2h = document.getElementById("tab-h2h");
+    elements.tabCouncilScroll = document.getElementById("tab-council-scroll");
+    elements.tabDataHealth = document.getElementById("tab-data-health");
     elements.tabActivity = document.getElementById("tab-activity");
     elements.tabRanker = document.getElementById("tab-ranker");
+    elements.godModalBackdrop = document.getElementById("god-modal-backdrop");
+    elements.godModalContent = document.getElementById("god-modal-content");
+    elements.godModalClose = document.getElementById("god-modal-close");
 }
 
 // This helper applies the requested default open/closed behavior for the
@@ -1128,6 +1174,13 @@ function bindStaticEvents() {
         renderAll();
     });
 
+    elements.filterSearch?.addEventListener("input", () => {
+        syncFiltersFromInputs();
+        applyFilters();
+        renderIndexTab();
+        renderTabs();
+    });
+
     elements.filtersReset.addEventListener("click", () => {
         state.filters = {
             search: "",
@@ -1148,13 +1201,95 @@ function bindStaticEvents() {
             return;
         }
 
+        const godTrigger = event.target.closest("[data-god-detail]");
+        if (godTrigger) {
+            openGodDetail(godTrigger.dataset.godDetail || "");
+            return;
+        }
+
+        const analyticsSectionTrigger = event.target.closest("[data-analytics-section]");
+        if (analyticsSectionTrigger) {
+            state.analytics.section = analyticsSectionTrigger.dataset.analyticsSection || "overview";
+            renderAnalyticsTab();
+            return;
+        }
+
+        const raterPlayerTrigger = event.target.closest("[data-rater-player]");
+        if (raterPlayerTrigger) {
+            state.raterStats.selectedPlayer = raterPlayerTrigger.dataset.raterPlayer || state.config.players[0];
+            renderRaterStatsTab();
+            return;
+        }
+
+        const raterSectionTrigger = event.target.closest("[data-rater-section]");
+        if (raterSectionTrigger) {
+            state.raterStats.section = raterSectionTrigger.dataset.raterSection || "profile";
+            renderRaterStatsTab();
+            return;
+        }
+
+        const h2hModeTrigger = event.target.closest("[data-h2h-mode]");
+        if (h2hModeTrigger) {
+            state.h2h.mode = h2hModeTrigger.dataset.h2hMode || "performance";
+            renderH2hTab();
+            return;
+        }
+
+        const chemistrySectionTrigger = event.target.closest("[data-chemistry-section]");
+        if (chemistrySectionTrigger) {
+            state.chemistry.section = chemistrySectionTrigger.dataset.chemistrySection || "trinity";
+            renderChemistryTab();
+            return;
+        }
+
+        const chemistryPairTrigger = event.target.closest("[data-chemistry-pair]");
+        if (chemistryPairTrigger) {
+            state.chemistry.pairSection = chemistryPairTrigger.dataset.chemistryPair || "overview";
+            renderChemistryTab();
+            return;
+        }
+
+        const rankerSectionTrigger = event.target.closest("[data-ranker-section]");
+        if (rankerSectionTrigger) {
+            state.ranker.section = rankerSectionTrigger.dataset.rankerSection || "editor";
+            renderRankerTab();
+            return;
+        }
+
+        const healthRefreshTrigger = event.target.closest("[data-refresh-health]");
+        if (healthRefreshTrigger) {
+            loadDataHealth().then(() => renderDataHealthTab());
+            return;
+        }
+
         const syncTrigger = event.target.closest("[data-sync-rater-stats]");
         if (syncTrigger) {
             syncRaterStats(syncTrigger.dataset.syncRaterStats === "all" ? "" : syncTrigger.dataset.syncRaterStats);
         }
+
     });
 
+    if (elements.godModalClose) {
+        elements.godModalClose.addEventListener("click", closeGodDetail);
+    }
+    if (elements.godModalBackdrop) {
+        elements.godModalBackdrop.addEventListener("click", (event) => {
+            if (event.target === elements.godModalBackdrop) closeGodDetail();
+        });
+    }
+
     document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && elements.godModalBackdrop && !elements.godModalBackdrop.classList.contains("hidden")) {
+            closeGodDetail();
+            return;
+        }
+        if (event.key === "Enter") {
+            const godTrigger = event.target.closest?.("[data-god-detail]");
+            if (godTrigger) {
+                openGodDetail(godTrigger.dataset.godDetail || "");
+                return;
+            }
+        }
         if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
             if (state.activeTab === "ranker" && state.ranker.unlocked[state.ranker.selectedPlayer]) {
                 event.preventDefault();
@@ -1272,6 +1407,23 @@ async function loadBootstrap() {
     renderFilterOptions();
 }
 
+
+// This helper fetches the read-only Supabase health report used by the admin
+// panel and keeps a friendly error in state if any table cannot be inspected.
+async function loadDataHealth() {
+    state.dataHealth.loading = true;
+    try {
+        const payload = await api("/api/data-health");
+        state.dataHealth.report = payload;
+        state.dataHealth.error = "";
+    } catch (error) {
+        state.dataHealth.report = null;
+        state.dataHealth.error = error.message || "Data Health is unavailable right now.";
+    } finally {
+        state.dataHealth.loading = false;
+        state.dataHealth.loaded = true;
+    }
+}
 // This helper fetches the live SmiteSource-backed profile data used by the
 // Rater Stats tab while keeping the rest of the app responsive if it fails.
 async function loadRaterStats() {
@@ -1309,7 +1461,11 @@ async function syncRaterStats(player = "") {
         await loadRaterStats();
         const inserted = (payload.results || []).reduce((sum, row) => sum + Number(row.inserted || 0), 0);
         const stored = (payload.results || []).reduce((sum, row) => sum + Number(row.stored || 0), 0);
-        state.raterStats.syncMessage = `Sync complete: ${inserted} new matches, ${stored} stored rows across ${(payload.results || []).length} profile(s).`;
+        if (payload.ok === false) {
+            state.raterStats.syncMessage = payload.message || `Sync could not reach SmiteSource. Existing Supabase history still has ${stored} stored rows.`;
+        } else {
+            state.raterStats.syncMessage = `Sync complete: ${inserted} new matches, ${stored} stored rows across ${(payload.results || []).length} profile(s).`;
+        }
     } catch (error) {
         state.raterStats.syncMessage = error.message || "Sync failed.";
     } finally {
@@ -1318,69 +1474,76 @@ async function syncRaterStats(player = "") {
     }
 }
 
+// This helper uploads a browser-exported SmiteSource HAR so blocked server-side
+// syncs can still be turned into durable Supabase match history.
+async function importSmitesourceHar() {
+    const savedKey = sessionStorage.getItem("highCouncilSyncKey") || "";
+    const syncKey = window.prompt("Enter your SmiteSource sync key", savedKey);
+    if (!syncKey) return;
+
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".har,.json,application/json";
+    input.addEventListener("change", async () => {
+        const file = input.files?.[0];
+        if (!file) return;
+
+        sessionStorage.setItem("highCouncilSyncKey", syncKey);
+        state.raterStats.syncing = true;
+        state.raterStats.syncMessage = `Importing ${file.name}...`;
+        renderAll();
+
+        try {
+            const formData = new FormData();
+            formData.append("syncKey", syncKey);
+            formData.append("file", file);
+            const response = await fetch("/api/rater-stats/import-har", {
+                method: "POST",
+                body: formData,
+            });
+            const payload = await response.json().catch(() => null);
+            if (!response.ok) {
+                throw new Error(payload?.message || `Import failed: ${response.status}`);
+            }
+            await loadRaterStats();
+            state.raterStats.syncMessage = payload?.message || "HAR import complete.";
+        } catch (error) {
+            state.raterStats.syncMessage = error.message || "HAR import failed.";
+        } finally {
+            state.raterStats.syncing = false;
+            renderAll();
+        }
+    }, { once: true });
+    input.click();
+}
+
 // This helper renders the hero statistic cards.
 function renderHeroStats() {
     if (!elements.heroStats) {
         return;
     }
 
-    const pulse = buildCouncilPulse();
-    const topThree = [...state.gods]
-        .filter((god) => god.Rating > 0)
-        .sort((a, b) => b.Rating - a.Rating || a.God.localeCompare(b.God))
-        .slice(0, 3);
-
     const cards = [
         ["Roster", state.stats.total_gods ?? 0],
-        ["Average Rating", state.stats.avg_rating ?? 0],
+        ["Average", state.stats.avg_rating ?? 0],
         ["SS Tier", state.stats.ss_count ?? 0],
-        ["Council Members", state.config.players.length],
+        ["Council", state.config.players.length],
     ];
 
-    const cardsHtml = cards
+    elements.heroStats.innerHTML = cards
         .map(([label, value]) => `
-            <div class="stat-card">
+            <div class="stat-card stat-card-compact">
                 <span class="stat-label">${escapeHtml(label)}</span>
                 <strong class="stat-value">${escapeHtml(value)}</strong>
             </div>
         `)
         .join("");
-
-    const mobilePodium = topThree.length
-        ? `
-            <div class="stat-card mobile-podium-card">
-                <span class="stat-label">Podium</span>
-                <div class="mobile-podium-row">
-                    ${topThree.map((god, index) => `
-                        <span class="mobile-podium-chip">
-                            <span class="mobile-podium-medal">${["🥇", "🥈", "🥉"][index] || "⚜️"}</span>
-                            <span class="mobile-podium-name">${escapeHtml(god.God)}</span>
-                            <span class="mobile-podium-score" style="color:${tierColor(god.Tier)}">${god.Rating}</span>
-                        </span>
-                    `).join("")}
-                </div>
-            </div>
-        `
-        : "";
-
-    const pulseCard = `
-        <div class="stat-card hero-insight-card">
-            <span class="stat-label">Council Pulse</span>
-            <div class="hero-insight-grid">
-                ${pulse.topPantheon ? `<span class="summary-pill">Top pantheon: ${escapeHtml(pulse.topPantheon.pantheon)} ${pulse.topPantheon.average}</span>` : ""}
-                ${pulse.mostContested ? `<span class="summary-pill warm">Biggest split: ${escapeHtml(pulse.mostContested.God)} ${controversyScore(pulse.mostContested)}</span>` : ""}
-                ${pulse.watchlist ? `<span class="summary-pill">Watchlist: ${escapeHtml(pulse.watchlist.God)} ${coverageCount(pulse.watchlist)}/${state.config.players.length}</span>` : ""}
-                ${pulse.generous && pulse.strict ? `<span class="summary-pill cool">${escapeHtml(pulse.generous.player)} most generous • ${escapeHtml(pulse.strict.player)} most strict</span>` : ""}
-            </div>
-        </div>
-    `;
-
-    elements.heroStats.innerHTML = `${cardsHtml}${pulseCard}${mobilePodium}`;
 }
 
 // This helper renders the backend status banner when any live reads fell back
 // to snapshot data.
 function renderStatusBanner() {
+    if (!elements.statusBanner) return;
     if (!state.errors.length) {
         elements.statusBanner.innerHTML = "";
         return;
@@ -1395,6 +1558,7 @@ function renderStatusBanner() {
 
 // This helper renders the top-three podium section.
 function renderPodium() {
+    if (!elements.podiumPanel) return;
     const topThree = [...state.gods]
         .filter((god) => god.Rating > 0)
         .sort((a, b) => b.Rating - a.Rating || a.God.localeCompare(b.God))
@@ -1479,6 +1643,7 @@ function renderControversyCards() {
 // This helper renders the sidebar's live rankings list using the current
 // filtered god set.
 function renderSidebar() {
+    if (!elements.liveRankings) return;
     const rows = [...state.filteredGods]
         .sort((a, b) => (b.Rating - a.Rating) || a.God.localeCompare(b.God))
         .map((god) => {
@@ -1530,12 +1695,11 @@ function renderIndexTab() {
     const cards = state.filteredGods
         .map((god) => {
             const coverage = coverageCount(god);
-            const split = controversyScore(god);
-            const agreed = agreementScore(god);
             return `
-            <article class="god-card ${coverage < state.config.players.length ? "partial-coverage" : ""}">
+            <article class="god-card ${coverage < state.config.players.length ? "partial-coverage" : ""}" data-god-detail="${escapeHtml(god.God)}" role="button" tabindex="0">
                 <div class="god-art-wrap">
                     ${god.ImageUrl ? `<img class="god-art" src="${god.ImageUrl}" alt="${escapeHtml(god.God)}">` : `<div class="image-fallback">No Art</div>`}
+                    ${god.PantheonImageUrl ? `<img class="pantheon-watermark" src="${god.PantheonImageUrl}" alt="" aria-hidden="true">` : ""}
                     <div class="god-overlay"></div>
                     <div class="chip-row">
                         <span class="chip">#${god.Rank || "—"}</span>
@@ -1563,12 +1727,6 @@ function renderIndexTab() {
                             </div>
                         `).join("")}
                     </div>
-                    <div class="card-meta-rail">
-                        <span class="summary-pill">${coverage}/${state.config.players.length} rated</span>
-                        ${split >= 20 ? `<span class="summary-pill warm">Split ${split}</span>` : ""}
-                        ${agreed >= 92 ? `<span class="summary-pill cool">High agreement</span>` : ""}
-                        ${god.HotTake ? `<span class="summary-pill hot">Hot take</span>` : ""}
-                    </div>
                 </div>
             </article>
         `;
@@ -1576,16 +1734,389 @@ function renderIndexTab() {
         .join("");
 
     elements.tabIndex.innerHTML = `
-        <div class="panel">
-            <div class="panel-heading">
-                <p class="eyebrow">Gallery View</p>
-                <h2>God Index</h2>
+        <div class="index-heading-row index-heading-row-compact">
+            <p class="eyebrow">God Index</p>
+            <span class="summary-pill">${state.filteredGods.length} shown</span>
+        </div>
+        ${renderFilterSummary()}
+        <div class="god-grid">${cards}</div>
+        ${renderBackToTop()}
+    `;
+}
+
+// This helper finds stored match stats for one god across every linked rater.
+function godPlayerHistory(godName) {
+    return state.config.players.map((player) => {
+        const profile = buildRaterProfile(player);
+        const godStat = profile.godStats?.[godName] || (profile.topGods || []).find((row) => row.name === godName) || null;
+        return {
+            player,
+            rating: state.gods.find((god) => god.God === godName)?.[player] || null,
+            rank: state.allRankings?.[player]?.[godName] || null,
+            games: Number(godStat?.gamesPlayed || 0),
+            wins: Number(godStat?.wins || 0),
+            winRate: godStat?.winRate,
+            kdaRatio: godStat?.kdaRatio,
+            damagePerMin: godStat?.damagePerMin,
+        };
+    });
+}
+
+// This helper gathers recent matches and chemistry rows involving one selected god.
+function godMatchInsights(godName) {
+    const recentRows = [];
+    const synergyMap = new Map();
+
+    state.config.players.forEach((player) => {
+        const profile = buildRaterProfile(player);
+        (profile.recentMatches || []).forEach((match) => {
+            if (match.godName === godName) {
+                recentRows.push({ ...match, player });
+            }
+        });
+
+        ((profile.chemistry || {}).groupGodRecords || []).forEach((record) => {
+            const participantGods = record.participantGods || {};
+            if (!Object.values(participantGods).includes(godName)) return;
+            const key = `${chemistryMembersKey(record.members || [])}|${Object.entries(participantGods).sort().map(([member, god]) => `${member}:${god}`).join("|")}`;
+            if (synergyMap.has(key)) return;
+            synergyMap.set(key, record);
+        });
+    });
+
+    const synergies = [...synergyMap.values()]
+        .sort((a, b) => Number(b.games || 0) - Number(a.games || 0) || Number(b.winRate || 0) - Number(a.winRate || 0))
+        .slice(0, 5);
+
+    return { recentRows: recentRows.slice(0, 8), synergies };
+}
+
+
+// This helper unlocks one council member from inside a god detail modal.
+async function unlockGodQuickEdit(godName) {
+    const player = state.godDetail.editPlayer || state.config.players[0];
+    const pin = document.getElementById("god-edit-pin")?.value || "";
+    if (!pin) {
+        alert("Enter the PIN first.");
+        return;
+    }
+    try {
+        await api("/api/unlock", {
+            method: "POST",
+            body: JSON.stringify({ player, pin }),
+        });
+        state.ranker.unlocked[player] = true;
+        openGodDetail(godName);
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+// This helper saves a single god rating/rank from the modal while preserving the
+// same backend save path used by the full Rate & Rank tab.
+async function saveGodQuickEdit(godName) {
+    const player = state.godDetail.editPlayer || state.config.players[0];
+    if (!state.ranker.unlocked[player]) {
+        alert("Unlock this rater first.");
+        return;
+    }
+
+    const playerState = state.ranker.byPlayer[player];
+    const rating = Math.max(0, Math.min(100, Number(document.getElementById("god-edit-rating")?.value || 0)));
+    const rankInput = Number(document.getElementById("god-edit-rank")?.value || 0);
+
+    playerState.ratings[godName] = rating;
+    playerState.order = playerState.order.filter((name) => name !== godName);
+    if (rating > 0) {
+        const targetIndex = Number.isFinite(rankInput) && rankInput > 0
+            ? Math.max(0, Math.min(Math.floor(rankInput) - 1, playerState.order.length))
+            : playerState.order.length;
+        playerState.order.splice(targetIndex, 0, godName);
+    }
+
+    persistRankerDraft(player);
+    refreshDirtyState(player);
+
+    const sectionAfterSave = state.godDetail.section || "edit";
+
+    try {
+        const payload = await api("/api/save-rankings", {
+            method: "POST",
+            body: JSON.stringify({
+                player,
+                ratings: playerState.ratings,
+                order: playerState.order,
+            }),
+        });
+        state.ranker.lastSavedByPlayer[player] = new Date().toISOString();
+        state.ranker.baselineByPlayer[player] = buildRankerSignature(playerState);
+        clearRankerDraft(player);
+        refreshDirtyState(player);
+        await refreshData();
+        state.godDetail.section = sectionAfterSave;
+        openGodDetail(godName);
+        alert(payload.message || "Saved.");
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+// This helper opens the God Index deep-dive modal with council and match data.
+function openGodDetail(godName) {
+    const god = state.gods.find((item) => item.God === godName);
+    if (!god || !elements.godModalBackdrop || !elements.godModalContent) return;
+
+    if (state.godDetail.god !== godName) {
+        state.godDetail.god = godName;
+        state.godDetail.section = "council";
+    }
+    if (!state.config.players.includes(state.godDetail.editPlayer)) {
+        state.godDetail.editPlayer = state.config.players[0] || "Joey";
+    }
+
+    const historyRows = godPlayerHistory(godName);
+    const playedRows = historyRows.filter((row) => row.games > 0);
+    const bestPlayer = [...playedRows].sort((a, b) => Number(b.winRate || 0) - Number(a.winRate || 0) || b.games - a.games)[0] || null;
+    const { recentRows, synergies } = godMatchInsights(godName);
+    const ownership = buildOwnershipSnapshot(godName);
+    const coverage = coverageCount(god);
+    const split = controversyScore(god);
+    const topPerformance = [...playedRows].sort((a, b) => Number(b.winRate || 0) - Number(a.winRate || 0) || b.wins - a.wins || b.games - a.games)[0] || null;
+    const mostPlayedRow = [...playedRows].sort((a, b) => b.games - a.games || Number(b.winRate || 0) - Number(a.winRate || 0))[0] || null;
+    const sections = [
+        { key: "council", label: "Council" },
+        { key: "ownership", label: "Ownership" },
+        { key: "performance", label: "Performance" },
+        { key: "synergy", label: "Synergy" },
+        { key: "recent", label: "Recent" },
+        { key: "edit", label: "Rate & Rank" },
+    ];
+    if (!sections.some((section) => section.key === state.godDetail.section)) {
+        state.godDetail.section = "council";
+    }
+
+    const ratingOwnershipLine = (label, person, toneClass = "") => {
+        if (!person) return "";
+        const deltaText = Number(person.delta || 0) > 0 ? `+${person.delta} vs council` : `${person.delta} vs council`;
+        return `<div class="mini-row-v2 ownership-row"><span><strong>${escapeHtml(label)}: ${escapeHtml(person.player)}</strong><small>${escapeHtml(deltaText)}</small></span><b class="${toneClass}" style="color:${playerColor(person.player)}">${person.score}</b></div>`;
+    };
+
+    const performanceOwnershipLine = (label, person, value) => {
+        if (!person) return `<div class="rank-meta">No stored Joust games for this god yet.</div>`;
+        return `<div class="mini-row-v2 ownership-row"><span><strong>${escapeHtml(label)}: ${escapeHtml(person.player)}</strong><small>${formatWinLossRecord(person.wins, person.games)} | ${formatMetric(person.games)} games</small></span><b style="color:${playerColor(person.player)}">${escapeHtml(value)}</b></div>`;
+    };
+
+    const ratedHistoryRows = historyRows.filter((row) => Number(row.rating || 0) > 0);
+    const highestRating = [...ratedHistoryRows].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0) || (a.rank || 9999) - (b.rank || 9999))[0] || null;
+    const topRanked = [...ratedHistoryRows].filter((row) => row.rank).sort((a, b) => Number(a.rank || 9999) - Number(b.rank || 9999))[0] || null;
+    const strongestRecord = [...playedRows].sort((a, b) => Number(b.winRate || 0) - Number(a.winRate || 0) || b.games - a.games)[0] || null;
+    const recentWins = recentRows.filter((match) => match.won).length;
+    const recentLosses = recentRows.filter((match) => !match.won).length;
+    const bestSynergy = [...synergies].sort((a, b) => Number(b.winRate || 0) - Number(a.winRate || 0) || Number(b.games || 0) - Number(a.games || 0))[0] || null;
+    const mostUsedSynergy = [...synergies].sort((a, b) => Number(b.games || 0) - Number(a.games || 0) || Number(b.winRate || 0) - Number(a.winRate || 0))[0] || null;
+
+    const dossierStat = (label, value, note = "", toneClass = "") => `
+        <article class="god-dossier-stat ${toneClass}">
+            <span>${escapeHtml(label)}</span>
+            <strong>${escapeHtml(value)}</strong>
+            ${note ? `<small>${escapeHtml(note)}</small>` : ""}
+        </article>
+    `;
+
+    const councilPlayerCards = historyRows.map((row) => `
+        <article class="god-player-card">
+            <div class="god-player-card-head">
+                <strong style="color:${playerColor(row.player)}">${escapeHtml(row.player)}</strong>
+                <span>${row.rank ? `#${row.rank}` : "Unranked"}</span>
             </div>
-            ${renderFilterSummary()}
-            <div class="god-grid">${cards}</div>
-            ${renderBackToTop()}
+            <div class="god-player-score" style="color:${playerColor(row.player)}">${row.rating || "--"}</div>
+            <div class="god-player-meta">
+                <span>${row.games ? formatWinLossRecord(row.wins, row.games) : "No matches"}</span>
+                <span>${row.games ? `${formatMetric(row.winRate, 1, "%")} WR` : "-- WR"}</span>
+                <span>${row.games ? `${formatMetric(row.kdaRatio, 2)} KDA` : "-- KDA"}</span>
+            </div>
+        </article>
+    `).join("");
+
+    const performanceCards = playedRows.length ? playedRows
+        .slice()
+        .sort((a, b) => Number(b.winRate || 0) - Number(a.winRate || 0) || b.games - a.games)
+        .slice(0, 8)
+        .map((row) => `
+            <article class="god-performance-card">
+                <div>
+                    <p class="eyebrow" style="color:${playerColor(row.player)}">${escapeHtml(row.player)}</p>
+                    <h4>${formatWinLossRecord(row.wins, row.games)}</h4>
+                </div>
+                <div class="god-performance-meter">
+                    <span style="width:${Math.max(2, Math.min(100, Number(row.winRate || 0)))}%"></span>
+                </div>
+                <div class="god-player-meta">
+                    <span>${formatMetric(row.winRate, 1, "%")} WR</span>
+                    <span>${formatMetric(row.games)} games</span>
+                    <span>${formatMetric(row.damagePerMin)} dmg/min</span>
+                </div>
+            </article>
+        `).join("") : `<p class="rank-meta">No stored Joust match history for this god yet.</p>`;
+
+    const synergyCards = synergies.length ? synergies.map((record) => `
+        <article class="god-synergy-card">
+            <div class="god-synergy-card-main">
+                <strong>${escapeHtml(record.label || "Combo")}</strong>
+                <span>${escapeHtml(formatParticipantAssignments(record.participantGods || {}, record.members || []))}</span>
+            </div>
+            <b>${formatRecord(record)}</b>
+        </article>
+    `).join("") : `<p class="rank-meta">No stored council combo involving this god yet.</p>`;
+
+    const recentCards = recentRows.length ? recentRows.map((match) => `
+        <article class="god-recent-card ${match.won ? "win" : "loss"}">
+            <div>
+                <strong style="color:${playerColor(match.player)}">${escapeHtml(match.player)}</strong>
+                <span class="rank-meta">${escapeHtml(formatDateTime(match.startedAt))}</span>
+            </div>
+            <div class="god-recent-result ${match.won ? "movement-up" : "movement-down"}">${match.won ? "Win" : "Loss"}</div>
+            <div class="god-player-meta">
+                <span>${escapeHtml(match.role || "Role")}</span>
+                <span>${formatMetric(match.kills)}/${formatMetric(match.deaths)}/${formatMetric(match.assists)}</span>
+                <span>${escapeHtml(match.queueType || "Queue")}</span>
+            </div>
+        </article>
+    `).join("") : `<p class="rank-meta">No recent stored matches for this god in the current profile payload.</p>`;
+
+    const editPlayer = state.godDetail.editPlayer;
+    const editUnlocked = !!state.ranker.unlocked[editPlayer];
+    const editState = state.ranker.byPlayer[editPlayer] || { ratings: {}, order: [] };
+    const editRating = Number(editState.ratings?.[godName] ?? god[editPlayer] ?? 0);
+    const editRank = editState.order?.includes(godName)
+        ? editState.order.indexOf(godName) + 1
+        : (state.allRankings?.[editPlayer]?.[godName] || "");
+
+    const sectionHtml = {
+        council: `
+            <section class="god-modal-tab-panel god-dossier-panel">
+                <article class="detail-card-v2 wide god-dossier-card">
+                    <div class="section-head"><div><p class="eyebrow">Council</p><h3>Ratings And Personal Ranks</h3></div><span class="summary-pill">${bestPlayer ? `Best WR: ${escapeHtml(bestPlayer.player)} ${formatMetric(bestPlayer.winRate, 1, "%")}` : "No match sample"}</span></div>
+                    <div class="detail-table-wrap"><table class="table compact-table"><thead><tr><th>Player</th><th>Rating</th><th>Rank</th><th>Record</th><th>WR</th><th>KDA</th></tr></thead><tbody>
+                        ${historyRows.map((row) => `<tr><td><strong>${escapeHtml(row.player)}</strong></td><td>${row.rating || "--"}</td><td>${row.rank ? `#${row.rank}` : "--"}</td><td>${row.games ? formatWinLossRecord(row.wins, row.games) : "--"}</td><td class="${Number(row.winRate || 0) >= 55 ? "movement-up" : row.games ? "movement-down" : ""}">${row.games ? formatMetric(row.winRate, 1, "%") : "--"}</td><td>${row.games ? formatMetric(row.kdaRatio, 2) : "--"}</td></tr>`).join("")}
+                    </tbody></table></div>
+                </article>
+            </section>
+        `,
+        ownership: `
+            <section class="god-modal-tab-panel god-dossier-panel">
+                <div class="god-ownership-grid">
+                    <article class="detail-card-v2">
+                        <p class="eyebrow">Ratings Ownership</p>
+                        <h3>Council Belief</h3>
+                        <div class="mini-list-v2">${ownership?.owner ? `${ratingOwnershipLine("Biggest believer", ownership.owner, "movement-up")}${ratingOwnershipLine("Most skeptical", ownership.skeptic, "movement-down")}<div class="mini-row-v2"><span><strong>Room spread</strong><small>${coverage}/${state.config.players.length} rated</small></span><b>${split} pts</b></div>` : `<p class="rank-meta">No council ownership story yet.</p>`}</div>
+                    </article>
+                    <article class="detail-card-v2">
+                        <p class="eyebrow">Actual Performance</p>
+                        <h3>Best Results</h3>
+                        <div class="mini-list-v2">${performanceOwnershipLine("Best win rate", topPerformance, topPerformance ? formatMetric(topPerformance.winRate, 1, "%") : "--")}</div>
+                    </article>
+                    <article class="detail-card-v2 wide">
+                        <p class="eyebrow">Most Played</p>
+                        <h3>Who Has The Reps</h3>
+                        <div class="mini-list-v2">${performanceOwnershipLine("Most played", mostPlayedRow, mostPlayedRow ? `${formatMetric(mostPlayedRow.games)} games` : "--")}</div>
+                    </article>
+                </div>
+            </section>
+        `,
+        performance: `
+            <section class="god-modal-tab-panel god-dossier-panel">
+                <div class="god-dossier-grid">
+                    ${dossierStat("Best WR", topPerformance ? `${topPerformance.player}` : "--", topPerformance ? `${formatMetric(topPerformance.winRate, 1, "%")} over ${formatMetric(topPerformance.games)} games` : "No games yet")}
+                    ${dossierStat("Most Played", mostPlayedRow ? `${mostPlayedRow.player}` : "--", mostPlayedRow ? `${formatMetric(mostPlayedRow.games)} games` : "No games yet")}
+                    ${dossierStat("Total Sample", `${playedRows.reduce((sum, row) => sum + Number(row.games || 0), 0)}`, "stored player-games")}
+                    ${dossierStat("Council Form", playedRows.length ? `${formatMetric(average(playedRows.map((row) => Number(row.winRate || 0))), 1, "%")}` : "--", playedRows.length ? "avg WR across raters" : "No sample")}
+                </div>
+                <article class="detail-card-v2 wide god-dossier-card"><p class="eyebrow">Performance</p><h3>Who Actually Plays It</h3><div class="god-performance-grid">${performanceCards}</div></article>
+            </section>
+        `,
+        synergy: `
+            <section class="god-modal-tab-panel god-dossier-panel">
+                <div class="god-dossier-grid">
+                    ${dossierStat("Best Look", bestSynergy ? bestSynergy.label : "--", bestSynergy ? formatRecord(bestSynergy) : "No combo yet")}
+                    ${dossierStat("Most Used", mostUsedSynergy ? mostUsedSynergy.label : "--", mostUsedSynergy ? `${formatMetric(mostUsedSynergy.games)} games` : "No combo yet")}
+                    ${dossierStat("Combo Count", `${synergies.length}`, "stored council looks")}
+                    ${dossierStat("Best Record", bestSynergy ? formatRecord(bestSynergy) : "--", bestSynergy ? escapeHtml(formatParticipantAssignments(bestSynergy.participantGods || {}, bestSynergy.members || [])) : "No assignments")}
+                </div>
+                <article class="detail-card-v2 wide god-dossier-card"><p class="eyebrow">Synergy</p><h3>Group Looks</h3><div class="god-synergy-grid">${synergyCards}</div></article>
+            </section>
+        `,
+        recent: `
+            <section class="god-modal-tab-panel god-dossier-panel">
+                <div class="god-dossier-grid">
+                    ${dossierStat("Recent Sample", `${recentRows.length}`, "stored matches")}
+                    ${dossierStat("Recent Wins", `${recentWins}`, `${recentLosses} losses`)}
+                    ${dossierStat("Last Played", recentRows[0] ? formatDateTime(recentRows[0].startedAt) : "--", recentRows[0] ? recentRows[0].player : "No recent match")}
+                    ${dossierStat("Latest Pick", recentRows[0] ? recentRows[0].player : "--", recentRows[0] ? `${recentRows[0].won ? "Win" : "Loss"} ${formatMetric(recentRows[0].kills)}/${formatMetric(recentRows[0].deaths)}/${formatMetric(recentRows[0].assists)}` : "No match")}
+                </div>
+                <article class="detail-card-v2 wide god-dossier-card"><div class="section-head"><div><p class="eyebrow">Recent Games</p><h3>Latest Stored Matches</h3></div><span class="summary-pill">${recentRows.length} found</span></div><div class="god-recent-grid">${recentCards}</div></article>
+            </section>
+        `,
+        edit: `
+            <section class="god-modal-tab-panel god-dossier-panel">
+                <article class="detail-card-v2 wide god-edit-card god-dossier-card">
+                    <div class="section-head"><div><p class="eyebrow">Rate & Rank</p><h3>Update This God</h3></div><span class="summary-pill">Private council edit</span></div>
+                    <div class="god-edit-grid">
+                        <label class="field"><span>Council Member</span><select id="god-edit-player">${state.config.players.map((player) => `<option value="${escapeHtml(player)}" ${editPlayer === player ? "selected" : ""}>${escapeHtml(player)}</option>`).join("")}</select></label>
+                        ${editUnlocked ? `
+                            <label class="field"><span>Rating</span><input id="god-edit-rating" type="number" min="0" max="100" value="${editRating}"></label>
+                            <label class="field"><span>Rank</span><input id="god-edit-rank" type="number" min="1" max="${state.gods.length}" value="${escapeHtml(editRank)}" placeholder="Optional"></label>
+                            <button class="btn-primary" id="god-edit-save" type="button">Save ${escapeHtml(god.God)}</button>
+                        ` : `
+                            <label class="field"><span>PIN</span><input id="god-edit-pin" type="password" placeholder="Enter ${escapeHtml(editPlayer)} PIN"></label>
+                            <button class="btn-primary" id="god-edit-unlock" type="button">Unlock</button>
+                        `}
+                    </div>
+                    <p class="rank-meta">Tip: set rating to 0 to remove this god from that rater's ranked list.</p>
+                </article>
+            </section>
+        `,
+    };
+
+    elements.godModalContent.innerHTML = `
+        <div class="god-modal-hero" style="${god.ImageUrl ? `background-image:url('${god.ImageUrl}')` : ""}">
+            ${god.PantheonImageUrl ? `<img class="modal-pantheon-watermark" src="${god.PantheonImageUrl}" alt="" aria-hidden="true">` : ""}
+            <div class="god-modal-shade"></div>
+            <div class="modal-badge-stack">
+                <div class="modal-rank-chip">#${god.Rank || "--"}</div>
+                <div class="modal-tier-chip" style="color:${tierColor(god.Tier)}">${escapeHtml(god.Tier || "U")}</div>
+            </div>
+            <div class="modal-score-chip" style="color:${tierColor(god.Tier)}">${god.Rating}</div>
+            <div class="god-modal-copy"><p class="eyebrow god-pantheon-label">${god.PantheonImageUrl ? `<img class="pantheon-inline-icon" src="${god.PantheonImageUrl}" alt="" aria-hidden="true">` : ""}<span>${escapeHtml(god.Pantheon || "Unknown Pantheon")}</span></p><h2>${escapeHtml(god.God)}</h2><p class="god-modal-title">${escapeHtml(god.Title || "")}</p><div class="modal-meta-line">${escapeHtml(god.Role || "")} | ${escapeHtml(god.Class || "")} | ${escapeHtml(god["Attack Type"] || "")} | ${escapeHtml(god["Damage Type"] || "")}</div></div>
+        </div>
+        <div class="god-modal-body">
+            <div class="subtab-bar god-modal-tabs" role="tablist" aria-label="God detail sections">${sections.map((section) => `<button class="subtab-btn ${state.godDetail.section === section.key ? "active" : ""}" type="button" data-god-modal-section="${section.key}" role="tab" aria-selected="${state.godDetail.section === section.key ? "true" : "false"}">${escapeHtml(section.label)}</button>`).join("")}</div>
+            <div class="subtab-content god-modal-tab-content">${sectionHtml[state.godDetail.section]}</div>
         </div>
     `;
+
+    elements.godModalBackdrop.classList.remove("hidden");
+    document.body.classList.add("modal-open");
+
+    elements.godModalContent.querySelectorAll("[data-god-modal-section]").forEach((button) => {
+        button.addEventListener("click", () => {
+            state.godDetail.section = button.dataset.godModalSection || "council";
+            openGodDetail(godName);
+        });
+    });
+    elements.godModalContent.querySelector("#god-edit-player")?.addEventListener("change", (event) => {
+        state.godDetail.editPlayer = event.target.value;
+        openGodDetail(godName);
+    });
+    elements.godModalContent.querySelector("#god-edit-unlock")?.addEventListener("click", () => unlockGodQuickEdit(godName));
+    elements.godModalContent.querySelector("#god-edit-save")?.addEventListener("click", () => saveGodQuickEdit(godName));
+}
+
+// This helper closes the God Index deep-dive modal.
+function closeGodDetail() {
+    if (!elements.godModalBackdrop) return;
+    elements.godModalBackdrop.classList.add("hidden");
+    document.body.classList.remove("modal-open");
 }
 
 // This helper renders the rankings tab.
@@ -1756,6 +2287,7 @@ function buildRaterProfile(player) {
         displayName: external.displayName || player,
         metrics: external.metrics || {},
         topGods: external.topGods || [],
+        godStats: external.godStats || {},
         topRoles: external.topRoles || [],
         recentMatches: external.recentMatches || [],
         chemistry: external.chemistry || {},
@@ -1812,189 +2344,148 @@ function bestGodsByWinRate(topGods, limit = 4, minimumGames = 3) {
 // graceful fallbacks for unlinked or data-light profiles.
 function renderRaterStatsTab() {
     const isMobile = state.ui.isMobile;
-    const sourceSummary = raterStatsSourceSummary();
-    const cards = state.config.players.map((player) => {
-        const profile = buildRaterProfile(player);
-        const mostPlayed = mostPlayedGods(profile.topGods, isMobile ? 4 : 5);
-        const bestWinRate = bestGodsByWinRate(profile.topGods, isMobile ? 3 : 4, 3);
-        const signatureName = profile.topGods[0]?.name || profile.signature?.God || 'Unformed Legend';
-        const signatureImage = profile.topGods[0]?.imageUrl || profile.signature?.ImageUrl || '';
-        const recentForm = profile.insights.recentForm || (profile.recentHistory.length >= 3 ? 'Actively tuning council scores' : 'Quiet week');
-        const buildDna = profile.insights.buildDna || '';
-        const favoritePantheon = profile.favoritePantheon?.label || '';
-        const mobileSubmeta = [
-            profile.favoriteRole?.label || 'Unknown role',
-            recentForm,
-            profile.insights.damageProfile || '',
-        ].filter(Boolean).slice(0, 2);
-        const availabilityNote = profile.available
-            ? (profile.historySource === 'supabase' ? 'Supabase-backed stored history' : 'Live SmiteSource overview and recent matches')
-            : (profile.linked ? 'Profile linked, but no public match sample was returned yet' : 'Profile not linked yet');
+    if (!state.config.players.includes(state.raterStats.selectedPlayer)) {
+        state.raterStats.selectedPlayer = state.config.players[0] || "Joey";
+    }
+    const selectedPlayer = state.raterStats.selectedPlayer;
+    const sections = [
+        { key: "profile", label: "Profile" },
+        { key: "favorites", label: "Favorites" },
+        { key: "details", label: "Details" },
+    ];
+    if (!sections.some((section) => section.key === state.raterStats.section)) {
+        state.raterStats.section = "profile";
+    }
 
-        return `
-            <article class="rater-card">
-                <div class="rater-card-hero rater-signature-art">
-                    ${signatureImage ? `<img class="god-art" src="${signatureImage}" alt="${escapeHtml(signatureName)}">` : `<div class="image-fallback">No Art</div>`}
-                    <div class="god-overlay"></div>
-                    <div class="rater-hero-topline">
-                        <div>
-                            <p class="eyebrow" style="color:rgba(255,255,255,0.78)">${profile.historySource === 'supabase' ? 'Supabase History' : (profile.available ? 'SmiteSource Live' : 'Council + Profile Shell')}</p>
-                            <h2>${escapeHtml(player)}</h2>
-                        </div>
-                        <div class="profile-chip-row rater-hero-pills">
-                            <span class="summary-pill">${escapeHtml(profile.archetype.title)}</span>
-                            ${!isMobile ? `<span class="summary-pill">${profile.ratedCount} gods rated here</span>` : ''}
-                            ${!isMobile && profile.rankSummary ? `<span class="summary-pill">${escapeHtml(profile.rankSummary)}</span>` : ''}
-                            ${profile.profileLink ? `<a class="summary-pill" href="${profile.profileLink}" target="_blank" rel="noreferrer">${isMobile ? 'Profile' : 'SmiteSource Profile'}</a>` : `<span class="summary-pill muted">Profile not linked yet</span>`}
-                        </div>
-                    </div>
-                    <div class="rater-signature-copy">
-                        <div>
-                            <span class="chip">Signature God</span>
-                            <h3>${escapeHtml(signatureName)}</h3>
-                            <div class="rank-meta" style="color:rgba(255,255,255,0.78)">
-                                ${profile.topGods[0]
-                                    ? `${formatWinLossRecord(profile.topGods[0].wins, profile.topGods[0].gamesPlayed)} | ${formatMetric(profile.topGods[0].gamesPlayed)} games | ${formatMetric(profile.topGods[0].winRate, 1, '%')} WR`
-                                    : (profile.signature ? `${profile.signature[player]} council score` : 'No signature yet')}
-                            </div>
-                        </div>
-                        <div class="rater-hero-note">
-                            <div class="metric-label" style="color:rgba(255,255,255,0.72)">Archetype</div>
-                            <div class="rater-hero-archetype">${escapeHtml(profile.archetype.title)}</div>
-                            ${!isMobile ? `<p>${escapeHtml(profile.archetype.note)}</p>` : ''}
-                            <div class="rater-hero-submeta">
-                                ${(isMobile ? mobileSubmeta : [
-                                    profile.favoriteRole?.label || 'Unknown role',
-                                    favoritePantheon,
-                                    recentForm,
-                                    profile.insights.damageProfile || '',
-                                    buildDna,
-                                ].filter(Boolean)).map((item) => `<span>${escapeHtml(item)}</span>`).join('')}
-                            </div>
-                            <div class="rater-hero-metrics">
-                                <span class="summary-pill">${formatMetric(profile.metrics.winRate, 1, '%')} WR</span>
-                                <span class="summary-pill">${formatMetric(profile.metrics.kdaRatio, 2)} KDA</span>
-                                <span class="summary-pill">${isMobile ? formatMetric(profile.metrics.matches) : `${formatMetric(profile.metrics.matches)} matches`}</span>
-                                ${!isMobile ? `<span class="summary-pill">${formatMetric(profile.metrics.hoursPlayed, 1)} hrs</span>` : ''}
-                            </div>
+    const profile = buildRaterProfile(selectedPlayer);
+    const mostPlayed = mostPlayedGods(profile.topGods, isMobile ? 4 : 6);
+    const bestWinRate = bestGodsByWinRate(profile.topGods, isMobile ? 3 : 5, 3);
+    const signatureName = profile.topGods[0]?.name || profile.signature?.God || 'Unformed Legend';
+    const signatureImage = profile.topGods[0]?.imageUrl || profile.signature?.ImageUrl || '';
+    const recentForm = profile.insights.recentForm || (profile.recentHistory.length >= 3 ? 'Actively tuning council scores' : 'Quiet week');
+    const buildDna = profile.insights.buildDna || '';
+    const favoritePantheon = profile.favoritePantheon?.label || '';
+    const availabilityNote = profile.available
+        ? 'No recent match sample is available yet'
+        : (profile.linked ? 'Profile linked, but no public match sample was returned yet' : 'Profile not linked yet');
+
+    const topFavorites = [...state.gods]
+        .filter((god) => Number.isFinite(god[selectedPlayer]) && god[selectedPlayer] > 0)
+        .sort((a, b) => (b[selectedPlayer] - a[selectedPlayer]) || a.God.localeCompare(b.God))
+        .slice(0, 12);
+
+    const favoriteRows = topFavorites.length
+        ? topFavorites.map((god, index) => {
+            const godStat = profile.godStats?.[god.God] || null;
+            const delta = Number(god[selectedPlayer] - god.Rating) || 0;
+            return `
+                <article class="favorite-profile-card" data-god-detail="${escapeHtml(god.God)}" role="button" tabindex="0">
+                    <div class="favorite-rank-medallion">#${index + 1}</div>
+                    <div class="favorite-profile-art">${god.ImageUrl ? `<img class="god-art" src="${god.ImageUrl}" alt="${escapeHtml(god.God)}">` : `<div class="image-fallback">Art</div>`}</div>
+                    <div>
+                        <strong>${escapeHtml(god.God)}</strong>
+                        <div class="rank-meta">${escapeHtml(god.Role || "")} | ${escapeHtml(god.Pantheon || "")}</div>
+                        <div class="profile-chip-row">
+                            <span class="summary-pill">Rating ${god[selectedPlayer]}</span>
+                            <span class="summary-pill ${delta > 0 ? 'cool' : delta < 0 ? 'warm' : 'muted'}">${delta > 0 ? '+' : ''}${delta} vs avg</span>
+                            ${godStat ? `<span class="summary-pill">${formatWinLossRecord(godStat.wins, godStat.gamesPlayed)} | ${formatMetric(godStat.winRate, 1, '%')} WR</span>` : ''}
                         </div>
                     </div>
-                </div>
+                </article>
+            `;
+        }).join("")
+        : `<div class="rank-meta">No favorites yet for ${escapeHtml(selectedPlayer)}.</div>`;
 
-                <div class="mini-highlight-grid rater-topgod-grid" style="margin-top:14px;">
-                    <article class="mini-highlight-card">
-                        <div class="metric-label">Most Played</div>
-                        ${mostPlayed.length ? mostPlayed.map((god) => `
-                            <div class="mini-highlight-row">
-                                <span>
-                                    <strong>${escapeHtml(god.name)}</strong>
-                                    <small>${formatWinLossRecord(god.wins, god.gamesPlayed)} | ${formatMetric(god.winRate, 1, '%')} WR</small>
-                                </span>
-                                <strong>${formatMetric(god.gamesPlayed)} games</strong>
-                            </div>
-                        `).join('') : `<div class="rank-meta">${escapeHtml(availabilityNote)}</div>`}
-                    </article>
-                    <article class="mini-highlight-card">
-                        <div class="metric-label">Best Win Rates</div>
-                        ${bestWinRate.length ? bestWinRate.map((god) => `
-                            <div class="mini-highlight-row">
-                                <span>
-                                    <strong>${escapeHtml(god.name)}</strong>
-                                    <small>${formatWinLossRecord(god.wins, god.gamesPlayed)} over ${formatMetric(god.gamesPlayed)} games</small>
-                                </span>
-                                <strong>${formatMetric(god.winRate, 1, '%')}</strong>
-                            </div>
-                        `).join('') : `<div class="rank-meta">Need at least 3 games on a god to crown a real win-rate pick.</div>`}
-                    </article>
-                    <article class="mini-highlight-card mini-highlight-card-muted">
-                        <div class="metric-label">Player Snapshot</div>
-                        <div class="mini-highlight-row"><span>Most queued role</span><strong>${escapeHtml(profile.topRoles[0]?.role || profile.favoriteRole?.label || 'Unknown')}</strong></div>
-                        <div class="mini-highlight-row"><span>Current signature</span><strong>${escapeHtml(signatureName)}</strong></div>
-                        <div class="mini-highlight-row"><span>Avg council score</span><strong>${formatMetric(profile.avgScore)}</strong></div>
-                        <div class="mini-highlight-row"><span>Peak rank</span><strong>${escapeHtml(profile.peakRankSummary || 'Unranked / unavailable')}</strong></div>
-                        <div class="mini-highlight-row">
-                            <span>Role bias</span>
-                            <strong class="${(profile.roleBias?.delta || 0) >= 0 ? 'movement-up' : 'movement-down'}">${profile.roleBias ? `${profile.roleBias.label} ${(profile.roleBias.delta || 0) >= 0 ? '+' : ''}${Math.round(profile.roleBias.delta * 10) / 10}` : 'None yet'}</strong>
+    const profileSection = `
+        <section class="rater-profile-panel">
+            <div class="rater-card-hero rater-signature-art rater-profile-hero">
+                ${signatureImage ? `<img class="god-art" src="${signatureImage}" alt="${escapeHtml(signatureName)}">` : `<div class="image-fallback">No Art</div>`}
+                <div class="god-overlay"></div>
+                <div class="rater-hero-topline">
+                    <div>
+                        <p class="eyebrow" style="color:rgba(255,255,255,0.78)">Council Profile</p>
+                        <h2>${escapeHtml(selectedPlayer)}</h2>
+                    </div>
+                    <div class="profile-chip-row rater-hero-pills">
+                        <span class="summary-pill">${escapeHtml(profile.archetype.title)}</span>
+                        <span class="summary-pill">${profile.ratedCount} rated</span>
+
+                    </div>
+                </div>
+                <div class="rater-signature-copy">
+                    <div>
+                        <span class="chip">Signature God</span>
+                        <h3>${escapeHtml(signatureName)}</h3>
+                        <div class="rank-meta" style="color:rgba(255,255,255,0.78)">${profile.topGods[0] ? `${formatWinLossRecord(profile.topGods[0].wins, profile.topGods[0].gamesPlayed)} | ${formatMetric(profile.topGods[0].gamesPlayed)} games | ${formatMetric(profile.topGods[0].winRate, 1, '%')} WR` : (profile.signature ? `${profile.signature[selectedPlayer]} council score` : 'No signature yet')}</div>
+                    </div>
+                    <div class="rater-hero-note">
+                        <div class="metric-label" style="color:rgba(255,255,255,0.72)">Read</div>
+                        <div class="rater-hero-archetype">${escapeHtml(profile.archetype.title)}</div>
+                        ${!isMobile ? `<p>${escapeHtml(profile.archetype.note)}</p>` : ''}
+                        <div class="rater-hero-submeta">
+                            ${[profile.favoriteRole?.label || 'Unknown role', favoritePantheon, recentForm, profile.insights.damageProfile || '', buildDna].filter(Boolean).map((item) => `<span>${escapeHtml(item)}</span>`).join('')}
                         </div>
-                    </article>
+                        <div class="rater-hero-metrics">
+                            <span class="summary-pill">${formatMetric(profile.metrics.winRate, 1, '%')} WR</span>
+                            <span class="summary-pill">${formatMetric(profile.metrics.kdaRatio, 2)} KDA</span>
+                            <span class="summary-pill">${formatMetric(profile.metrics.matches)} matches</span>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="mini-highlight-grid rater-detail-grid" style="margin-top:14px;">
-                    <article class="mini-highlight-card">
-                        <div class="metric-label">Recent Matches</div>
-                        ${profile.recentMatches.length ? profile.recentMatches.map((match) => `
-                            <div class="mini-highlight-row">
-                                <span>${escapeHtml(match.godName)} | ${escapeHtml(match.role || 'Role')}</span>
-                                <strong class="${match.won ? 'movement-up' : 'movement-down'}">${match.won ? 'W' : 'L'} ${formatMetric(match.kills)}/${formatMetric(match.deaths)}/${formatMetric(match.assists)}</strong>
-                            </div>
-                        `).join('') : `<div class="rank-meta">${escapeHtml(availabilityNote)}</div>`}
-                    </article>
-                    ${!isMobile ? `
-                    <article class="mini-highlight-card">
-                        <div class="metric-label">Role Snapshot</div>
-                        ${profile.topRoles.length ? profile.topRoles.map((role) => `
-                            <div class="mini-highlight-row">
-                                <span>
-                                    <strong>${escapeHtml(role.role)}</strong>
-                                    <small>${formatWinLossRecord(role.wins, role.gamesPlayed)} | ${formatMetric(role.winRate, 1, '%')} WR</small>
-                                </span>
-                                <strong>${formatMetric(role.gamesPlayed)} games</strong>
-                            </div>
-                        `).join('') : `<div class="rank-meta">No role sample yet</div>`}
-                    </article>
-                    ` : ''}
-                </div>
-
-                ${!isMobile ? `
-                <div class="mini-highlight-grid rater-detail-grid" style="margin-top:10px;">
-                    <article class="mini-highlight-card">
-                        <div class="metric-label">Council Moves</div>
-                        ${profile.recentHistory.length ? profile.recentHistory.map((entry) => `
-                            <div class="mini-highlight-row">
-                                <span>${escapeHtml(entry.god)}</span>
-                                <strong>${entry.oldValue === 0 ? `new ${entry.newValue}` : `${entry.oldValue} -> ${entry.newValue}`}</strong>
-                            </div>
-                        `).join('') : `<div class="rank-meta">No recent rating changes yet</div>`}
-                    </article>
-                    <article class="mini-highlight-card mini-highlight-card-muted">
-                        <div class="metric-label">Performance Snapshot</div>
-                        <div class="mini-highlight-row"><span>Damage / min</span><strong>${formatMetric(profile.metrics.damagePerMin)}</strong></div>
-                        <div class="mini-highlight-row"><span>Gold / min</span><strong>${formatMetric(profile.metrics.goldPerMin)}</strong></div>
-                        <div class="mini-highlight-row"><span>XP / min</span><strong>${formatMetric(profile.metrics.xpPerMin)}</strong></div>
-                        <div class="mini-highlight-row"><span>Wards / match</span><strong>${formatMetric(profile.metrics.wardsPerMatch, 1)}</strong></div>
-                    </article>
-                </div>
-                ` : ''}
-            </article>
-        `;
-    }).join('');
-
-    const syncButtonLabel = state.raterStats.syncing ? 'Syncing...' : 'Sync SmiteSource';
-    const syncControls = `
-        <div class="sync-toolbar">
-            <button class="sync-button" type="button" data-sync-rater-stats="all" ${state.raterStats.syncing ? 'disabled' : ''}>${syncButtonLabel}</button>
-            ${state.raterStats.syncMessage ? `<span class="sync-message">${escapeHtml(state.raterStats.syncMessage)}</span>` : ''}
-        </div>
+            </div>
+            <div class="mini-highlight-grid rater-quick-grid" style="margin-top:14px;">
+                <article class="mini-highlight-card"><div class="metric-label">Most Played</div>${mostPlayed.length ? mostPlayed.map((god) => `<div class="mini-highlight-row"><span><strong>${escapeHtml(god.name)}</strong><small>${formatWinLossRecord(god.wins, god.gamesPlayed)} | ${formatMetric(god.winRate, 1, '%')} WR</small></span><strong>${formatMetric(god.gamesPlayed)} games</strong></div>`).join('') : `<div class="rank-meta">${escapeHtml(availabilityNote)}</div>`}</article>
+                <article class="mini-highlight-card"><div class="metric-label">Best Win Rates</div>${bestWinRate.length ? bestWinRate.map((god) => `<div class="mini-highlight-row"><span><strong>${escapeHtml(god.name)}</strong><small>${formatWinLossRecord(god.wins, god.gamesPlayed)} over ${formatMetric(god.gamesPlayed)} games</small></span><strong>${formatMetric(god.winRate, 1, '%')}</strong></div>`).join('') : `<div class="rank-meta">Need at least 3 games on a god to crown a real win-rate pick.</div>`}</article>
+            </div>
+        </section>
     `;
-    const banner = !state.raterStats.loaded
-        ? `<div class="status-banner">Loading stored rater stats in the background. Council-derived profile insights are available immediately.</div>`
-        : (state.raterStats.error
-            ? `<div class="status-banner">Rater stats hit an issue: ${escapeHtml(state.raterStats.error)}. Council-derived profile insights are still available below.</div>`
-            : sourceSummary.usingSupabase
-                ? `<div class="status-banner">Rater Stats is currently reading from Supabase-backed SmiteSource history, so it should not wait on live SmiteSource in normal use.</div>`
-                : sourceSummary.mixed
-                    ? `<div class="status-banner">Most linked profiles are reading from Supabase history, but some still fall back to live samples until they are synced.</div>`
-                    : `<div class="status-banner">This tab is still using live SmiteSource samples. Run a sync to move it onto stored Supabase history.</div>`);
+
+    const favoritesSection = `
+        <section class="rater-profile-panel">
+            <div class="section-kicker"><p class="eyebrow">Individual Taste</p><h3>${escapeHtml(selectedPlayer)} Favorites</h3></div>
+            <div class="profile-chip-row">
+                <span class="summary-pill">Avg ${profile.avgScore}</span>
+                ${profile.favoriteRole ? `<span class="summary-pill">Role: ${escapeHtml(profile.favoriteRole.label)}</span>` : ''}
+                ${profile.favoritePantheon ? `<span class="summary-pill">Pantheon: ${escapeHtml(profile.favoritePantheon.label)}</span>` : ''}
+            </div>
+            <div class="favorite-profile-grid">${favoriteRows}</div>
+        </section>
+    `;
+
+    const detailsSection = `
+        <section class="rater-profile-panel">
+            <div class="section-kicker"><p class="eyebrow">Deep Cut</p><h3>${escapeHtml(selectedPlayer)} Details</h3></div>
+            <div class="mini-highlight-grid rater-detail-grid">
+                <article class="mini-highlight-card mini-highlight-card-muted"><div class="metric-label">Player Snapshot</div><div class="mini-highlight-row"><span>Most queued role</span><strong>${escapeHtml(profile.topRoles[0]?.role || profile.favoriteRole?.label || 'Unknown')}</strong></div><div class="mini-highlight-row"><span>Current signature</span><strong>${escapeHtml(signatureName)}</strong></div><div class="mini-highlight-row"><span>Avg council score</span><strong>${formatMetric(profile.avgScore)}</strong></div><div class="mini-highlight-row"><span>Peak rank</span><strong>${escapeHtml(profile.peakRankSummary || 'Unranked / unavailable')}</strong></div></article>
+                <article class="mini-highlight-card"><div class="metric-label">Recent Matches</div>${profile.recentMatches.length ? profile.recentMatches.map((match) => `<div class="mini-highlight-row"><span>${escapeHtml(match.godName)} | ${escapeHtml(match.role || 'Role')}</span><strong class="${match.won ? 'movement-up' : 'movement-down'}">${match.won ? 'W' : 'L'} ${formatMetric(match.kills)}/${formatMetric(match.deaths)}/${formatMetric(match.assists)}</strong></div>`).join('') : `<div class="rank-meta">${escapeHtml(availabilityNote)}</div>`}</article>
+                <article class="mini-highlight-card"><div class="metric-label">Role Snapshot</div>${profile.topRoles.length ? profile.topRoles.map((role) => `<div class="mini-highlight-row"><span><strong>${escapeHtml(role.role)}</strong><small>${formatWinLossRecord(role.wins, role.gamesPlayed)} | ${formatMetric(role.winRate, 1, '%')} WR</small></span><strong>${formatMetric(role.gamesPlayed)} games</strong></div>`).join('') : `<div class="rank-meta">No role sample yet</div>`}</article>
+                <article class="mini-highlight-card"><div class="metric-label">Performance Snapshot</div><div class="mini-highlight-row"><span>Damage / min</span><strong>${formatMetric(profile.metrics.damagePerMin)}</strong></div><div class="mini-highlight-row"><span>Gold / min</span><strong>${formatMetric(profile.metrics.goldPerMin)}</strong></div><div class="mini-highlight-row"><span>XP / min</span><strong>${formatMetric(profile.metrics.xpPerMin)}</strong></div><div class="mini-highlight-row"><span>Wards / match</span><strong>${formatMetric(profile.metrics.wardsPerMatch, 1)}</strong></div></article>
+            </div>
+        </section>
+    `;
+
+    const banner = state.raterStats.error
+        ? `<div class="status-banner">Rater stats hit an issue: ${escapeHtml(state.raterStats.error)}. Council-derived profile insights are still available below.</div>`
+        : "";
+
+    const sectionMap = { profile: profileSection, favorites: favoritesSection, details: detailsSection };
 
     elements.tabRaterStats.innerHTML = `
-        <div class="panel">
-            <div class="panel-heading">
-                <p class="eyebrow">External Match Identity</p>
-                <h2>Rater Stats</h2>
+        <div class="panel tab-overview-panel">
+            <div class="panel-heading panel-heading-inline">
+                <div><p class="eyebrow">Council Member Lens</p><h2>Rater Profile</h2></div>
+                <span class="summary-pill">One rater at a time</span>
             </div>
-            ${syncControls}
             ${banner}
-            <div class="rater-stats-grid">${cards}</div>
+            <div class="subtab-shell rater-profile-shell">
+                <div class="subtab-bar rater-player-tabs" role="tablist" aria-label="Rater profiles">
+                    ${state.config.players.map((player) => `<button class="subtab-btn ${selectedPlayer === player ? 'active' : ''}" type="button" data-rater-player="${escapeHtml(player)}" role="tab" aria-selected="${selectedPlayer === player ? 'true' : 'false'}">${escapeHtml(player)}</button>`).join('')}
+                </div>
+                <div class="subtab-bar rater-section-tabs" role="tablist" aria-label="Rater profile sections">
+                    ${sections.map((section) => `<button class="subtab-btn ${state.raterStats.section === section.key ? 'active' : ''}" type="button" data-rater-section="${section.key}" role="tab" aria-selected="${state.raterStats.section === section.key ? 'true' : 'false'}">${escapeHtml(section.label)}</button>`).join('')}
+                </div>
+                <div class="subtab-content">${sectionMap[state.raterStats.section]}</div>
+            </div>
             ${renderBackToTop()}
         </div>
     `;
@@ -2234,14 +2725,6 @@ function renderChemistryTab() {
         return;
     }
     const insights = buildChemistryInsights();
-    const sourceSummary = raterStatsSourceSummary();
-    const syncButtonLabel = state.raterStats.syncing ? "Syncing..." : "Sync SmiteSource";
-    const syncControls = `
-        <div class="sync-toolbar">
-            <button class="sync-button" type="button" data-sync-rater-stats="all" ${state.raterStats.syncing ? "disabled" : ""}>${syncButtonLabel}</button>
-            ${state.raterStats.syncMessage ? `<span class="sync-message">${escapeHtml(state.raterStats.syncMessage)}</span>` : ""}
-        </div>
-    `;
     const hasChemistryData = Boolean(
         (insights.duoRecords || []).length
         || (insights.groupRecords || []).length
@@ -2250,12 +2733,8 @@ function renderChemistryTab() {
         || (insights.recentSessions || []).length,
     );
     const chemistryBanner = state.raterStats.error
-        ? `<div class="status-banner">Chemistry data hit an issue: ${escapeHtml(state.raterStats.error)}. Showing the last good council sync we have when available.</div>`
-        : sourceSummary.usingSupabase
-            ? `<div class="status-banner">Chemistry is currently running on Supabase-backed SmiteSource history.</div>`
-            : sourceSummary.mixed
-                ? `<div class="status-banner">Chemistry is using a mix of Supabase history and live fallback samples. Run sync again if you want everyone fully on stored history.</div>`
-                : `<div class="status-banner">Chemistry is still running on live fallback samples. Sync SmiteSource to store full history.</div>`;
+        ? `<div class="status-banner">Chemistry data hit an issue: ${escapeHtml(state.raterStats.error)}. Showing the last good council data when available.</div>`
+        : "";
 
     if (!hasChemistryData) {
         elements.tabChemistry.innerHTML = `
@@ -2264,7 +2743,6 @@ function renderChemistryTab() {
                     <p class="eyebrow">Council Synergy</p>
                     <h2>Chemistry</h2>
                 </div>
-                ${syncControls}
                 ${chemistryBanner}
                 ${emptyState("No Chemistry Data Yet", "No duo, trio, or shared-session chemistry has been loaded into the client yet.")}
             </div>
@@ -2277,7 +2755,27 @@ function renderChemistryTab() {
         const trinityShowcase = renderChemistryTrinityShowcase(insights, isMobile);
         const synergyMatrix = renderChemistrySynergyMatrix(insights, isMobile);
         const receiptsTimeline = renderChemistryReceiptsTimeline(insights, isMobile);
-        chemistryContent = `${trinityShowcase}${synergyMatrix}${receiptsTimeline}`;
+        const sections = [
+            { key: "trinity", label: "Trinity" },
+            { key: "matrix", label: "Pairings" },
+            { key: "timeline", label: "Receipts" },
+        ];
+        if (!sections.some((section) => section.key === state.chemistry.section)) {
+            state.chemistry.section = "trinity";
+        }
+        const sectionHtml = {
+            trinity: `<section class="chemistry-headline-section">${trinityShowcase}</section>`,
+            matrix: `<section class="chemistry-subtab-panel">${synergyMatrix}</section>`,
+            timeline: `<section class="chemistry-subtab-panel">${receiptsTimeline}</section>`,
+        };
+        chemistryContent = `
+            <div class="subtab-shell chemistry-subtab-shell">
+                <div class="subtab-bar" role="tablist" aria-label="Chemistry sections">
+                    ${sections.map((section) => `<button class="subtab-btn ${state.chemistry.section === section.key ? "active" : ""}" type="button" data-chemistry-section="${section.key}" role="tab" aria-selected="${state.chemistry.section === section.key ? "true" : "false"}">${escapeHtml(section.label)}</button>`).join("")}
+                </div>
+                <div class="subtab-content">${sectionHtml[state.chemistry.section]}</div>
+            </div>
+        `;
     } catch (error) {
         chemistryContent = `
             <div class="status-banner">Chemistry hit a render issue: ${escapeHtml(error.message || "Unknown error")}. Showing a compact fallback instead.</div>
@@ -2308,7 +2806,6 @@ function renderChemistryTab() {
                 <p class="eyebrow">Council Synergy</p>
                 <h2>Chemistry</h2>
             </div>
-            ${syncControls}
             ${chemistryBanner}
             ${chemistryContent}
             ${renderBackToTop()}
@@ -2474,9 +2971,20 @@ function renderAnalyticsTab() {
     const archetypes = state.config.players.map((player) => playerArchetype(player));
     const volatilityLeaders = buildVolatilityLeaders();
     const ownership = buildOwnershipSnapshot(state.analytics.god);
+    const sections = [
+        { key: "overview", label: "Overview" },
+        { key: "archetypes", label: "Archetypes" },
+        { key: "trends", label: "Trend Lab" },
+        { key: "ownership", label: "Ownership" },
+        { key: "disputes", label: "Disputes" },
+    ];
+    if (!sections.some((section) => section.key === state.analytics.section)) {
+        state.analytics.section = "overview";
+    }
+
     const playerOptions = state.config.players
         .map((player) => `
-            <label class="tiny-pill" style="display:inline-flex;align-items:center;gap:8px;">
+            <label class="tiny-pill analytics-check-pill">
                 <input type="checkbox" class="analytics-player" value="${escapeHtml(player)}" ${state.analytics.players.includes(player) ? "checked" : ""}>
                 ${escapeHtml(player)}
             </label>
@@ -2487,69 +2995,78 @@ function renderAnalyticsTab() {
         .map((god) => `<option value="${escapeHtml(god.God)}" ${state.analytics.god === god.God ? "selected" : ""}>${escapeHtml(god.God)}</option>`)
         .join("");
 
-    elements.tabAnalytics.innerHTML = `
-        <div class="panel">
-            <div class="panel-heading">
-                <p class="eyebrow">Completion + Trends</p>
-                <h2>Analytics</h2>
-            </div>
-
-            <div class="progress-grid">${renderProgressCards()}</div>
-            <div class="mini-highlight-grid" style="margin-top:18px;">
-                <article class="mini-highlight-card">
-                    <div class="metric-label">Most Agreed Upon</div>
-                    ${mostAgreed.length ? mostAgreed.map((god) => `<div class="mini-highlight-row"><span>${escapeHtml(god.God)}</span><strong class="movement-up">${agreementScore(god)}</strong></div>`).join("") : `<div class="rank-meta">Not enough overlap yet</div>`}
-                </article>
-                <article class="mini-highlight-card">
-                    <div class="metric-label">Most Rated Gods</div>
-                    ${mostRated.length ? mostRated.map((god) => `<div class="mini-highlight-row"><span>${escapeHtml(god.God)}</span><strong>${coverageCount(god)}/${state.config.players.length}</strong></div>`).join("") : `<div class="rank-meta">No ratings yet</div>`}
-                </article>
-            </div>
-            <div class="mini-highlight-grid">
-                <article class="mini-highlight-card">
-                    <div class="metric-label">Council Scoring Style</div>
-                    <div class="mini-highlight-row"><span>Most generous</span><strong style="color:${playerColor(mostGenerous?.player)}">${escapeHtml(mostGenerous?.player || "—")} ${mostGenerous?.average || 0}</strong></div>
-                    <div class="mini-highlight-row"><span>Most strict</span><strong style="color:${playerColor(strictest?.player)}">${escapeHtml(strictest?.player || "—")} ${strictest?.average || 0}</strong></div>
-                </article>
-                <article class="mini-highlight-card">
-                    <div class="metric-label">Tier Distribution</div>
-                    ${renderTierDistributionBars()}
-                </article>
-            </div>
-            <div class="panel-heading" style="margin-top:18px;">
-                <p class="eyebrow">Council Profiles</p>
-                <h2>Archetypes</h2>
-            </div>
-            <div class="archetype-grid">
-                ${archetypes.map((profile) => {
-                    const roleBias = strongestBiasForPlayer(profile.player, "Role");
-                    const pantheonBias = strongestBiasForPlayer(profile.player, "Pantheon");
-                    return `
-                        <article class="archetype-card">
-                            <div class="archetype-topline">
-                                <span class="summary-pill" style="color:${playerColor(profile.player)}">${escapeHtml(profile.player)}</span>
-                                <span class="summary-pill ${profile.avgDelta > 0 ? "cool" : profile.avgDelta < 0 ? "warm" : ""}">${profile.avgDelta > 0 ? "+" : ""}${profile.avgDelta} vs avg</span>
-                            </div>
-                            <h3 class="archetype-title">${escapeHtml(profile.title)}</h3>
-                            <p class="taste-note">${escapeHtml(profile.note)}</p>
-                            <div class="profile-chip-row">
-                                <span class="summary-pill">Avg ${profile.avgScore}</span>
-                                <span class="summary-pill">Volatility ${profile.volatility}</span>
-                            </div>
-                            <div class="bias-list">
-                                ${roleBias ? `<div class="bias-row"><span>Role bias</span><strong class="${roleBias.delta > 0 ? "movement-up" : "movement-down"}">${escapeHtml(roleBias.label)} ${roleBias.delta > 0 ? "+" : ""}${Math.round(roleBias.delta * 10) / 10}</strong></div>` : ""}
-                                ${pantheonBias ? `<div class="bias-row"><span>Pantheon bias</span><strong class="${pantheonBias.delta > 0 ? "movement-up" : "movement-down"}">${escapeHtml(pantheonBias.label)} ${pantheonBias.delta > 0 ? "+" : ""}${Math.round(pantheonBias.delta * 10) / 10}</strong></div>` : ""}
-                            </div>
-                        </article>
-                    `;
-                }).join("")}
-            </div>
-
-            <div class="chart-shell" style="margin-top:18px;">
-                <div class="panel-heading">
-                    <p class="eyebrow">History View</p>
-                    <h2>God Rating Trends</h2>
+    const archetypeCards = archetypes.map((profile) => {
+        const roleBias = strongestBiasForPlayer(profile.player, "Role");
+        const pantheonBias = strongestBiasForPlayer(profile.player, "Pantheon");
+        return `
+            <article class="archetype-card">
+                <div class="archetype-topline">
+                    <span class="summary-pill" style="color:${playerColor(profile.player)}">${escapeHtml(profile.player)}</span>
+                    <span class="summary-pill ${profile.avgDelta > 0 ? "cool" : profile.avgDelta < 0 ? "warm" : ""}">${profile.avgDelta > 0 ? "+" : ""}${profile.avgDelta} vs avg</span>
                 </div>
+                <h3 class="archetype-title">${escapeHtml(profile.title)}</h3>
+                <p class="taste-note">${escapeHtml(profile.note)}</p>
+                <div class="profile-chip-row">
+                    <span class="summary-pill">Avg ${profile.avgScore}</span>
+                    <span class="summary-pill">Volatility ${profile.volatility}</span>
+                </div>
+                <div class="bias-list">
+                    ${roleBias ? `<div class="bias-row"><span>Role bias</span><strong class="${roleBias.delta > 0 ? "movement-up" : "movement-down"}">${escapeHtml(roleBias.label)} ${roleBias.delta > 0 ? "+" : ""}${Math.round(roleBias.delta * 10) / 10}</strong></div>` : ""}
+                    ${pantheonBias ? `<div class="bias-row"><span>Pantheon bias</span><strong class="${pantheonBias.delta > 0 ? "movement-up" : "movement-down"}">${escapeHtml(pantheonBias.label)} ${pantheonBias.delta > 0 ? "+" : ""}${Math.round(pantheonBias.delta * 10) / 10}</strong></div>` : ""}
+                </div>
+            </article>
+        `;
+    }).join("");
+
+    const ownershipLine = (label, person, toneClass = "") => {
+        if (!person) return "";
+        const record = person.games ? `${formatWinLossRecord(person.wins, person.games)} | ${formatMetric(person.winRate, 1, "%")} WR | ${formatMetric(person.games)} games` : "No stored Joust games yet";
+        return `
+            <div class="mini-highlight-row ownership-row">
+                <span>
+                    <strong>${escapeHtml(label)}</strong>
+                    <small>${record}</small>
+                </span>
+                <strong class="${toneClass}" style="color:${playerColor(person.player)}">${escapeHtml(person.player)} ${person.score}</strong>
+            </div>
+        `;
+    };
+
+    const sectionHtml = {
+        overview: `
+            <section class="analytics-subtab-panel active">
+                <div class="section-kicker"><p class="eyebrow">Completion + Trends</p><h3>Council Snapshot</h3></div>
+                <div class="progress-grid">${renderProgressCards()}</div>
+                <div class="mini-highlight-grid analytics-snapshot-cards">
+                    <article class="mini-highlight-card">
+                        <div class="metric-label">Most Agreed Upon</div>
+                        ${mostAgreed.length ? mostAgreed.map((god) => `<div class="mini-highlight-row"><span>${escapeHtml(god.God)}</span><strong class="movement-up">${agreementScore(god)}</strong></div>`).join("") : `<div class="rank-meta">Not enough overlap yet</div>`}
+                    </article>
+                    <article class="mini-highlight-card">
+                        <div class="metric-label">Most Rated Gods</div>
+                        ${mostRated.length ? mostRated.map((god) => `<div class="mini-highlight-row"><span>${escapeHtml(god.God)}</span><strong>${coverageCount(god)}/${state.config.players.length}</strong></div>`).join("") : `<div class="rank-meta">No ratings yet</div>`}
+                    </article>
+                    <article class="mini-highlight-card">
+                        <div class="metric-label">Council Scoring Style</div>
+                        <div class="mini-highlight-row"><span>Most generous</span><strong style="color:${playerColor(mostGenerous?.player)}">${escapeHtml(mostGenerous?.player || "?")} ${mostGenerous?.average || 0}</strong></div>
+                        <div class="mini-highlight-row"><span>Most strict</span><strong style="color:${playerColor(strictest?.player)}">${escapeHtml(strictest?.player || "?")} ${strictest?.average || 0}</strong></div>
+                    </article>
+                    <article class="mini-highlight-card">
+                        <div class="metric-label">Tier Distribution</div>
+                        ${renderTierDistributionBars()}
+                    </article>
+                </div>
+            </section>
+        `,
+        archetypes: `
+            <section class="analytics-subtab-panel active">
+                <div class="section-kicker"><p class="eyebrow">Council Profiles</p><h3>Archetypes</h3></div>
+                <div class="archetype-grid">${archetypeCards}</div>
+            </section>
+        `,
+        trends: `
+            <section class="analytics-subtab-panel active chart-shell">
+                <div class="section-kicker"><p class="eyebrow">History View</p><h3>God Rating Trends</h3></div>
                 <div class="analytics-controls">
                     <label class="field">
                         <span>Target God</span>
@@ -2557,32 +3074,62 @@ function renderAnalyticsTab() {
                     </label>
                     <div class="field">
                         <span>Included Raters</span>
-                        <div style="display:flex;flex-wrap:wrap;gap:8px;">${playerOptions}</div>
+                        <div class="analytics-player-row">${playerOptions}</div>
                     </div>
                 </div>
                 <div id="analytics-chart">${buildTrendChartSvg(state.analytics.rows, state.analytics.players)}</div>
-            </div>
-            <div class="mini-highlight-grid" style="margin-top:18px;">
-                <article class="mini-highlight-card">
-                    <div class="metric-label">Most Volatile Gods</div>
-                    ${volatilityLeaders.length ? volatilityLeaders.map((entry) => `<div class="mini-highlight-row"><span>${escapeHtml(entry.godName)}</span><strong>${entry.touches} edits • ${entry.swing}</strong></div>`).join("") : `<div class="rank-meta">Not enough history yet</div>`}
-                </article>
-                <article class="mini-highlight-card">
-                    <div class="metric-label">Who Owns ${escapeHtml(state.analytics.god || "This God")}</div>
-                    ${ownership?.owner ? `
-                        <div class="mini-highlight-row"><span>Biggest believer</span><strong style="color:${playerColor(ownership.owner.player)}">${escapeHtml(ownership.owner.player)} ${ownership.owner.score}</strong></div>
-                        <div class="mini-highlight-row"><span>Most skeptical</span><strong style="color:${playerColor(ownership.skeptic.player)}">${escapeHtml(ownership.skeptic.player)} ${ownership.skeptic.score}</strong></div>
-                        <div class="mini-highlight-row"><span>Room spread</span><strong>${ownership.spread} pts</strong></div>
-                        <div class="mini-highlight-row"><span>Coverage</span><strong>${ownership.coverage}/${state.config.players.length}</strong></div>
-                    ` : `<div class="rank-meta">Select a god with ratings to see the ownership story.</div>`}
-                </article>
+            </section>
+        `,
+        ownership: `
+            <section class="analytics-subtab-panel active">
+                <div class="section-kicker"><p class="eyebrow">God Stories</p><h3>Volatility + Ownership</h3></div>
+                <div class="analytics-controls analytics-ownership-controls">
+                    <label class="field">
+                        <span>Target God</span>
+                        <select id="analytics-god-select">${godOptions}</select>
+                    </label>
+                </div>
+                <div class="mini-highlight-grid">
+                    <article class="mini-highlight-card">
+                        <div class="metric-label">Most Volatile Gods</div>
+                        ${volatilityLeaders.length ? volatilityLeaders.map((entry) => `<div class="mini-highlight-row"><span>${escapeHtml(entry.godName)}</span><strong>${entry.touches} edits | ${entry.swing}</strong></div>`).join("") : `<div class="rank-meta">Not enough history yet</div>`}
+                    </article>
+                    <article class="mini-highlight-card ownership-card">
+                        <div class="metric-label">Who Owns ${escapeHtml(state.analytics.god || "This God")}</div>
+                        ${ownership?.owner ? `
+                            ${ownershipLine("Biggest believer", ownership.owner, "movement-up")}
+                            ${ownershipLine("Most skeptical", ownership.skeptic, "movement-down")}
+                            <div class="mini-highlight-row"><span>Room spread</span><strong>${ownership.spread} pts</strong></div>
+                            <div class="mini-highlight-row"><span>Coverage</span><strong>${ownership.coverage}/${state.config.players.length}</strong></div>
+                        ` : `<div class="rank-meta">Select a god with ratings to see the ownership story.</div>`}
+                    </article>
+                </div>
+            </section>
+        `,
+        disputes: `
+            <section class="analytics-subtab-panel active">
+                <div class="section-kicker"><p class="eyebrow">Council Disputes</p><h3>Most Controversial Gods</h3></div>
+                ${renderControversyCards()}
+            </section>
+        `,
+    };
+
+    elements.tabAnalytics.innerHTML = `
+        <div class="panel tab-overview-panel">
+            <div class="panel-heading panel-heading-inline">
+                <div>
+                    <p class="eyebrow">Completion + Trends</p>
+                    <h2>Analytics</h2>
+                </div>
+                <span class="summary-pill">Sub-tabs keep each lab focused</span>
             </div>
 
-            <div class="panel-heading" style="margin-top:18px;">
-                <p class="eyebrow">Council Disputes</p>
-                <h2>Most Controversial Gods</h2>
+            <div class="subtab-shell analytics-subtab-shell">
+                <div class="subtab-bar" role="tablist" aria-label="Analytics sections">
+                    ${sections.map((section) => `<button class="subtab-btn ${state.analytics.section === section.key ? "active" : ""}" type="button" data-analytics-section="${section.key}" role="tab" aria-selected="${state.analytics.section === section.key ? "true" : "false"}">${escapeHtml(section.label)}</button>`).join("")}
+                </div>
+                <div class="subtab-content">${sectionHtml[state.analytics.section]}</div>
             </div>
-            ${renderControversyCards()}
             ${renderBackToTop()}
         </div>
     `;
@@ -2651,8 +3198,15 @@ function renderH2hTab() {
         .join("");
 
     if (state.h2h.a === state.h2h.b) {
-        elements.tabH2h.innerHTML = emptyState("Choose Two Players", "Pick two different council members to compare.");
-        return;
+        state.h2h.b = state.config.players.find((player) => player !== state.h2h.a) || state.h2h.b;
+    }
+
+    const modes = [
+        { key: "performance", label: "Performance H2H" },
+        { key: "ratings", label: "Ratings H2H" },
+    ];
+    if (!modes.some((mode) => mode.key === state.h2h.mode)) {
+        state.h2h.mode = "performance";
     }
 
     const rows = buildH2hRows();
@@ -2671,90 +3225,81 @@ function renderH2hTab() {
             ? `${state.h2h.b} trends higher overall`
             : "These two are surprisingly close overall";
 
-    elements.tabH2h.innerHTML = `
-        <div class="panel">
-            <div class="panel-heading">
-                <p class="eyebrow">Cross-Council Compare</p>
-                <h2>Head To Head</h2>
-            </div>
+    const profileA = buildRaterProfile(state.h2h.a);
+    const profileB = buildRaterProfile(state.h2h.b);
+    const performanceRows = state.gods
+        .map((god) => {
+            const aStat = profileA.godStats?.[god.God] || null;
+            const bStat = profileB.godStats?.[god.God] || null;
+            const aGames = Number(aStat?.gamesPlayed || 0);
+            const bGames = Number(bStat?.gamesPlayed || 0);
+            if (!aGames || !bGames) return null;
+            const aWr = Number(aStat?.winRate || 0);
+            const bWr = Number(bStat?.winRate || 0);
+            return { god, aStat, bStat, aGames, bGames, aWr, bWr, wrDiff: aWr - bWr, totalGames: aGames + bGames };
+        })
+        .filter(Boolean)
+        .sort((left, right) => Math.abs(right.wrDiff) - Math.abs(left.wrDiff) || right.totalGames - left.totalGames)
+        .slice(0, 16);
 
-            <div class="h2h-controls">
-                <label class="field">
-                    <span>Council Member A</span>
-                    <select id="h2h-player-a">${options}</select>
-                </label>
-                <label class="field">
-                    <span>Council Member B</span>
-                    <select id="h2h-player-b">${options}</select>
-                </label>
-            </div>
-
+    const performanceContent = `
+        <section class="h2h-subtab-panel">
             <div class="verdict-banner">
-                <div>
-                    <p class="eyebrow">Match Verdict</p>
-                    <h3>${escapeHtml(verdict)}</h3>
-                </div>
-                <div class="verdict-chip-row">
-                    <span class="summary-pill">Avg delta ${averageDiff > 0 ? "+" : ""}${averageDiff}</span>
-                    ${roleLean ? `<span class="summary-pill ${roleLean.averageDiff > 0 ? "cool" : "warm"}">${escapeHtml(roleLean.role)} leans ${roleLean.averageDiff > 0 ? escapeHtml(state.h2h.a) : escapeHtml(state.h2h.b)}</span>` : ""}
-                </div>
+                <div><p class="eyebrow">Performance Verdict</p><h3>Stored Joust records by god</h3></div>
+                <div class="verdict-chip-row"><span class="summary-pill">${performanceRows.length} shared-play gods</span></div>
             </div>
+            <div class="h2h-performance-grid">
+                ${performanceRows.length ? performanceRows.map((row) => {
+                    const aRecord = row.aGames ? `${formatWinLossRecord(row.aStat.wins, row.aGames)} | ${formatMetric(row.aWr, 1, '%')} WR | ${row.aGames} games` : 'No stored games';
+                    const bRecord = row.bGames ? `${formatWinLossRecord(row.bStat.wins, row.bGames)} | ${formatMetric(row.bWr, 1, '%')} WR | ${row.bGames} games` : 'No stored games';
+                    const leader = row.aWr === row.bWr ? 'Even' : row.aWr > row.bWr ? state.h2h.a : state.h2h.b;
+                    return `
+                        <article class="h2h-performance-card" data-god-detail="${escapeHtml(row.god.God)}" role="button" tabindex="0">
+                            <div class="h2h-performance-art">${row.god.ImageUrl ? `<img class="god-art" src="${row.god.ImageUrl}" alt="${escapeHtml(row.god.God)}">` : `<div class="image-fallback">Art</div>`}</div>
+                            <div class="h2h-performance-body">
+                                <div class="section-kicker"><h3>${escapeHtml(row.god.God)}</h3><span class="summary-pill">${leader === 'Even' ? 'Even' : `${escapeHtml(leader)} leads`}</span></div>
+                                <div class="mini-highlight-row"><span><strong style="color:${playerColor(state.h2h.a)}">${escapeHtml(state.h2h.a)}</strong><small>${aRecord}</small></span><strong>${row.aGames ? formatMetric(row.aWr, 1, '%') : '--'}</strong></div>
+                                <div class="mini-highlight-row"><span><strong style="color:${playerColor(state.h2h.b)}">${escapeHtml(state.h2h.b)}</strong><small>${bRecord}</small></span><strong>${row.bGames ? formatMetric(row.bWr, 1, '%') : '--'}</strong></div>
+                            </div>
+                        </article>
+                    `;
+                }).join('') : emptyState('No Performance Overlap', 'Stored Joust god stats are not available for this pairing yet.')}
+            </div>
+        </section>
+    `;
 
-            <div class="metrics-grid" style="margin-top:18px;">
-                <article class="metric-card">
-                    <div class="metric-label">${escapeHtml(state.h2h.a)} rates higher</div>
-                    <div class="metric-value">${aHigher}</div>
-                </article>
-                <article class="metric-card">
-                    <div class="metric-label">Agreement (±5)</div>
-                    <div class="metric-value">${agreement}</div>
-                </article>
-                <article class="metric-card">
-                    <div class="metric-label">${escapeHtml(state.h2h.b)} rates higher</div>
-                    <div class="metric-value">${bHigher}</div>
-                </article>
+    const ratingsContent = `
+        <section class="h2h-subtab-panel">
+            <div class="verdict-banner">
+                <div><p class="eyebrow">Match Verdict</p><h3>${escapeHtml(verdict)}</h3></div>
+                <div class="verdict-chip-row"><span class="summary-pill">Avg delta ${averageDiff > 0 ? "+" : ""}${averageDiff}</span>${roleLean ? `<span class="summary-pill ${roleLean.averageDiff > 0 ? "cool" : "warm"}">${escapeHtml(roleLean.role)} leans ${roleLean.averageDiff > 0 ? escapeHtml(state.h2h.a) : escapeHtml(state.h2h.b)}</span>` : ""}</div>
             </div>
+            <div class="metrics-grid" style="margin-top:18px;"><article class="metric-card"><div class="metric-label">${escapeHtml(state.h2h.a)} rates higher</div><div class="metric-value">${aHigher}</div></article><article class="metric-card"><div class="metric-label">Agreement (+/-5)</div><div class="metric-value">${agreement}</div></article><article class="metric-card"><div class="metric-label">${escapeHtml(state.h2h.b)} rates higher</div><div class="metric-value">${bHigher}</div></article></div>
+            <div class="panel-heading" style="margin-top:22px;"><p class="eyebrow">Biggest Splits</p><h2>Disagreements</h2></div>
+            <div class="feature-grid-4">${topDiff.map((god) => { const winner = god.diff > 0 ? state.h2h.a : state.h2h.b; return h2hCard(god, `<span style="color:${playerColor(winner)}">+${god.absDiff} pts</span> | ${escapeHtml(winner)} higher`); }).join("") || emptyState("No Overlap", "These players do not share enough rated gods yet.")}</div>
+            <div class="panel-heading" style="margin-top:22px;"><p class="eyebrow">Shared Love</p><h2>Agreed Upon Gods</h2></div>
+            <div class="h2h-grid">${agreed.map((god) => { const avg = Math.round((god[state.h2h.a] + god[state.h2h.b]) / 2); return h2hCard(god, `<span style="color:var(--green)">AVG ${avg}</span> | D${god.absDiff}`); }).join("") || emptyState("No Agreed Gods", "No high-score agreements match the current comparison.")}</div>
+        </section>
+    `;
 
-            <div class="panel-heading" style="margin-top:22px;">
-                <p class="eyebrow">Biggest Splits</p>
-                <h2>Disagreements</h2>
-            </div>
-            <div class="feature-grid-4">
-                ${topDiff.map((god) => {
-                    const winner = god.diff > 0 ? state.h2h.a : state.h2h.b;
-                    return h2hCard(god, `<span style="color:${playerColor(winner)}">+${god.absDiff} pts</span> • ${escapeHtml(winner)} higher`);
-                }).join("") || emptyState("No Overlap", "These players do not share enough rated gods yet.")}
-            </div>
-
-            <div class="panel-heading" style="margin-top:22px;">
-                <p class="eyebrow">Shared Love</p>
-                <h2>Agreed Upon Gods</h2>
-            </div>
-            <div class="h2h-grid">
-                ${agreed.map((god) => {
-                    const avg = Math.round((god[state.h2h.a] + god[state.h2h.b]) / 2);
-                    return h2hCard(god, `<span style="color:var(--green)">AVG ${avg}</span> • Δ${god.absDiff}`);
-                }).join("") || emptyState("No Agreed Gods", "No high-score agreements match the current comparison.")}
-            </div>
+    elements.tabH2h.innerHTML = `
+        <div class="panel tab-overview-panel">
+            <div class="panel-heading panel-heading-inline"><div><p class="eyebrow">Cross-Council Compare</p><h2>Head To Head</h2></div><span class="summary-pill">Performance or ratings</span></div>
+            <div class="h2h-controls"><label class="field"><span>Council Member A</span><select id="h2h-player-a">${options}</select></label><label class="field"><span>Council Member B</span><select id="h2h-player-b">${options}</select></label></div>
+            <div class="subtab-bar h2h-mode-tabs" role="tablist" aria-label="Head to head mode">${modes.map((mode) => `<button class="subtab-btn ${state.h2h.mode === mode.key ? 'active' : ''}" type="button" data-h2h-mode="${mode.key}" role="tab" aria-selected="${state.h2h.mode === mode.key ? 'true' : 'false'}">${escapeHtml(mode.label)}</button>`).join('')}</div>
+            ${state.h2h.mode === 'performance' ? performanceContent : ratingsContent}
             ${renderBackToTop()}
         </div>
     `;
 
     document.getElementById("h2h-player-a").value = state.h2h.a;
     document.getElementById("h2h-player-b").value = state.h2h.b;
-
-    document.getElementById("h2h-player-a")?.addEventListener("change", (event) => {
-        state.h2h.a = event.target.value;
-        renderH2hTab();
-    });
-    document.getElementById("h2h-player-b")?.addEventListener("change", (event) => {
-        state.h2h.b = event.target.value;
-        renderH2hTab();
-    });
+    document.getElementById("h2h-player-a")?.addEventListener("change", (event) => { state.h2h.a = event.target.value; renderH2hTab(); });
+    document.getElementById("h2h-player-b")?.addEventListener("change", (event) => { state.h2h.b = event.target.value; renderH2hTab(); });
 }
 
 // This helper renders the recent activity feed and its client-side filters.
-function renderActivityTab() {
+function renderActivityPanel() {
     let history = [...state.recentHistory];
 
     if (state.activity.player !== "All") {
@@ -2827,11 +3372,11 @@ function renderActivityTab() {
 
     const playerOptions = [`<option value="All">All</option>`, ...state.config.players.map((player) => `<option value="${escapeHtml(player)}">${escapeHtml(player)}</option>`)].join("");
 
-    elements.tabActivity.innerHTML = `
-        <div class="panel">
-            <div class="panel-heading">
-                <p class="eyebrow">Council Log</p>
-                <h2>Recent Activity</h2>
+    return `
+        <div class="activity-embedded-panel">
+            <div class="panel-heading panel-heading-inline">
+                <div><p class="eyebrow">Council Log</p><h2>Recent Activity</h2></div>
+                <span class="summary-pill">Ratings + rank receipts</span>
             </div>
             <div class="activity-filter-grid">
                 <label class="field">
@@ -2850,20 +3395,27 @@ function renderActivityTab() {
             <div class="activity-stream" style="margin-top:16px;">
                 ${rows || emptyState("No Activity", "No recent activity matches the selected filters.")}
             </div>
-            ${renderBackToTop()}
         </div>
     `;
+}
 
+function bindActivityControls() {
     document.getElementById("activity-player").value = state.activity.player;
     document.getElementById("activity-type").value = state.activity.type;
     document.getElementById("activity-player")?.addEventListener("change", (event) => {
         state.activity.player = event.target.value;
-        renderActivityTab();
+        renderRankerTab();
     });
     document.getElementById("activity-type")?.addEventListener("change", (event) => {
         state.activity.type = event.target.value;
-        renderActivityTab();
+        renderRankerTab();
     });
+}
+
+function renderActivityTab() {
+    if (!elements.tabActivity) return;
+    elements.tabActivity.innerHTML = `<div class="panel">${renderActivityPanel()}${renderBackToTop()}</div>`;
+    bindActivityControls();
 }
 
 // This helper re-sorts a player's currently rated gods by rating and by the
@@ -2962,6 +3514,87 @@ function buildRankerRows(player) {
         ...orderedRanked.map((god, index) => ({ god, rank: state.ranker.sort === "#1 last" ? playerState.order.length - index : index + 1, placed: true })),
         ...unranked.map((god) => ({ god, rank: 0, placed: false })),
     ];
+}
+
+// This helper renders only the ranker row list so search can narrow results as
+// the user types without recreating the search input and stealing focus.
+function renderRankerRowsHtml(player, playerRows) {
+    const playerState = state.ranker.byPlayer[player];
+    return playerRows.map((row) => {
+        const god = state.gods.find((item) => item.God === row.god);
+        const value = Number(playerState.ratings[row.god] || 0);
+        const rankLabel = row.placed ? `#${row.rank}` : "-";
+        const disabledUp = !row.placed || row.rank <= 1;
+        const disabledDown = !row.placed || row.rank >= playerState.order.length;
+        const changed = isRankerRowChanged(player, row.god);
+
+        return `
+            <article class="ranker-row ${changed ? "ranker-row-changed" : ""}" data-ranker-row="${escapeHtml(row.god)}">
+                <div class="ranker-main">
+                    <div class="ranker-rank" style="color:${row.placed ? playerColor(player) : "#9d8c76"}">${rankLabel}</div>
+                    <div class="ranker-thumb">
+                        ${god?.ImageUrl ? `<img class="god-art" src="${god.ImageUrl}" alt="${escapeHtml(row.god)}">` : `<div class="image-fallback">Art</div>`}
+                    </div>
+                    <div style="min-width:0;">
+                        <div class="ranker-name">${escapeHtml(row.god)}</div>
+                        <div class="ranker-submeta">${escapeHtml(god?.Tier || "U")} tier - ${escapeHtml(god?.Role || "Unknown")}</div>
+                    </div>
+                </div>
+                <div class="ranker-score">
+                    <input class="ranker-score-input" data-god="${escapeHtml(row.god)}" type="number" min="0" max="100" value="${value}">
+                </div>
+                <div class="ranker-buttons">
+                    <button class="mini-btn ${disabledUp ? "" : "primary"} ranker-move-up" data-god="${escapeHtml(row.god)}" ${disabledUp ? "disabled" : ""}>Up</button>
+                    <button class="mini-btn ${disabledDown ? "" : "primary"} ranker-move-down" data-god="${escapeHtml(row.god)}" ${disabledDown ? "disabled" : ""}>Down</button>
+                </div>
+            </article>
+        `;
+    }).join("");
+}
+
+// This helper rebinds controls inside the ranker rows after a partial list
+// refresh from live search.
+function bindRankerRowEvents(player) {
+    document.querySelectorAll(".ranker-score-input").forEach((input) => {
+        input.addEventListener("change", () => updateRating(player, input.dataset.god, input.value));
+        input.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                const inputs = [...document.querySelectorAll(".ranker-score-input")];
+                const next = inputs[inputs.indexOf(event.currentTarget) + 1];
+                next?.focus();
+                next?.select();
+            }
+            if (event.altKey && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
+                event.preventDefault();
+                moveRank(player, event.currentTarget.dataset.god, event.key === "ArrowUp" ? -1 : 1);
+            }
+        });
+    });
+
+    document.querySelectorAll(".ranker-move-up").forEach((button) => {
+        button.addEventListener("click", () => moveRank(player, button.dataset.god, -1));
+    });
+
+    document.querySelectorAll(".ranker-move-down").forEach((button) => {
+        button.addEventListener("click", () => moveRank(player, button.dataset.god, 1));
+    });
+}
+
+// This helper updates live-search dependent ranker fragments without remounting
+// the search input.
+function refreshRankerListOnly() {
+    const player = state.ranker.selectedPlayer;
+    const rows = buildRankerRows(player);
+    const list = document.getElementById("ranker-list");
+    if (list) {
+        list.innerHTML = renderRankerRowsHtml(player, rows);
+        bindRankerRowEvents(player);
+    }
+    const visible = document.getElementById("ranker-visible-count");
+    if (visible) {
+        visible.textContent = `${rows.length} visible`;
+    }
 }
 
 // This helper checks whether a specific god row differs from the saved baseline.
@@ -3081,39 +3714,18 @@ function renderRankerTab() {
         </div>
     `;
 
-    const listRows = playerRows.map((row) => {
-        const god = state.gods.find((item) => item.God === row.god);
-        const value = Number(playerState.ratings[row.god] || 0);
-        const rankLabel = row.placed ? `#${row.rank}` : "—";
-        const disabledUp = !row.placed || row.rank <= 1;
-        const disabledDown = !row.placed || row.rank >= playerState.order.length;
-        const changed = isRankerRowChanged(player, row.god);
+    const listRows = renderRankerRowsHtml(player, playerRows);
 
-        return `
-            <article class="ranker-row ${changed ? "ranker-row-changed" : ""}" data-ranker-row="${escapeHtml(row.god)}">
-                <div class="ranker-main">
-                    <div class="ranker-rank" style="color:${row.placed ? playerColor(player) : "#9d8c76"}">${rankLabel}</div>
-                    <div class="ranker-thumb">
-                        ${god?.ImageUrl ? `<img class="god-art" src="${god.ImageUrl}" alt="${escapeHtml(row.god)}">` : `<div class="image-fallback">Art</div>`}
-                    </div>
-                    <div style="min-width:0;">
-                        <div class="ranker-name">${escapeHtml(row.god)}</div>
-                        <div class="ranker-submeta">${escapeHtml(god?.Tier || "U")} tier • ${escapeHtml(god?.Role || "Unknown")}</div>
-                    </div>
-                </div>
-                <div class="ranker-score">
-                    <input class="ranker-score-input" data-god="${escapeHtml(row.god)}" type="number" min="0" max="100" value="${value}">
-                </div>
-                <div class="ranker-buttons">
-                    <button class="mini-btn ${disabledUp ? "" : "primary"} ranker-move-up" data-god="${escapeHtml(row.god)}" ${disabledUp ? "disabled" : ""}>▲</button>
-                    <button class="mini-btn ${disabledDown ? "" : "primary"} ranker-move-down" data-god="${escapeHtml(row.god)}" ${disabledDown ? "disabled" : ""}>▼</button>
-                </div>
-            </article>
-        `;
-    }).join("");
-
-    elements.tabRanker.innerHTML = `
-        <div class="ranker-header">
+    const rankerSections = [
+        { key: "editor", label: "Editor" },
+        { key: "activity", label: "Activity" },
+    ];
+    if (!rankerSections.some((section) => section.key === state.ranker.section)) {
+        state.ranker.section = "editor";
+    }
+    const editorPanel = `
+        <div class="ranker-editor-panel">
+            <div class="ranker-header">
             <p class="eyebrow">Private Council Workflow</p>
             <h2>Rate &amp; Rank ${dirty ? `<span class="dirty-badge">Unsaved</span>` : ""}</h2>
             <p class="hero-text" style="margin-top:10px;max-width:72ch;">
@@ -3123,7 +3735,7 @@ function renderRankerTab() {
             <div class="ranker-status-row">
                 <span class="summary-pill ${dirty ? "warm" : "cool"}">${dirty ? "Unsaved changes" : lastSaved}</span>
                 <span class="summary-pill">${ratedCount}/${state.gods.length} rated</span>
-                <span class="summary-pill">${playerRows.length} visible</span>
+                <span class="summary-pill" id="ranker-visible-count">${playerRows.length} visible</span>
             </div>
         </div>
 
@@ -3176,14 +3788,30 @@ function renderRankerTab() {
                     <button class="mini-btn" type="button" id="ranker-jump-top">Jump to Top 10</button>
                     <span class="rank-meta">Tip: press Ctrl/Cmd+S to save, Enter to move to the next score, Alt+Up/Down to nudge rank.</span>
                 </div>
-                <div class="ranker-list">${listRows}</div>
+                <div class="ranker-list" id="ranker-list">${listRows}</div>
                 <div class="sticky-ranker-save">
                     <button class="btn-primary ranker-save-trigger sticky-save-btn" type="button">${dirty ? "Save Changes" : "Saved"}</button>
                 </div>
                 ${renderBackToTop()}
             ` : lockedBlock}
         </div>
+    </div>`;
+
+    elements.tabRanker.innerHTML = `
+        <div class="subtab-shell ranker-subtab-shell">
+            <div class="subtab-bar ranker-section-tabs" role="tablist" aria-label="Rate and Rank sections">
+                ${rankerSections.map((section) => `<button class="subtab-btn ${state.ranker.section === section.key ? "active" : ""}" type="button" data-ranker-section="${section.key}" role="tab" aria-selected="${state.ranker.section === section.key ? "true" : "false"}">${section.label}</button>`).join("")}
+            </div>
+            <div class="subtab-content">
+                ${state.ranker.section === "activity" ? `<div class="panel">${renderActivityPanel()}${renderBackToTop()}</div>` : editorPanel}
+            </div>
+        </div>
     `;
+
+    if (state.ranker.section === "activity") {
+        bindActivityControls();
+        return;
+    }
 
     document.getElementById("ranker-player-select").value = player;
     document.getElementById("ranker-player-select")?.addEventListener("change", (event) => {
@@ -3201,7 +3829,7 @@ function renderRankerTab() {
 
     document.getElementById("ranker-search")?.addEventListener("input", (event) => {
         state.ranker.search = event.target.value;
-        renderRankerTab();
+        refreshRankerListOnly();
     });
 
     document.getElementById("ranker-sort")?.addEventListener("change", (event) => {
@@ -3220,37 +3848,402 @@ function renderRankerTab() {
     });
     document.getElementById("ranker-reset-btn")?.addEventListener("click", resetRanker);
 
-    document.querySelectorAll(".ranker-score-input").forEach((input) => {
-        input.addEventListener("change", (event) => {
-            updateRating(player, event.target.dataset.god, event.target.value);
-        });
-        input.addEventListener("keydown", (event) => {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                const inputs = [...document.querySelectorAll(".ranker-score-input")];
-                const index = inputs.indexOf(event.currentTarget);
-                inputs[index + 1]?.focus();
-                return;
-            }
-            if (event.altKey && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
-                event.preventDefault();
-                moveRank(player, event.currentTarget.dataset.god, event.key === "ArrowUp" ? -1 : 1);
-            }
-        });
-    });
-
-    document.querySelectorAll(".ranker-move-up").forEach((button) => {
-        button.addEventListener("click", () => moveRank(player, button.dataset.god, -1));
-    });
-
-    document.querySelectorAll(".ranker-move-down").forEach((button) => {
-        button.addEventListener("click", () => moveRank(player, button.dataset.god, 1));
-    });
+    bindRankerRowEvents(player);
 }
 
-// This helper keeps the tab strip and visible panel in sync with state.activeTab.
+
+
+// This helper renders compact god rows for the Council Scroll recap preview.
+function renderScrollGodRows(gods = [], { emptyText = "No god sample yet", limit = 4 } = {}) {
+    const rows = [...(gods || [])].slice(0, limit);
+    if (!rows.length) return `<div class="rank-meta">${escapeHtml(emptyText)}</div>`;
+    return rows.map((god, index) => `
+        <div class="scroll-god-row">
+            <span class="scroll-rank">#${index + 1}</span>
+            <div>
+                <strong>${escapeHtml(god.name || god.God || "Unknown")}</strong>
+                <small>${formatWinLossRecord(god.wins, god.gamesPlayed)} | ${formatMetric(god.winRate, 1, "%")} WR | ${formatMetric(god.gamesPlayed)} games</small>
+            </div>
+        </div>
+    `).join("");
+}
+
+// This helper renders chemistry records in a receipt-like format for the weekly
+// recap so duo/trio strengths are readable without opening the full Chemistry tab.
+function renderScrollChemistryRows(records = [], { emptyText = "No comp sample yet", limit = 4 } = {}) {
+    const rows = [...(records || [])].slice(0, limit);
+    if (!rows.length) return `<div class="rank-meta">${escapeHtml(emptyText)}</div>`;
+    return rows.map((record) => `
+        <article class="scroll-receipt-row">
+            <div>
+                <strong>${escapeHtml(record.label || "Unknown comp")}</strong>
+                <small>${escapeHtml(formatParticipantAssignments(record.participantGods || {}, record.members || []) || (record.members || []).join(" + ") || "Council sample")}</small>
+            </div>
+            <span>${escapeHtml(formatRecord(record))}</span>
+        </article>
+    `).join("");
+}
+
+// This helper finds gods that have recent/meaningful match samples but still
+// need rating or rank attention from a specific player.
+function buildNeedsReviewForPlayer(profile) {
+    const player = profile.player;
+    const rankingMap = state.allRankings?.[player] || {};
+    const recentRatedGods = new Set(
+        (state.recentHistory || [])
+            .filter((row) => row.player === player && (row.change_type || "rating") === "rating")
+            .map((row) => row.god_name)
+    );
+
+    return mostPlayedGods(profile.topGods || [], 8)
+        .filter((god) => Number(god.gamesPlayed || 0) >= 2)
+        .map((god) => {
+            const catalogGod = state.gods.find((item) => item.God === god.name) || {};
+            const hasRating = Number(catalogGod[player] || 0) > 0;
+            const hasRank = Boolean(rankingMap[god.name]);
+            const recentlyUpdated = recentRatedGods.has(god.name);
+            const reasons = [];
+            if (!hasRating) reasons.push("needs rating");
+            if (!hasRank) reasons.push("needs rank");
+            if (hasRating && hasRank && !recentlyUpdated) reasons.push("played lately, no recent rating receipt");
+            return { ...god, reasons, rating: catalogGod[player] || null, rank: rankingMap[god.name] || null };
+        })
+        .filter((god) => god.reasons.length)
+        .slice(0, 4);
+}
+
+// This helper builds a light narrative from the strongest current council-wide
+// match samples, giving the future email recap a human-readable top note.
+function buildCouncilScrollOmen(profiles, insights) {
+    const activeProfiles = profiles.filter((profile) => Number(profile.metrics?.matches || 0) > 0);
+    const strongestPlayer = [...activeProfiles].sort((a, b) => Number(b.metrics?.winRate || 0) - Number(a.metrics?.winRate || 0))[0] || null;
+    const bestTrio = insights.bestTrioCombo || insights.bestTrio || null;
+    const bestDuo = insights.bestCombo || insights.bestDuo || null;
+    const roughest = [...activeProfiles].sort((a, b) => Number(a.metrics?.winRate || 0) - Number(b.metrics?.winRate || 0))[0] || null;
+
+    if (!activeProfiles.length) return "The scroll is quiet this week: no stored Joust samples are ready for the council yet.";
+    const lead = strongestPlayer ? `${strongestPlayer.player} carries the cleanest recent ledger at ${formatMetric(strongestPlayer.metrics.winRate, 1, "%")} WR` : "The council has fresh match records";
+    const comp = bestTrio ? `the trinity marker is ${bestTrio.label} (${formatRecord(bestTrio)})` : (bestDuo ? `the best pairing marker is ${bestDuo.label} (${formatRecord(bestDuo)})` : "the comp board needs more shared games");
+    const warning = roughest && roughest !== strongestPlayer ? `${roughest.player} has the most review-worthy stretch` : "no single player is waving the danger flag too loudly";
+    return `${lead}; ${comp}; ${warning}.`;
+}
+
+// This helper renders the Council Weekly Scroll preview tab as a quick glance:
+// player performance, gods played, best/worst comps, and recent W/L receipts.
+function renderCouncilScrollTab() {
+    if (!elements.tabCouncilScroll) return;
+
+    if (!state.raterStats.loaded) {
+        elements.tabCouncilScroll.innerHTML = `
+            <div class="panel council-scroll-panel scroll-glance-panel">
+                <div class="panel-heading panel-heading-inline">
+                    <div><p class="eyebrow">Quick Recap</p><h2>Council Scroll</h2></div>
+                    <span class="summary-pill">Loading match ledgers</span>
+                </div>
+                ${emptyState("Gathering Recent Joust Stats", "Loading stored player and chemistry data for the quick recap.")}
+            </div>
+        `;
+        return;
+    }
+
+    const profiles = state.config.players.map((player) => buildRaterProfile(player));
+    const insights = buildChemistryInsights();
+    const activeProfiles = profiles.filter((profile) => Number(profile.metrics?.matches || 0) > 0);
+    const totalMatches = activeProfiles.reduce((sum, profile) => sum + Number(profile.metrics?.matches || 0), 0);
+    const avgWinRate = activeProfiles.length ? activeProfiles.reduce((sum, profile) => sum + Number(profile.metrics?.winRate || 0), 0) / activeProfiles.length : 0;
+    const recentSessions = (insights.recentSessions || []).slice(0, 6);
+
+    const bestDuoComps = [...(insights.duoComboRecords || [])]
+        .filter((record) => record.games >= 2)
+        .sort((a, b) => b.winRate - a.winRate || b.games - a.games)
+        .slice(0, 3);
+    const worstDuoComps = [...(insights.duoComboRecords || [])]
+        .filter((record) => record.games >= 2)
+        .sort((a, b) => a.winRate - b.winRate || b.games - a.games)
+        .slice(0, 3);
+    const bestTrioComps = [...(insights.trioComboRecords || [])]
+        .filter((record) => record.games >= 2)
+        .sort((a, b) => b.winRate - a.winRate || b.games - a.games)
+        .slice(0, 3);
+    const worstTrioComps = [...(insights.trioComboRecords || [])]
+        .filter((record) => record.games >= 2)
+        .sort((a, b) => a.winRate - b.winRate || b.games - a.games)
+        .slice(0, 3);
+
+    const leader = [...activeProfiles].sort((a, b) => Number(b.metrics?.winRate || 0) - Number(a.metrics?.winRate || 0))[0] || null;
+    const mostActive = [...activeProfiles].sort((a, b) => Number(b.metrics?.matches || 0) - Number(a.metrics?.matches || 0))[0] || null;
+
+    const playerRows = profiles.map((profile) => {
+        const mostPlayed = mostPlayedGods(profile.topGods, 3);
+        const bestPick = bestGodsByWinRate(profile.topGods, 1, 3)[0] || null;
+        const worstPick = [...(profile.topGods || [])]
+            .filter((god) => Number(god.gamesPlayed || 0) >= 3)
+            .sort((a, b) => Number(a.winRate || 0) - Number(b.winRate || 0) || Number(b.gamesPlayed || 0) - Number(a.gamesPlayed || 0))[0] || null;
+        const godText = mostPlayed.length
+            ? mostPlayed.map((god) => `${god.name} ${formatWinLossRecord(god.wins, god.gamesPlayed)}`).join(" | ")
+            : "No Joust sample";
+        return `
+            <article class="scroll-glance-player ${Number(profile.metrics?.matches || 0) ? "" : "muted"}">
+                <div class="scroll-player-main">
+                    <strong>${escapeHtml(profile.player)}</strong>
+                    <small>${escapeHtml(godText)}</small>
+                </div>
+                <div class="scroll-player-stats">
+                    <span>${formatMetric(profile.metrics?.matches)} games</span>
+                    <span>${formatMetric(profile.metrics?.winRate, 1, "%")} WR</span>
+                    <span>${formatMetric(profile.metrics?.kdaRatio, 2)} KDA</span>
+                </div>
+                <div class="scroll-player-picks">
+                    <span><b>Best</b> ${escapeHtml(bestPick ? `${bestPick.name} ${formatWinLossRecord(bestPick.wins, bestPick.gamesPlayed)} (${formatMetric(bestPick.winRate, 1, "%")})` : "—")}</span>
+                    <span><b>Worst</b> ${escapeHtml(worstPick ? `${worstPick.name} ${formatWinLossRecord(worstPick.wins, worstPick.gamesPlayed)} (${formatMetric(worstPick.winRate, 1, "%")})` : "—")}</span>
+                </div>
+            </article>
+        `;
+    }).join("");
+
+    const compactCompRows = (records, emptyText) => records.length ? records.map((record) => `
+        <article class="scroll-compact-row">
+            <div><strong>${escapeHtml(record.label)}</strong><small>${escapeHtml(formatParticipantAssignments(record.participantGods || {}, record.members || []) || (record.members || []).join(" + "))}</small></div>
+            <span>${escapeHtml(formatRecord(record))}</span>
+        </article>
+    `).join("") : `<div class="rank-meta">${escapeHtml(emptyText)}</div>`;
+
+    const recentRows = recentSessions.length ? recentSessions.map((session) => `
+        <article class="scroll-compact-row scroll-recent-row ${session.won ? "win" : "loss"}">
+            <span class="scroll-result-pill">${session.won ? "W" : "L"}</span>
+            <div><strong>${escapeHtml(formatParticipantAssignments(session.participantGods || {}, session.participants || []))}</strong><small>${escapeHtml(session.queueType || "Joust")} | ${formatDateTime(session.startedAt)}</small></div>
+        </article>
+    `).join("") : `<div class="rank-meta">No recent shared sessions found.</div>`;
+
+    elements.tabCouncilScroll.innerHTML = `
+        <div class="panel council-scroll-panel scroll-glance-panel">
+            <div class="scroll-glance-header">
+                <div>
+                    <p class="eyebrow">Quick Recap</p>
+                    <h2>Council Scroll</h2>
+                    <p>A fast look at who played what, who won, and which comps are helping or hurting.</p>
+                </div>
+                <div class="scroll-glance-stats">
+                    <span><strong>${formatMetric(totalMatches)}</strong><small>Player games</small></span>
+                    <span><strong>${formatMetric(avgWinRate, 1, "%")}</strong><small>Avg WR</small></span>
+                    <span><strong>${escapeHtml(leader?.player || "—")}</strong><small>Top WR</small></span>
+                    <span><strong>${escapeHtml(mostActive?.player || "—")}</strong><small>Most active</small></span>
+                </div>
+            </div>
+
+            <section class="scroll-glance-grid">
+                <article class="detail-card-v2 scroll-glance-card wide">
+                    <div class="section-head"><div><p class="eyebrow">Players</p><h3>Gods Played + Results</h3></div><span class="summary-pill">Quick read</span></div>
+                    <div class="scroll-glance-player-list">${playerRows}</div>
+                </article>
+
+                <article class="detail-card-v2 scroll-glance-card">
+                    <div class="section-head"><div><p class="eyebrow">Best Comps</p><h3>Winning Looks</h3></div></div>
+                    <div class="scroll-compact-list">
+                        <div><div class="metric-label">Duo</div>${compactCompRows(bestDuoComps, "Need more duo samples")}</div>
+                        <div><div class="metric-label">Trio</div>${compactCompRows(bestTrioComps, "Need more trio samples")}</div>
+                    </div>
+                </article>
+
+                <article class="detail-card-v2 scroll-glance-card">
+                    <div class="section-head"><div><p class="eyebrow">Worst Comps</p><h3>Shaky Looks</h3></div></div>
+                    <div class="scroll-compact-list">
+                        <div><div class="metric-label">Duo</div>${compactCompRows(worstDuoComps, "No shaky duo sample yet")}</div>
+                        <div><div class="metric-label">Trio</div>${compactCompRows(worstTrioComps, "No shaky trio sample yet")}</div>
+                    </div>
+                </article>
+
+                <article class="detail-card-v2 scroll-glance-card wide">
+                    <div class="section-head"><div><p class="eyebrow">Recent Games</p><h3>Latest Shared W/L</h3></div><span class="summary-pill">Newest first</span></div>
+                    <div class="scroll-recent-list">${recentRows}</div>
+                </article>
+            </section>
+
+            ${renderBackToTop()}
+        </div>
+    `;
+}
+// This helper formats a health timestamp as a short date, which keeps admin
+// cards dense without losing the important recency signal.
+function formatHealthDate(value) {
+    if (!value) return "—";
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return "—";
+    return parsed.toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" });
+}
+
+// This helper renders small rows for issue samples so the health panel points
+// toward the exact data that needs attention without becoming a raw database dump.
+function renderHealthSamples(samples = []) {
+    if (!samples.length) return "";
+    const rows = samples.slice(0, 6).map((sample) => {
+        if (typeof sample === "string") return `<span class="health-sample-chip">${escapeHtml(sample)}</span>`;
+        const god = sample.god || sample.god_name || sample.godName || sample.player || "Sample";
+        const detail = sample.status || sample.asset || sample.match_key || sample.record_key || sample.remote || "Review row";
+        return `<span class="health-sample-chip"><strong>${escapeHtml(god)}</strong> ${escapeHtml(detail)}</span>`;
+    }).join("");
+    return `<div class="health-samples">${rows}</div>`;
+}
+
+// This helper renders the Data Health admin panel. It is intentionally read-only:
+// the goal is to surface suspicious data before we trust profile/chemistry stats.
+function renderDataHealthTab() {
+    if (!elements.tabDataHealth) return;
+
+    if (!state.dataHealth.loaded || state.dataHealth.loading) {
+        elements.tabDataHealth.innerHTML = `
+            <div class="panel data-health-panel">
+                <div class="panel-heading panel-heading-inline">
+                    <div><p class="eyebrow">Admin Chamber</p><h2>Data Health</h2></div>
+                    <span class="summary-pill">Inspecting Supabase</span>
+                </div>
+                ${emptyState("Checking The Ledgers", "Reading roster, ratings, rankings, activity, match history, and asset health.")}
+            </div>
+        `;
+        return;
+    }
+
+    if (state.dataHealth.error) {
+        elements.tabDataHealth.innerHTML = `
+            <div class="panel data-health-panel">
+                <div class="panel-heading panel-heading-inline">
+                    <div><p class="eyebrow">Admin Chamber</p><h2>Data Health</h2></div>
+                    <button class="btn-secondary" type="button" data-refresh-health="true">Retry</button>
+                </div>
+                ${emptyState("Health Check Failed", state.dataHealth.error)}
+            </div>
+        `;
+        return;
+    }
+
+    const report = state.dataHealth.report || {};
+    const overview = report.overview || {};
+    const assets = report.assets || { counts: {}, attention: [] };
+    const integrity = report.chemistryIntegrity || { sessionSizes: {} };
+    const issues = report.issues || [];
+    const criticalCount = issues.filter((issue) => issue.severity === "danger").length;
+    const warningCount = issues.filter((issue) => issue.severity === "warn").length;
+    const healthTone = criticalCount ? "danger" : warningCount ? "warn" : "cool";
+    const healthLabel = criticalCount ? "Needs attention" : warningCount ? "Watch list" : "Clean";
+
+    const overviewCards = [
+        ["Roster", overview.rosterGods, "gods in metadata"],
+        ["Joust Rows", overview.joustRows, "stored match rows"],
+        ["Sessions", overview.uniqueJoustSessions, "grouped by match key"],
+        ["Newest", formatHealthDate(overview.newestJoustMatch), "latest stored Joust"],
+        ["Oldest", formatHealthDate(overview.oldestJoustMatch), "earliest stored Joust"],
+        ["Activity", overview.activityRows, "rating/rank receipts"],
+    ].map(([label, value, sub]) => `
+        <article class="health-metric-card">
+            <span>${escapeHtml(label)}</span>
+            <strong>${escapeHtml(formatMetric(value))}</strong>
+            <small>${escapeHtml(sub)}</small>
+        </article>
+    `).join("");
+
+    const issueRows = issues.length ? issues.map((issue) => `
+        <article class="health-issue-card ${escapeHtml(issue.severity)}">
+            <div>
+                <p class="eyebrow">${escapeHtml(issue.severity)}</p>
+                <h3>${escapeHtml(issue.title)}</h3>
+                <p>${escapeHtml(issue.message)}</p>
+                ${renderHealthSamples(issue.samples || [])}
+            </div>
+            <strong>${escapeHtml(formatMetric(issue.count))}</strong>
+        </article>
+    `).join("") : emptyState("No Issues Flagged", "The current checks did not find missing assets, duplicate rows, incomplete rows, or roster mismatches.");
+
+    const coverageRows = (report.coverage || []).map((row) => `
+        <article class="health-coverage-card ${escapeHtml(row.status || "")}">
+            <div class="section-kicker"><h3>${escapeHtml(row.player)}</h3><span class="summary-pill">${escapeHtml(row.status || "unknown")}</span></div>
+            <div class="health-card-grid compact">
+                <span><strong>${escapeHtml(formatMetric(row.joustRows))}</strong><small>Joust rows</small></span>
+                <span><strong>${escapeHtml(formatHealthDate(row.newestMatch))}</strong><small>Newest</small></span>
+                <span><strong>${escapeHtml(row.mostPlayed?.god || "—")}</strong><small>Most played ${row.mostPlayed ? `${row.mostPlayed.games}-${row.mostPlayed.wins}` : ""}</small></span>
+                <span><strong>${escapeHtml(row.bestGod?.god || "—")}</strong><small>Best sample ${row.bestGod ? `${row.bestGod.wins}-${row.bestGod.games - row.bestGod.wins} • ${formatMetric(row.bestGod.winRate, 1, "%")}` : ""}</small></span>
+            </div>
+        </article>
+    `).join("");
+
+    const assetRows = (assets.attention || []).map((row) => `
+        <tr>
+            <td>${escapeHtml(row.god)}</td>
+            <td>${escapeHtml(row.pantheon || "—")}</td>
+            <td><span class="health-status-chip ${escapeHtml(row.status)}">${escapeHtml(row.status)}</span></td>
+            <td>${escapeHtml(row.asset || row.remote || "—")}</td>
+        </tr>
+    `).join("");
+
+    elements.tabDataHealth.innerHTML = `
+        <div class="panel data-health-panel">
+            <div class="panel-heading panel-heading-inline">
+                <div>
+                    <p class="eyebrow">Admin Chamber</p>
+                    <h2>Data Health</h2>
+                    <p>Read-only checks for Supabase rows, image assets, Joust coverage, and chemistry fanout.</p>
+                </div>
+                <div class="health-actions">
+                    <span class="summary-pill ${healthTone}">${healthLabel}</span>
+                    <button class="btn-secondary" type="button" data-refresh-health="true">Refresh Health</button>
+                </div>
+            </div>
+
+            <section class="health-metric-grid">${overviewCards}</section>
+
+            <section class="health-section-grid">
+                <article class="detail-card-v2">
+                    <div class="section-head"><div><p class="eyebrow">Integrity Watch</p><h3>What Needs Attention</h3></div><span class="summary-pill">${issues.length} checks</span></div>
+                    <div class="health-issue-list">${issueRows}</div>
+                </article>
+                <article class="detail-card-v2">
+                    <div class="section-head"><div><p class="eyebrow">Chemistry Fanout</p><h3>Stored Session Shape</h3></div><span class="summary-pill">Joust only</span></div>
+                    <div class="health-card-grid">
+                        <span><strong>${escapeHtml(formatMetric(integrity.sessionSizes?.solo))}</strong><small>Solo sessions</small></span>
+                        <span><strong>${escapeHtml(formatMetric(integrity.sessionSizes?.duo))}</strong><small>Duo sessions</small></span>
+                        <span><strong>${escapeHtml(formatMetric(integrity.sessionSizes?.trioPlus))}</strong><small>Trio+ sessions</small></span>
+                        <span><strong>${escapeHtml(formatMetric(integrity.duplicateMatchPlayerRows))}</strong><small>Duplicate player/match rows</small></span>
+                    </div>
+                </article>
+            </section>
+
+            <section class="detail-card-v2">
+                <div class="section-head"><div><p class="eyebrow">Council Coverage</p><h3>Player Data Depth</h3></div><span class="summary-pill">Joust rows only</span></div>
+                <div class="health-coverage-grid">${coverageRows}</div>
+            </section>
+
+            <section class="detail-card-v2">
+                <div class="section-head"><div><p class="eyebrow">Image Assets</p><h3>Artwork Audit</h3></div><span class="summary-pill">${escapeHtml(formatMetric(assets.counts?.local))} local / ${escapeHtml(formatMetric(assets.counts?.remoteFallback || assets.counts?.["remote-fallback"]))} fallback</span></div>
+                <div class="health-asset-summary">
+                    <span><strong>${escapeHtml(formatMetric(assets.counts?.local))}</strong><small>Local</small></span>
+                    <span><strong>${escapeHtml(formatMetric(assets.counts?.placeholder))}</strong><small>Placeholder</small></span>
+                    <span><strong>${escapeHtml(formatMetric(assets.counts?.["remote-fallback"]))}</strong><small>Remote fallback</small></span>
+                    <span><strong>${escapeHtml(formatMetric(assets.counts?.missing))}</strong><small>Missing</small></span>
+                </div>
+                <div class="detail-table-wrap">
+                    <table class="compact-table health-table">
+                        <thead><tr><th>God</th><th>Pantheon</th><th>Status</th><th>Asset / Fallback</th></tr></thead>
+                        <tbody>${assetRows || `<tr><td colspan="4">All gods have local production artwork.</td></tr>`}</tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    `;
+}
+// This helper keeps the tab strip, visible panel, and contextual filter bar
+// in sync with state.activeTab so filters only appear where they affect results.
 function renderTabs() {
+    const visibleTabs = new Set(["index", "rater-stats", "chemistry", "analytics", "h2h", "council-scroll", "data-health", "ranker"]);
+    if (!visibleTabs.has(state.activeTab)) {
+        state.activeTab = "index";
+    }
     document.body.dataset.activeTab = state.activeTab;
+    const filterTabs = new Set(["index"]);
+
+    if (elements.filtersDetails) {
+        elements.filtersDetails.classList.toggle("hidden", !filterTabs.has(state.activeTab));
+        elements.filtersDetails.setAttribute("aria-hidden", filterTabs.has(state.activeTab) ? "false" : "true");
+    }
+
     elements.tabButtons.forEach((button) => {
         button.classList.toggle("active", button.dataset.tab === state.activeTab);
         const isRanker = button.dataset.tab === "ranker";
@@ -3260,6 +4253,11 @@ function renderTabs() {
     elements.tabPanels.forEach((panel) => {
         panel.classList.toggle("active", panel.id === `tab-${state.activeTab}`);
     });
+
+    if (state.activeTab === "data-health" && !state.dataHealth.loaded && !state.dataHealth.loading) {
+        renderDataHealthTab();
+        loadDataHealth().then(() => renderDataHealthTab());
+    }
 }
 
 // This helper refreshes every view after data or filters change.
@@ -3277,7 +4275,8 @@ function renderAll() {
     renderTierlistTab();
     renderAnalyticsTab();
     renderH2hTab();
-    renderActivityTab();
+    renderCouncilScrollTab();
+    renderDataHealthTab();
     renderRankerTab();
     renderTabs();
 }
@@ -3316,3 +4315,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.querySelector(".app-shell").innerHTML = emptyState("App Failed To Load", error.message);
     }
 });
+
+
+
+
+
+
+

@@ -2054,6 +2054,13 @@ details[open] > summary .collapse-indicator {
     box-shadow: 0 14px 30px rgba(103, 74, 24, 0.12);
 }
 
+.sync-button-secondary {
+    background: rgba(255, 255, 255, 0.56);
+    color: #7a684b;
+    border-color: rgba(151, 123, 75, 0.24);
+    box-shadow: none;
+}
+
 .sync-button:disabled {
     cursor: wait;
     opacity: 0.7;
@@ -2785,4 +2792,4216 @@ details[open] > summary .collapse-indicator {
         flex-direction: column;
         align-items: stretch;
     }
+}
+
+/* Phase 4 shell: this block switches the app from the old marble dashboard
+   into a tighter mockup-inspired command center without changing backend data. */
+:root {
+    --v2-bg: #0d1118;
+    --v2-panel: #121821;
+    --v2-panel-2: #161d27;
+    --v2-line: rgba(255, 255, 255, 0.08);
+    --v2-text: #f4f1e8;
+    --v2-muted: #9aa4b2;
+    --v2-gold: #d6ad60;
+    --v2-gold-2: #f0cf83;
+    --v2-good: #82c9a8;
+    --v2-bad: #e48b83;
+    --v2-blue: #79a9e6;
+    --v2-radius: 18px;
+}
+
+/* This block gives the entire page the darker, less-cluttered face from the
+   prototype while preserving the gold Olympian identity. */
+body {
+    color: var(--v2-text);
+    background:
+        radial-gradient(circle at 18% -10%, rgba(214, 173, 96, 0.14), transparent 34%),
+        radial-gradient(circle at 90% 0%, rgba(121, 169, 230, 0.08), transparent 28%),
+        linear-gradient(180deg, #0d1118 0%, #090d13 100%);
+}
+
+body::before,
+body::after {
+    display: none;
+}
+
+/* This block replaces the centered page wrapper with a true app shell so Vercel
+   and local render at the same full-width scale. */
+.app-shell-v2 {
+    width: 100%;
+    max-width: none;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+/* This block styles the permanent council navigation rail and keeps the tab
+   list close at hand without the old live-rankings clutter. */
+.council-rail {
+    width: 260px;
+    flex: 0 0 260px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: 22px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    border-right: 1px solid var(--v2-line);
+    background: rgba(9, 13, 19, 0.88);
+    backdrop-filter: blur(18px);
+    z-index: 30;
+}
+
+/* This block creates the compact High Council brand mark in the sidebar. */
+.brand-lockup {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 8px 14px;
+}
+
+.brand-mark {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    color: #18130b;
+    background: linear-gradient(135deg, #f1d48b, #7d5a25);
+    box-shadow: 0 10px 34px rgba(214, 173, 96, 0.26);
+    font-family: "Cinzel", serif;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+}
+
+.brand-title {
+    font-family: "Cinzel", serif;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.brand-subtitle {
+    margin-top: 3px;
+    color: var(--v2-muted);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+/* This block turns existing tab buttons into a vertical app nav. */
+.rail-nav,
+.tab-strip {
+    display: grid;
+    gap: 7px;
+}
+
+.rail-nav .tab-btn,
+.tab-strip .tab-btn {
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    padding: 11px 12px;
+    color: var(--v2-muted);
+    background: transparent;
+    box-shadow: none;
+    text-align: left;
+}
+
+.rail-nav .tab-btn:hover,
+.rail-nav .tab-btn.active,
+.tab-strip .tab-btn:hover,
+.tab-strip .tab-btn.active {
+    color: var(--v2-text);
+    border-color: rgba(214, 173, 96, 0.22);
+    background: rgba(214, 173, 96, 0.09);
+    transform: none;
+}
+
+/* This block keeps connection status visible but much quieter than the old
+   rankings sidebar. */
+.rail-status {
+    margin-top: auto;
+    padding: 14px;
+    border: 1px solid var(--v2-line);
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+}
+
+.rail-status strong,
+.rail-status span {
+    display: block;
+}
+
+.rail-status span {
+    margin-top: 6px;
+    color: var(--v2-muted);
+    font-size: 0.76rem;
+    line-height: 1.45;
+}
+
+/* This block lays out the main workspace with generous width, fixing the
+   production-only centered/narrow look. */
+.main-v2 {
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 1640px;
+    min-width: 0;
+    margin: 0 auto;
+    padding: 30px clamp(18px, 3vw, 48px) 64px;
+}
+
+/* This block compresses the old hero into a practical topbar with live metadata
+   still present on the right. */
+.topbar-v2 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 0.72fr);
+    gap: 24px;
+    align-items: end;
+    margin-bottom: 18px;
+}
+
+.topbar-v2 h1 {
+    margin: 0;
+    color: var(--v2-text);
+    font-size: clamp(2rem, 4vw, 3.6rem);
+    line-height: 0.98;
+}
+
+.topbar-v2 .hero-text {
+    max-width: 680px;
+    margin: 10px 0 0;
+    color: var(--v2-muted);
+    line-height: 1.55;
+}
+
+.topbar-stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.stat-card-compact {
+    min-width: 0;
+    padding: 13px;
+    border-radius: 15px;
+    border: 1px solid var(--v2-line);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018));
+    box-shadow: none;
+}
+
+.stat-card-compact .stat-label {
+    margin: 0 0 5px;
+    color: var(--v2-muted);
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.stat-card-compact .stat-value {
+    color: var(--v2-gold-2);
+    font-family: "Cinzel", serif;
+    font-size: 1.55rem;
+    line-height: 1;
+}
+
+/* This block makes filters compact and always readable without needing the old
+   chunky collapsible controls. */
+.filter-panel-v2 {
+    margin: 0 0 20px;
+    padding: 14px;
+    border: 1px solid var(--v2-line);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.026);
+}
+
+.filters-grid-v2 {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.4fr) repeat(5, minmax(130px, 1fr)) auto;
+    gap: 10px;
+    align-items: end;
+}
+
+.filters-grid-v2 .field span {
+    color: var(--v2-muted);
+    font-size: 0.65rem;
+}
+
+.filters-grid-v2 input,
+.filters-grid-v2 select {
+    min-height: 42px;
+    color: var(--v2-text);
+    border: 1px solid var(--v2-line);
+    background: #0f151e;
+    border-radius: 11px;
+}
+
+.filters-grid-v2 input:focus,
+.filters-grid-v2 select:focus {
+    border-color: rgba(214, 173, 96, 0.55);
+    box-shadow: 0 0 0 3px rgba(214, 173, 96, 0.10);
+}
+
+.filter-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* This block updates common panels so legacy tabs still fit the darker shell. */
+.panel,
+.panel-card,
+.rank-row,
+.activity-item,
+.ranking-list-card,
+.ranker-row,
+.feature-card,
+.stat-card,
+.empty-state {
+    color: var(--v2-text);
+    border-color: var(--v2-line);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018));
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.20);
+}
+
+.tab-content {
+    min-width: 0;
+}
+
+.index-heading-row {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 4px 0 14px;
+}
+
+.index-heading-row h2 {
+    color: var(--v2-text);
+    font-size: clamp(1.7rem, 3vw, 2.5rem);
+}
+
+.summary-pill {
+    border-color: rgba(214, 173, 96, 0.26);
+    color: var(--v2-gold-2);
+    background: rgba(214, 173, 96, 0.08);
+}
+
+/* This block gives the God Index cards the tighter prototype card treatment and
+   makes the click target feel deliberate. */
+.god-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
+    gap: 16px;
+}
+
+.god-card {
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 18px;
+    background: linear-gradient(180deg, #151c25, #10161e);
+    cursor: pointer;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+}
+
+.god-card:hover,
+.god-card:focus-visible {
+    transform: translateY(-4px);
+    border-color: rgba(214, 173, 96, 0.42);
+    box-shadow: 0 22px 46px rgba(0, 0, 0, 0.34);
+    outline: none;
+}
+
+.god-art-wrap {
+    min-height: 245px;
+    background: #0f151e;
+}
+
+.god-art {
+    width: 100%;
+    height: 245px;
+    object-fit: cover;
+    object-position: center top;
+}
+
+.god-overlay {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.04) 0%, rgba(8, 12, 17, 0.12) 42%, rgba(8, 12, 17, 0.96) 100%);
+}
+
+.god-overlay-content {
+    align-items: end;
+    gap: 10px;
+}
+
+.god-card h3,
+.god-overlay-content h3 {
+    color: var(--v2-text);
+    font-size: 1.24rem;
+}
+
+.god-title {
+    color: var(--v2-gold);
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+}
+
+.god-meta,
+.rank-meta,
+.mini-item .sub,
+.chemistry-row-sub {
+    color: var(--v2-muted);
+}
+
+.god-body {
+    padding: 11px;
+    background: rgba(9, 13, 19, 0.70);
+}
+
+.pill-grid {
+    gap: 5px;
+}
+
+.council-pill {
+    min-width: 0;
+    border-color: rgba(255, 255, 255, 0.07);
+    background: #0d131b;
+}
+
+.card-meta-rail {
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.chip {
+    color: #17130e;
+    background: rgba(246, 241, 229, 0.93);
+}
+
+/* This block creates the God Detail modal used by clickable index cards. */
+.god-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+    background: rgba(0, 0, 0, 0.70);
+    backdrop-filter: blur(8px);
+}
+
+.god-modal-backdrop.hidden {
+    display: none !important;
+}
+
+.god-detail-modal {
+    position: relative;
+    width: min(1120px, 100%);
+    max-height: 92vh;
+    overflow: auto;
+    border: 1px solid rgba(214, 173, 96, 0.24);
+    border-radius: 24px;
+    background: #10161e;
+    box-shadow: 0 42px 130px rgba(0, 0, 0, 0.56);
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 4;
+    width: 38px;
+    height: 38px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    color: var(--v2-text);
+    background: rgba(0, 0, 0, 0.42);
+    cursor: pointer;
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+.god-modal-hero {
+    position: relative;
+    min-height: 305px;
+    display: flex;
+    align-items: flex-end;
+    padding: 28px;
+    background-size: cover;
+    background-position: center 20%;
+}
+
+.god-modal-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(10, 14, 19, 0.94) 88%);
+}
+
+.modal-rank-chip,
+.god-modal-copy {
+    position: relative;
+    z-index: 2;
+}
+
+.modal-rank-chip {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 8px 11px;
+    border-radius: 999px;
+    color: #20190e;
+    background: rgba(244, 237, 224, 0.94);
+    font-weight: 900;
+}
+
+.god-modal-copy h2 {
+    margin: 0;
+    color: var(--v2-text);
+    font-size: clamp(2.2rem, 7vw, 4.2rem);
+    line-height: 0.95;
+}
+
+.modal-meta-line {
+    margin-top: 8px;
+    color: #b8c0cb;
+    font-size: 0.84rem;
+}
+
+.god-modal-body {
+    padding: 18px;
+}
+
+.score-strip-v2 {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.score-tile,
+.detail-card-v2 {
+    border: 1px solid var(--v2-line);
+    background: rgba(255, 255, 255, 0.025);
+    border-radius: 15px;
+}
+
+.score-tile {
+    padding: 13px;
+}
+
+.score-tile span {
+    display: block;
+    color: var(--v2-muted);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.score-tile strong {
+    display: block;
+    margin-top: 5px;
+    color: var(--v2-gold-2);
+    font-family: "Cinzel", serif;
+    font-size: clamp(1.2rem, 2.3vw, 1.8rem);
+    line-height: 1.05;
+}
+
+.god-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.detail-card-v2 {
+    grid-column: span 6;
+    padding: 15px;
+}
+
+.detail-card-v2.wide {
+    grid-column: span 12;
+}
+
+.detail-card-v2 h3 {
+    margin: 4px 0 0;
+    color: var(--v2-text);
+}
+
+.detail-table-wrap {
+    width: 100%;
+    overflow: auto;
+    margin-top: 12px;
+}
+
+.compact-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.compact-table th,
+.compact-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--v2-text);
+    font-size: 0.78rem;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.compact-table th {
+    color: var(--v2-muted);
+    font-size: 0.65rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.mini-list-v2 {
+    display: grid;
+    gap: 9px;
+    margin-top: 12px;
+}
+
+.mini-row-v2 {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 11px;
+    background: #0d131b;
+}
+
+.mini-row-v2 span,
+.mini-row-v2 small {
+    display: block;
+}
+
+.mini-row-v2 small {
+    margin-top: 3px;
+    color: var(--v2-muted);
+    font-size: 0.7rem;
+    line-height: 1.35;
+}
+
+.mini-row-v2 b {
+    color: var(--v2-gold-2);
+    white-space: nowrap;
+}
+
+.modal-open {
+    overflow: hidden;
+}
+
+/* This block adapts the new shell for tablets without hiding navigation. */
+@media (max-width: 1100px) {
+    .app-shell-v2 {
+        display: block;
+    }
+
+    .council-rail {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        position: sticky;
+        top: 0;
+        flex-direction: row;
+        align-items: center;
+        padding: 10px 12px;
+        border-right: 0;
+        border-bottom: 1px solid var(--v2-line);
+    }
+
+    .brand-lockup {
+        padding: 0;
+    }
+
+    .brand-title,
+    .brand-subtitle,
+    .rail-status {
+        display: none;
+    }
+
+    .rail-nav {
+        display: flex;
+        overflow-x: auto;
+        gap: 8px;
+        padding-bottom: 2px;
+        scrollbar-width: thin;
+    }
+
+    .rail-nav .tab-btn {
+        flex: 0 0 auto;
+        width: auto;
+        white-space: nowrap;
+    }
+
+    .topbar-v2 {
+        grid-template-columns: 1fr;
+        align-items: start;
+    }
+
+    .filters-grid-v2 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .filter-actions {
+        grid-column: 1 / -1;
+    }
+}
+
+/* This block keeps mobile focused on content: small header, two-column cards,
+   horizontal tabs, and a modal that reads like a compact sheet. */
+@media (max-width: 700px) {
+    .main-v2 {
+        padding: 16px 12px 46px;
+    }
+
+    .brand-mark {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+    }
+
+    .rail-nav .tab-btn {
+        padding: 9px 10px;
+        font-size: 0.78rem;
+    }
+
+    .topbar-v2 {
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .topbar-v2 h1 {
+        font-size: 2rem;
+    }
+
+    .topbar-v2 .hero-text {
+        font-size: 0.86rem;
+    }
+
+    .topbar-stat-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stat-card-compact {
+        padding: 10px;
+    }
+
+    .filter-panel-v2 {
+        padding: 10px;
+    }
+
+    .filters-grid-v2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .filters-grid-v2 .field-search,
+    .filter-actions {
+        grid-column: 1 / -1;
+    }
+
+    .filter-actions .btn-primary,
+    .filter-actions .btn-secondary {
+        flex: 1;
+    }
+
+    .index-heading-row {
+        align-items: start;
+    }
+
+    .god-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .god-art-wrap,
+    .god-art {
+        height: 205px;
+        min-height: 205px;
+    }
+
+    .god-overlay-content {
+        display: block;
+    }
+
+    .rank-score-block {
+        margin-top: 7px;
+        text-align: left;
+    }
+
+    .pill-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .council-pill {
+        padding: 6px 3px;
+    }
+
+    .pill-name,
+    .pill-score,
+    .pill-rank {
+        font-size: 0.64rem;
+    }
+
+    .god-modal-backdrop {
+        align-items: stretch;
+        padding: 10px;
+    }
+
+    .god-detail-modal {
+        max-height: calc(100vh - 20px);
+        border-radius: 18px;
+    }
+
+    .god-modal-hero {
+        min-height: 230px;
+        padding: 20px;
+    }
+
+    .score-strip-v2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .detail-card-v2,
+    .detail-card-v2.wide {
+        grid-column: span 12;
+    }
+
+    .compact-table th,
+    .compact-table td {
+        padding: 8px 7px;
+        font-size: 0.72rem;
+    }
+}
+
+/* Phase 4B readability pass: this final layer normalizes contrast across every
+   legacy tab component now that the app shell is dark. It intentionally sits at
+   the end of the stylesheet so older marble-era rules cannot make text low
+   contrast on translucent cards. */
+:root {
+    --text-strong: #f8f2e4;
+    --text-soft: #b9c1cc;
+    --v2-panel-glass: rgba(18, 24, 33, 0.86);
+    --v2-panel-glass-strong: rgba(22, 29, 39, 0.96);
+    --v2-panel-edge: rgba(240, 207, 131, 0.16);
+    --v2-shadow-deep: rgba(0, 0, 0, 0.32);
+    --v2-ink-on-gold: #21180b;
+}
+
+/* This block adds a subtle mythic backdrop: a soft solar halo, blue-black depth,
+   and faint temple-line geometry that reads as flavor rather than clutter. */
+body {
+    color: var(--text-strong);
+    background:
+        linear-gradient(90deg, rgba(240, 207, 131, 0.032) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(240, 207, 131, 0.026) 1px, transparent 1px),
+        radial-gradient(circle at 20% -12%, rgba(240, 207, 131, 0.20), transparent 34%),
+        radial-gradient(circle at 86% 4%, rgba(121, 169, 230, 0.10), transparent 30%),
+        radial-gradient(circle at 55% 118%, rgba(214, 173, 96, 0.10), transparent 32%),
+        linear-gradient(180deg, #0d1118 0%, #070b10 100%);
+    background-size: 48px 48px, 48px 48px, auto, auto, auto, auto;
+}
+
+/* This block gives the main column a barely-there marble veil so empty areas
+   feel designed while preserving text contrast. */
+.main-v2 {
+    position: relative;
+    isolation: isolate;
+}
+
+.main-v2::before {
+    content: "";
+    position: fixed;
+    inset: 0 0 0 260px;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.34;
+    background:
+        radial-gradient(circle at 38% 18%, rgba(255, 255, 255, 0.06), transparent 19%),
+        linear-gradient(122deg, transparent 0 37%, rgba(255, 255, 255, 0.025) 37% 38%, transparent 38% 100%),
+        repeating-linear-gradient(135deg, transparent 0 36px, rgba(240, 207, 131, 0.035) 37px, transparent 39px);
+}
+
+/* This block ensures headings, helper text, and labels stay readable on all of
+   the darker panels introduced by the new app shell. */
+h1,
+h2,
+h3,
+h4,
+.rank-name,
+.rank-title-line h3,
+.feature-title,
+.ranker-name,
+.chemistry-row-main,
+.chemistry-matrix-cell strong,
+.mini-highlight-row strong,
+.metric-card strong {
+    color: var(--text-strong);
+}
+
+p,
+.hero-text,
+.rank-meta,
+.title-muted,
+.god-meta,
+.ranker-submeta,
+.chemistry-row-sub,
+.chemistry-spotlight-subline,
+.chemistry-timeline-meta,
+.mini-highlight-row small,
+.rater-topgod-grid .mini-highlight-row small,
+.rater-detail-grid .mini-highlight-row small {
+    color: var(--text-soft);
+}
+
+.eyebrow,
+.panel-heading .eyebrow,
+.detail-card-v2 .eyebrow {
+    color: var(--v2-gold-2);
+    text-shadow: 0 0 18px rgba(240, 207, 131, 0.18);
+}
+
+/* This block turns old ivory cards into dark readable glass cards and applies a
+   clean gold edge so every tab feels part of the same interface. */
+.panel,
+.panel-card,
+.feature-card,
+.stat-card,
+.metric-card,
+.ranking-list-card,
+.rank-row,
+.activity-item,
+.ranker-row,
+.tier-group,
+.tier-god-card,
+.h2h-card,
+.rater-card,
+.chemistry-section-card,
+.chemistry-person-panel,
+.chemistry-matrix-card,
+.chemistry-trinity-card,
+.chemistry-trinity-strip,
+.chemistry-story-banner,
+.chemistry-timeline-card,
+.mini-highlight-card,
+.empty-state {
+    color: var(--text-strong);
+    border-color: var(--v2-panel-edge);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.018)),
+        linear-gradient(135deg, rgba(214, 173, 96, 0.055), transparent 42%),
+        var(--v2-panel-glass);
+    box-shadow: 0 18px 42px var(--v2-shadow-deep);
+}
+
+/* This block adds subtle temple-cap highlights to major panels without placing
+   bright shapes behind body text. */
+.panel,
+.rater-card,
+.chemistry-section-card,
+.chemistry-matrix-card,
+.detail-card-v2,
+.god-card {
+    position: relative;
+}
+
+.panel::before,
+.rater-card::before,
+.chemistry-section-card::before,
+.chemistry-matrix-card::before,
+.detail-card-v2::before,
+.god-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0.075), transparent 26%, transparent 72%, rgba(240, 207, 131, 0.055));
+    opacity: 0.85;
+}
+
+/* This block keeps actual text and controls above decorative overlay layers. */
+.panel > *,
+.rater-card > *,
+.chemistry-section-card > *,
+.chemistry-matrix-card > *,
+.detail-card-v2 > *,
+.god-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* This block makes every pill/chip readable, including warm/cool/hot variants
+   that previously used pastel text on translucent ivory. */
+.summary-pill,
+.tiny-pill,
+.score-chip,
+.chemistry-chip,
+.chemistry-meta-strip,
+.chemistry-matrix-record,
+.chemistry-trinity-record,
+.mobile-podium-chip,
+.podium-peek-chip {
+    color: var(--v2-gold-2);
+    border-color: rgba(240, 207, 131, 0.24);
+    background: rgba(240, 207, 131, 0.095);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+}
+
+.summary-pill.muted,
+.chemistry-chip-neutral,
+.chemistry-chip-ivory,
+.chemistry-chip-marble {
+    color: var(--text-soft);
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.055);
+}
+
+.summary-pill.warm,
+.chemistry-chip-gold {
+    color: #ffe1a0;
+    border-color: rgba(240, 207, 131, 0.32);
+    background: rgba(214, 173, 96, 0.14);
+}
+
+.summary-pill.cool {
+    color: #a8f0cd;
+    border-color: rgba(130, 201, 168, 0.30);
+    background: rgba(130, 201, 168, 0.12);
+}
+
+.summary-pill.hot {
+    color: #ffb0a9;
+    border-color: rgba(228, 139, 131, 0.32);
+    background: rgba(228, 139, 131, 0.12);
+}
+
+/* This block gives controls enough contrast in all tabs, including forms inside
+   analytics, activity, H2H, and rank editing. */
+.field span,
+label span,
+.rating-label,
+.stat-label,
+.metric-label,
+.table th,
+.compact-table th {
+    color: #d7c59e;
+}
+
+.field input,
+.field select,
+.ranker-score input,
+textarea,
+input,
+select {
+    color: var(--text-strong);
+    border-color: rgba(255, 255, 255, 0.13);
+    background: rgba(7, 11, 16, 0.92);
+}
+
+.field input::placeholder,
+textarea::placeholder,
+input::placeholder {
+    color: rgba(185, 193, 204, 0.68);
+}
+
+.field input:focus,
+.field select:focus,
+.ranker-score input:focus,
+textarea:focus,
+input:focus,
+select:focus {
+    border-color: rgba(240, 207, 131, 0.62);
+    box-shadow: 0 0 0 3px rgba(240, 207, 131, 0.12);
+    outline: none;
+}
+
+.btn-primary,
+.btn-secondary,
+.back-to-top-btn,
+.collapse-indicator,
+.sync-button,
+.sync-button-secondary {
+    border-color: rgba(240, 207, 131, 0.26);
+    font-weight: 900;
+}
+
+.btn-primary,
+.sync-button {
+    color: var(--v2-ink-on-gold);
+    background: linear-gradient(135deg, #f5d98d, #b7893c);
+    box-shadow: 0 10px 24px rgba(214, 173, 96, 0.16);
+}
+
+.btn-secondary,
+.back-to-top-btn,
+.collapse-indicator,
+.sync-button-secondary {
+    color: var(--v2-gold-2);
+    background: rgba(240, 207, 131, 0.08);
+}
+
+/* This block fixes table readability wherever older tab renderers use plain
+   table markup. */
+.table,
+.compact-table {
+    color: var(--text-strong);
+}
+
+.table th,
+.table td,
+.compact-table th,
+.compact-table td {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.table td,
+.compact-table td {
+    color: var(--text-strong);
+}
+
+.table tr:hover td,
+.compact-table tr:hover td {
+    background: rgba(240, 207, 131, 0.055);
+}
+
+/* This block makes rankings, favorites, tier cards, and rank editor rows legible
+   while preserving their hierarchy. */
+.rank-number,
+.rating-value,
+.stat-value,
+.metric-value,
+.chemistry-metric-value,
+.tier-chip-large,
+.ranker-rank,
+.ranker-score strong {
+    color: var(--v2-gold-2);
+}
+
+.rank-row,
+.ranker-row,
+.activity-item,
+.ranking-list-card,
+.tier-group,
+.tier-god-card,
+.h2h-card {
+    border-color: rgba(240, 207, 131, 0.14);
+}
+
+.ranker-row-changed {
+    border-color: rgba(130, 201, 168, 0.34);
+    background:
+        linear-gradient(180deg, rgba(130, 201, 168, 0.10), rgba(255, 255, 255, 0.018)),
+        var(--v2-panel-glass);
+}
+
+.movement-up,
+.good {
+    color: var(--v2-good);
+}
+
+.movement-down,
+.bad {
+    color: var(--v2-bad);
+}
+
+.movement-flat {
+    color: #aeb5c0;
+}
+
+/* This block improves God Index readability over art by strengthening the text
+   scrim and using gold only where it has enough contrast. */
+.god-overlay {
+    background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(8, 12, 17, 0.26) 38%, rgba(8, 12, 17, 0.98) 100%),
+        radial-gradient(circle at 50% 100%, rgba(214, 173, 96, 0.16), transparent 54%);
+}
+
+.god-title {
+    color: #f0cf83;
+}
+
+.council-pill,
+.player-chip,
+.mini-row-v2,
+.mini-item,
+.chemistry-matrix-cell,
+.chemistry-timeline-result,
+.chemistry-timeline-queue,
+.chemistry-timeline-date {
+    color: var(--text-strong);
+    border-color: rgba(255, 255, 255, 0.09);
+    background: rgba(5, 9, 14, 0.58);
+}
+
+.pill-rank,
+.pill-score,
+.player-chip strong {
+    color: var(--text-strong);
+}
+
+/* This block gives Rater Stats cards a readable dark interior while retaining
+   the dramatic god-art overlay. */
+.rater-card {
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018)),
+        rgba(16, 22, 30, 0.92);
+}
+
+.rater-card .metric-card,
+.rater-card .mini-highlight-card,
+.rater-detail-grid .mini-highlight-card,
+.rater-topgod-grid .mini-highlight-card {
+    color: var(--text-strong);
+    border-color: rgba(255, 255, 255, 0.10);
+    background: rgba(5, 9, 14, 0.52);
+}
+
+.rater-card-hero::after,
+.rater-signature-art::after,
+.h2h-art-wrap::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.38) 38%, rgba(0, 0, 0, 0.82)),
+        radial-gradient(circle at 70% 16%, rgba(240, 207, 131, 0.16), transparent 30%);
+}
+
+.rater-signature-copy,
+.rater-hero-topline {
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.75);
+}
+
+.rater-hero-note {
+    color: var(--text-strong);
+    background: rgba(5, 9, 14, 0.72);
+    border-color: rgba(240, 207, 131, 0.18);
+}
+
+.rater-hero-note p,
+.rater-hero-submeta {
+    color: rgba(248, 242, 228, 0.86);
+}
+
+.rater-hero-submeta span,
+.rater-hero-pills .summary-pill,
+.rater-hero-metrics .summary-pill {
+    color: var(--v2-gold-2);
+    background: rgba(8, 12, 17, 0.66);
+    border-color: rgba(240, 207, 131, 0.25);
+}
+
+/* This block reins in the chemistry page so its high-density stat cards are
+   readable and visually grouped instead of pastel-on-ivory noise. */
+.chemistry-spotlight,
+.chemistry-spotlight-gold,
+.chemistry-spotlight-ivory,
+.chemistry-spotlight-marble,
+.chemistry-trinity-hero,
+.chemistry-trinity-footer,
+.chemistry-matrix-layout {
+    color: var(--text-strong);
+    border-color: rgba(240, 207, 131, 0.18);
+    background:
+        radial-gradient(circle at 12% 0%, rgba(240, 207, 131, 0.12), transparent 32%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.018)),
+        rgba(16, 22, 30, 0.92);
+    box-shadow: 0 18px 42px var(--v2-shadow-deep);
+}
+
+.chemistry-spotlight-label,
+.chemistry-trinity-blurb,
+.chemistry-story-copy p,
+.chemistry-timeline-card h3,
+.chemistry-matrix-head h3,
+.chemistry-person-summary strong {
+    color: var(--text-strong);
+}
+
+.chemistry-spotlight-record,
+.chemistry-trinity-record,
+.chemistry-matrix-record {
+    color: var(--v2-gold-2);
+    background: rgba(240, 207, 131, 0.10);
+    border: 1px solid rgba(240, 207, 131, 0.22);
+}
+
+.chemistry-timeline-dot {
+    background: linear-gradient(145deg, #f0cf83, #9a6c25);
+    box-shadow: 0 0 0 4px rgba(240, 207, 131, 0.14), 0 0 22px rgba(240, 207, 131, 0.24);
+}
+
+/* This block improves Activity labels and result badges that can otherwise get
+   washed out against dark cards. */
+.activity-type,
+.activity-side,
+.feature-split {
+    color: var(--v2-gold-2);
+}
+
+.activity-thumb,
+.ranker-thumb {
+    border-color: rgba(240, 207, 131, 0.22);
+    background: rgba(240, 207, 131, 0.10);
+}
+
+/* This block polishes the detail modal with stronger readability and a more
+   premium object-like presentation. */
+.god-detail-modal {
+    background:
+        radial-gradient(circle at 14% 0%, rgba(240, 207, 131, 0.12), transparent 32%),
+        linear-gradient(180deg, #10161e, #0b1017);
+}
+
+.detail-card-v2,
+.score-tile {
+    color: var(--text-strong);
+    border-color: rgba(240, 207, 131, 0.16);
+    background: rgba(5, 9, 14, 0.48);
+}
+
+.score-tile span,
+.compact-table th {
+    color: #d7c59e;
+}
+
+.modal-meta-line {
+    color: rgba(248, 242, 228, 0.86);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.72);
+}
+
+/* This block adds clear keyboard/focus states so clickable cards and controls
+   are discoverable as interactive elements. */
+button:focus-visible,
+.god-card:focus-visible,
+[role="button"]:focus-visible {
+    outline: 3px solid rgba(240, 207, 131, 0.62);
+    outline-offset: 3px;
+}
+
+/* This block keeps the tablet/mobile decorative layer aligned once the sidebar
+   collapses into the sticky top navigation. */
+@media (max-width: 1100px) {
+    .main-v2::before {
+        inset: 0;
+    }
+}
+
+/* This block trims visual noise on mobile while preserving strong text contrast
+   in dense cards and tables. */
+@media (max-width: 700px) {
+    body {
+        background-size: 34px 34px, 34px 34px, auto, auto, auto, auto;
+    }
+
+    .panel,
+    .panel-card,
+    .feature-card,
+    .stat-card,
+    .metric-card,
+    .ranking-list-card,
+    .rank-row,
+    .activity-item,
+    .ranker-row,
+    .rater-card,
+    .chemistry-section-card,
+    .chemistry-matrix-card,
+    .detail-card-v2 {
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+    }
+
+    .summary-pill,
+    .tiny-pill,
+    .score-chip,
+    .chemistry-chip {
+        font-size: 0.68rem;
+    }
+
+    .mini-highlight-row,
+    .mini-row-v2 {
+        gap: 8px;
+    }
+}
+
+/* Phase 4B continuation: this block catches lower-traffic controls and banners
+   that still had old ivory-era backgrounds after the first readability sweep. */
+.verdict-banner,
+.ranker-header,
+.unlock-card,
+.ranker-controls,
+.h2h-controls,
+.analytics-controls,
+.activity-filter-grid {
+    color: var(--text-strong);
+    border: 1px solid rgba(240, 207, 131, 0.16);
+    background:
+        radial-gradient(circle at 8% 0%, rgba(240, 207, 131, 0.10), transparent 32%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.018)),
+        rgba(16, 22, 30, 0.90);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+}
+
+.verdict-banner h3,
+.ranker-header h2,
+.unlock-card h3 {
+    color: var(--text-strong);
+}
+
+.verdict-chip-row .summary-pill,
+.dirty-badge {
+    color: #ffe1a0;
+    border: 1px solid rgba(240, 207, 131, 0.28);
+    background: rgba(214, 173, 96, 0.14);
+}
+
+.progress-bar-shell {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.progress-bar-fill {
+    background: linear-gradient(90deg, #9f7831, #f0cf83);
+    box-shadow: 0 0 18px rgba(240, 207, 131, 0.24);
+}
+
+.mini-btn,
+.sticky-save-btn {
+    color: var(--text-strong);
+    border: 1px solid rgba(240, 207, 131, 0.20);
+    background: rgba(240, 207, 131, 0.08);
+}
+
+.sticky-save-btn,
+.mini-btn.primary,
+.ranker-buttons .mini-btn:first-child {
+    color: var(--v2-ink-on-gold);
+    background: linear-gradient(135deg, #f5d98d, #b7893c);
+}
+
+.ranker-buttons .mini-btn:last-child {
+    color: var(--v2-gold-2);
+    background: rgba(240, 207, 131, 0.08);
+}
+
+.empty-state p,
+.ranker-submeta,
+.rank-meta,
+.title-muted {
+    color: var(--text-soft);
+}
+
+.status-banner {
+    color: #ffe1a0;
+    border-color: rgba(240, 207, 131, 0.28);
+    background:
+        linear-gradient(180deg, rgba(214, 173, 96, 0.14), rgba(214, 173, 96, 0.08)),
+        rgba(16, 22, 30, 0.94);
+}
+
+/* This block keeps image fallback tiles readable when a god art path is missing
+   in production. */
+.image-fallback {
+    color: var(--v2-gold-2);
+    border: 1px dashed rgba(240, 207, 131, 0.30);
+    background:
+        radial-gradient(circle at 50% 20%, rgba(240, 207, 131, 0.12), transparent 34%),
+        rgba(5, 9, 14, 0.72);
+}
+
+/* This block makes scrollbars match the dark interface in Chromium/WebKit while
+   leaving Firefox with its native thin scrollbar settings from earlier rules. */
+*::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+*::-webkit-scrollbar-thumb {
+    border: 2px solid rgba(7, 11, 16, 0.92);
+    border-radius: 999px;
+    background: rgba(240, 207, 131, 0.34);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: rgba(240, 207, 131, 0.52);
+}
+
+/* This block improves mobile tap targets and prevents bright focus/hover shadows
+   from becoming muddy on the dark background. */
+.summary-pill:hover,
+.legend-chip:hover,
+.tiny-pill:hover,
+.mobile-podium-chip:hover,
+.podium-peek-chip:hover,
+.score-chip:hover,
+.btn-primary:hover,
+.btn-secondary:hover,
+.mini-btn:hover,
+.back-to-top-btn:hover,
+.collapse-indicator:hover,
+.tab-btn:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28), 0 0 18px rgba(240, 207, 131, 0.10);
+}
+
+@media (max-width: 700px) {
+    .verdict-banner,
+    .ranker-header,
+    .unlock-card,
+    .ranker-controls,
+    .h2h-controls,
+    .analytics-controls,
+    .activity-filter-grid {
+        border-radius: 18px;
+        padding: 14px;
+    }
+
+    .mini-btn,
+    .sticky-save-btn,
+    .btn-primary,
+    .btn-secondary {
+        min-height: 44px;
+    }
+}
+
+/* Phase 4C contrast fixes: this block darkens the app further and explicitly
+   fixes Analytics archetypes plus tier badges, which still had light-theme
+   leftovers and inline tier colors fighting readability. */
+body {
+    background:
+        linear-gradient(90deg, rgba(240, 207, 131, 0.020) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(240, 207, 131, 0.018) 1px, transparent 1px),
+        radial-gradient(circle at 18% -12%, rgba(240, 207, 131, 0.13), transparent 32%),
+        radial-gradient(circle at 88% 0%, rgba(121, 169, 230, 0.075), transparent 28%),
+        radial-gradient(circle at 54% 118%, rgba(214, 173, 96, 0.07), transparent 30%),
+        linear-gradient(180deg, #080c12 0%, #05080d 100%);
+}
+
+.main-v2::before {
+    opacity: 0.22;
+}
+
+/* This block brings the Analytics archetype section fully into the dark shell so
+   the profile notes, bias rows, and player chips are readable at a glance. */
+.archetype-card,
+.chart-shell {
+    color: var(--text-strong);
+    border: 1px solid rgba(240, 207, 131, 0.18);
+    background:
+        radial-gradient(circle at 12% 0%, rgba(240, 207, 131, 0.10), transparent 34%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.016)),
+        rgba(10, 15, 22, 0.94);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.36);
+}
+
+.archetype-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.archetype-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background:
+        linear-gradient(120deg, rgba(255, 255, 255, 0.07), transparent 24%, transparent 74%, rgba(240, 207, 131, 0.06)),
+        repeating-linear-gradient(135deg, transparent 0 26px, rgba(240, 207, 131, 0.035) 27px, transparent 29px);
+}
+
+.archetype-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.archetype-title {
+    color: var(--text-strong);
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+}
+
+.taste-note {
+    color: #d8dde6;
+}
+
+.bias-row {
+    color: var(--text-strong);
+    border-top-color: rgba(240, 207, 131, 0.15);
+}
+
+.bias-row span {
+    color: var(--text-soft);
+}
+
+.archetype-topline .summary-pill,
+.profile-chip-row .summary-pill {
+    color: var(--v2-gold-2) !important;
+    border-color: rgba(240, 207, 131, 0.26);
+    background: rgba(240, 207, 131, 0.10);
+}
+
+/* This block makes every tier badge readable even when the tier's configured
+   color is bright yellow, pale blue, or otherwise low-contrast. */
+.chip,
+.tier-chip-large,
+.modal-rank-chip,
+.rank-badge,
+.legend-chip {
+    color: var(--text-strong) !important;
+    border: 1px solid rgba(240, 207, 131, 0.28);
+    background:
+        linear-gradient(180deg, rgba(7, 11, 16, 0.86), rgba(7, 11, 16, 0.70)) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.92), 0 0 12px currentColor;
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.045),
+        0 0 0 1px rgba(0, 0, 0, 0.38),
+        0 10px 24px rgba(0, 0, 0, 0.24);
+}
+
+/* This block restores tier identity as a colored edge/glow instead of relying on
+   hard-to-read colored text over inconsistent badge backgrounds. */
+.chip[style],
+.tier-chip-large[style] {
+    box-shadow:
+        inset 0 -3px 0 currentColor,
+        inset 0 0 0 1px rgba(255, 255, 255, 0.045),
+        0 0 18px color-mix(in srgb, currentColor 30%, transparent),
+        0 10px 24px rgba(0, 0, 0, 0.24);
+}
+
+.tier-chip-large {
+    min-width: 82px;
+    letter-spacing: 0.08em;
+}
+
+.rank-number[style],
+.rating-value[style],
+.podium-score[style],
+.score-tile strong[style] {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.80), 0 0 14px currentColor;
+}
+
+
+
+/* This block catches nested inline tier/rank spans inside badges so the badge
+   text stays readable while the tier color remains as glow/edge identity. */
+.chip[style],
+.rank-badge span[style],
+.sidebar-rank-item .rank-score-block div[style],
+.h2h-card .chip[style] {
+    color: var(--text-strong) !important;
+}
+
+/* This block improves the tier distribution chart labels and colored bars on
+   the darker Analytics panel. */
+.distribution-track {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.055);
+}
+
+.distribution-fill {
+    box-shadow: 0 0 16px color-mix(in srgb, currentColor 24%, transparent);
+}
+
+.chart-svg text {
+    fill: #d8dde6;
+}
+
+.chart-svg line {
+    stroke: rgba(240, 207, 131, 0.14);
+}
+
+/* This block gives Analytics better scannability by reducing visual weight on
+   the busiest sections without hiding any data. */
+.archetype-grid {
+    gap: 12px;
+}
+
+.archetype-card .profile-chip-row {
+    margin-bottom: 0;
+}
+
+.archetype-card .summary-pill {
+    padding: 5px 9px;
+    font-size: 0.68rem;
+}
+
+@media (max-width: 700px) {
+    .archetype-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .archetype-card,
+    .chart-shell {
+        padding: 14px;
+    }
+}
+
+/* Phase 4D information architecture pass: these styles support the cleaner tab
+   structure where overview content stays visible and dense details live in
+   readable collapsible drawers. */
+.filter-panel-v2.hidden {
+    display: none !important;
+}
+
+.panel-heading-inline {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.tab-overview-panel {
+    display: grid;
+    gap: 14px;
+}
+
+.focus-section {
+    overflow: hidden;
+    border: 1px solid rgba(240, 207, 131, 0.16);
+    border-radius: 18px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.040), rgba(255, 255, 255, 0.014)),
+        rgba(8, 12, 18, 0.72);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.24);
+}
+
+.focus-section summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 16px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.focus-section summary::-webkit-details-marker {
+    display: none;
+}
+
+.focus-section summary strong {
+    display: block;
+    margin-top: 2px;
+    color: var(--text-strong);
+    font-family: "Cinzel", serif;
+    font-size: 1.05rem;
+}
+
+.focus-section summary .eyebrow {
+    display: block;
+    margin: 0;
+    font-size: 0.62rem;
+}
+
+.focus-section summary::after {
+    content: "+";
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border: 1px solid rgba(240, 207, 131, 0.22);
+    border-radius: 999px;
+    color: var(--v2-gold-2);
+    background: rgba(240, 207, 131, 0.08);
+    font-weight: 900;
+}
+
+.focus-section[open] summary::after {
+    content: "-";
+}
+
+.focus-section-body {
+    padding: 0 16px 16px;
+}
+
+.analytics-snapshot-grid,
+.rater-stats-grid-compact {
+    display: grid;
+    gap: 14px;
+}
+
+.analytics-snapshot-cards {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    margin: 0;
+}
+
+.analytics-player-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.analytics-check-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rater-card-compact-v2 {
+    display: grid;
+    gap: 12px;
+}
+
+.rater-quick-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.rater-detail-vault {
+    margin-top: 2px;
+}
+
+.rater-detail-vault .rater-detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+}
+
+.rater-history-card {
+    grid-column: 1 / -1;
+}
+
+.analytics-focus-section .chart-shell {
+    margin-top: 0;
+    padding: 16px;
+    background: rgba(5, 9, 14, 0.46);
+    box-shadow: none;
+}
+
+@media (max-width: 900px) {
+    .panel-heading-inline {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .rater-quick-grid,
+    .rater-detail-vault .rater-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .focus-section summary {
+        align-items: flex-start;
+        padding: 12px;
+    }
+
+    .focus-section summary .summary-pill {
+        display: none;
+    }
+
+    .focus-section-body {
+        padding: 0 12px 12px;
+    }
+}
+
+/* Phase 4D chemistry polish: this keeps the compacted Chemistry page from
+   double-padding nested modules inside the new drawers. */
+.chemistry-headline-section {
+    display: grid;
+    gap: 14px;
+}
+
+.chemistry-focus-section .focus-section-body > .chemistry-matrix-layout,
+.chemistry-focus-section .focus-section-body > .chemistry-timeline,
+.chemistry-focus-section .focus-section-body > .chemistry-section-grid {
+    margin-top: 0;
+}
+
+.chemistry-focus-section {
+    margin-top: 14px;
+}
+
+.chemistry-focus-section .chemistry-matrix-layout,
+.chemistry-focus-section .chemistry-timeline-card,
+.chemistry-focus-section .chemistry-section-card {
+    box-shadow: none;
+}
+
+/* Phase 4E sub-tabs: this block turns dense Analytics drawers into a compact
+   second-level navigation system with one focused analysis surface visible at a
+   time. */
+.subtab-shell {
+    display: grid;
+    gap: 14px;
+}
+
+.subtab-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid rgba(240, 207, 131, 0.16);
+    border-radius: 16px;
+    background: rgba(5, 9, 14, 0.54);
+}
+
+.subtab-btn {
+    min-height: 38px;
+    padding: 0 13px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 999px;
+    color: var(--text-soft);
+    background: rgba(255, 255, 255, 0.045);
+    cursor: pointer;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    transition: color 160ms ease, background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.subtab-btn:hover,
+.subtab-btn.active {
+    color: var(--v2-ink-on-gold);
+    border-color: rgba(240, 207, 131, 0.38);
+    background: linear-gradient(135deg, #f5d98d, #b7893c);
+    transform: translateY(-1px);
+}
+
+.subtab-content {
+    min-width: 0;
+}
+
+.analytics-subtab-panel {
+    display: grid;
+    gap: 14px;
+}
+
+.section-kicker {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.section-kicker h3 {
+    margin: 0;
+    color: var(--text-strong);
+    font-family: "Cinzel", serif;
+    font-size: clamp(1.25rem, 2vw, 1.8rem);
+}
+
+.ownership-card .ownership-row span {
+    display: grid;
+    gap: 3px;
+}
+
+.ownership-card .ownership-row small {
+    color: var(--text-soft);
+    font-size: 0.72rem;
+    line-height: 1.35;
+}
+
+@media (max-width: 700px) {
+    .subtab-bar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: thin;
+    }
+
+    .subtab-btn {
+        flex: 0 0 auto;
+    }
+
+    .section-kicker {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+/* Phase 4F navigation cleanup: these styles support Rater Profile sub-tabs,
+   predictive-search polish, and the new H2H performance comparison cards. */
+#god-search-suggestions option {
+    color: var(--text-strong);
+}
+
+.rater-profile-shell,
+.h2h-subtab-panel,
+.rater-profile-panel {
+    display: grid;
+    gap: 14px;
+}
+
+.rater-player-tabs {
+    border-color: rgba(240, 207, 131, 0.22);
+    background:
+        radial-gradient(circle at 12% 0%, rgba(240, 207, 131, 0.10), transparent 34%),
+        rgba(5, 9, 14, 0.62);
+}
+
+.rater-section-tabs,
+.h2h-mode-tabs {
+    padding: 6px;
+    border-color: rgba(255, 255, 255, 0.10);
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.rater-profile-hero {
+    min-height: 260px;
+}
+
+.favorite-profile-grid,
+.h2h-performance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+}
+
+.favorite-profile-card,
+.h2h-performance-card {
+    display: grid;
+    grid-template-columns: 82px minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid rgba(240, 207, 131, 0.15);
+    border-radius: 16px;
+    color: var(--text-strong);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.044), rgba(255, 255, 255, 0.014)),
+        rgba(7, 11, 16, 0.70);
+    cursor: pointer;
+    transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.favorite-profile-card:hover,
+.favorite-profile-card:focus-visible,
+.h2h-performance-card:hover,
+.h2h-performance-card:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(240, 207, 131, 0.34);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.28), 0 0 20px rgba(240, 207, 131, 0.08);
+    outline: none;
+}
+
+.favorite-profile-art,
+.h2h-performance-art {
+    width: 82px;
+    height: 82px;
+    overflow: hidden;
+    border-radius: 14px;
+    border: 1px solid rgba(240, 207, 131, 0.18);
+    background: rgba(5, 9, 14, 0.72);
+}
+
+.favorite-profile-art .god-art,
+.h2h-performance-art .god-art {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
+
+.h2h-performance-card {
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: stretch;
+}
+
+.h2h-performance-art {
+    width: 96px;
+    height: 100%;
+    min-height: 132px;
+}
+
+.h2h-performance-body {
+    display: grid;
+    align-content: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.h2h-performance-body .section-kicker {
+    align-items: center;
+}
+
+.h2h-performance-body .section-kicker h3 {
+    font-size: 1.12rem;
+}
+
+@media (max-width: 700px) {
+    .favorite-profile-grid,
+    .h2h-performance-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .favorite-profile-card,
+    .h2h-performance-card {
+        grid-template-columns: 72px minmax(0, 1fr);
+    }
+
+    .favorite-profile-art,
+    .h2h-performance-art {
+        width: 72px;
+        height: 72px;
+        min-height: 72px;
+    }
+}
+
+/* Phase 4G interaction cleanup: live filtering, denser god cards, ownership in
+   modals, numbered favorites, and more ornamental-but-readable badges. */
+.index-heading-row-compact {
+    align-items: center;
+    margin: 0 0 10px;
+}
+
+.index-heading-row-compact .eyebrow {
+    margin: 0;
+}
+
+.god-card .god-meta {
+    margin-top: 4px;
+    max-width: 24ch;
+    color: rgba(216, 221, 230, 0.78);
+    font-size: 0.72rem;
+    line-height: 1.25;
+    letter-spacing: 0.02em;
+}
+
+.god-card .rating-label {
+    display: none;
+}
+
+.god-card .rating-value {
+    min-width: 54px;
+    min-height: 54px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(240, 207, 131, 0.28);
+    border-radius: 999px;
+    background:
+        radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.16), transparent 34%),
+        rgba(5, 9, 14, 0.72);
+    font-size: 1.5rem;
+    box-shadow: inset 0 -3px 0 currentColor, 0 0 20px color-mix(in srgb, currentColor 24%, transparent);
+}
+
+.chip,
+.tier-chip-large,
+.modal-rank-chip {
+    position: relative;
+    overflow: hidden;
+}
+
+.chip::after,
+.tier-chip-large::after,
+.modal-rank-chip::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border-radius: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    pointer-events: none;
+}
+
+.god-modal-hero {
+    min-height: 340px;
+    background-position: center 10%;
+}
+
+.god-modal-copy {
+    max-width: min(760px, 100%);
+}
+
+.ownership-row small {
+    display: block;
+    color: var(--text-soft);
+    font-size: 0.72rem;
+    line-height: 1.35;
+}
+
+.favorite-profile-card {
+    grid-template-columns: 42px 82px minmax(0, 1fr);
+}
+
+.favorite-rank-medallion {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(240, 207, 131, 0.30);
+    border-radius: 999px;
+    color: var(--v2-ink-on-gold);
+    background: linear-gradient(135deg, #f5d98d, #b7893c);
+    font-family: "Cinzel", serif;
+    font-size: 0.8rem;
+    font-weight: 900;
+    box-shadow: 0 0 18px rgba(240, 207, 131, 0.18);
+}
+
+.chemistry-subtab-shell {
+    margin-top: 12px;
+}
+
+.chemistry-subtab-panel {
+    display: grid;
+    gap: 14px;
+}
+
+.analytics-ownership-controls {
+    grid-template-columns: minmax(220px, 360px);
+}
+
+@media (max-width: 700px) {
+    .god-modal-hero {
+        min-height: 270px;
+        background-position: center top;
+    }
+
+    .god-card .god-meta {
+        font-size: 0.66rem;
+    }
+
+    .god-card .rating-value {
+        min-width: 46px;
+        min-height: 46px;
+        font-size: 1.2rem;
+    }
+
+    .favorite-profile-card {
+        grid-template-columns: 34px 72px minmax(0, 1fr);
+    }
+
+    .favorite-rank-medallion {
+        width: 32px;
+        height: 32px;
+        font-size: 0.7rem;
+    }
+}
+
+/* Phase 4H god-card cleanup: this block removes the heavy rating medallion,
+   keeps the rating readable on top of art, and trims secondary identity text so
+   the index cards feel like cards again instead of stat posters. */
+.god-card .rating-value {
+    min-width: 0;
+    min-height: 0;
+    display: block;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    font-family: "Cinzel", serif;
+    font-size: clamp(1.65rem, 4vw, 2.05rem);
+    font-weight: 900;
+    line-height: 0.95;
+    text-shadow: 0 0 14px currentColor, 0 2px 10px rgba(0, 0, 0, 0.78);
+}
+
+.god-card .god-meta {
+    margin-top: 3px;
+    max-width: 26ch;
+    color: rgba(229, 232, 238, 0.68);
+    font-size: 0.58rem;
+    line-height: 1.16;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+}
+
+.god-card .card-meta-rail {
+    display: none;
+}
+
+.god-card .pill-grid {
+    padding-top: 0;
+    border-top: 0;
+}
+
+/* Phase 4H modal cleanup: this block restores the earlier hero crop, places the
+   council score on the image without a bubble, and gives the new sub-tabs a
+   compact detail surface. */
+.god-modal-hero {
+    min-height: 305px;
+    background-position: center 20%;
+}
+
+.modal-score-chip {
+    position: absolute;
+    top: 22px;
+    right: 24px;
+    z-index: 2;
+    font-family: "Cinzel", serif;
+    font-size: clamp(2.1rem, 6vw, 3.35rem);
+    font-weight: 900;
+    line-height: 0.9;
+    text-shadow: 0 0 18px currentColor, 0 3px 14px rgba(0, 0, 0, 0.82);
+}
+
+.god-modal-tabs {
+    margin-bottom: 14px;
+}
+
+.god-modal-tab-panel {
+    display: grid;
+    gap: 14px;
+}
+
+.god-edit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+    align-items: end;
+    margin-top: 14px;
+}
+
+.god-edit-card .btn-primary {
+    min-height: 48px;
+}
+
+/* Phase 4H image crop guardrails: this block fixes the screens that were picking
+   up the overly top-focused crop while leaving H2H and Rater Profile Favorites
+   untouched. */
+.god-card .god-art,
+.activity-thumb .god-art,
+.ranker-thumb .god-art {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+}
+
+@media (max-width: 700px) {
+    .god-modal-hero {
+        min-height: 230px;
+        background-position: center 20%;
+    }
+
+    .modal-score-chip {
+        top: 58px;
+        right: 18px;
+        font-size: 2.2rem;
+    }
+
+    .god-card .god-meta {
+        font-size: 0.54rem;
+        line-height: 1.12;
+    }
+
+    .god-edit-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Phase 4I modal and information-architecture cleanup: Activity now lives under
+   Rate & Rank, Pairings get their own focused switcher, and the god hero badges
+   avoid covering the face/center artwork. */
+.ranker-subtab-shell {
+    display: grid;
+    gap: 14px;
+}
+
+.ranker-section-tabs,
+.chemistry-pair-tabs {
+    width: fit-content;
+    max-width: 100%;
+}
+
+.activity-embedded-panel {
+    display: grid;
+    gap: 14px;
+}
+
+.chemistry-pair-subtab-shell {
+    margin-top: 12px;
+}
+
+.chemistry-pair-focus {
+    display: grid;
+    gap: 14px;
+}
+
+.chemistry-pair-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.chemistry-pair-hero {
+    background:
+        radial-gradient(circle at 12% 0%, rgba(240, 207, 131, 0.12), transparent 34%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.014)),
+        rgba(5, 9, 14, 0.70);
+}
+
+.chemistry-pair-summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.god-modal-hero {
+    min-height: 315px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-color: #081017;
+}
+
+.god-modal-shade {
+    background:
+        linear-gradient(90deg, rgba(5, 8, 12, 0.88), rgba(5, 8, 12, 0.28) 46%, rgba(5, 8, 12, 0.62)),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(10, 14, 19, 0.94) 90%);
+}
+
+.modal-badge-stack {
+    position: absolute;
+    left: 22px;
+    bottom: 16px;
+    z-index: 3;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.modal-rank-chip,
+.modal-tier-chip {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: 0.84rem;
+    font-weight: 900;
+}
+
+.modal-tier-chip {
+    border: 1px solid rgba(240, 207, 131, 0.28);
+    background: rgba(5, 9, 14, 0.76);
+    text-shadow: 0 0 12px currentColor, 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.modal-score-chip {
+    top: auto;
+    right: 24px;
+    bottom: 18px;
+    z-index: 3;
+    font-size: clamp(2rem, 6vw, 3rem);
+}
+
+.god-modal-copy {
+    padding-bottom: 34px;
+}
+
+.god-modal-title {
+    margin: 4px 0 0;
+    color: rgba(248, 242, 228, 0.80);
+    font-family: "Forum", serif;
+    font-size: clamp(1rem, 2.4vw, 1.32rem);
+    letter-spacing: 0.02em;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.78);
+}
+
+@media (max-width: 900px) {
+    .chemistry-pair-detail-grid,
+    .chemistry-pair-summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .god-modal-hero {
+        min-height: 245px;
+        background-size: cover;
+        background-position: center 12%;
+    }
+
+    .god-modal-copy {
+        padding-bottom: 46px;
+    }
+
+    .modal-badge-stack {
+        left: 16px;
+        bottom: 12px;
+    }
+
+    .modal-score-chip {
+        right: 18px;
+        bottom: 15px;
+        font-size: 2.15rem;
+    }
+
+    .ranker-section-tabs,
+    .chemistry-pair-tabs {
+        width: 100%;
+    }
+}
+
+/* Phase 4J hero-art fix: use the same god image twice, once as a full-bleed
+   cinematic cover layer and once as a contained feature layer, so the modal
+   keeps the dramatic open while preserving the full artwork silhouette. */
+.god-modal-hero {
+    isolation: isolate;
+    min-height: 360px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center 16%;
+    background-color: #071018;
+}
+
+.god-modal-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: inherit;
+    background-repeat: no-repeat;
+    background-size: auto 118%;
+    background-position: center right 36%;
+    opacity: 0.78;
+    filter: saturate(1.04) contrast(1.03);
+}
+
+.god-modal-shade {
+    z-index: 1;
+    background:
+        radial-gradient(circle at 68% 20%, rgba(255, 255, 255, 0.05), transparent 28%),
+        linear-gradient(90deg, rgba(5, 8, 12, 0.92) 0%, rgba(5, 8, 12, 0.70) 28%, rgba(5, 8, 12, 0.34) 58%, rgba(5, 8, 12, 0.76) 100%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(10, 14, 19, 0.95) 92%);
+}
+
+.modal-badge-stack,
+.modal-score-chip,
+.god-modal-copy {
+    z-index: 3;
+}
+
+@media (max-width: 900px) {
+    .god-modal-hero::before {
+        background-size: auto 112%;
+        background-position: center right 28%;
+        opacity: 0.72;
+    }
+}
+
+@media (max-width: 700px) {
+    .god-modal-hero {
+        min-height: 285px;
+        background-size: cover;
+        background-position: center 14%;
+    }
+
+    .god-modal-hero::before {
+        background-size: auto 104%;
+        background-position: center right 18%;
+        opacity: 0.58;
+    }
+
+    .god-modal-shade {
+        background:
+            linear-gradient(90deg, rgba(5, 8, 12, 0.94), rgba(5, 8, 12, 0.58) 58%, rgba(5, 8, 12, 0.78)),
+            linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(10, 14, 19, 0.96) 92%);
+    }
+}
+
+/* Phase 4K hero-art correction: remove the visible duplicate poster layer and
+   return to one cinematic full-bleed image with a stronger readability veil. */
+.god-modal-hero {
+    min-height: 360px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center 18%;
+    background-color: #071018;
+}
+
+.god-modal-hero::before {
+    content: none;
+}
+
+.god-modal-shade {
+    z-index: 1;
+    background:
+        radial-gradient(circle at 72% 22%, rgba(255, 255, 255, 0.05), transparent 28%),
+        linear-gradient(90deg, rgba(5, 8, 12, 0.94) 0%, rgba(5, 8, 12, 0.70) 34%, rgba(5, 8, 12, 0.22) 62%, rgba(5, 8, 12, 0.78) 100%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(10, 14, 19, 0.96) 94%);
+}
+
+@media (max-width: 900px) {
+    .god-modal-hero {
+        background-position: center 16%;
+    }
+}
+
+@media (max-width: 700px) {
+    .god-modal-hero {
+        min-height: 285px;
+        background-position: center 14%;
+    }
+
+    .god-modal-shade {
+        background:
+            linear-gradient(90deg, rgba(5, 8, 12, 0.95), rgba(5, 8, 12, 0.62) 56%, rgba(5, 8, 12, 0.80)),
+            linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(10, 14, 19, 0.96) 94%);
+    }
+}
+
+/* Phase 4L god ownership split: ratings belief, actual performance, and reps
+   are separate ideas, so the modal presents them as separate cards. */
+.god-ownership-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.god-ownership-grid .detail-card-v2 {
+    grid-column: auto;
+}
+
+.god-ownership-grid .detail-card-v2.wide {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 800px) {
+    .god-ownership-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Phase 4M pantheon accents and remote-art fallback polish: pantheon marks sit
+   inside existing art surfaces as atmosphere, not as another noisy stat row. */
+.pantheon-watermark,
+.modal-pantheon-watermark {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    user-select: none;
+    filter: sepia(0.35) saturate(1.25) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.45));
+}
+
+.pantheon-watermark {
+    right: 14px;
+    top: 54px;
+    width: 62px;
+    height: 62px;
+    object-fit: contain;
+    opacity: 0.18;
+}
+
+.modal-pantheon-watermark {
+    right: 88px;
+    top: 30px;
+    width: clamp(88px, 12vw, 138px);
+    height: clamp(88px, 12vw, 138px);
+    object-fit: contain;
+    opacity: 0.16;
+}
+
+.pantheon-inline-icon {
+    width: 1em;
+    height: 1em;
+    object-fit: contain;
+    opacity: 0.86;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55));
+}
+
+.god-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    align-items: center;
+}
+
+.god-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.god-pantheon-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+@media (max-width: 700px) {
+    .pantheon-watermark {
+        width: 48px;
+        height: 48px;
+        opacity: 0.14;
+    }
+
+    .modal-pantheon-watermark {
+        right: 58px;
+        top: 24px;
+        width: 82px;
+        height: 82px;
+        opacity: 0.12;
+    }
+}
+
+/* Phase 4N God Detail dossier pass: each modal tab gets a fast read up top and
+   card-based detail below so the god story is easier to scan than dense tables. */
+.god-dossier-panel {
+    display: grid;
+    gap: 14px;
+}
+
+.god-dossier-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.god-dossier-stat {
+    position: relative;
+    overflow: hidden;
+    min-height: 96px;
+    padding: 13px;
+    border: 1px solid rgba(240, 207, 131, 0.16);
+    border-radius: 16px;
+    color: var(--text-strong);
+    background:
+        radial-gradient(circle at 12% 0%, rgba(240, 207, 131, 0.12), transparent 34%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.014)),
+        rgba(5, 9, 14, 0.70);
+}
+
+.god-dossier-stat::after {
+    content: "";
+    position: absolute;
+    inset: auto 10px 8px 10px;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, rgba(240, 207, 131, 0.62), transparent);
+    opacity: 0.62;
+}
+
+.god-dossier-stat span {
+    display: block;
+    color: #d7c59e;
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.god-dossier-stat strong {
+    display: block;
+    margin-top: 8px;
+    color: var(--text-strong);
+    font-family: "Cinzel", serif;
+    font-size: clamp(1.08rem, 2vw, 1.55rem);
+    line-height: 1.05;
+}
+
+.god-dossier-stat small {
+    display: block;
+    margin-top: 6px;
+    color: var(--text-soft);
+    font-size: 0.72rem;
+    line-height: 1.25;
+}
+
+.god-dossier-stat.gold strong {
+    color: var(--v2-gold-2);
+    text-shadow: 0 0 14px rgba(240, 207, 131, 0.24);
+}
+
+.god-dossier-card {
+    background:
+        linear-gradient(135deg, rgba(240, 207, 131, 0.06), transparent 34%),
+        rgba(5, 9, 14, 0.58);
+}
+
+.god-player-card-grid,
+.god-performance-grid,
+.god-synergy-grid,
+.god-recent-grid {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.god-player-card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+}
+
+.god-player-card,
+.god-performance-card,
+.god-synergy-card,
+.god-recent-card {
+    border: 1px solid rgba(240, 207, 131, 0.12);
+    border-radius: 15px;
+    color: var(--text-strong);
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.god-player-card {
+    padding: 12px;
+}
+
+.god-player-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.god-player-card-head span {
+    color: var(--text-soft);
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.god-player-score {
+    margin-top: 8px;
+    font-family: "Cinzel", serif;
+    font-size: 2rem;
+    font-weight: 900;
+    line-height: 1;
+    text-shadow: 0 0 14px currentColor;
+}
+
+.god-player-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 9px;
+}
+
+.god-player-meta span {
+    padding: 4px 7px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    color: var(--text-soft);
+    background: rgba(0, 0, 0, 0.18);
+    font-size: 0.68rem;
+    font-weight: 800;
+}
+
+.god-performance-grid {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.god-performance-card {
+    display: grid;
+    gap: 10px;
+    padding: 12px;
+}
+
+.god-performance-card h4 {
+    margin: 2px 0 0;
+    font-family: "Cinzel", serif;
+    font-size: 1.2rem;
+}
+
+.god-performance-meter {
+    height: 7px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.god-performance-meter span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #b7893c, #f5d98d);
+    box-shadow: 0 0 16px rgba(240, 207, 131, 0.24);
+}
+
+.god-synergy-grid,
+.god-recent-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.god-synergy-card,
+.god-recent-card {
+    display: grid;
+    gap: 8px;
+    padding: 12px;
+}
+
+.god-synergy-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+}
+
+.god-synergy-card-main {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+
+.god-synergy-card-main strong,
+.god-recent-card strong {
+    color: var(--text-strong);
+}
+
+.god-synergy-card-main span {
+    color: var(--text-soft);
+    font-size: 0.72rem;
+    line-height: 1.35;
+}
+
+.god-synergy-card b,
+.god-recent-result {
+    color: var(--v2-gold-2);
+    font-family: "Cinzel", serif;
+    font-weight: 900;
+}
+
+.god-recent-card {
+    border-left: 3px solid rgba(255, 255, 255, 0.14);
+}
+
+.god-recent-card.win {
+    border-left-color: var(--green);
+}
+
+.god-recent-card.loss {
+    border-left-color: var(--red);
+}
+
+.god-recent-result {
+    font-size: 1.05rem;
+}
+
+@media (max-width: 900px) {
+    .god-dossier-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 620px) {
+    .god-dossier-grid,
+    .god-player-card-grid,
+    .god-performance-grid,
+    .god-synergy-grid,
+    .god-recent-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .god-dossier-stat {
+        min-height: 82px;
+    }
+}
+
+/* Phase 4O Council classic table: keep the new dossier cards while restoring
+   the compact snapshot table Joey liked underneath them. */
+.god-classic-table-block {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(240, 207, 131, 0.14);
+}
+
+.section-head-compact {
+    margin-bottom: 8px;
+}
+
+.section-head-compact h3 {
+    font-size: 1rem;
+}
+
+
+/* Phase 4P mobile QA pass: compact the app shell, modal, tables, filters, and dense data sections for phones. */
+@media (max-width: 760px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .app-shell-v2 {
+    width: 100%;
+  }
+
+  .council-rail {
+    position: sticky;
+    top: 0;
+    z-index: 80;
+    gap: 8px;
+    padding: 8px 10px;
+    backdrop-filter: blur(18px);
+  }
+
+  .brand-lockup {
+    flex: 0 0 auto;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
+  }
+
+  .rail-nav {
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 6px;
+    padding: 2px 0 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .rail-nav::-webkit-scrollbar,
+  .subtab-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rail-nav .tab-btn {
+    min-height: 38px;
+    padding: 8px 10px;
+    font-size: 0.72rem;
+    letter-spacing: 0.01em;
+  }
+
+  .main-v2 {
+    padding: 12px 10px 78px;
+  }
+
+  .topbar-v2 {
+    margin-bottom: 10px;
+    padding: 14px;
+    border-radius: 18px;
+    gap: 10px;
+  }
+
+  .topbar-v2 .eyebrow {
+    font-size: 0.58rem;
+  }
+
+  .topbar-v2 h1 {
+    font-size: clamp(1.65rem, 9vw, 2.25rem);
+    line-height: 0.95;
+  }
+
+  .topbar-v2 .hero-text {
+    display: none;
+  }
+
+  .topbar-stat-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .stat-card-compact {
+    min-height: 54px;
+    padding: 8px 6px;
+    border-radius: 13px;
+  }
+
+  .stat-label {
+    font-size: 0.55rem;
+  }
+
+  .stat-value {
+    font-size: 1rem;
+  }
+
+  .filter-panel-v2 {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 16px;
+  }
+
+  .filters-grid-v2 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .field input,
+  .field select,
+  .btn-primary,
+  .btn-secondary,
+  .mini-btn {
+    min-height: 42px;
+    border-radius: 12px;
+  }
+
+  .panel {
+    border-radius: 18px;
+    padding: 12px;
+  }
+
+  .panel-heading h2,
+  .section-kicker h3 {
+    font-size: 1.25rem;
+  }
+
+  .subtab-bar {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    gap: 6px;
+    padding: 6px;
+    border-radius: 14px;
+  }
+
+  .subtab-btn {
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 0 11px;
+    font-size: 0.78rem;
+  }
+
+  .god-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .god-art-wrap {
+    min-height: 220px;
+  }
+
+  .god-art {
+    height: 220px;
+  }
+
+  .god-overlay-content {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    gap: 10px;
+  }
+
+  .god-card .god-meta {
+    max-width: 22ch;
+  }
+
+  .pill-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .council-pill {
+    padding: 7px 2px;
+  }
+
+  .god-modal-backdrop {
+    align-items: stretch;
+    padding: 8px;
+  }
+
+  .god-detail-modal {
+    width: 100%;
+    max-height: calc(100vh - 16px);
+    border-radius: 20px;
+  }
+
+  .modal-close {
+    top: 10px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+  }
+
+  .god-modal-hero {
+    min-height: 250px;
+    padding: 18px;
+    background-position: center 14%;
+  }
+
+  .god-modal-copy {
+    max-width: 78%;
+    padding-bottom: 42px;
+  }
+
+  .god-modal-copy h2 {
+    font-size: clamp(2rem, 15vw, 3.1rem);
+  }
+
+  .modal-meta-line {
+    font-size: 0.72rem;
+  }
+
+  .modal-badge-stack {
+    left: 14px;
+    bottom: 12px;
+  }
+
+  .modal-score-chip {
+    right: 16px;
+    bottom: 13px;
+    font-size: 2.1rem;
+  }
+
+  .god-modal-body {
+    padding: 12px;
+  }
+
+  .god-modal-tabs {
+    margin-bottom: 10px;
+  }
+
+  .detail-card-v2 {
+    padding: 12px;
+    border-radius: 14px;
+  }
+
+  .detail-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .compact-table {
+    min-width: 620px;
+  }
+
+  .compact-table th,
+  .compact-table td {
+    padding: 8px 7px;
+    font-size: 0.74rem;
+  }
+
+  .god-ownership-grid,
+  .chemistry-pair-detail-grid,
+  .chemistry-pair-summary-grid,
+  .favorite-profile-grid,
+  .h2h-performance-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ranker-top-grid,
+  .ranker-controls {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+
+  .ranker-header {
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .ranker-header h2 {
+    font-size: 1.45rem;
+  }
+
+  .ranker-status-row,
+  .ranker-jump-row {
+    gap: 6px;
+  }
+
+  .ranker-row {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .ranker-main {
+    grid-template-columns: 38px 54px minmax(0, 1fr);
+  }
+
+  .ranker-thumb {
+    width: 54px;
+    height: 54px;
+  }
+
+  .ranker-score input {
+    width: 100%;
+  }
+
+  .ranker-buttons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sticky-ranker-save {
+    position: sticky;
+    bottom: 10px;
+    padding: 8px;
+    border-radius: 16px;
+    background: rgba(5, 9, 14, 0.84);
+    backdrop-filter: blur(14px);
+  }
+
+  .sticky-save-btn {
+    width: 100%;
+  }
+
+  .activity-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-item {
+    grid-template-columns: 52px 1fr;
+  }
+
+  .activity-side {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    text-align: left;
+  }
+
+  .chemistry-trinity-hero {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+
+  .chemistry-trinity-metrics,
+  .chemistry-trinity-side,
+  .chemistry-trinity-footer,
+  .rater-signature-copy {
+    grid-template-columns: 1fr;
+  }
+
+  .chemistry-matrix-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .chemistry-timeline-item {
+    grid-template-columns: 18px minmax(0, 1fr);
+  }
+
+  .rater-profile-hero {
+    min-height: 220px;
+  }
+}
+
+@media (max-width: 420px) {
+  .topbar-stat-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .god-modal-copy {
+    max-width: 74%;
+  }
+
+  .modal-score-chip {
+    font-size: 1.85rem;
+  }
+
+  .modal-rank-chip,
+  .modal-tier-chip {
+    min-height: 30px;
+    padding: 6px 9px;
+    font-size: 0.74rem;
+  }
+
+  .pill-name {
+    font-size: 0.55rem;
+  }
+}
+
+/* Phase 4Q Data Health: this gives the read-only admin checks a compact
+   command-chamber look with clear severity, coverage, and asset diagnostics. */
+.data-health-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.health-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.health-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.health-metric-card,
+.health-card-grid span,
+.health-asset-summary span {
+  position: relative;
+  overflow: hidden;
+  padding: 14px;
+  border: 1px solid rgba(233, 196, 120, 0.2);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at top right, rgba(233, 196, 120, 0.16), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.health-metric-card span,
+.health-card-grid small,
+.health-asset-summary small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.health-metric-card strong,
+.health-card-grid strong,
+.health-asset-summary strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--cream);
+  font-family: var(--display-font);
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  line-height: 1;
+}
+
+.health-metric-card small {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted-strong);
+  font-size: 0.76rem;
+}
+
+.health-section-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+  gap: 12px;
+}
+
+.health-issue-list,
+.health-coverage-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.health-issue-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 13px;
+  border: 1px solid rgba(233, 196, 120, 0.14);
+  border-radius: 16px;
+  background: rgba(4, 8, 13, 0.46);
+}
+
+.health-issue-card h3 {
+  margin: 2px 0 4px;
+  color: var(--cream);
+  font-size: 1rem;
+}
+
+.health-issue-card p {
+  margin: 0;
+  color: var(--muted-strong);
+  font-size: 0.88rem;
+}
+
+.health-issue-card > strong {
+  align-self: start;
+  min-width: 46px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  text-align: center;
+  color: var(--cream);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.health-issue-card.danger {
+  border-color: rgba(231, 93, 93, 0.45);
+  background: linear-gradient(135deg, rgba(231, 93, 93, 0.14), rgba(4, 8, 13, 0.52));
+}
+
+.health-issue-card.warn {
+  border-color: rgba(233, 196, 120, 0.34);
+}
+
+.health-issue-card.info {
+  border-color: rgba(98, 169, 220, 0.34);
+}
+
+.health-samples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.health-sample-chip,
+.health-status-chip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 5px 8px;
+  border: 1px solid rgba(233, 196, 120, 0.18);
+  border-radius: 999px;
+  color: var(--muted-strong);
+  background: rgba(255, 255, 255, 0.045);
+  font-size: 0.74rem;
+  line-height: 1.15;
+}
+
+.health-sample-chip strong {
+  margin-right: 5px;
+  color: var(--gold);
+}
+
+.health-card-grid,
+.health-asset-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.health-card-grid.compact {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.health-coverage-card {
+  padding: 14px;
+  border: 1px solid rgba(233, 196, 120, 0.16);
+  border-radius: 18px;
+  background: rgba(4, 8, 13, 0.38);
+}
+
+.health-coverage-card.empty {
+  border-color: rgba(231, 93, 93, 0.36);
+}
+
+.health-coverage-card.thin {
+  border-color: rgba(233, 196, 120, 0.34);
+}
+
+.health-coverage-card.healthy {
+  border-color: rgba(91, 194, 154, 0.34);
+}
+
+.health-status-chip.local,
+.health-status-chip.healthy {
+  color: #9fe4c1;
+  border-color: rgba(91, 194, 154, 0.34);
+}
+
+.health-status-chip.placeholder,
+.health-status-chip.remote-fallback,
+.health-status-chip.thin {
+  color: var(--gold);
+  border-color: rgba(233, 196, 120, 0.36);
+}
+
+.health-status-chip.missing,
+.health-status-chip.empty {
+  color: #ff9b9b;
+  border-color: rgba(231, 93, 93, 0.42);
+}
+
+.health-table td:last-child {
+  max-width: 460px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 980px) {
+  .health-metric-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .health-section-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .health-card-grid.compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .health-metric-grid,
+  .health-card-grid,
+  .health-card-grid.compact,
+  .health-asset-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .health-issue-card {
+    grid-template-columns: 1fr;
+  }
+
+  .health-issue-card > strong {
+    justify-self: start;
+  }
+
+  .health-actions {
+    justify-content: flex-start;
+  }
+}
+
+/* Phase 4R Data Health nav: keep the admin panel accessible but tucked below
+   the primary daily-use navigation. */
+.rail-admin-link {
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.rail-admin-link .rail-admin-btn {
+  width: 100%;
+  justify-content: center;
+  opacity: 0.78;
+  border-style: dashed;
+}
+
+.rail-admin-link .rail-admin-btn.active,
+.rail-admin-link .rail-admin-btn:hover {
+  opacity: 1;
+}
+
+@media (max-width: 1100px) {
+  .rail-admin-link {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .rail-admin-link .rail-admin-btn {
+    min-height: 36px;
+    padding-inline: 10px;
+    white-space: nowrap;
+  }
+}
+
+/* Phase 4S Data Health layout repair: prevent dashboard sections from being
+   squeezed into vertical strips on wide screens and keep the admin tab readable. */
+#tab-data-health,
+#tab-data-health .data-health-panel {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+#tab-data-health .data-health-panel {
+  display: flex !important;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  overflow: hidden;
+}
+
+#tab-data-health .panel-heading-inline {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  width: 100%;
+}
+
+#tab-data-health .panel-heading-inline > div:first-child {
+  min-width: 0;
+  max-width: 760px;
+}
+
+#tab-data-health .health-metric-grid {
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
+  align-items: stretch;
+  gap: 12px;
+}
+
+#tab-data-health .health-metric-card {
+  min-width: 0;
+  min-height: 118px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#tab-data-health .health-metric-card strong {
+  overflow-wrap: anywhere;
+  font-size: clamp(1.55rem, 4vw, 2.35rem);
+}
+
+#tab-data-health .health-metric-card small,
+#tab-data-health .health-metric-card span {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+#tab-data-health .health-section-grid {
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr) !important;
+  align-items: start;
+  gap: 14px;
+}
+
+#tab-data-health .detail-card-v2,
+#tab-data-health .health-issue-card,
+#tab-data-health .health-coverage-card {
+  min-width: 0;
+}
+
+@media (max-width: 1180px) {
+  #tab-data-health .health-section-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 760px) {
+  #tab-data-health .panel-heading-inline {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  #tab-data-health .health-actions {
+    justify-content: flex-start;
+  }
+
+  #tab-data-health .health-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #tab-data-health .health-metric-card {
+    min-height: 96px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 430px) {
+  #tab-data-health .health-metric-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Phase 4T Council Weekly Scroll: a previewable recap tab that reads like a
+   council dispatch before we wire it to an email sender. */
+.council-scroll-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.scroll-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  gap: 18px;
+  align-items: stretch;
+  padding: 22px;
+  border: 1px solid rgba(233, 196, 120, 0.22);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, rgba(233, 196, 120, 0.18), transparent 36%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.018)),
+    rgba(5, 10, 16, 0.7);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.08), 0 18px 42px rgba(0, 0, 0, 0.25);
+}
+
+.scroll-hero h2 {
+  margin: 4px 0 8px;
+  color: var(--cream);
+  font-size: clamp(2rem, 5vw, 3.35rem);
+}
+
+.scroll-hero p {
+  max-width: 72ch;
+  color: var(--muted-strong);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.scroll-hero-metrics,
+.scroll-mini-metrics {
+  display: grid;
+  gap: 10px;
+}
+
+.scroll-hero-metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.scroll-hero-metrics span,
+.scroll-mini-metrics span {
+  padding: 13px;
+  border: 1px solid rgba(233, 196, 120, 0.16);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.scroll-hero-metrics strong,
+.scroll-mini-metrics strong {
+  display: block;
+  color: var(--cream);
+  font-family: var(--display-font);
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  line-height: 1;
+}
+
+.scroll-hero-metrics small,
+.scroll-mini-metrics small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.scroll-section-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  gap: 14px;
+}
+
+.scroll-two-column,
+.scroll-player-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.scroll-two-column {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.scroll-player-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.scroll-player-card {
+  display: grid;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid rgba(233, 196, 120, 0.16);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.046), rgba(255, 255, 255, 0.014)),
+    rgba(4, 8, 13, 0.48);
+}
+
+.scroll-player-card.muted {
+  opacity: 0.72;
+}
+
+.scroll-mini-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.scroll-card-block {
+  display: grid;
+  gap: 8px;
+}
+
+.scroll-god-row,
+.scroll-reminder-row,
+.scroll-receipt-row,
+.scroll-session-row {
+  display: grid;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgba(233, 196, 120, 0.12);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.scroll-god-row {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.scroll-rank,
+.scroll-session-row > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  color: #2c2111;
+  font-weight: 900;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+}
+
+.scroll-god-row strong,
+.scroll-reminder-row strong,
+.scroll-receipt-row strong,
+.scroll-session-row strong {
+  display: block;
+  color: var(--cream);
+}
+
+.scroll-god-row small,
+.scroll-receipt-row small,
+.scroll-session-row small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted-strong);
+  font-size: 0.78rem;
+}
+
+.scroll-reminder-row,
+.scroll-receipt-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.scroll-reminder-row span,
+.scroll-receipt-row > span {
+  color: var(--gold);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.scroll-receipt-list,
+.scroll-session-list {
+  display: grid;
+  gap: 9px;
+}
+
+.scroll-session-row {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.scroll-session-row.loss > span {
+  color: #fff;
+  background: linear-gradient(180deg, #c75b5b, #803536);
+}
+
+@media (max-width: 980px) {
+  .scroll-hero,
+  .scroll-section-grid,
+  .scroll-two-column {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .scroll-hero {
+    padding: 15px;
+    border-radius: 18px;
+  }
+
+  .scroll-hero-metrics,
+  .scroll-mini-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .scroll-reminder-row,
+  .scroll-receipt-row {
+    grid-template-columns: 1fr;
+  }
+
+  .scroll-reminder-row span,
+  .scroll-receipt-row > span {
+    text-align: left;
+  }
+}
+
+/* Phase 4U Council Scroll layout repair: stack the dispatch at medium widths
+   before title, metrics, and player cards start squeezing into unreadable bars. */
+#tab-council-scroll,
+#tab-council-scroll .council-scroll-panel {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+#tab-council-scroll .scroll-hero,
+#tab-council-scroll .scroll-section-grid,
+#tab-council-scroll .scroll-player-grid,
+#tab-council-scroll .scroll-two-column {
+  min-width: 0;
+}
+
+#tab-council-scroll .scroll-hero {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+#tab-council-scroll .scroll-hero > div:first-child {
+  min-width: 0;
+  max-width: 920px;
+}
+
+#tab-council-scroll .scroll-hero h2 {
+  max-width: 12ch;
+  font-size: clamp(2.35rem, 6vw, 4rem);
+  line-height: 0.95;
+}
+
+#tab-council-scroll .scroll-hero p {
+  max-width: 68ch;
+}
+
+#tab-council-scroll .scroll-hero-metrics {
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
+}
+
+#tab-council-scroll .scroll-hero-metrics span,
+#tab-council-scroll .scroll-mini-metrics span,
+#tab-council-scroll .scroll-player-card,
+#tab-council-scroll .scroll-receipt-row,
+#tab-council-scroll .scroll-reminder-row,
+#tab-council-scroll .scroll-god-row {
+  min-width: 0;
+}
+
+#tab-council-scroll .scroll-section-grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+#tab-council-scroll .scroll-player-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)) !important;
+}
+
+#tab-council-scroll .scroll-receipt-row,
+#tab-council-scroll .scroll-reminder-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+#tab-council-scroll .scroll-receipt-row strong,
+#tab-council-scroll .scroll-receipt-row small,
+#tab-council-scroll .scroll-reminder-row strong,
+#tab-council-scroll .scroll-reminder-row span,
+#tab-council-scroll .scroll-god-row strong,
+#tab-council-scroll .scroll-god-row small {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 720px) {
+  #tab-council-scroll .scroll-hero h2 {
+    max-width: none;
+    font-size: clamp(2rem, 12vw, 3rem);
+  }
+
+  #tab-council-scroll .scroll-hero-metrics,
+  #tab-council-scroll .scroll-two-column,
+  #tab-council-scroll .scroll-mini-metrics {
+    grid-template-columns: 1fr !important;
+  }
+
+  #tab-council-scroll .scroll-receipt-row,
+  #tab-council-scroll .scroll-reminder-row {
+    grid-template-columns: 1fr;
+  }
+
+  #tab-council-scroll .scroll-receipt-row > span,
+  #tab-council-scroll .scroll-reminder-row span {
+    text-align: left;
+  }
+}
+
+/* Phase 4V Council Scroll glance mode: compact scoreboard-style recap for
+   player gods, recent W/L, and best/worst comps. */
+.scroll-glance-panel {
+  gap: 14px;
+}
+
+.scroll-glance-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.78fr);
+  gap: 16px;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid rgba(233, 196, 120, 0.2);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at top right, rgba(233, 196, 120, 0.14), transparent 38%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.016)),
+    rgba(5, 10, 16, 0.68);
+}
+
+.scroll-glance-header h2 {
+  margin: 4px 0 6px;
+  color: var(--cream);
+  font-size: clamp(2rem, 4vw, 3.1rem);
+  line-height: 1;
+}
+
+.scroll-glance-header p {
+  max-width: 66ch;
+  color: var(--muted-strong);
+}
+
+.scroll-glance-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.scroll-glance-stats span {
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid rgba(233, 196, 120, 0.16);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.scroll-glance-stats strong {
+  display: block;
+  overflow: hidden;
+  color: var(--cream);
+  font-family: var(--display-font);
+  font-size: clamp(1.15rem, 2.4vw, 1.75rem);
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scroll-glance-stats small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.scroll-glance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.scroll-glance-card.wide {
+  grid-column: 1 / -1;
+}
+
+.scroll-glance-player-list,
+.scroll-compact-list,
+.scroll-recent-list {
+  display: grid;
+  gap: 9px;
+}
+
+.scroll-glance-player {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.9fr) minmax(210px, 0.8fr) minmax(260px, 1.1fr);
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid rgba(233, 196, 120, 0.13);
+  border-radius: 15px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.scroll-glance-player.muted {
+  opacity: 0.65;
+}
+
+.scroll-player-main,
+.scroll-player-picks,
+.scroll-compact-row > div {
+  min-width: 0;
+}
+
+.scroll-player-main strong {
+  display: block;
+  color: var(--cream);
+  font-family: var(--display-font);
+  font-size: 1.2rem;
+}
+
+.scroll-player-main small,
+.scroll-compact-row small {
+  display: block;
+  margin-top: 2px;
+  overflow: hidden;
+  color: var(--muted-strong);
+  font-size: 0.78rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scroll-player-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.scroll-player-stats span {
+  padding: 5px 8px;
+  border: 1px solid rgba(233, 196, 120, 0.14);
+  border-radius: 999px;
+  color: var(--gold);
+  background: rgba(255, 255, 255, 0.045);
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.scroll-player-picks {
+  display: grid;
+  gap: 4px;
+  color: var(--muted-strong);
+  font-size: 0.78rem;
+}
+
+.scroll-player-picks b {
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.scroll-compact-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(233, 196, 120, 0.12);
+  border-radius: 13px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.scroll-compact-row strong {
+  display: block;
+  overflow: hidden;
+  color: var(--cream);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scroll-compact-row > span:not(.scroll-result-pill) {
+  color: var(--gold);
+  font-size: 0.78rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.scroll-result-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  color: #2c2111;
+  font-weight: 900;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+}
+
+.scroll-recent-row {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.scroll-recent-row.loss .scroll-result-pill {
+  color: #fff;
+  background: linear-gradient(180deg, #c75b5b, #803536);
+}
+
+@media (max-width: 1150px) {
+  .scroll-glance-header,
+  .scroll-glance-grid,
+  .scroll-glance-player {
+    grid-template-columns: 1fr;
+  }
+
+  .scroll-glance-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .scroll-player-main small,
+  .scroll-compact-row small,
+  .scroll-compact-row strong {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 560px) {
+  .scroll-glance-header {
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .scroll-glance-stats,
+  .scroll-compact-row,
+  .scroll-recent-row {
+    grid-template-columns: 1fr;
+  }
+
+  .scroll-compact-row > span:not(.scroll-result-pill) {
+    white-space: normal;
+  }
 }

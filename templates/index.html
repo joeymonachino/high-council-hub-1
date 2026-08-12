@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -23,131 +23,102 @@
 <body>
     <!-- This block provides a shell for the single-page app. The backend only
          renders the frame; the frontend JavaScript fills in the live content. -->
-    <div class="app-shell">
-        <header class="hero-panel">
-            <div class="hero-copy">
-                <p class="eyebrow">Hall Of Olympus Style</p>
-                <h1>High Council Hub</h1>
-                <p class="hero-text">
-                    Marble halls, golden rankings, and enough divine ego to keep every
-                    council vote feeling like prophecy written in stone.
-                </p>
+    <div class="app-shell app-shell-v2">
+        <aside class="council-rail">
+            <div class="brand-lockup">
+                <div class="brand-mark">HC</div>
+                <div>
+                    <div class="brand-title">High Council</div>
+                    <div class="brand-subtitle">SMITE 2 Friend Hub</div>
+                </div>
             </div>
-            <div class="hero-stats" id="hero-stats"></div>
-        </header>
 
-        <!-- This block keeps the main tab navigation visible while scrolling so
-             the user can jump anywhere in the app without heading back up. -->
-        <nav class="tab-strip panel sticky-tabs" id="tab-strip">
-            <button class="tab-btn active" data-tab="index" data-mobile-label="Index">Index</button>
-            <button class="tab-btn" data-tab="rankings" data-mobile-label="Ranks">Rankings</button>
-            <button class="tab-btn" data-tab="favorites" data-mobile-label="Favs">Favorites</button>
-            <button class="tab-btn" data-tab="rater-stats" data-mobile-label="Raters">Rater Stats</button>
-            <button class="tab-btn" data-tab="chemistry" data-mobile-label="Chem">Chemistry</button>
-            <button class="tab-btn" data-tab="tierlist" data-mobile-label="Tiers">Tier List</button>
-            <button class="tab-btn" data-tab="analytics" data-mobile-label="Data">Analytics</button>
-            <button class="tab-btn" data-tab="h2h" data-mobile-label="H2H">H2H</button>
-            <button class="tab-btn" data-tab="activity" data-mobile-label="Log">Activity</button>
-            <button class="tab-btn" data-tab="ranker" data-mobile-label="Rank">Rate &amp; Rank</button>
-        </nav>
+            <nav class="rail-nav" id="tab-strip">
+                <button class="tab-btn active" data-tab="index" data-mobile-label="Gods"><span>Gods</span></button>
+                <button class="tab-btn" data-tab="rater-stats" data-mobile-label="Raters"><span>Rater Profile</span></button>
+                <button class="tab-btn" data-tab="chemistry" data-mobile-label="Chem"><span>Chemistry</span></button>
+                <button class="tab-btn" data-tab="analytics" data-mobile-label="Data"><span>Analytics</span></button>
+                <button class="tab-btn" data-tab="h2h" data-mobile-label="H2H"><span>H2H</span></button>
+                <button class="tab-btn" data-tab="council-scroll" data-mobile-label="Scroll"><span>Council Scroll</span></button>
+                <button class="tab-btn" data-tab="ranker" data-mobile-label="Rank"><span>Rate &amp; Rank</span></button>
+            </nav>
 
-        <!-- This block shows the global health banner, top ticker, podium, and
-             controversy cards before the main tabs. -->
-        <section class="overview-stack">
+            <div class="rail-status rail-admin-link">
+                <button class="tab-btn rail-admin-btn" data-tab="data-health" data-mobile-label="Health"><span>Data Health</span></button>
+            </div>
+        </aside>
+
+        <main class="main-column main-v2">
+            <header class="topbar-v2">
+                <div>
+                    <p class="eyebrow">The Hall Of Olympus</p>
+                    <h1>High Council Hub</h1>
+                    <p class="hero-text">Council ratings, match receipts, and the gods your group actually wins with.</p>
+                </div>
+                <div class="topbar-stat-row" id="hero-stats"></div>
+            </header>
+
             <div id="status-banner"></div>
-            <details class="panel collapsible-panel" id="podium-details">
-                <summary class="collapsible-summary">
-                    <div class="collapsible-title-block">
-                        <p class="eyebrow">Council Leaders</p>
-                        <h2>The Podium</h2>
-                        <div id="podium-summary-preview" class="podium-summary-preview"></div>
+
+            <section class="filter-panel-v2" id="filters-details">
+                <form id="filters-form" class="filters-grid filters-grid-v2">
+                    <label class="field field-search">
+                        <span>Search God</span>
+                        <input id="filter-search" type="text" placeholder="Type to narrow gods: ix, zeus, support..." autocomplete="off">
+                    </label>
+
+                    <label class="field">
+                        <span>Role</span>
+                        <select id="filter-role"></select>
+                    </label>
+
+                    <label class="field">
+                        <span>Class</span>
+                        <select id="filter-class"></select>
+                    </label>
+
+                    <label class="field">
+                        <span>Pantheon</span>
+                        <select id="filter-pantheon"></select>
+                    </label>
+
+                    <label class="field">
+                        <span>Attack Type</span>
+                        <select id="filter-attack-type"></select>
+                    </label>
+
+                    <label class="field">
+                        <span>Damage Type</span>
+                        <select id="filter-damage-type"></select>
+                    </label>
+
+                    <div class="filter-actions">
+                        <button class="btn-primary" type="submit">Apply</button>
+                        <button class="btn-secondary" id="filters-reset" type="button">Clear</button>
                     </div>
-                    <span class="collapse-indicator" role="button" aria-hidden="true">Toggle Panel</span>
-                </summary>
-                <div id="podium-panel"></div>
-            </details>
-        </section>
+                </form>
+            </section>
 
-        <!-- This block keeps filters and live rankings visible together to
-             mirror the original app's control/sidebar relationship. -->
-        <section class="workspace-layout">
-            <aside class="sidebar-shell">
-                <details class="sidebar panel" id="sidebar-details">
-                    <summary class="collapsible-summary">
-                        <div>
-                            <p class="eyebrow">Live Meta</p>
-                            <h2>Live Rankings</h2>
-                        </div>
-                        <span class="collapse-indicator" role="button" aria-hidden="true">Toggle Panel</span>
-                    </summary>
-                    <div class="sidebar-scroll" id="live-rankings"></div>
-                </details>
-            </aside>
+            <section class="tab-content">
+                <section class="tab-panel active" id="tab-index"></section>
+                <section class="tab-panel" id="tab-rankings"></section>
+                <section class="tab-panel" id="tab-favorites"></section>
+                <section class="tab-panel" id="tab-rater-stats"></section>
+                <section class="tab-panel" id="tab-chemistry"></section>
+                <section class="tab-panel" id="tab-tierlist"></section>
+                <section class="tab-panel" id="tab-analytics"></section>
+                <section class="tab-panel" id="tab-h2h"></section>
+                <section class="tab-panel" id="tab-data-health"></section>
+                <section class="tab-panel" id="tab-council-scroll"></section>
+                <section class="tab-panel" id="tab-ranker"></section>
+            </section>
+        </main>
+    </div>
 
-            <main class="main-column">
-                <details class="panel collapsible-panel filter-panel" id="filters-details">
-                    <summary class="collapsible-summary">
-                        <div>
-                            <p class="eyebrow">Refine The Council View</p>
-                            <h2>Global Filters</h2>
-                        </div>
-                        <span class="collapse-indicator" role="button" aria-hidden="true">Toggle Panel</span>
-                    </summary>
-
-                    <!-- This block holds the cross-tab filters that drive the
-                         catalog, rankings, favorites, tierlist, and sidebar. -->
-                    <form id="filters-form" class="filters-grid">
-                        <label class="field field-search">
-                            <span>Search God</span>
-                            <input id="filter-search" type="text" placeholder="Zeus, Bellona, support...">
-                        </label>
-
-                        <label class="field">
-                            <span>Role</span>
-                            <select id="filter-role"></select>
-                        </label>
-
-                        <label class="field">
-                            <span>Class</span>
-                            <select id="filter-class"></select>
-                        </label>
-
-                        <label class="field">
-                            <span>Pantheon</span>
-                            <select id="filter-pantheon"></select>
-                        </label>
-
-                        <label class="field">
-                            <span>Attack Type</span>
-                            <select id="filter-attack-type"></select>
-                        </label>
-
-                        <label class="field">
-                            <span>Damage Type</span>
-                            <select id="filter-damage-type"></select>
-                        </label>
-
-                        <div class="filter-actions">
-                            <button class="btn-primary" type="submit">Apply Filters</button>
-                            <button class="btn-secondary" id="filters-reset" type="button">Clear Filters</button>
-                        </div>
-                    </form>
-                </details>
-
-                <!-- This block defines each tab's render mount point. -->
-                <section class="tab-content">
-                    <section class="tab-panel active" id="tab-index"></section>
-                    <section class="tab-panel" id="tab-rankings"></section>
-                    <section class="tab-panel" id="tab-favorites"></section>
-                    <section class="tab-panel" id="tab-rater-stats"></section>
-                    <section class="tab-panel" id="tab-chemistry"></section>
-                    <section class="tab-panel" id="tab-tierlist"></section>
-                    <section class="tab-panel" id="tab-analytics"></section>
-                    <section class="tab-panel" id="tab-h2h"></section>
-                    <section class="tab-panel" id="tab-activity"></section>
-                    <section class="tab-panel" id="tab-ranker"></section>
-                </section>
-            </main>
+    <div class="god-modal-backdrop hidden" id="god-modal-backdrop">
+        <section class="god-detail-modal" role="dialog" aria-modal="true" aria-label="God details">
+            <button class="modal-close" id="god-modal-close" type="button" aria-label="Close god details">&times;</button>
+            <div id="god-modal-content"></div>
         </section>
     </div>
 
@@ -156,4 +127,8 @@
     <script src="{{ url_for('static', filename='app.js') }}" defer></script>
 </body>
 </html>
+
+
+
+
 

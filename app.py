@@ -1,10 +1,13 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 # This block imports the standard-library tools used for file access, dates,
 # lightweight caching, and configuration parsing.
+import base64
 import json
 import math
 import os
+import random
+import re
 import time
 import tomllib
 from datetime import datetime, timezone
@@ -126,6 +129,36 @@ app = Flask(__name__)
 # This block stores a tiny in-memory cache for asset lookup maps so the app
 # doesn't rescan the same image folders on every request.
 ASSET_INDEX_CACHE: dict[str, dict[str, Path]] = {}
+
+# This map handles gods whose display names and image filenames do not line up
+# cleanly because of punctuation, spacing, or title casing.
+GOD_IMAGE_ALIASES = {
+    "morgan le fay": ["MorganleFay", "MorganLeFay", "Morgan le Fay"],
+    "morganlefay": ["MorganleFay", "MorganLeFay"],
+    "daji": ["DaJi", "Da Ji", "Daji"],
+    "da ji": ["DaJi", "Da Ji", "Daji"],
+    "bake kujira": ["BakeKujira", "Bake Kujira"],
+    "bakekujira": ["BakeKujira"],
+    "chang e": ["ChangE", "Chang'e", "Change"],
+    "change": ["ChangE", "Chang'e", "Change"],
+    "chang'e": ["ChangE", "Chang'e", "Change"],
+}
+
+# This map gives the frontend a deterministic remote fallback only when local
+# artwork is missing or is one of our tiny placeholder files. The app still
+# prefers bundled assets whenever they are real images.
+REMOTE_GOD_IMAGE_FALLBACKS = {
+    "morgan le fay": "https://arewesmite2yet.com/images/gods/smite1/card/morgan_le_fay.png",
+    "morganlefay": "https://arewesmite2yet.com/images/gods/smite1/card/morgan_le_fay.png",
+    "daji": "https://arewesmite2yet.com/images/gods/smite1/card/da_ji.png",
+    "da ji": "https://arewesmite2yet.com/images/gods/smite1/card/da_ji.png",
+    "bake kujira": "https://arewesmite2yet.com/images/gods/smite1/card/bake_kujira.png",
+    "bakekujira": "https://arewesmite2yet.com/images/gods/smite1/card/bake_kujira.png",
+    "chang e": "https://arewesmite2yet.com/images/gods/smite1/thumb/chang_e.png",
+    "change": "https://arewesmite2yet.com/images/gods/smite1/thumb/chang_e.png",
+    "chang'e": "https://arewesmite2yet.com/images/gods/smite1/thumb/chang_e.png",
+}
+MIN_REAL_IMAGE_BYTES = 512
 SMITESOURCE_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
 RATER_STATS_CACHE: tuple[float, str, dict[str, dict[str, Any]]] | None = None
 HTTP = requests.Session()
@@ -357,21 +390,32 @@ def smitesource_number(value: Any, digits: int = 0) -> int | float | None:
 # This helper points a SmiteSource god row back at local art when the same god
 # image already exists in the project assets.
 def smitesource_god_image_url(god_name: str) -> str:
-    if not god_name:
-        return ""
-    return f"/god-image/{quote(god_name)}" if resolve_god_image(god_name) else ""
+    return god_image_url(god_name)
 
 
 # This helper performs one SmiteSource RPC POST in the same wrapped format the
 # live site expects for overview and recent-match data.
 def smitesource_post(endpoint: str, payload: dict[str, Any]) -> dict[str, Any]:
+    # SmiteSource occasionally rejects obvious script traffic, especially from
+    # serverless hosts. These headers mirror a normal same-origin browser RPC.
+    headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Origin": "https://smitesource.com",
+        "Referer": "https://smitesource.com/",
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/126.0.0.0 Safari/537.36"
+        ),
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
+    }
     response = HTTP.post(
         f"{SMITESOURCE_RPC_BASE}/{endpoint}",
-        headers={
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "User-Agent": "HighCouncilHub/1.0",
-        },
+        headers=headers,
         json={"json": payload},
         timeout=30,
     )
@@ -539,6 +583,145 @@ def sync_smitesource_history_for_player(player: str, profile_url: str) -> dict[s
         "stored": len(stored_rows) + len(records),
         "stoppedOnExisting": bool(existing_match_keys),
         "overviewTotalMatches": overview_total_matches,
+    }
+
+
+# This helper maps SmiteSource profile UUIDs back to council player labels for
+# browser-export imports where the app cannot call SmiteSource directly.
+def smitesource_uuid_player_map() -> dict[str, str]:
+    return {
+        smitesource_player_uuid(profile_url): player
+        for player, profile_url in SMITESOURCE_PROFILE_LINKS.items()
+        if smitesource_player_uuid(profile_url)
+    }
+
+
+# This helper extracts the original JSON request payload from a HAR entry.
+def har_request_json(entry: dict[str, Any]) -> dict[str, Any]:
+    request_payload = entry.get("request") if isinstance(entry.get("request"), dict) else {}
+    post_data = request_payload.get("postData") if isinstance(request_payload.get("postData"), dict) else {}
+    raw_text = post_data.get("text")
+    if not isinstance(raw_text, str) or not raw_text.strip():
+        return {}
+    try:
+        parsed = json.loads(raw_text)
+    except json.JSONDecodeError:
+        return {}
+    return parsed if isinstance(parsed, dict) else {}
+
+
+# This helper extracts and decodes one response body from a browser HAR entry.
+def har_response_text(entry: dict[str, Any]) -> str:
+    response_payload = entry.get("response") if isinstance(entry.get("response"), dict) else {}
+    content = response_payload.get("content") if isinstance(response_payload.get("content"), dict) else {}
+    raw_text = content.get("text")
+    if not isinstance(raw_text, str):
+        return ""
+    if str(content.get("encoding") or "").lower() == "base64":
+        try:
+            return base64.b64decode(raw_text).decode("utf-8")
+        except Exception:
+            return ""
+    return raw_text
+
+
+# This helper accepts the common tRPC response shapes used by SmiteSource and
+# returns the match rows inside a getPlayerMatches payload.
+def smitesource_matches_from_payload(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    candidates = [payload]
+    if isinstance(payload.get("json"), dict):
+        candidates.append(payload["json"])
+    result = payload.get("result") if isinstance(payload.get("result"), dict) else {}
+    data = result.get("data") if isinstance(result.get("data"), dict) else {}
+    if data:
+        candidates.append(data)
+        if isinstance(data.get("json"), dict):
+            candidates.append(data["json"])
+
+    for candidate in candidates:
+        matches = candidate.get("matches") if isinstance(candidate, dict) else None
+        if isinstance(matches, list):
+            return [row for row in matches if isinstance(row, dict)]
+    return []
+
+
+# This helper parses a saved browser HAR and returns SmiteSource match rows
+# grouped by council player, preserving the original row payloads for Supabase.
+def extract_smitesource_matches_from_har(har_payload: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
+    uuid_to_player = smitesource_uuid_player_map()
+    grouped: dict[str, list[dict[str, Any]]] = {player: [] for player in PLAYERS}
+    log = har_payload.get("log") if isinstance(har_payload.get("log"), dict) else {}
+    entries = log.get("entries") if isinstance(log.get("entries"), list) else []
+
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        request_payload = entry.get("request") if isinstance(entry.get("request"), dict) else {}
+        url = str(request_payload.get("url") or "")
+        if "/rpc/matches/getPlayerMatches" not in url:
+            continue
+
+        request_json = har_request_json(entry)
+        request_body = request_json.get("json") if isinstance(request_json.get("json"), dict) else request_json
+        player_uuid = str(request_body.get("playerUuid") or "") if isinstance(request_body, dict) else ""
+        player = uuid_to_player.get(player_uuid)
+        if not player:
+            continue
+
+        raw_text = har_response_text(entry)
+        if not raw_text:
+            continue
+        try:
+            response_payload = json.loads(raw_text)
+        except json.JSONDecodeError:
+            continue
+
+        grouped[player].extend(smitesource_matches_from_payload(response_payload if isinstance(response_payload, dict) else {}))
+
+    return {player: rows for player, rows in grouped.items() if rows}
+
+
+# This helper imports a SmiteSource browser HAR into the stored history table,
+# deduping against existing rows so repeated imports stay harmless.
+def import_smitesource_har_payload(har_payload: dict[str, Any]) -> dict[str, Any]:
+    grouped_rows = extract_smitesource_matches_from_har(har_payload)
+    results: list[dict[str, Any]] = []
+
+    for player, rows in grouped_rows.items():
+        player_uuid = smitesource_player_uuid(SMITESOURCE_PROFILE_LINKS.get(player, ""))
+        existing_keys = {
+            str(row.get("match_key") or "")
+            for row in load_stored_match_history(player)
+            if str(row.get("match_key") or "")
+        }
+        records: list[dict[str, Any]] = []
+        seen_keys: set[str] = set()
+
+        for row in rows:
+            record = normalize_smitesource_history_record(player, player_uuid, row)
+            match_key = str(record.get("match_key") or "")
+            if not match_key or match_key in existing_keys or match_key in seen_keys:
+                continue
+            seen_keys.add(match_key)
+            records.append(record)
+
+        if records:
+            sb_upsert("smitesource_match_history", records, "record_key")
+
+        results.append(
+            {
+                "player": player,
+                "captured": len(rows),
+                "inserted": len(records),
+                "stored": len(existing_keys) + len(records),
+            }
+        )
+
+    return {
+        "ok": True,
+        "results": results,
+        "captured": sum(item["captured"] for item in results),
+        "inserted": sum(item["inserted"] for item in results),
     }
 
 
@@ -799,7 +982,8 @@ def summarize_stored_match_rows(player: str, raw_match_rows: list[dict[str, Any]
             "wardsPerMatch": round(total_wards / total_matches, 1) if total_matches else None,
             "hoursPlayed": round(total_duration_seconds / 3600, 1) if total_duration_seconds else None,
         },
-        "topGods": top_gods[:5],
+        "topGods": top_gods[:40],
+        "godStats": {item["name"]: item for item in top_gods},
         "topRoles": top_roles[:4],
         "recentMatches": recent_matches,
         "chemistry": {},
@@ -1354,19 +1538,23 @@ def merge_history_rows(remote_rows: list[dict], local_rows: list[dict]) -> list[
 # This helper normalizes a god or pantheon name into several likely filename
 # variants so image lookup can survive spacing/casing differences.
 def normalize_name_variants(name: str) -> list[str]:
-    compact = name.replace(" ", "")
-    underscored = name.replace(" ", "_")
-    dehyphenated = compact.replace("-", "")
-    return [
+    cleaned = re.sub(r"[^A-Za-z0-9]+", " ", name or "").strip()
+    compact = cleaned.replace(" ", "")
+    underscored = cleaned.replace(" ", "_")
+    hyphenated = cleaned.replace(" ", "-")
+    no_the = re.sub(r"^the\s+", "", cleaned, flags=re.IGNORECASE)
+    variants = [
         name,
+        cleaned,
         compact,
         underscored,
-        dehyphenated,
-        name.lower(),
-        compact.lower(),
-        underscored.lower(),
-        dehyphenated.lower(),
+        hyphenated,
+        no_the,
+        no_the.replace(" ", ""),
+        no_the.replace(" ", "_"),
+        no_the.replace(" ", "-"),
     ]
+    return list(dict.fromkeys([variant for value in variants for variant in (value, value.lower()) if variant]))
 
 
 # This helper scans an asset directory once and caches a lowercase filename
@@ -1389,11 +1577,30 @@ def build_asset_index(kind: str, directory: Path) -> dict[str, Path]:
 # This helper resolves a god image path by trying several possible stem names.
 def resolve_god_image(name: str) -> Path | None:
     image_map = build_asset_index("gods", GODS_ASSETS_DIR)
-    for candidate in normalize_name_variants(name):
-        asset = image_map.get(candidate.lower())
-        if asset:
-            return asset
+    candidates = normalize_name_variants(name)
+    alias_key = re.sub(r"[^a-z0-9]+", " ", (name or "").lower()).strip()
+    compact_alias_key = alias_key.replace(" ", "")
+    candidates.extend(GOD_IMAGE_ALIASES.get(alias_key, []))
+    candidates.extend(GOD_IMAGE_ALIASES.get(compact_alias_key, []))
+
+    for candidate in candidates:
+        for variant in normalize_name_variants(candidate):
+            asset = image_map.get(variant.lower())
+            if asset and asset.stat().st_size > MIN_REAL_IMAGE_BYTES:
+                return asset
     return None
+
+
+def remote_god_image_url(name: str) -> str:
+    alias_key = re.sub(r"[^a-z0-9]+", " ", (name or "").lower()).strip()
+    compact_alias_key = alias_key.replace(" ", "")
+    return REMOTE_GOD_IMAGE_FALLBACKS.get(alias_key) or REMOTE_GOD_IMAGE_FALLBACKS.get(compact_alias_key, "")
+
+
+def god_image_url(name: str) -> str:
+    if not name:
+        return ""
+    return f"/god-image/{quote(name)}" if resolve_god_image(name) else remote_god_image_url(name)
 
 
 # This helper resolves a pantheon icon path using the same multi-variant logic.
@@ -1518,7 +1725,7 @@ def merge_catalog(
         # This block adds derived display data that the frontend can render
         # directly without redoing path and badge logic on every view.
         normalized["TierColor"] = TIER_COLORS.get(normalized["Tier"], TIER_COLORS["U"])
-        normalized["ImageUrl"] = f"/god-image/{quote(normalized['God'])}" if resolve_god_image(normalized["God"]) else ""
+        normalized["ImageUrl"] = god_image_url(normalized["God"])
         normalized["PantheonImageUrl"] = (
             f"/pantheon-image/{quote(normalized['Pantheon'])}" if normalized["Pantheon"] and resolve_pantheon_image(normalized["Pantheon"]) else ""
         )
@@ -1784,6 +1991,222 @@ def build_remote_history_records(records: list[dict]) -> list[dict]:
     ]
 
 
+
+# This helper parses mixed timestamp strings into sortable datetimes while
+# safely ignoring malformed imported rows.
+def parse_health_datetime(value: Any) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(str(value).replace("Z", "+00:00")).astimezone(timezone.utc)
+    except ValueError:
+        return None
+
+
+# This helper gives Data Health the same local/placeholder/remote/missing image
+# verdicts as the standalone audit script without importing from tools at runtime.
+def audit_god_assets_for_health(meta_rows: list[dict]) -> dict[str, Any]:
+    image_map = build_asset_index("gods", GODS_ASSETS_DIR)
+    rows: list[dict[str, Any]] = []
+
+    for row in meta_rows:
+        god_name = row.get("god_name") or row.get("God") or ""
+        pantheon = row.get("pantheon") or row.get("Pantheon") or ""
+        candidates = normalize_name_variants(god_name)
+        alias_key = re.sub(r"[^a-z0-9]+", " ", str(god_name).lower()).strip()
+        compact_alias_key = alias_key.replace(" ", "")
+        candidates.extend(GOD_IMAGE_ALIASES.get(alias_key, []))
+        candidates.extend(GOD_IMAGE_ALIASES.get(compact_alias_key, []))
+
+        asset = None
+        for candidate in candidates:
+            for variant in normalize_name_variants(candidate):
+                possible_asset = image_map.get(variant.lower())
+                if possible_asset:
+                    asset = possible_asset
+                    break
+            if asset:
+                break
+
+        remote = remote_god_image_url(str(god_name))
+        size = asset.stat().st_size if asset else 0
+        if asset and size <= MIN_REAL_IMAGE_BYTES:
+            status = "placeholder"
+        elif asset:
+            status = "local"
+        elif remote:
+            status = "remote-fallback"
+        else:
+            status = "missing"
+
+        rows.append(
+            {
+                "god": god_name,
+                "pantheon": pantheon,
+                "status": status,
+                "asset": str(asset.relative_to(BASE_DIR)) if asset and asset.is_relative_to(BASE_DIR) else (str(asset) if asset else ""),
+                "bytes": size,
+                "remote": remote,
+            }
+        )
+
+    counts = {status: sum(1 for row in rows if row["status"] == status) for status in ["local", "placeholder", "remote-fallback", "missing"]}
+    return {
+        "counts": counts,
+        "total": len(rows),
+        "attention": [row for row in rows if row["status"] in {"placeholder", "remote-fallback", "missing"}],
+    }
+
+
+# This helper builds one read-only health report from Supabase so the frontend
+# can show data quality, coverage, and integrity warnings in one admin panel.
+def build_data_health_report() -> dict[str, Any]:
+    generated_at = datetime.now(timezone.utc).isoformat()
+    errors: list[str] = []
+    tables: dict[str, dict[str, Any]] = {}
+
+    def load_table(table: str, params: dict[str, str] | None = None, fallback: list[dict] | None = None) -> list[dict]:
+        try:
+            rows = sb_select_all(table, params or {"select": "*"})
+            tables[table] = {"count": len(rows), "ok": True}
+            return rows
+        except Exception as exc:  # noqa: BLE001
+            rows = fallback or []
+            tables[table] = {"count": len(rows), "ok": False, "error": str(exc)}
+            errors.append(f"{table}: {exc}")
+            return rows
+
+    meta_rows = load_table("gods_metadata", fallback=load_json_snapshot("gods_metadata.json"))
+    rating_rows = load_table("council_ratings", fallback=load_json_snapshot("council_ratings.json"))
+    ranking_rows = load_table("personal_rankings")
+    history_rows = load_table("rating_history", {"select": "*", "order": "changed_at.desc"})
+    match_rows = load_table("smitesource_match_history", {"select": "*", "order": "started_at.desc"})
+
+    roster_names = {str(row.get("god_name") or row.get("God") or "").strip().lower() for row in meta_rows if row.get("god_name") or row.get("God")}
+    rating_names = {str(row.get("god_name") or row.get("God") or "").strip().lower() for row in rating_rows if row.get("god_name") or row.get("God")}
+    ranking_names = {str(row.get("god_name") or "").strip().lower() for row in ranking_rows if row.get("god_name")}
+    match_names = {str(row.get("god_name") or row.get("godName") or "").strip().lower() for row in match_rows if row.get("god_name") or row.get("godName")}
+    history_names = {str(row.get("god_name") or "").strip().lower() for row in history_rows if row.get("god_name")}
+
+    joust_rows = [row for row in match_rows if is_joust_queue(str(row.get("queue_type") or row.get("queueType") or row.get("gameMode") or ""))]
+    started_values = [parse_health_datetime(row.get("started_at") or row.get("startTimestamp")) for row in joust_rows]
+    started_values = [value for value in started_values if value]
+
+    duplicate_record_keys = 0
+    duplicate_match_player_rows = 0
+    record_key_seen: set[str] = set()
+    match_player_seen: set[tuple[str, str]] = set()
+    for row in match_rows:
+        record_key = str(row.get("record_key") or "").strip()
+        if record_key:
+            duplicate_record_keys += 1 if record_key in record_key_seen else 0
+            record_key_seen.add(record_key)
+        session_key = str(row.get("match_key") or row.get("match_id") or "").strip()
+        player = str(row.get("player") or "").strip()
+        if session_key and player:
+            key = (session_key, player)
+            duplicate_match_player_rows += 1 if key in match_player_seen else 0
+            match_player_seen.add(key)
+
+    missing_required_rows = [
+        row for row in match_rows
+        if not row.get("player") or not (row.get("god_name") or row.get("godName")) or row.get("won") is None or not (row.get("started_at") or row.get("startTimestamp"))
+    ]
+
+    session_buckets: dict[str, set[str]] = {}
+    for row in joust_rows:
+        session_key = str(row.get("match_key") or row.get("match_id") or normalize_history_timestamp(row.get("started_at") or row.get("startTimestamp") or "")).strip()
+        player = str(row.get("player") or "").strip()
+        if session_key and player in PLAYERS:
+            session_buckets.setdefault(session_key, set()).add(player)
+
+    session_sizes = {"solo": 0, "duo": 0, "trioPlus": 0}
+    for players in session_buckets.values():
+        if len(players) <= 1:
+            session_sizes["solo"] += 1
+        elif len(players) == 2:
+            session_sizes["duo"] += 1
+        else:
+            session_sizes["trioPlus"] += 1
+
+    player_coverage = []
+    for player in PLAYERS:
+        player_rows = [row for row in joust_rows if row.get("player") == player]
+        player_dates = [parse_health_datetime(row.get("started_at") or row.get("startTimestamp")) for row in player_rows]
+        player_dates = [value for value in player_dates if value]
+        god_counts: dict[str, dict[str, int]] = {}
+        for row in player_rows:
+            god_name = str(row.get("god_name") or row.get("godName") or "").strip()
+            if not god_name:
+                continue
+            bucket = god_counts.setdefault(god_name, {"games": 0, "wins": 0})
+            bucket["games"] += 1
+            bucket["wins"] += 1 if row.get("won") else 0
+        most_played = sorted(god_counts.items(), key=lambda item: (-item[1]["games"], item[0]))[:1]
+        best_sample = sorted(
+            [(god, values) for god, values in god_counts.items() if values["games"] >= 3],
+            key=lambda item: (-(item[1]["wins"] / max(item[1]["games"], 1)), -item[1]["games"], item[0]),
+        )[:1]
+        player_coverage.append(
+            {
+                "player": player,
+                "joustRows": len(player_rows),
+                "oldestMatch": min(player_dates).isoformat() if player_dates else "",
+                "newestMatch": max(player_dates).isoformat() if player_dates else "",
+                "mostPlayed": {"god": most_played[0][0], **most_played[0][1]} if most_played else None,
+                "bestGod": {
+                    "god": best_sample[0][0],
+                    **best_sample[0][1],
+                    "winRate": round((best_sample[0][1]["wins"] / max(best_sample[0][1]["games"], 1)) * 100, 1),
+                } if best_sample else None,
+                "status": "healthy" if len(player_rows) >= 20 else ("thin" if player_rows else "empty"),
+            }
+        )
+
+    asset_health = audit_god_assets_for_health(meta_rows)
+    issues: list[dict[str, Any]] = []
+
+    def add_issue(severity: str, title: str, message: str, count: int = 0, samples: list[Any] | None = None) -> None:
+        if count or severity == "info":
+            issues.append({"severity": severity, "title": title, "message": message, "count": count, "samples": samples or []})
+
+    add_issue("danger", "Missing God Artwork", "Gods without a local image or remote fallback will render broken/blank art.", asset_health["counts"].get("missing", 0), asset_health["attention"][:8])
+    add_issue("warn", "Placeholder Or Remote Artwork", "These gods render, but they are not fully self-contained local assets yet.", asset_health["counts"].get("placeholder", 0) + asset_health["counts"].get("remote-fallback", 0), asset_health["attention"][:8])
+    add_issue("warn", "Duplicate Match/Player Rows", "A player appears more than once for the same match key, which can inflate chemistry records.", duplicate_match_player_rows)
+    add_issue("warn", "Duplicate Record Keys", "Record keys should be unique before Supabase upsert.", duplicate_record_keys)
+    add_issue("warn", "Incomplete Match Rows", "Rows missing player, god, result, or timestamp can weaken rater and chemistry stats.", len(missing_required_rows), missing_required_rows[:5])
+    add_issue("warn", "Match Gods Outside Roster", "Match history includes gods that are not in gods_metadata.", len(match_names - roster_names), sorted(match_names - roster_names)[:10])
+    add_issue("warn", "Ratings Outside Roster", "Council ratings include gods that are not in gods_metadata.", len(rating_names - roster_names), sorted(rating_names - roster_names)[:10])
+    add_issue("warn", "Rankings Outside Roster", "Personal rankings include gods that are not in gods_metadata.", len(ranking_names - roster_names), sorted(ranking_names - roster_names)[:10])
+    add_issue("warn", "Activity Outside Roster", "Activity history includes gods that are not in gods_metadata.", len(history_names - roster_names), sorted(history_names - roster_names)[:10])
+    add_issue("info", "Fanout Snapshot", "Joust sessions grouped by stored match key: solo, duo, and trio+ coverage.", len(session_buckets), [session_sizes])
+
+    return {
+        "generatedAt": generated_at,
+        "tables": tables,
+        "overview": {
+            "rosterGods": len(roster_names),
+            "ratingRows": len(rating_rows),
+            "rankingRows": len(ranking_rows),
+            "activityRows": len(history_rows),
+            "matchRows": len(match_rows),
+            "joustRows": len(joust_rows),
+            "uniqueJoustSessions": len(session_buckets),
+            "oldestJoustMatch": min(started_values).isoformat() if started_values else "",
+            "newestJoustMatch": max(started_values).isoformat() if started_values else "",
+        },
+        "assets": asset_health,
+        "coverage": player_coverage,
+        "chemistryIntegrity": {
+            "sessionSizes": session_sizes,
+            "duplicateMatchPlayerRows": duplicate_match_player_rows,
+            "duplicateRecordKeys": duplicate_record_keys,
+            "incompleteMatchRows": len(missing_required_rows),
+        },
+        "issues": issues,
+        "errors": errors,
+    }
+
 # This route renders the single-page shell; the dynamic tab content is filled
 # by the frontend JavaScript after it fetches `/api/bootstrap`.
 @app.route("/")
@@ -1815,6 +2238,12 @@ def api_bootstrap():
     )
 
 
+
+# This route returns the read-only admin report used by the Data Health tab.
+@app.route("/api/data-health")
+def api_data_health():
+    return jsonify(build_data_health_report())
+
 # This route returns the live SmiteSource-derived rater stats used by the
 # dedicated profile tab, while keeping the fetch logic hidden server-side.
 @app.route("/api/rater-stats")
@@ -1839,13 +2268,39 @@ def api_rater_stats_sync():
     if player and player not in PLAYERS:
         return jsonify({"ok": False, "message": "Unknown player."}), 400
 
-    try:
-        results = [
-            sync_smitesource_history_for_player(target, SMITESOURCE_PROFILE_LINKS.get(target, ""))
-            for target in targets
-        ]
-    except Exception as exc:  # noqa: BLE001
-        return jsonify({"ok": False, "message": str(exc)}), 500
+    results = []
+    blocked = False
+    for index, target in enumerate(targets):
+        if index:
+            time.sleep(random.uniform(0.35, 0.9))
+        try:
+            results.append(sync_smitesource_history_for_player(target, SMITESOURCE_PROFILE_LINKS.get(target, "")))
+        except requests.HTTPError as exc:
+            status_code = exc.response.status_code if exc.response is not None else None
+            blocked = blocked or status_code == 403
+            results.append(
+                {
+                    "player": target,
+                    "linked": bool(SMITESOURCE_PROFILE_LINKS.get(target, "")),
+                    "inserted": 0,
+                    "stored": len(load_stored_match_history(target)),
+                    "error": f"SmiteSource returned {status_code or 'an HTTP error'}.",
+                    "blocked": status_code == 403,
+                }
+            )
+            if status_code == 403:
+                break
+        except Exception as exc:  # noqa: BLE001
+            results.append(
+                {
+                    "player": target,
+                    "linked": bool(SMITESOURCE_PROFILE_LINKS.get(target, "")),
+                    "inserted": 0,
+                    "stored": len(load_stored_match_history(target)),
+                    "error": str(exc),
+                    "blocked": False,
+                }
+            )
 
     # This block clears the in-memory caches so the next stats request reflects
     # the freshly synced durable history immediately.
@@ -1855,9 +2310,45 @@ def api_rater_stats_sync():
 
     return jsonify(
         {
-            "ok": True,
+            "ok": not blocked,
             "results": results,
             "players": targets,
+            "historySource": "supabase",
+            "message": "SmiteSource is currently blocking sync requests; existing Supabase history is still being used." if blocked else "Sync completed.",
+        }
+    )
+
+
+# This route imports SmiteSource match history from a browser-exported HAR.
+# It lets you keep storing fresh matches even when server-side sync is blocked.
+@app.post("/api/rater-stats/import-har")
+def api_rater_stats_import_har():
+    global RATER_STATS_CACHE
+
+    sync_key = str(request.form.get("syncKey") or request.headers.get("X-Sync-Key") or "")
+    if not check_sync_key(sync_key):
+        return jsonify({"ok": False, "message": "Unauthorized import request."}), 401
+
+    upload = request.files.get("file")
+    if not upload:
+        return jsonify({"ok": False, "message": "No HAR file was uploaded."}), 400
+
+    try:
+        har_payload = json.loads(upload.read().decode("utf-8"))
+        if not isinstance(har_payload, dict):
+            raise ValueError("HAR payload must be a JSON object.")
+        summary = import_smitesource_har_payload(har_payload)
+    except Exception as exc:  # noqa: BLE001
+        return jsonify({"ok": False, "message": f"Import failed: {exc}"}), 400
+
+    RATER_STATS_CACHE = None
+    for player in PLAYERS:
+        SMITESOURCE_CACHE.pop(player, None)
+
+    return jsonify(
+        {
+            **summary,
+            "message": f"Imported {summary.get('inserted', 0)} new match row(s) from the HAR export.",
             "historySource": "supabase",
         }
     )
@@ -2019,3 +2510,5 @@ if __name__ == "__main__":
     host = os.environ.get("FLASK_HOST", "127.0.0.1")
     port = int(os.environ.get("FLASK_PORT", "5000"))
     app.run(host=host, port=port, debug=True)
+
+
