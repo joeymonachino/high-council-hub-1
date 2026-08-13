@@ -8227,3 +8227,551 @@ body {
     height: 50px;
   }
 }
+
+/* Phase 5D Council Scroll: last-25 recap built for email-style readability. */
+.scroll-recap-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.scroll-recap-hero,
+.scroll-recap-section,
+.scroll-recap-player-card,
+.scroll-recap-group-card {
+  min-width: 0;
+  border: 1px solid rgba(232, 191, 106, 0.16);
+  border-radius: 22px;
+  background: linear-gradient(145deg, rgba(13, 17, 22, 0.96), rgba(24, 28, 29, 0.9));
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.22);
+}
+
+.scroll-recap-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 0.9fr);
+  gap: 16px;
+  align-items: stretch;
+  padding: 20px;
+}
+
+.scroll-recap-hero h2 {
+  margin: 4px 0 8px;
+  color: var(--cream);
+  font-size: clamp(2.05rem, 5vw, 3.55rem);
+  line-height: 0.95;
+}
+
+.scroll-recap-hero p {
+  max-width: 72ch;
+  margin: 0;
+  color: var(--muted-strong);
+}
+
+.scroll-recap-section,
+.scroll-recap-player-card,
+.scroll-recap-group-card {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.scroll-recap-player-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.scroll-recap-duo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.scroll-recap-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.scroll-recap-card-head h3 {
+  margin: 2px 0 0;
+  color: var(--cream);
+  font-size: 1.45rem;
+}
+
+.scroll-recap-mini-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.scroll-recap-mini-stats.hero-stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.scroll-recap-mini-stats span {
+  min-width: 0;
+  padding: 10px 11px;
+  border: 1px solid rgba(232, 191, 106, 0.16);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.scroll-recap-mini-stats strong {
+  display: block;
+  overflow: hidden;
+  color: var(--cream);
+  font-size: clamp(1.15rem, 2vw, 1.65rem);
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scroll-recap-mini-stats small {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.scroll-recap-columns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.scroll-recap-nudge-block {
+  padding: 10px;
+  border: 1px solid rgba(232, 191, 106, 0.14);
+  border-radius: 16px;
+  background: rgba(232, 191, 106, 0.05);
+}
+
+.scroll-recap-god-line {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid rgba(232, 191, 106, 0.12);
+  border-radius: 14px;
+  background: rgba(3, 7, 11, 0.42);
+}
+
+.scroll-recap-god-line + .scroll-recap-god-line,
+.scroll-recap-comp-line + .scroll-recap-comp-line {
+  margin-top: 7px;
+}
+
+.scroll-recap-thumb {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(232, 191, 106, 0.2);
+  border-radius: 12px;
+  color: var(--gold);
+  background: rgba(255, 255, 255, 0.04);
+  font-weight: 950;
+}
+
+.scroll-recap-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scroll-recap-god-line span,
+.scroll-recap-god-line em,
+.scroll-recap-comp-line small {
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.scroll-recap-god-line strong,
+.scroll-recap-comp-line strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--cream);
+  line-height: 1.1;
+}
+
+.scroll-recap-god-line small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted-strong);
+  font-size: 0.76rem;
+}
+
+.scroll-recap-god-line em {
+  max-width: 86px;
+  color: var(--gold);
+  text-align: right;
+  white-space: normal;
+}
+
+.scroll-recap-group-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.scroll-recap-comp-line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid rgba(232, 191, 106, 0.13);
+  border-radius: 14px;
+  background: rgba(3, 7, 11, 0.42);
+}
+
+.scroll-recap-comp-line.good {
+  box-shadow: inset 3px 0 0 rgba(91, 194, 154, 0.76);
+}
+
+.scroll-recap-comp-line.rough {
+  box-shadow: inset 3px 0 0 rgba(231, 93, 93, 0.7);
+}
+
+.scroll-recap-comp-line span {
+  color: var(--gold);
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+@media (max-width: 1320px) {
+  .scroll-recap-player-grid,
+  .scroll-recap-duo-grid,
+  .scroll-recap-group-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 840px) {
+  .scroll-recap-hero {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+
+  .scroll-recap-section,
+  .scroll-recap-player-card,
+  .scroll-recap-group-card {
+    padding: 12px;
+    border-radius: 17px;
+  }
+
+  .scroll-recap-mini-stats,
+  .scroll-recap-mini-stats.hero-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .scroll-recap-card-head,
+  .scroll-recap-comp-line {
+    grid-template-columns: 1fr;
+  }
+
+  .scroll-recap-card-head {
+    flex-direction: column;
+  }
+
+  .scroll-recap-comp-line span {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 460px) {
+  .scroll-recap-mini-stats,
+  .scroll-recap-mini-stats.hero-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .scroll-recap-god-line {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .scroll-recap-god-line em {
+    grid-column: 2;
+    max-width: none;
+    text-align: left;
+  }
+
+  .scroll-recap-thumb {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Phase 5E Council Scroll compact report pass. */
+@media (min-width: 1181px) {
+  .scroll-recap-player-grid,
+  .scroll-recap-duo-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .scroll-recap-columns {
+    grid-template-columns: 0.9fr 1fr 1.15fr 1.15fr 1fr !important;
+    align-items: start;
+  }
+
+  .scroll-recap-group-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 841px) and (max-width: 1180px) {
+  .scroll-recap-player-grid,
+  .scroll-recap-duo-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .scroll-recap-columns,
+  .scroll-recap-group-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+.scroll-recap-section,
+.scroll-recap-player-card,
+.scroll-recap-group-card {
+  gap: 10px;
+  padding: 12px;
+}
+
+.scroll-recap-hero {
+  padding: 15px;
+}
+
+.scroll-recap-hero h2 {
+  font-size: clamp(1.8rem, 4vw, 2.85rem);
+}
+
+.scroll-recap-card-head h3 {
+  font-size: 1.22rem;
+}
+
+.scroll-recap-mini-stats {
+  gap: 6px;
+}
+
+.scroll-recap-mini-stats span {
+  padding: 7px 8px;
+  border-radius: 12px;
+}
+
+.scroll-recap-mini-stats strong {
+  font-size: clamp(1rem, 1.5vw, 1.32rem);
+}
+
+.scroll-recap-mini-stats small {
+  margin-top: 4px;
+  font-size: 0.58rem;
+}
+
+.scroll-recap-columns,
+.scroll-recap-group-grid {
+  gap: 8px;
+}
+
+.scroll-recap-god-line {
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 7px;
+  padding: 5px 6px;
+  border-radius: 11px;
+}
+
+.scroll-recap-thumb {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+}
+
+.scroll-recap-god-line em {
+  grid-column: 2;
+  max-width: none;
+  margin-top: -2px;
+  text-align: left;
+  font-size: 0.58rem;
+}
+
+.scroll-recap-god-line span,
+.scroll-recap-god-line small {
+  font-size: 0.62rem;
+}
+
+.scroll-recap-god-line strong {
+  font-size: 0.86rem;
+}
+
+.scroll-recap-god-line + .scroll-recap-god-line,
+.scroll-recap-comp-line + .scroll-recap-comp-line {
+  margin-top: 4px;
+}
+
+.scroll-recap-nudge-block {
+  padding: 7px;
+  border-radius: 13px;
+}
+
+.scroll-recap-comp-line {
+  padding: 7px 8px;
+  border-radius: 11px;
+}
+
+.scroll-recap-comp-line strong {
+  font-size: 0.88rem;
+}
+
+.scroll-recap-comp-line small {
+  font-size: 0.62rem;
+}
+
+.scroll-recap-comp-line span {
+  font-size: 0.78rem;
+}
+
+@media (max-width: 840px) {
+  .scroll-recap-columns,
+  .scroll-recap-group-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Phase 5F Council Scroll player report table. */
+.scroll-recap-player-table {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.scroll-recap-player-row {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.55fr) repeat(5, minmax(160px, 1fr));
+  gap: 7px;
+  align-items: stretch;
+  min-width: 1040px;
+  padding: 7px;
+  border: 1px solid rgba(232, 191, 106, 0.14);
+  border-radius: 15px;
+  background: rgba(4, 8, 12, 0.42);
+}
+
+.scroll-recap-player-row-head {
+  padding: 0 9px;
+  border: 0;
+  background: transparent;
+}
+
+.scroll-recap-player-row-head span {
+  color: var(--gold);
+  font-size: 0.62rem;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.scroll-recap-player-cell {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+
+.scroll-recap-player-cell.player-summary {
+  display: grid;
+  gap: 2px;
+  align-content: center;
+}
+
+.scroll-recap-player-cell.player-summary strong {
+  color: var(--cream);
+  font-size: 1.05rem;
+}
+
+.scroll-recap-player-cell.player-summary small,
+.scroll-recap-player-cell.player-summary em {
+  color: var(--muted-strong);
+  font-size: 0.68rem;
+  font-style: normal;
+  line-height: 1.25;
+}
+
+.scroll-recap-player-cell.nudges {
+  padding: 5px;
+  border: 1px solid rgba(232, 191, 106, 0.12);
+  border-radius: 12px;
+  background: rgba(232, 191, 106, 0.045);
+}
+
+.scroll-recap-chip,
+.scroll-recap-empty-chip {
+  display: inline-grid;
+  gap: 1px;
+  max-width: 100%;
+  padding: 4px 6px;
+  border: 1px solid rgba(232, 191, 106, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.scroll-recap-chip b {
+  overflow: hidden;
+  color: var(--cream);
+  font-size: 0.72rem;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scroll-recap-chip small,
+.scroll-recap-empty-chip {
+  color: var(--muted);
+  font-size: 0.58rem;
+  font-weight: 850;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.scroll-recap-player-grid {
+  overflow-x: auto;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-recap-player-grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scroll-recap-player-grid::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(232, 191, 106, 0.3);
+}
+
+@media (max-width: 1180px) {
+  .scroll-recap-player-row {
+    min-width: 980px;
+    grid-template-columns: minmax(104px, 0.55fr) repeat(5, minmax(150px, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .scroll-recap-player-row {
+    min-width: 900px;
+    grid-template-columns: minmax(96px, 0.5fr) repeat(5, minmax(138px, 1fr));
+  }
+
+  .scroll-recap-chip b {
+    font-size: 0.68rem;
+  }
+}

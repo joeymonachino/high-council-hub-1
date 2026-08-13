@@ -913,7 +913,7 @@ def summarize_stored_match_rows(player: str, raw_match_rows: list[dict[str, Any]
         if isinstance(row, dict)
         and is_joust_queue(str(row.get("queueType") or row.get("gameMode") or ""))
     ]
-    recent_matches = [normalize_smitesource_match(row) for row in valid_rows[:5]]
+    recent_matches = [normalize_smitesource_match(row) for row in valid_rows[:25]]
     total_matches = len(valid_rows)
     wins = sum(1 for row in valid_rows if row.get("won"))
     losses = total_matches - wins
@@ -1372,7 +1372,7 @@ def build_council_chemistry(player: str, player_hirez_uuid: str, identity_map: d
         "sharedGroups": shared_groups,
         "duoCombos": duo_combos[:5],
         "groupGodRecords": group_god_list,
-        "recentSessions": recent_sessions[:10],
+        "recentSessions": recent_sessions[:100],
         "mostPlayedWith": most_played_with,
         "bestDuo": best_duo,
         "bestGroup": best_group,
@@ -1458,7 +1458,7 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
             "metrics": {},
             "topGods": [],
             "topRoles": [],
-            "recentMatches": [normalize_smitesource_match(row) for row in stored_raw_match_rows[:5]],
+            "recentMatches": [normalize_smitesource_match(row) for row in stored_raw_match_rows[:25]],
             "chemistry": {},
             "selfHirezPlayerUuid": self_hirez_uuid,
             "_rawMatchRows": stored_raw_match_rows,
@@ -2606,6 +2606,8 @@ if __name__ == "__main__":
     host = os.environ.get("FLASK_HOST", "127.0.0.1")
     port = int(os.environ.get("FLASK_PORT", "5000"))
     app.run(host=host, port=port, debug=True)
+
+
 
 
 
