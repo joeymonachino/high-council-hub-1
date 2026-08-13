@@ -1693,13 +1693,15 @@ function renderIndexTab() {
     }
 
     const cards = state.filteredGods
-        .map((god) => {
+        .map((god, index) => {
             const coverage = coverageCount(god);
+            const imageLoading = index < 12 ? "eager" : "lazy";
+            const imagePriority = index < 6 ? "high" : "auto";
             return `
             <article class="god-card ${coverage < state.config.players.length ? "partial-coverage" : ""}" data-god-detail="${escapeHtml(god.God)}" role="button" tabindex="0">
                 <div class="god-art-wrap">
-                    ${god.ImageUrl ? `<img class="god-art" src="${god.ImageUrl}" alt="${escapeHtml(god.God)}">` : `<div class="image-fallback">No Art</div>`}
-                    ${god.PantheonImageUrl ? `<img class="pantheon-watermark" src="${god.PantheonImageUrl}" alt="" aria-hidden="true">` : ""}
+                    ${god.ImageUrl ? `<img class="god-art" src="${god.ImageUrl}" alt="${escapeHtml(god.God)}" loading="${imageLoading}" decoding="async" fetchpriority="${imagePriority}">` : `<div class="image-fallback">No Art</div>`}
+                    ${god.PantheonImageUrl ? `<img class="pantheon-watermark" src="${god.PantheonImageUrl}" alt="" aria-hidden="true" loading="lazy" decoding="async">` : ""}
                     <div class="god-overlay"></div>
                     <div class="chip-row">
                         <span class="chip">#${god.Rank || "—"}</span>
@@ -2381,7 +2383,7 @@ function renderRaterStatsTab() {
             return `
                 <article class="favorite-profile-card" data-god-detail="${escapeHtml(god.God)}" role="button" tabindex="0">
                     <div class="favorite-rank-medallion">#${index + 1}</div>
-                    <div class="favorite-profile-art">${god.ImageUrl ? `<img class="god-art" src="${god.ImageUrl}" alt="${escapeHtml(god.God)}">` : `<div class="image-fallback">Art</div>`}</div>
+                    <div class="favorite-profile-art">${god.ImageUrl ? `<img class="god-art" src="${god.ImageUrl}" alt="${escapeHtml(god.God)}" loading="${imageLoading}" decoding="async" fetchpriority="${imagePriority}">` : `<div class="image-fallback">Art</div>`}</div>
                     <div>
                         <strong>${escapeHtml(god.God)}</strong>
                         <div class="rank-meta">${escapeHtml(god.Role || "")} | ${escapeHtml(god.Pantheon || "")}</div>
@@ -4315,6 +4317,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.querySelector(".app-shell").innerHTML = emptyState("App Failed To Load", error.message);
     }
 });
+
+
 
 
 

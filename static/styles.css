@@ -7237,3 +7237,144 @@ body {
     min-height: 245px !important;
   }
 }
+
+/* Phase 4X mobile god cards + centered tabs: force card artwork to fill the
+   mobile card, center tab labels in their underline track, and trim modal crowding. */
+.god-art-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.god-art-wrap .god-art,
+.god-art-wrap .god-overlay,
+.god-art-wrap .pantheon-watermark {
+  position: absolute;
+}
+
+.god-art-wrap .god-art,
+.god-art-wrap .god-overlay {
+  inset: 0;
+}
+
+.god-art-wrap .god-art {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  object-fit: cover;
+  object-position: center 15%;
+}
+
+.god-art-wrap .chip-row,
+.god-art-wrap .god-overlay-content,
+.god-art-wrap .pantheon-watermark {
+  z-index: 2;
+}
+
+.subtab-bar,
+.god-modal-tabs,
+.ranker-section-tabs,
+.chemistry-pair-tabs,
+.h2h-mode-tabs,
+.rater-player-tabs,
+.rater-section-tabs {
+  justify-content: center;
+  text-align: center;
+}
+
+.subtab-btn {
+  justify-content: center;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .god-card {
+    display: grid !important;
+    grid-template-rows: auto auto;
+    border-radius: 18px !important;
+  }
+
+  .god-card .god-art-wrap {
+    width: 100% !important;
+    height: 260px !important;
+    min-height: 260px !important;
+    background: #101821 !important;
+  }
+
+  .god-card .god-body {
+    position: relative;
+    z-index: 3;
+    padding: 9px !important;
+  }
+
+  .god-card .god-overlay-content {
+    left: 13px !important;
+    right: 13px !important;
+    bottom: 12px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 8px !important;
+  }
+
+  .god-card .chip-row {
+    top: 9px !important;
+    left: 9px !important;
+    right: 9px !important;
+  }
+
+  .god-card h3,
+  .god-overlay-content h3 {
+    font-size: 1.32rem !important;
+    line-height: 1 !important;
+  }
+
+  .god-title {
+    font-size: 0.56rem !important;
+    line-height: 1.08 !important;
+  }
+
+  .god-card .god-meta {
+    max-width: none !important;
+    font-size: 0.58rem !important;
+    line-height: 1.12 !important;
+  }
+
+  .god-card .rating-value {
+    font-size: 2.05rem !important;
+    line-height: 0.9 !important;
+  }
+
+  .god-card .rating-label {
+    display: none !important;
+  }
+
+  .god-card .pill-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+
+  .god-modal-tabs {
+    justify-content: center !important;
+    scroll-padding-inline: 12px;
+  }
+
+  .god-modal-tabs .subtab-btn {
+    flex: 0 0 auto !important;
+    min-width: max-content;
+  }
+}
+
+@media (max-width: 430px) {
+  .god-card .god-art-wrap {
+    height: 285px !important;
+    min-height: 285px !important;
+  }
+
+  .god-card .god-overlay-content {
+    grid-template-columns: 1fr auto;
+  }
+
+  .god-card h3,
+  .god-overlay-content h3 {
+    font-size: 1.45rem !important;
+  }
+}
