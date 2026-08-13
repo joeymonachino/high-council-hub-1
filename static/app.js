@@ -20,6 +20,7 @@ const state = {
         error: "",
         syncing: false,
         syncMessage: "",
+        cacheHydrated: false,
         selectedPlayer: "Joey",
         section: "profile",
     },
@@ -1424,6 +1425,36 @@ async function loadDataHealth() {
         state.dataHealth.loaded = true;
     }
 }
+
+// This helper hydrates slower match-history stats from localStorage so a refresh
+// can show god-card, Chemistry, and Scroll data immediately while production
+// fetches a fresh Supabase-backed payload in the background.
+function hydrateRaterStatsFromCache() {
+    if (state.raterStats.loaded) return;
+    try {
+        const cached = JSON.parse(localStorage.getItem("highCouncilRaterStatsCache") || "null");
+        const maxAgeMs = 30 * 60 * 1000;
+        if (!cached || !cached.profiles || Date.now() - Number(cached.savedAt || 0) > maxAgeMs) return;
+        state.raterStats.profiles = cached.profiles;
+        state.raterStats.loaded = true;
+        state.raterStats.cacheHydrated = true;
+        state.raterStats.error = "";
+    } catch (error) {
+        // Ignore malformed cache; the network request below remains authoritative.
+    }
+}
+
+function persistRaterStatsCache() {
+    try {
+        localStorage.setItem("highCouncilRaterStatsCache", JSON.stringify({
+            savedAt: Date.now(),
+            profiles: state.raterStats.profiles || {},
+        }));
+    } catch (error) {
+        // Storage can fail in private browsing; live app data should still work.
+    }
+}
+
 // This helper fetches the live SmiteSource-backed profile data used by the
 // Rater Stats tab while keeping the rest of the app responsive if it fails.
 async function loadRaterStats() {
@@ -1431,11 +1462,18 @@ async function loadRaterStats() {
         const payload = await api("/api/rater-stats");
         state.raterStats.profiles = payload.profiles || payload || {};
         state.raterStats.error = "";
+        state.raterStats.cacheHydrated = false;
+        persistRaterStatsCache();
     } catch (error) {
-        state.raterStats.profiles = {};
+        if (!state.raterStats.loaded) {
+            state.raterStats.profiles = {};
+        }
         state.raterStats.error = error.message || "Rater stats are unavailable right now.";
     }
     state.raterStats.loaded = true;
+    if (state.godDetail.god && elements.godModalBackdrop && !elements.godModalBackdrop.classList.contains("hidden")) {
+        openGodDetail(state.godDetail.god);
+    }
 }
 
 // This helper triggers the protected backend history sync and then refreshes
@@ -4376,6 +4414,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
         await loadBootstrap();
         await loadAnalyticsHistory();
+        hydrateRaterStatsFromCache();
         renderAll();
         loadRaterStats().then(() => {
             renderAll();

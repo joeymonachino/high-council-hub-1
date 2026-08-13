@@ -524,6 +524,33 @@ def load_stored_match_history(player: str) -> list[dict[str, Any]]:
     return [row for row in rows if isinstance(row, dict)]
 
 
+
+# This helper loads every stored match-history row needed for rater stats in a
+# single Supabase request. It avoids the production slowdown from reading one
+# player at a time on cold serverless starts.
+def load_all_stored_match_history() -> list[dict[str, Any]]:
+    rows = sb_select_all(
+        "smitesource_match_history",
+        {
+            "select": "record_key,player,profile_player_uuid,hirez_player_uuid,match_key,started_at,synced_at,raw_match",
+            "order": "started_at.desc",
+        },
+    )
+    return [row for row in rows if isinstance(row, dict)]
+
+
+def group_stored_match_history_by_player(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    grouped = {player: [] for player in PLAYERS}
+    for row in rows:
+        player = str(row.get("player") or "")
+        if player in grouped:
+            grouped[player].append(row)
+    return grouped
+
+
+def latest_match_history_sync_token_from_rows(rows: list[dict[str, Any]]) -> str:
+    synced_values = [str(row.get("synced_at") or "") for row in rows if row.get("synced_at")]
+    return max(synced_values) if synced_values else ""
 # This helper returns a lightweight freshness token for the stored match-history
 # table so in-memory rater caches can invalidate after manual backfills.
 def latest_match_history_sync_token() -> str:
@@ -1407,7 +1434,15 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
 def load_rater_stats() -> dict[str, dict[str, Any]]:
     global RATER_STATS_CACHE
 
-    current_sync_token = latest_match_history_sync_token()
+    all_history_rows: list[dict[str, Any]] = []
+    grouped_history: dict[str, list[dict[str, Any]]] = {player: [] for player in PLAYERS}
+    try:
+        all_history_rows = load_all_stored_match_history()
+        grouped_history = group_stored_match_history_by_player(all_history_rows)
+        current_sync_token = latest_match_history_sync_token_from_rows(all_history_rows)
+    except Exception:
+        current_sync_token = latest_match_history_sync_token()
+
     if (
         RATER_STATS_CACHE
         and (time.time() - RATER_STATS_CACHE[0]) < SMITESOURCE_CACHE_TTL_SECONDS
@@ -1415,10 +1450,23 @@ def load_rater_stats() -> dict[str, dict[str, Any]]:
     ):
         return RATER_STATS_CACHE[2]
 
-    profiles = {
-        player: build_smitesource_profile(player, SMITESOURCE_PROFILE_LINKS.get(player, ""))
-        for player in PLAYERS
-    }
+    profiles: dict[str, dict[str, Any]] = {}
+    for player in PLAYERS:
+        profile_url = SMITESOURCE_PROFILE_LINKS.get(player, "")
+        player_uuid = smitesource_player_uuid(profile_url)
+        stored_history_rows = grouped_history.get(player, [])
+        stored_raw_match_rows = [
+            row.get("raw_match")
+            for row in stored_history_rows
+            if isinstance(row.get("raw_match"), dict)
+        ]
+
+        if stored_raw_match_rows:
+            profile = summarize_stored_match_rows(player, stored_raw_match_rows, profile_url, player_uuid)
+            SMITESOURCE_CACHE[player] = (time.time(), profile)
+        else:
+            profile = build_smitesource_profile(player, profile_url)
+        profiles[player] = profile
 
     identity_map = {
         player: {
@@ -1438,7 +1486,12 @@ def load_rater_stats() -> dict[str, dict[str, Any]]:
     }
 
     for player, profile in profiles.items():
-        raw_match_rows = profile.pop("_rawMatchRows", [])
+        stored_history_rows = grouped_history.get(player, [])
+        raw_match_rows = [
+            row.get("raw_match")
+            for row in stored_history_rows
+            if isinstance(row.get("raw_match"), dict)
+        ] or profile.pop("_rawMatchRows", [])
         profile["chemistry"] = build_council_chemistry(
             player,
             str(profile.get("selfHirezPlayerUuid") or ""),
@@ -1446,6 +1499,7 @@ def load_rater_stats() -> dict[str, dict[str, Any]]:
             raw_match_rows if isinstance(raw_match_rows, list) else [],
         )
         profile.pop("selfHirezPlayerUuid", None)
+        profile.pop("_rawMatchRows", None)
 
     available_count = sum(1 for profile in profiles.values() if profile.get("available"))
     if available_count >= 2:
@@ -1456,7 +1510,6 @@ def load_rater_stats() -> dict[str, dict[str, Any]]:
         return RATER_STATS_CACHE[2]
 
     return profiles
-
 
 # This helper loads the local activity fallback log so recent changes can still
 # appear in the Activity tab when Supabase history reads are unavailable.
@@ -2510,5 +2563,6 @@ if __name__ == "__main__":
     host = os.environ.get("FLASK_HOST", "127.0.0.1")
     port = int(os.environ.get("FLASK_PORT", "5000"))
     app.run(host=host, port=port, debug=True)
+
 
 
