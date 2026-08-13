@@ -7005,3 +7005,235 @@ body {
     white-space: normal;
   }
 }
+
+/* Phase 4W production parity + mobile breathing room: remove the desktop
+   content cap that made Vercel look smaller, then simplify phone density. */
+@media (min-width: 1101px) {
+  .app-shell-v2 {
+    width: 100vw !important;
+    max-width: none !important;
+  }
+
+  .main-v2 {
+    max-width: none !important;
+    margin: 0 !important;
+    padding-inline: clamp(28px, 3vw, 56px) !important;
+  }
+
+  .god-grid {
+    grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body {
+    background: linear-gradient(180deg, #0d1118 0%, #090d13 100%) !important;
+  }
+
+  .app-shell-v2 {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .council-rail {
+    min-height: 0 !important;
+    padding: 7px 8px !important;
+    gap: 8px !important;
+  }
+
+  .brand-lockup {
+    gap: 0 !important;
+    padding: 0 !important;
+  }
+
+  .brand-mark {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 11px !important;
+    font-size: 0.74rem !important;
+  }
+
+  .rail-nav {
+    gap: 5px !important;
+    padding: 0 0 2px !important;
+  }
+
+  .rail-nav .tab-btn {
+    min-height: 34px !important;
+    padding: 7px 9px !important;
+    border-radius: 10px !important;
+    font-size: 0.69rem !important;
+  }
+
+  .main-v2 {
+    padding: 10px 9px 72px !important;
+  }
+
+  .topbar-v2 {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    margin-bottom: 9px !important;
+    padding: 0 !important;
+  }
+
+  .topbar-v2 .eyebrow {
+    font-size: 0.54rem !important;
+  }
+
+  .topbar-v2 h1 {
+    font-size: clamp(1.45rem, 8vw, 2rem) !important;
+    line-height: 1 !important;
+  }
+
+  .topbar-v2 .hero-text {
+    display: none !important;
+  }
+
+  .topbar-stat-row {
+    display: flex !important;
+    gap: 6px !important;
+    overflow-x: auto !important;
+    padding-bottom: 2px !important;
+    scrollbar-width: none !important;
+  }
+
+  .topbar-stat-row::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .stat-card-compact {
+    flex: 0 0 96px !important;
+    min-height: 48px !important;
+    padding: 7px 8px !important;
+    border-radius: 12px !important;
+  }
+
+  .stat-card-compact .stat-label {
+    margin-bottom: 3px !important;
+    font-size: 0.5rem !important;
+    letter-spacing: 0.09em !important;
+  }
+
+  .stat-card-compact .stat-value {
+    font-size: 1.02rem !important;
+  }
+
+  .filter-panel-v2 {
+    margin-bottom: 10px !important;
+    padding: 9px !important;
+    border-radius: 14px !important;
+  }
+
+  .filters-grid-v2 {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .filters-grid-v2 .field-search,
+  .filter-actions {
+    grid-column: 1 / -1 !important;
+  }
+
+  .field span,
+  .filters-grid-v2 .field span {
+    font-size: 0.55rem !important;
+  }
+
+  .field input,
+  .field select,
+  .btn-primary,
+  .btn-secondary,
+  .mini-btn {
+    min-height: 38px !important;
+    border-radius: 10px !important;
+    font-size: 0.82rem !important;
+  }
+
+  .panel,
+  .detail-card-v2 {
+    padding: 11px !important;
+    border-radius: 16px !important;
+  }
+
+  .index-heading-row {
+    margin: 2px 0 9px !important;
+  }
+
+  .index-heading-row h2,
+  .panel-heading h2,
+  .section-kicker h3 {
+    font-size: 1.18rem !important;
+  }
+
+  .god-grid {
+    gap: 10px !important;
+  }
+
+  .god-art-wrap,
+  .god-art {
+    height: 215px !important;
+    min-height: 215px !important;
+  }
+
+  .god-name-line h3,
+  .god-card-title {
+    font-size: 1.02rem !important;
+  }
+
+  .god-card .god-meta,
+  .modal-meta-line {
+    font-size: 0.62rem !important;
+  }
+
+  .pill-grid {
+    gap: 4px !important;
+  }
+
+  .council-pill {
+    min-width: 0 !important;
+    padding: 6px 1px !important;
+    border-radius: 10px !important;
+  }
+
+  .pill-name {
+    font-size: 0.5rem !important;
+  }
+
+  .pill-score {
+    font-size: 0.75rem !important;
+  }
+
+  .subtab-bar,
+  .rater-player-tabs,
+  .rater-section-tabs,
+  .h2h-mode-tabs,
+  .ranker-section-tabs,
+  .chemistry-pair-tabs {
+    margin-inline: -2px !important;
+    padding: 5px !important;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 760px) {
+  .god-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .filters-grid-v2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .god-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .god-art-wrap,
+  .god-art {
+    height: 245px !important;
+    min-height: 245px !important;
+  }
+}
