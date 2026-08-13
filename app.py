@@ -937,9 +937,13 @@ def summarize_stored_match_rows(player: str, raw_match_rows: list[dict[str, Any]
 
     god_buckets: dict[str, dict[str, Any]] = {}
     role_buckets: dict[str, dict[str, Any]] = {}
+    god_metadata_rows = load_json_snapshot("gods_metadata.json")
+    god_metadata_by_key = {email_god_key(god.get("God") or ""): god for god in god_metadata_rows}
 
     for row in valid_rows:
-        god_name = str(row.get("godName") or "")
+        raw_god_name = str(row.get("godName") or "")
+        god_meta = god_metadata_by_key.get(email_god_key(raw_god_name), {})
+        god_name = str(god_meta.get("God") or raw_god_name)
         role_name = str(row.get("playedRole") or row.get("assignedRole") or "Unknown")
         won = bool(row.get("won"))
 
@@ -997,7 +1001,7 @@ def summarize_stored_match_rows(player: str, raw_match_rows: list[dict[str, Any]
     top_gods = []
     for bucket in god_buckets.values():
         duration_minutes = bucket["duration"] / 60 if bucket["duration"] else 0
-        god_meta = next((god for god in load_json_snapshot("gods_metadata.json") if god.get("God") == bucket["name"]), {})
+        god_meta = god_metadata_by_key.get(email_god_key(bucket["name"]), {})
         top_gods.append(
             {
                 "name": bucket["name"],
