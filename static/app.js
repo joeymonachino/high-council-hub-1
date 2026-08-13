@@ -3930,135 +3930,202 @@ function buildCouncilScrollOmen(profiles, insights) {
     return `${lead}; ${comp}; ${warning}.`;
 }
 
-// This helper renders the Council Weekly Scroll preview tab as a quick glance:
-// player performance, gods played, best/worst comps, and recent W/L receipts.
+// This helper renders compact recap rows for the Scroll 2.0 sections.
+function renderScroll2Rows(records = [], { emptyText = "No sample yet", limit = 4 } = {}) {
+    const rows = [...(records || [])].slice(0, limit);
+    if (!rows.length) return `<div class="rank-meta">${escapeHtml(emptyText)}</div>`;
+    return rows.map((record) => `
+        <article class="scroll2-row">
+            <div>
+                <strong>${escapeHtml(record.label || record.name || "Unknown")}</strong>
+                <small>${escapeHtml(record.detail || formatParticipantAssignments(record.participantGods || {}, record.members || []) || (record.members || []).join(" + ") || "Stored sample")}</small>
+            </div>
+            <span>${escapeHtml(record.value || formatRecord(record))}</span>
+        </article>
+    `).join("");
+}
+
+// This helper returns best/worst/played god reads for a specific player profile.
+function buildScrollPlayerRead(profile) {
+    const mostPlayed = mostPlayedGods(profile.topGods || [], 4);
+    const best = bestGodsByWinRate(profile.topGods || [], 3, 3);
+    const worst = [...(profile.topGods || [])]
+        .filter((god) => Number(god.gamesPlayed || 0) >= 3)
+        .sort((a, b) => Number(a.winRate || 0) - Number(b.winRate || 0) || Number(b.gamesPlayed || 0) - Number(a.gamesPlayed || 0))
+        .slice(0, 3);
+    const review = buildNeedsReviewForPlayer(profile).slice(0, 3);
+    const recent = (profile.recentMatches || []).slice(0, 3);
+    const strength = best[0] ? `${best[0].name} is working (${formatWinLossRecord(best[0].wins, best[0].gamesPlayed)}, ${formatMetric(best[0].winRate, 1, "%")} WR).` : "Need a larger winning sample before calling a strength.";
+    const weakness = worst[0] ? `${worst[0].name} is the current danger read (${formatWinLossRecord(worst[0].wins, worst[0].gamesPlayed)}, ${formatMetric(worst[0].winRate, 1, "%")} WR).` : "No obvious weak god sample yet.";
+
+    return { mostPlayed, best, worst, review, recent, strength, weakness };
+}
+
+// This helper builds a focused duo/trio section from the chemistry records.
+function buildScrollGroupRead(insights, members = []) {
+    const key = chemistryMembersKey(members);
+    const size = members.length;
+    const groupRecord = (insights.groupRecords || insights.duoRecords || []).find((record) => chemistryMembersKey(record.members || []) === key) || null;
+    const comboSource = size >= 3 ? (insights.trioComboRecords || []) : (insights.duoComboRecords || []);
+    const combos = comboSource.filter((record) => chemistryMembersKey(record.members || []) === key);
+    const best = [...combos]
+        .filter((record) => Number(record.games || 0) >= 1)
+        .sort((a, b) => Number(b.winRate || 0) - Number(a.winRate || 0) || Number(b.games || 0) - Number(a.games || 0))
+        .slice(0, 4);
+    const worst = [...combos]
+        .filter((record) => Number(record.games || 0) >= 1)
+        .sort((a, b) => Number(a.winRate || 0) - Number(b.winRate || 0) || Number(b.games || 0) - Number(a.games || 0))
+        .slice(0, 4);
+    const mostPlayed = [...combos]
+        .sort((a, b) => Number(b.games || 0) - Number(a.games || 0) || Number(b.winRate || 0) - Number(a.winRate || 0))
+        .slice(0, 4);
+    const recent = (insights.recentSessions || [])
+        .filter((session) => chemistryMembersKey(session.participants || []) === key)
+        .slice(0, 4);
+
+    return { key, members, groupRecord, combos, best, worst, mostPlayed, recent };
+}
+
+// This helper turns recent sessions into compact W/L receipt rows.
+function renderScrollSessionRows(sessions = [], emptyText = "No recent games found") {
+    if (!sessions.length) return `<div class="rank-meta">${escapeHtml(emptyText)}</div>`;
+    return sessions.map((session) => `
+        <article class="scroll2-session ${session.won ? "win" : "loss"}">
+            <span>${session.won ? "W" : "L"}</span>
+            <div><strong>${escapeHtml(formatParticipantAssignments(session.participantGods || {}, session.participants || []))}</strong><small>${escapeHtml(session.queueType || "Joust")} | ${formatDateTime(session.startedAt)}</small></div>
+        </article>
+    `).join("");
+}
+
+// This helper renders the Council Weekly Scroll 2.0 as a tailored recap for
+// Joey/Jami/Darian plus duo, trio, and aggregate strengths/weaknesses.
 function renderCouncilScrollTab() {
     if (!elements.tabCouncilScroll) return;
 
     if (!state.raterStats.loaded) {
         elements.tabCouncilScroll.innerHTML = `
-            <div class="panel council-scroll-panel scroll-glance-panel">
+            <div class="panel council-scroll-panel scroll2-panel">
                 <div class="panel-heading panel-heading-inline">
-                    <div><p class="eyebrow">Quick Recap</p><h2>Council Scroll</h2></div>
+                    <div><p class="eyebrow">Council Recap</p><h2>Council Scroll</h2></div>
                     <span class="summary-pill">Loading match ledgers</span>
                 </div>
-                ${emptyState("Gathering Recent Joust Stats", "Loading stored player and chemistry data for the quick recap.")}
+                ${emptyState("Gathering Recent Joust Stats", "Loading stored player and chemistry data for the tailored recap.")}
             </div>
         `;
         return;
     }
 
-    const profiles = state.config.players.map((player) => buildRaterProfile(player));
+    const focusPlayers = ["Joey", "Jami", "Darian"].filter((player) => state.config.players.includes(player));
+    const profiles = focusPlayers.map((player) => buildRaterProfile(player));
     const insights = buildChemistryInsights();
-    const activeProfiles = profiles.filter((profile) => Number(profile.metrics?.matches || 0) > 0);
-    const totalMatches = activeProfiles.reduce((sum, profile) => sum + Number(profile.metrics?.matches || 0), 0);
-    const avgWinRate = activeProfiles.length ? activeProfiles.reduce((sum, profile) => sum + Number(profile.metrics?.winRate || 0), 0) / activeProfiles.length : 0;
-    const recentSessions = (insights.recentSessions || []).slice(0, 6);
+    const totalMatches = profiles.reduce((sum, profile) => sum + Number(profile.metrics?.matches || 0), 0);
+    const wins = profiles.reduce((sum, profile) => sum + Number(profile.metrics?.wins || 0), 0);
+    const losses = Math.max(totalMatches - wins, 0);
+    const avgWinRate = profiles.length ? profiles.reduce((sum, profile) => sum + Number(profile.metrics?.winRate || 0), 0) / profiles.length : 0;
+    const trinity = buildScrollGroupRead(insights, focusPlayers);
+    const duos = [["Joey", "Jami"], ["Joey", "Darian"], ["Jami", "Darian"]]
+        .filter((members) => members.every((member) => focusPlayers.includes(member)))
+        .map((members) => buildScrollGroupRead(insights, members));
+    const allCombos = [...(insights.duoComboRecords || []), ...(insights.trioComboRecords || [])].filter((record) => Number(record.games || 0) >= 1);
+    const aggregateBest = [...allCombos].sort((a, b) => Number(b.winRate || 0) - Number(a.winRate || 0) || Number(b.games || 0) - Number(a.games || 0)).slice(0, 5);
+    const aggregateWorst = [...allCombos].sort((a, b) => Number(a.winRate || 0) - Number(b.winRate || 0) || Number(b.games || 0) - Number(a.games || 0)).slice(0, 5);
+    const aggregateMost = [...allCombos].sort((a, b) => Number(b.games || 0) - Number(a.games || 0) || Number(b.winRate || 0) - Number(a.winRate || 0)).slice(0, 5);
 
-    const bestDuoComps = [...(insights.duoComboRecords || [])]
-        .filter((record) => record.games >= 2)
-        .sort((a, b) => b.winRate - a.winRate || b.games - a.games)
-        .slice(0, 3);
-    const worstDuoComps = [...(insights.duoComboRecords || [])]
-        .filter((record) => record.games >= 2)
-        .sort((a, b) => a.winRate - b.winRate || b.games - a.games)
-        .slice(0, 3);
-    const bestTrioComps = [...(insights.trioComboRecords || [])]
-        .filter((record) => record.games >= 2)
-        .sort((a, b) => b.winRate - a.winRate || b.games - a.games)
-        .slice(0, 3);
-    const worstTrioComps = [...(insights.trioComboRecords || [])]
-        .filter((record) => record.games >= 2)
-        .sort((a, b) => a.winRate - b.winRate || b.games - a.games)
-        .slice(0, 3);
-
-    const leader = [...activeProfiles].sort((a, b) => Number(b.metrics?.winRate || 0) - Number(a.metrics?.winRate || 0))[0] || null;
-    const mostActive = [...activeProfiles].sort((a, b) => Number(b.metrics?.matches || 0) - Number(a.metrics?.matches || 0))[0] || null;
-
-    const playerRows = profiles.map((profile) => {
-        const mostPlayed = mostPlayedGods(profile.topGods, 3);
-        const bestPick = bestGodsByWinRate(profile.topGods, 1, 3)[0] || null;
-        const worstPick = [...(profile.topGods || [])]
-            .filter((god) => Number(god.gamesPlayed || 0) >= 3)
-            .sort((a, b) => Number(a.winRate || 0) - Number(b.winRate || 0) || Number(b.gamesPlayed || 0) - Number(a.gamesPlayed || 0))[0] || null;
-        const godText = mostPlayed.length
-            ? mostPlayed.map((god) => `${god.name} ${formatWinLossRecord(god.wins, god.gamesPlayed)}`).join(" | ")
-            : "No Joust sample";
+    const playerCards = profiles.map((profile) => {
+        const read = buildScrollPlayerRead(profile);
+        const mostPlayedRows = read.mostPlayed.map((god) => ({
+            label: god.name,
+            detail: `${formatWinLossRecord(god.wins, god.gamesPlayed)} | ${formatMetric(god.winRate, 1, "%")} WR`,
+            value: `${formatMetric(god.gamesPlayed)} games`,
+        }));
+        const reviewRows = read.review.map((god) => ({
+            label: god.name,
+            detail: `${formatWinLossRecord(god.wins, god.gamesPlayed)} | ${formatMetric(god.winRate, 1, "%")} WR`,
+            value: god.reasons.join(" + "),
+        }));
         return `
-            <article class="scroll-glance-player ${Number(profile.metrics?.matches || 0) ? "" : "muted"}">
-                <div class="scroll-player-main">
-                    <strong>${escapeHtml(profile.player)}</strong>
-                    <small>${escapeHtml(godText)}</small>
+            <article class="scroll2-player-card">
+                <div class="scroll2-card-head">
+                    <div><p class="eyebrow">Player Shoutout</p><h3>${escapeHtml(profile.player)}</h3></div>
+                    <span class="summary-pill">${formatMetric(profile.metrics?.winRate, 1, "%")} WR</span>
                 </div>
-                <div class="scroll-player-stats">
-                    <span>${formatMetric(profile.metrics?.matches)} games</span>
-                    <span>${formatMetric(profile.metrics?.winRate, 1, "%")} WR</span>
-                    <span>${formatMetric(profile.metrics?.kdaRatio, 2)} KDA</span>
+                <div class="scroll2-stat-row">
+                    <span><strong>${formatMetric(profile.metrics?.matches)}</strong><small>Games</small></span>
+                    <span><strong>${formatMetric(profile.metrics?.kdaRatio, 2)}</strong><small>KDA</small></span>
+                    <span><strong>${escapeHtml(profile.topRoles?.[0]?.role || profile.favoriteRole?.label || "—")}</strong><small>Role</small></span>
                 </div>
-                <div class="scroll-player-picks">
-                    <span><b>Best</b> ${escapeHtml(bestPick ? `${bestPick.name} ${formatWinLossRecord(bestPick.wins, bestPick.gamesPlayed)} (${formatMetric(bestPick.winRate, 1, "%")})` : "—")}</span>
-                    <span><b>Worst</b> ${escapeHtml(worstPick ? `${worstPick.name} ${formatWinLossRecord(worstPick.wins, worstPick.gamesPlayed)} (${formatMetric(worstPick.winRate, 1, "%")})` : "—")}</span>
+                <div class="scroll2-callout good"><strong>Strength</strong><span>${escapeHtml(read.strength)}</span></div>
+                <div class="scroll2-callout rough"><strong>Weakness</strong><span>${escapeHtml(read.weakness)}</span></div>
+                <div class="scroll2-mini-grid">
+                    <div><div class="metric-label">Gods played</div>${renderScroll2Rows(mostPlayedRows, { emptyText: "No Joust sample yet", limit: 4 })}</div>
+                    <div><div class="metric-label">Needs review</div>${renderScroll2Rows(reviewRows, { emptyText: "No rating/rank reminders", limit: 3 })}</div>
                 </div>
+                <div><div class="metric-label">Recent games</div>${read.recent.length ? read.recent.map((match) => `<article class="scroll2-session ${match.won ? "win" : "loss"}"><span>${match.won ? "W" : "L"}</span><div><strong>${escapeHtml(match.godName || "Unknown")}</strong><small>${formatMetric(match.kills)}/${formatMetric(match.deaths)}/${formatMetric(match.assists)} | ${formatDateTime(match.startedAt)}</small></div></article>`).join("") : `<div class="rank-meta">No recent player games found.</div>`}</div>
             </article>
         `;
     }).join("");
 
-    const compactCompRows = (records, emptyText) => records.length ? records.map((record) => `
-        <article class="scroll-compact-row">
-            <div><strong>${escapeHtml(record.label)}</strong><small>${escapeHtml(formatParticipantAssignments(record.participantGods || {}, record.members || []) || (record.members || []).join(" + "))}</small></div>
-            <span>${escapeHtml(formatRecord(record))}</span>
+    const duoCards = duos.map((duo) => `
+        <article class="scroll2-group-card">
+            <div class="scroll2-card-head">
+                <div><p class="eyebrow">Duo Breakdown</p><h3>${escapeHtml(duo.members.join(" + "))}</h3></div>
+                <span class="summary-pill">${escapeHtml(formatRecord(duo.groupRecord))}</span>
+            </div>
+            <div class="scroll2-mini-grid">
+                <div><div class="metric-label">Best comps</div>${renderScrollChemistryRows(duo.best, { emptyText: "No winning duo comps yet", limit: 3 })}</div>
+                <div><div class="metric-label">Worst comps</div>${renderScrollChemistryRows(duo.worst, { emptyText: "No shaky duo comps yet", limit: 3 })}</div>
+            </div>
+            <div><div class="metric-label">Most played</div>${renderScrollChemistryRows(duo.mostPlayed, { emptyText: "No duo comp sample yet", limit: 3 })}</div>
+            <div><div class="metric-label">Recent duo games</div>${renderScrollSessionRows(duo.recent, "No recent duo games found")}</div>
         </article>
-    `).join("") : `<div class="rank-meta">${escapeHtml(emptyText)}</div>`;
-
-    const recentRows = recentSessions.length ? recentSessions.map((session) => `
-        <article class="scroll-compact-row scroll-recent-row ${session.won ? "win" : "loss"}">
-            <span class="scroll-result-pill">${session.won ? "W" : "L"}</span>
-            <div><strong>${escapeHtml(formatParticipantAssignments(session.participantGods || {}, session.participants || []))}</strong><small>${escapeHtml(session.queueType || "Joust")} | ${formatDateTime(session.startedAt)}</small></div>
-        </article>
-    `).join("") : `<div class="rank-meta">No recent shared sessions found.</div>`;
+    `).join("");
 
     elements.tabCouncilScroll.innerHTML = `
-        <div class="panel council-scroll-panel scroll-glance-panel">
-            <div class="scroll-glance-header">
+        <div class="panel council-scroll-panel scroll2-panel">
+            <section class="scroll2-hero">
                 <div>
-                    <p class="eyebrow">Quick Recap</p>
-                    <h2>Council Scroll</h2>
-                    <p>A fast look at who played what, who won, and which comps are helping or hurting.</p>
+                    <p class="eyebrow">Council Scroll 2.0</p>
+                    <h2>Player, Duo, Trio Recap</h2>
+                    <p>Tailored shoutouts for Joey, Jami, and Darian, plus the comps that are carrying or costing the council.</p>
                 </div>
-                <div class="scroll-glance-stats">
+                <div class="scroll2-stat-row hero-stats">
                     <span><strong>${formatMetric(totalMatches)}</strong><small>Player games</small></span>
+                    <span><strong>${wins}-${losses}</strong><small>Combined W/L</small></span>
                     <span><strong>${formatMetric(avgWinRate, 1, "%")}</strong><small>Avg WR</small></span>
-                    <span><strong>${escapeHtml(leader?.player || "—")}</strong><small>Top WR</small></span>
-                    <span><strong>${escapeHtml(mostActive?.player || "—")}</strong><small>Most active</small></span>
+                    <span><strong>${formatMetric((insights.recentSessions || []).length)}</strong><small>Shared sessions</small></span>
                 </div>
-            </div>
+            </section>
 
-            <section class="scroll-glance-grid">
-                <article class="detail-card-v2 scroll-glance-card wide">
-                    <div class="section-head"><div><p class="eyebrow">Players</p><h3>Gods Played + Results</h3></div><span class="summary-pill">Quick read</span></div>
-                    <div class="scroll-glance-player-list">${playerRows}</div>
-                </article>
+            <section class="scroll2-section">
+                <div class="section-head"><div><p class="eyebrow">Player Shoutouts</p><h3>Recent Strengths + Weaknesses</h3></div><span class="summary-pill">Joey / Jami / Darian</span></div>
+                <div class="scroll2-player-grid">${playerCards}</div>
+            </section>
 
-                <article class="detail-card-v2 scroll-glance-card">
-                    <div class="section-head"><div><p class="eyebrow">Best Comps</p><h3>Winning Looks</h3></div></div>
-                    <div class="scroll-compact-list">
-                        <div><div class="metric-label">Duo</div>${compactCompRows(bestDuoComps, "Need more duo samples")}</div>
-                        <div><div class="metric-label">Trio</div>${compactCompRows(bestTrioComps, "Need more trio samples")}</div>
-                    </div>
-                </article>
+            <section class="scroll2-section">
+                <div class="section-head"><div><p class="eyebrow">Duo Reads</p><h3>Pair Strengths + Weaknesses</h3></div><span class="summary-pill">Best, worst, recent</span></div>
+                <div class="scroll2-duo-grid">${duoCards}</div>
+            </section>
 
-                <article class="detail-card-v2 scroll-glance-card">
-                    <div class="section-head"><div><p class="eyebrow">Worst Comps</p><h3>Shaky Looks</h3></div></div>
-                    <div class="scroll-compact-list">
-                        <div><div class="metric-label">Duo</div>${compactCompRows(worstDuoComps, "No shaky duo sample yet")}</div>
-                        <div><div class="metric-label">Trio</div>${compactCompRows(worstTrioComps, "No shaky trio sample yet")}</div>
-                    </div>
-                </article>
+            <section class="scroll2-section scroll2-trio-section">
+                <div class="scroll2-card-head">
+                    <div><p class="eyebrow">Trio Breakdown</p><h3>${escapeHtml(focusPlayers.join(" + "))}</h3></div>
+                    <span class="summary-pill">${escapeHtml(formatRecord(trinity.groupRecord))}</span>
+                </div>
+                <div class="scroll2-mini-grid three">
+                    <div><div class="metric-label">Best trio comps</div>${renderScrollChemistryRows(trinity.best, { emptyText: "No winning trio comps yet", limit: 4 })}</div>
+                    <div><div class="metric-label">Worst trio comps</div>${renderScrollChemistryRows(trinity.worst, { emptyText: "No shaky trio comps yet", limit: 4 })}</div>
+                    <div><div class="metric-label">Most played trio comps</div>${renderScrollChemistryRows(trinity.mostPlayed, { emptyText: "No trio comp sample yet", limit: 4 })}</div>
+                </div>
+                <div><div class="metric-label">Recent trio games</div>${renderScrollSessionRows(trinity.recent, "No recent trio games found")}</div>
+            </section>
 
-                <article class="detail-card-v2 scroll-glance-card wide">
-                    <div class="section-head"><div><p class="eyebrow">Recent Games</p><h3>Latest Shared W/L</h3></div><span class="summary-pill">Newest first</span></div>
-                    <div class="scroll-recent-list">${recentRows}</div>
-                </article>
+            <section class="scroll2-section">
+                <div class="section-head"><div><p class="eyebrow">Aggregate Snapshot</p><h3>All Shared Comp Totals</h3></div><span class="summary-pill">Duo + trio combined</span></div>
+                <div class="scroll2-mini-grid three">
+                    <div><div class="metric-label">Best overall</div>${renderScrollChemistryRows(aggregateBest, { emptyText: "No aggregate comp sample", limit: 5 })}</div>
+                    <div><div class="metric-label">Worst overall</div>${renderScrollChemistryRows(aggregateWorst, { emptyText: "No aggregate weak sample", limit: 5 })}</div>
+                    <div><div class="metric-label">Most played</div>${renderScrollChemistryRows(aggregateMost, { emptyText: "No aggregate played sample", limit: 5 })}</div>
+                </div>
             </section>
 
             ${renderBackToTop()}
@@ -4317,6 +4384,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.querySelector(".app-shell").innerHTML = emptyState("App Failed To Load", error.message);
     }
 });
+
 
 
 
