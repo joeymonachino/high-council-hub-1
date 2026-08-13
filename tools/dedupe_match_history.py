@@ -29,12 +29,15 @@ def is_tracker_row(row: dict[str, Any]) -> bool:
 
 
 # This helper gives each duplicate candidate a keep priority. Lower is better:
-# native SmiteSource rows beat Tracker rows, and richer rows beat sparse rows.
-def keep_priority(row: dict[str, Any]) -> tuple[int, int, str]:
+# native SmiteSource rows beat Tracker rows, canonical display names beat alias
+# labels, and richer rows beat sparse rows.
+def keep_priority(row: dict[str, Any]) -> tuple[int, int, int, str]:
     raw_match = row.get("raw_match") if isinstance(row.get("raw_match"), dict) else {}
     tracker_penalty = 1 if is_tracker_row(row) else 0
+    display_name = str(row.get("god_name") or raw_match.get("godName") or "")
+    canonical_penalty = 1 if app.normalize_god_identity_key(display_name) == "themorrigan" and display_name != "The Morrigan" else 0
     richness = sum(1 for value in raw_match.values() if value not in (None, "", [], {}))
-    return (tracker_penalty, -richness, str(row.get("record_key") or ""))
+    return (tracker_penalty, canonical_penalty, -richness, str(row.get("record_key") or ""))
 
 
 # This helper deletes one row by its stable record_key through Supabase REST.
@@ -51,13 +54,17 @@ def delete_record_key(record_key: str) -> None:
 
 # This helper builds the duplicate report and optionally applies deletes.
 def dedupe_match_history(player: str = "", god: str = "", apply: bool = False) -> dict[str, Any]:
-    rows = app.load_all_stored_match_history()
+    # This block narrows the Supabase read whenever possible. Pulling the full
+    # match table is slower and can time out once the history gets large.
     if player:
-        rows = [row for row in rows if str(row.get("player") or "") == player]
+        rows = app.load_stored_match_history(player)
+    else:
+        rows = app.load_all_stored_match_history()
     if god:
+        target_god_key = app.normalize_god_identity_key(god)
         rows = [
             row for row in rows
-            if str(row.get("god_name") or (row.get("raw_match") or {}).get("godName") or "").lower() == god.lower()
+            if app.normalize_god_identity_key(str(row.get("god_name") or (row.get("raw_match") or {}).get("godName") or "")) == target_god_key
         ]
 
     groups: dict[str, list[dict[str, Any]]] = defaultdict(list)

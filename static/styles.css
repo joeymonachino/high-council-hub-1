@@ -8807,3 +8807,33 @@ body {
         width: 100%;
     }
 }
+
+/* This banner makes restored local Rate & Rank drafts explicit so old mobile
+   browser state cannot quietly masquerade as saved Supabase data. */
+.ranker-draft-banner {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0 0 1rem;
+}
+
+.ranker-draft-banner div {
+    display: grid;
+    gap: 0.2rem;
+}
+
+.ranker-draft-banner strong {
+    color: var(--gold, #e8c56b);
+}
+
+.ranker-draft-banner span {
+    color: var(--muted, #aeb6c2);
+}
+
+@media (max-width: 640px) {
+    .ranker-draft-banner {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}

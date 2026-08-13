@@ -57,7 +57,9 @@ const state = {
         unlocked: {},
         byPlayer: {},
         baselineByPlayer: {},
+        serverStateByPlayer: {},
         dirtyPlayers: {},
+        draftMetaByPlayer: {},
         lastSavedByPlayer: {},
         search: "",
         sort: "#1 first",
@@ -710,6 +712,8 @@ function raterStatsSourceSummary() {
     };
 }
 
+const RANKER_DRAFT_TTL_MS = 1000 * 60 * 60 * 48;
+
 // This helper builds a stable localStorage key for each player's in-progress draft.
 function rankerDraftKey(player) {
     return `high-council-ranker-draft:${player}`;
@@ -738,9 +742,47 @@ function persistRankerDraft(player) {
     localStorage.setItem(rankerDraftKey(player), JSON.stringify(payload));
 }
 
-// This helper clears a player's local draft after a successful save.
+// This helper clears a player's local draft after a successful save or an
+// explicit discard action.
 function clearRankerDraft(player) {
     localStorage.removeItem(rankerDraftKey(player));
+    delete state.ranker.draftMetaByPlayer[player];
+}
+
+// This helper checks whether an autosaved ranker draft is still safe to restore.
+// Old mobile drafts were the source of stale ratings, so anything older than
+// 48 hours gets discarded instead of overriding Supabase.
+function usableRankerDraft(player) {
+    const draftRaw = localStorage.getItem(rankerDraftKey(player));
+    if (!draftRaw) return null;
+
+    try {
+        const draft = JSON.parse(draftRaw);
+        const savedAt = new Date(draft?.savedAt || 0);
+        const ageMs = Date.now() - savedAt.getTime();
+        if (!draft?.ratings || !draft?.order || Number.isNaN(savedAt.getTime()) || ageMs > RANKER_DRAFT_TTL_MS) {
+            clearRankerDraft(player);
+            return null;
+        }
+        return { ...draft, ageMs };
+    } catch (error) {
+        clearRankerDraft(player);
+        return null;
+    }
+}
+
+// This helper restores the selected player to the latest Supabase-backed state
+// and discards any local draft that was shadowing it.
+function discardRankerDraft(player) {
+    const serverState = state.ranker.serverStateByPlayer[player];
+    if (!serverState) return;
+    state.ranker.byPlayer[player] = {
+        ratings: { ...serverState.ratings },
+        order: [...serverState.order],
+    };
+    clearRankerDraft(player);
+    refreshDirtyState(player);
+    renderRankerTab();
 }
 
 // This helper updates the dirty flag for a player by comparing current draft
@@ -1286,6 +1328,12 @@ function bindStaticEvents() {
             syncRaterStats(syncTrigger.dataset.syncRaterStats === "all" ? "" : syncTrigger.dataset.syncRaterStats);
         }
 
+        const discardDraftTrigger = event.target.closest("[data-discard-ranker-draft]");
+        if (discardDraftTrigger) {
+            discardRankerDraft(discardDraftTrigger.dataset.discardRankerDraft || state.ranker.selectedPlayer);
+            return;
+        }
+
     });
 
     if (elements.godModalClose) {
@@ -1382,28 +1430,27 @@ function initializeRankerState() {
             .sort((a, b) => (ratings[b.God] - ratings[a.God]) || a.God.localeCompare(b.God))
             .map((god) => god.God);
 
-        const baseState = {
+        const serverState = {
             ratings,
             order: [...ordered, ...ratedButMissing],
         };
-        const draftRaw = localStorage.getItem(rankerDraftKey(player));
-        if (draftRaw) {
-            try {
-                const draft = JSON.parse(draftRaw);
-                if (draft?.ratings && draft?.order) {
-                    baseState.ratings = { ...baseState.ratings, ...draft.ratings };
-                    baseState.order = Array.isArray(draft.order) ? draft.order : baseState.order;
-                }
-            } catch (error) {
-                // Ignore malformed local drafts and keep the server-backed state.
-            }
+        const baseState = {
+            ratings: { ...serverState.ratings },
+            order: [...serverState.order],
+        };
+        const draft = usableRankerDraft(player);
+        if (draft) {
+            baseState.ratings = { ...baseState.ratings, ...draft.ratings };
+            baseState.order = Array.isArray(draft.order) ? draft.order : baseState.order;
+            state.ranker.draftMetaByPlayer[player] = { savedAt: draft.savedAt, ageMs: draft.ageMs };
         }
 
+        state.ranker.serverStateByPlayer[player] = {
+            ratings: { ...serverState.ratings },
+            order: [...serverState.order],
+        };
         state.ranker.byPlayer[player] = baseState;
-        state.ranker.baselineByPlayer[player] = buildRankerSignature({
-            ratings,
-            order: [...ordered, ...ratedButMissing],
-        });
+        state.ranker.baselineByPlayer[player] = buildRankerSignature(serverState);
         state.ranker.lastSavedByPlayer[player] = state.ranker.lastSavedByPlayer[player] || "";
         refreshDirtyState(player);
         state.ranker.unlocked[player] = false;
@@ -3743,20 +3790,13 @@ async function saveRanker() {
     }
 }
 
-// This helper clears the selected player's local editor state without saving.
+// This helper discards the selected player's local draft and reloads the latest
+// Supabase-backed ratings/ranks instead of clearing the whole roster.
 function resetRanker() {
-    const confirmed = window.confirm("Clear all local ratings for this player? You will still need to press Save to persist.");
-    if (!confirmed) return;
-
     const player = state.ranker.selectedPlayer;
-    const playerState = state.ranker.byPlayer[player];
-    Object.keys(playerState.ratings).forEach((god) => {
-        playerState.ratings[god] = 0;
-    });
-    playerState.order = [];
-    persistRankerDraft(player);
-    refreshDirtyState(player);
-    renderRankerTab();
+    const confirmed = window.confirm(`Discard local ${player} draft and reload saved Supabase ratings?`);
+    if (!confirmed) return;
+    discardRankerDraft(player);
 }
 
 // This helper attempts to unlock the selected player's editor with the PIN.
@@ -3800,6 +3840,16 @@ function renderRankerTab() {
     `;
 
     const listRows = renderRankerRowsHtml(player, playerRows);
+    const draftMeta = state.ranker.draftMetaByPlayer[player];
+    const draftWarning = draftMeta ? `
+        <div class="status-banner ranker-draft-banner">
+            <div>
+                <strong>Local draft restored</strong>
+                <span>This device has unsaved ${escapeHtml(player)} edits from ${escapeHtml(formatDateTime(draftMeta.savedAt))}. Save them or discard the draft to use Supabase values.</span>
+            </div>
+            <button class="btn-secondary" type="button" data-discard-ranker-draft="${escapeHtml(player)}">Discard Draft</button>
+        </div>
+    ` : "";
 
     const rankerSections = [
         { key: "editor", label: "Editor" },
@@ -3842,6 +3892,7 @@ function renderRankerTab() {
             </div>
 
             ${unlocked ? `
+                ${draftWarning}
                 <div class="ranker-controls">
                     <label class="field">
                         <span>Filter</span>

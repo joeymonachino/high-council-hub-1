@@ -183,6 +183,24 @@ def normalize_history_timestamp(value: str) -> str:
         return value.strip()
 
 
+# This helper normalizes god labels that can arrive with or without particles,
+# punctuation, or source-specific spelling. It is intentionally used for data
+# identity, not display text, so Morrigan and The Morrigan dedupe correctly.
+def normalize_god_identity_key(value: str) -> str:
+    key = re.sub(r"[^a-z0-9]", "", str(value or "").lower())
+    aliases = {
+        "morrigan": "themorrigan",
+        "themorrigan": "themorrigan",
+        "morgenlefay": "morganlefay",
+        "morganlefay": "morganlefay",
+        "daji": "daji",
+        "daji": "daji",
+        "change": "change",
+        "bakekujira": "bakekujira",
+    }
+    return aliases.get(key, key)
+
+
 # This helper normalizes queue labels across SmiteSource and Tracker so
 # overlapping sessions like "casual_joust" and "Joust" dedupe correctly.
 def normalize_queue_key(value: str) -> str:
@@ -543,7 +561,7 @@ def match_history_duplicate_signature(player: str, row: dict[str, Any]) -> str:
             str(player or row.get("player") or "").strip(),
             normalize_queue_key(str(queue_value or "")),
             normalize_history_timestamp(str(timestamp_value or "")),
-            str(god_value or "").strip().lower(),
+            normalize_god_identity_key(str(god_value or "")),
         ]
     )
 
@@ -1590,17 +1608,7 @@ def recap_record_text(wins: int, games: int) -> str:
 # This helper normalizes god names for email recap matching across roster rows,
 # match rows, and imported activity records.
 def email_god_key(value: str) -> str:
-    key = re.sub(r"[^a-z0-9]", "", str(value or "").lower())
-    aliases = {
-        "morrigan": "themorrigan",
-        "themorrigan": "themorrigan",
-        "morgenlefay": "morganlefay",
-        "morganlefay": "morganlefay",
-        "daji": "daji",
-        "change": "change",
-        "bakekujira": "bakekujira",
-    }
-    return aliases.get(key, key)
+    return normalize_god_identity_key(value)
 
 
 # This helper builds the public app URL used by email deep links. Vercel can set
