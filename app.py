@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 # This block imports the standard-library tools used for file access, dates,
 # lightweight caching, and configuration parsing.
@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from statistics import mean
 from typing import Any
-from urllib.parse import quote, unquote, urlparse
+from urllib.parse import parse_qs, quote, unquote, urlparse
 
 # This block imports the third-party modules used by the Flask backend and
 # by the direct Supabase REST integration.
@@ -524,6 +524,39 @@ def load_stored_match_history(player: str) -> list[dict[str, Any]]:
     return [row for row in rows if isinstance(row, dict)]
 
 
+# This helper builds a cross-source duplicate signature for one player row. It
+# lets SmiteSource HAR imports skip matches already inserted from Tracker even
+# when record_key/match_key formats differ between sources.
+def match_history_duplicate_signature(player: str, row: dict[str, Any]) -> str:
+    raw_match = row.get("raw_match") if isinstance(row.get("raw_match"), dict) else row
+    queue_value = row.get("queue_type") or raw_match.get("queueType") or raw_match.get("gameMode")
+    timestamp_value = row.get("started_at") or raw_match.get("startTimestamp") or raw_match.get("startedAt")
+    god_value = row.get("god_name") or raw_match.get("godName")
+    return "|".join(
+        [
+            str(player or row.get("player") or "").strip(),
+            normalize_queue_key(str(queue_value or "")),
+            normalize_history_timestamp(str(timestamp_value or "")),
+            str(god_value or "").strip().lower(),
+        ]
+    )
+
+
+# This helper collects existing exact match keys and cross-source signatures for
+# one player so repeated HAR imports and older Tracker backfills stay deduped.
+def stored_match_history_dedupe_sets(player: str) -> tuple[set[str], set[str], int]:
+    rows = load_stored_match_history(player)
+    match_keys = {
+        str(row.get("match_key") or "")
+        for row in rows
+        if str(row.get("match_key") or "")
+    }
+    signatures: set[str] = set()
+    for row in rows:
+        signature = match_history_duplicate_signature(player, row)
+        if signature.strip("|"):
+            signatures.add(signature)
+    return match_keys, signatures, len(rows)
 
 # This helper loads every stored match-history row needed for rater stats in a
 # single Supabase request. It avoids the production slowdown from reading one
@@ -628,6 +661,14 @@ def har_request_json(entry: dict[str, Any]) -> dict[str, Any]:
     request_payload = entry.get("request") if isinstance(entry.get("request"), dict) else {}
     post_data = request_payload.get("postData") if isinstance(request_payload.get("postData"), dict) else {}
     raw_text = post_data.get("text")
+
+    # SmiteSource can send tRPC input either as POST body JSON or as a GET
+    # query string named "data", depending on how the browser captured the call.
+    if not isinstance(raw_text, str) or not raw_text.strip():
+        url = str(request_payload.get("url") or "")
+        query_values = parse_qs(urlparse(url).query)
+        raw_text = query_values.get("data", [""])[0]
+
     if not isinstance(raw_text, str) or not raw_text.strip():
         return {}
     try:
@@ -635,7 +676,6 @@ def har_request_json(entry: dict[str, Any]) -> dict[str, Any]:
     except json.JSONDecodeError:
         return {}
     return parsed if isinstance(parsed, dict) else {}
-
 
 # This helper extracts and decodes one response body from a browser HAR entry.
 def har_response_text(entry: dict[str, Any]) -> str:
@@ -716,20 +756,23 @@ def import_smitesource_har_payload(har_payload: dict[str, Any]) -> dict[str, Any
 
     for player, rows in grouped_rows.items():
         player_uuid = smitesource_player_uuid(SMITESOURCE_PROFILE_LINKS.get(player, ""))
-        existing_keys = {
-            str(row.get("match_key") or "")
-            for row in load_stored_match_history(player)
-            if str(row.get("match_key") or "")
-        }
+        existing_keys, existing_signatures, stored_count = stored_match_history_dedupe_sets(player)
         records: list[dict[str, Any]] = []
         seen_keys: set[str] = set()
+        seen_signatures: set[str] = set()
+        skipped_cross_source = 0
 
         for row in rows:
             record = normalize_smitesource_history_record(player, player_uuid, row)
             match_key = str(record.get("match_key") or "")
+            signature = match_history_duplicate_signature(player, record)
             if not match_key or match_key in existing_keys or match_key in seen_keys:
                 continue
+            if signature in existing_signatures or signature in seen_signatures:
+                skipped_cross_source += 1
+                continue
             seen_keys.add(match_key)
+            seen_signatures.add(signature)
             records.append(record)
 
         if records:
@@ -740,10 +783,10 @@ def import_smitesource_har_payload(har_payload: dict[str, Any]) -> dict[str, Any
                 "player": player,
                 "captured": len(rows),
                 "inserted": len(records),
-                "stored": len(existing_keys) + len(records),
+                "stored": stored_count + len(records),
+                "skippedCrossSource": skipped_cross_source,
             }
         )
-
     return {
         "ok": True,
         "results": results,
@@ -2563,6 +2606,8 @@ if __name__ == "__main__":
     host = os.environ.get("FLASK_HOST", "127.0.0.1")
     port = int(os.environ.get("FLASK_PORT", "5000"))
     app.run(host=host, port=port, debug=True)
+
+
 
 
 

@@ -15,13 +15,8 @@ if str(REPO_ROOT) not in sys.path:
 import app  # noqa: E402
 
 
-def existing_match_keys(player: str) -> set[str]:
-    return {
-        str(row.get("match_key") or "")
-        for row in app.load_stored_match_history(player)
-        if str(row.get("match_key") or "")
-    }
-
+def existing_dedupe_sets(player: str) -> tuple[set[str], set[str], int]:
+    return app.stored_match_history_dedupe_sets(player)
 
 def dry_run_summary(har_payload: dict[str, Any]) -> dict[str, Any]:
     grouped_rows = app.extract_smitesource_matches_from_har(har_payload)
@@ -29,16 +24,23 @@ def dry_run_summary(har_payload: dict[str, Any]) -> dict[str, Any]:
 
     for player, rows in grouped_rows.items():
         player_uuid = app.smitesource_player_uuid(app.SMITESOURCE_PROFILE_LINKS.get(player, ""))
-        existing_keys = existing_match_keys(player)
+        existing_keys, existing_signatures, stored_count = existing_dedupe_sets(player)
         seen_keys: set[str] = set()
+        seen_signatures: set[str] = set()
         missing = 0
+        skipped_cross_source = 0
 
         for row in rows:
             record = app.normalize_smitesource_history_record(player, player_uuid, row)
             match_key = str(record.get("match_key") or "")
+            signature = app.match_history_duplicate_signature(player, record)
             if not match_key or match_key in existing_keys or match_key in seen_keys:
                 continue
+            if signature in existing_signatures or signature in seen_signatures:
+                skipped_cross_source += 1
+                continue
             seen_keys.add(match_key)
+            seen_signatures.add(signature)
             missing += 1
 
         results.append(
@@ -47,11 +49,11 @@ def dry_run_summary(har_payload: dict[str, Any]) -> dict[str, Any]:
                 "captured": len(rows),
                 "missing": missing,
                 "inserted": 0,
-                "stored": len(existing_keys),
+                "stored": stored_count,
+                "skippedCrossSource": skipped_cross_source,
                 "dryRun": True,
             }
         )
-
     return {
         "ok": True,
         "dryRun": True,
@@ -82,3 +84,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
