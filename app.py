@@ -3,6 +3,7 @@ from __future__ import annotations
 # This block imports the standard-library tools used for file access, dates,
 # lightweight caching, and configuration parsing.
 import base64
+import html
 import json
 import math
 import os
@@ -32,13 +33,18 @@ GODS_ASSETS_DIR = ASSETS_DIR / "gods"
 PANTHEONS_DIR = ASSETS_DIR / "pantheons"
 LOCAL_SECRETS_PATH = BASE_DIR / "secrets" / "app_secrets.toml"
 LOCAL_SECRETS_PATH_TXT = BASE_DIR / "secrets" / "app_secrets.toml.txt"
+LEGACY_LOCAL_SECRETS_PATH = Path.home() / "Documents" / "New project" / "secrets" / "app_secrets.toml"
 SECRETS_PATH = (
     LOCAL_SECRETS_PATH
     if LOCAL_SECRETS_PATH.exists()
     else (
         LOCAL_SECRETS_PATH_TXT
         if LOCAL_SECRETS_PATH_TXT.exists()
-        else ((BASE_DIR / ".streamlit" / "secrets.toml") if (BASE_DIR / ".streamlit" / "secrets.toml").exists() else (FALLBACK_SOURCE_REPO / ".streamlit" / "secrets.toml"))
+        else (
+            LEGACY_LOCAL_SECRETS_PATH
+            if LEGACY_LOCAL_SECRETS_PATH.exists()
+            else ((BASE_DIR / ".streamlit" / "secrets.toml") if (BASE_DIR / ".streamlit" / "secrets.toml").exists() else (FALLBACK_SOURCE_REPO / ".streamlit" / "secrets.toml"))
+        )
     )
 )
 LOCAL_ACTIVITY_LOG_PATH = BASE_DIR / "local_activity_log.json"
@@ -1554,6 +1560,310 @@ def load_rater_stats() -> dict[str, dict[str, Any]]:
 
     return profiles
 
+
+# This helper protects recap emails separately from data imports while still
+# allowing the existing sync key to work locally if a recap key is not set yet.
+def check_recap_key(entered_key: str) -> bool:
+    expected = get_secret("RECAP_ADMIN_KEY") or get_secret("RATER_STATS_SYNC_KEY")
+    return bool(expected) and entered_key.strip() == expected
+
+
+# This helper splits comma/newline separated recipient config into a clean list
+# that can be passed directly to Resend.
+def parse_email_recipients(value: str) -> list[str]:
+    recipients = [part.strip() for part in re.split(r"[,\n]", value or "") if part.strip()]
+    return recipients[:50]
+
+
+# This helper formats a win/loss record with a compact win-rate note for recap
+# cards and email rows.
+def recap_record_text(wins: int, games: int) -> str:
+    losses = max(int(games or 0) - int(wins or 0), 0)
+    win_rate = round((int(wins or 0) / int(games or 1)) * 100, 1) if games else 0
+    return f"{int(wins or 0)}-{losses} ({win_rate:g}%)" if games else "0-0"
+
+
+# This helper normalizes god names for email recap matching across roster rows,
+# match rows, and imported activity records.
+def email_god_key(value: str) -> str:
+    key = re.sub(r"[^a-z0-9]", "", str(value or "").lower())
+    aliases = {
+        "morrigan": "themorrigan",
+        "themorrigan": "themorrigan",
+        "morgenlefay": "morganlefay",
+        "morganlefay": "morganlefay",
+        "daji": "daji",
+        "change": "change",
+        "bakekujira": "bakekujira",
+    }
+    return aliases.get(key, key)
+
+
+# This helper builds the public app URL used by email deep links. Vercel can set
+# APP_BASE_URL explicitly; local fallback keeps generated links predictable.
+def public_app_base_url() -> str:
+    return get_secret("APP_BASE_URL", "https://highcouncilhub.vercel.app").rstrip("/")
+
+
+# This helper mirrors the client-side last-25 player recap so the email can be
+# generated server-side without depending on rendered browser state.
+def build_player_recap_for_email(player: str, profile: dict[str, Any], catalog: list[dict[str, Any]], rankings: dict[str, dict[str, int]], recent_history: list[dict[str, Any]], app_base_url: str) -> dict[str, Any]:
+    recent_matches = list(profile.get("recentMatches") or [])[:25]
+    god_buckets: dict[str, dict[str, Any]] = {}
+    for match in recent_matches:
+        god_name = str(match.get("godName") or match.get("name") or "Unknown").strip() or "Unknown"
+        bucket = god_buckets.setdefault(god_name, {"name": god_name, "games": 0, "wins": 0, "losses": 0, "lastPlayed": ""})
+        bucket["games"] += 1
+        if match.get("won"):
+            bucket["wins"] += 1
+        else:
+            bucket["losses"] += 1
+        bucket["lastPlayed"] = max(bucket.get("lastPlayed") or "", str(match.get("startedAt") or ""))
+
+    def finish(bucket: dict[str, Any]) -> dict[str, Any]:
+        games = int(bucket.get("games") or 0)
+        wins = int(bucket.get("wins") or 0)
+        return {**bucket, "winRate": round((wins / games) * 100, 1) if games else 0}
+
+    recent_gods = [finish(bucket) for bucket in god_buckets.values()]
+    most_played = sorted(recent_gods, key=lambda item: (-item["games"], -item["winRate"], item["name"]))[:5]
+    best = sorted([item for item in recent_gods if item["wins"] > 0], key=lambda item: (-item["winRate"], -item["wins"], item["name"]))[:5]
+    poor = sorted([item for item in recent_gods if item["losses"] > 0], key=lambda item: (item["winRate"], -item["losses"], item["name"]))[:5]
+
+    player_rankings = rankings.get(player, {})
+    favorites = [
+        {
+            "name": str(god.get("God") or ""),
+            "rating": god.get(player),
+            "rank": player_rankings.get(str(god.get("God") or "")),
+        }
+        for god in catalog
+        if int(god.get(player) or 0) > 0
+    ]
+    favorites.sort(key=lambda item: (-int(item.get("rating") or 0), int(item.get("rank") or 9999), item["name"]))
+
+    catalog_by_name = {email_god_key(god.get("God") or ""): god for god in catalog}
+    activity_keys = {
+        email_god_key(row.get("god_name") or "")
+        for row in recent_history
+        if row.get("player") == player and (row.get("change_type") or "rating") in {"rating", "rank"}
+    }
+    nudges = []
+    for item in sorted(recent_gods, key=lambda row: (-row["games"], row["name"])):
+        item_key = email_god_key(item["name"])
+        god = catalog_by_name.get(item_key) or {}
+        canonical_name = str(god.get("God") or item["name"])
+        has_rating = int(god.get(player) or 0) > 0
+        has_rank = bool(player_rankings.get(canonical_name) or player_rankings.get(item["name"]))
+        recent_games = int(item.get("games") or 0)
+        reason = ""
+        if not has_rating or not has_rank:
+            reason = "needs update"
+        elif recent_games >= 3 and email_god_key(canonical_name) not in activity_keys:
+            reason = f"{recent_games} recent plays, revisit"
+        if reason:
+            nudges.append(
+                {
+                    **item,
+                    "name": canonical_name,
+                    "reason": reason,
+                    "url": f"{app_base_url}/?god={quote(canonical_name)}&section=edit&player={quote(player)}",
+                }
+            )
+        if len(nudges) >= 5:
+            break
+
+    wins = sum(1 for match in recent_matches if match.get("won"))
+    games = len(recent_matches)
+    return {
+        "player": player,
+        "games": games,
+        "wins": wins,
+        "losses": games - wins,
+        "favorites": favorites[:5],
+        "mostPlayed": most_played,
+        "best": best,
+        "poor": poor,
+        "nudges": nudges,
+    }
+
+
+# This helper builds exact-member duo/trio recaps from recent chemistry sessions
+# so the email matches the cleaned-up Council Scroll logic.
+def build_group_recap_for_email(profiles: dict[str, dict[str, Any]], members: list[str], limit: int = 25) -> dict[str, Any]:
+    member_key = tuple(sorted(members))
+    seen: set[str] = set()
+    sessions: list[dict[str, Any]] = []
+    for profile in profiles.values():
+        for session in profile.get("chemistry", {}).get("recentSessions", []) or []:
+            participants = tuple(sorted(str(name) for name in (session.get("participants") or []) if name))
+            if participants != member_key:
+                continue
+            god_map = session.get("participantGods") or {}
+            signature = "|".join([str(session.get("startedAt") or ""), *[f"{name}:{god_map.get(name, '')}" for name in participants]])
+            if signature in seen:
+                continue
+            seen.add(signature)
+            sessions.append(session)
+    sessions.sort(key=lambda row: str(row.get("startedAt") or ""), reverse=True)
+    sessions = sessions[:limit]
+
+    comp_buckets: dict[str, dict[str, Any]] = {}
+    for session in sessions:
+        god_map = session.get("participantGods") or {}
+        parts = [f"{member}: {god_map.get(member) or 'Unknown'}" for member in members]
+        label = " + ".join(str(god_map.get(member) or "Unknown") for member in members)
+        key = "|".join(parts)
+        bucket = comp_buckets.setdefault(key, {"label": label, "details": " / ".join(parts), "games": 0, "wins": 0, "losses": 0})
+        bucket["games"] += 1
+        if session.get("won"):
+            bucket["wins"] += 1
+        else:
+            bucket["losses"] += 1
+
+    comps = []
+    for bucket in comp_buckets.values():
+        games = int(bucket.get("games") or 0)
+        wins = int(bucket.get("wins") or 0)
+        comps.append({**bucket, "winRate": round((wins / games) * 100, 1) if games else 0})
+    best = sorted([item for item in comps if item["wins"] > 0], key=lambda item: (-item["winRate"], -item["wins"], item["label"]))[:3]
+    poor = sorted([item for item in comps if item["losses"] > 0], key=lambda item: (item["winRate"], -item["losses"], item["label"]))[:3]
+    wins = sum(1 for session in sessions if session.get("won"))
+    games = len(sessions)
+    return {"members": members, "games": games, "wins": wins, "losses": games - wins, "best": best, "poor": poor}
+
+
+# This helper converts the recap data into a compact HTML email. The styling is
+# inline by design because many email clients strip normal CSS files.
+def build_council_scroll_email_html(recap: dict[str, Any]) -> str:
+    def e(value: Any) -> str:
+        return html.escape(str(value or ""))
+
+    def pill_list(items: list[dict[str, Any]], empty: str, mode: str = "record") -> str:
+        if not items:
+            return f'<span style="color:#9ca3af;font-size:13px;">{e(empty)}</span>'
+        chips = []
+        for item in items[:5]:
+            if mode == "favorite":
+                note = f"{item.get('rating') or '--'} / #{item.get('rank') or '--'}"
+            elif mode == "nudge":
+                note = item.get("reason") or "needs update"
+            else:
+                note = recap_record_text(int(item.get("wins") or 0), int(item.get("games") or 0))
+            chip_body = f'<b>{e(item.get("name") or item.get("label") or "Unknown")}</b> <span style="color:#e8c56b;">{e(note)}</span>'
+            if mode == "nudge" and item.get("url"):
+                chip_body = f'<a href="{e(item.get("url"))}" style="color:#f8f2df;text-decoration:none;">{chip_body}</a>'
+            chips.append(f'<span style="display:inline-block;margin:0 6px 6px 0;padding:7px 9px;border:1px solid #4b3d24;border-radius:999px;background:#111820;color:#f8f2df;font-size:12px;">{chip_body}</span>')
+        return "".join(chips)
+
+    def comp_rows(items: list[dict[str, Any]], empty: str) -> str:
+        if not items:
+            return f'<p style="margin:6px 0;color:#9ca3af;">{e(empty)}</p>'
+        return "".join(
+            f'<tr><td style="padding:8px;border-bottom:1px solid #26313b;color:#f8f2df;"><b>{e(item.get("label"))}</b><br><span style="color:#aeb6c2;font-size:12px;">{e(item.get("details"))}</span></td><td style="padding:8px;border-bottom:1px solid #26313b;text-align:right;color:#e8c56b;font-weight:700;">{e(recap_record_text(int(item.get("wins") or 0), int(item.get("games") or 0)))}</td></tr>'
+            for item in items[:3]
+        )
+
+    player_rows = "".join(
+        f'''
+        <tr>
+            <td style="vertical-align:top;padding:14px 10px;border-top:1px solid #33404a;"><b style="font-size:16px;color:#fff4d6;">{e(player['player'])}</b><br><span style="color:#e8c56b;">{e(recap_record_text(player['wins'], player['games']))}</span></td>
+            <td style="vertical-align:top;padding:14px 10px;border-top:1px solid #33404a;">{pill_list(player['nudges'], 'No gaps', 'nudge')}</td>
+            <td style="vertical-align:top;padding:14px 10px;border-top:1px solid #33404a;">{pill_list(player['favorites'], 'No favorites', 'favorite')}</td>
+            <td style="vertical-align:top;padding:14px 10px;border-top:1px solid #33404a;">{pill_list(player['mostPlayed'], 'No recent sample')}</td>
+            <td style="vertical-align:top;padding:14px 10px;border-top:1px solid #33404a;">{pill_list(player['best'], 'No wins')}</td>
+            <td style="vertical-align:top;padding:14px 10px;border-top:1px solid #33404a;">{pill_list(player['poor'], 'No losses')}</td>
+        </tr>
+        '''
+        for player in recap["players"]
+    )
+
+    group_blocks = "".join(
+        f'''
+        <div style="margin-top:16px;padding:14px;border:1px solid #4b3d24;border-radius:16px;background:#101820;">
+            <h3 style="margin:0 0 4px;color:#fff4d6;">{e(group['label'])}</h3>
+            <p style="margin:0 0 12px;color:#e8c56b;font-weight:700;">{e(recap_record_text(group['wins'], group['games']))}</p>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                <tr><td style="width:50%;vertical-align:top;padding-right:8px;"><h4 style="margin:0 0 6px;color:#78d6a3;">Best comps</h4><table role="presentation" width="100%" cellspacing="0" cellpadding="0">{comp_rows(group['best'], 'No winning comps')}</table></td><td style="width:50%;vertical-align:top;padding-left:8px;"><h4 style="margin:0 0 6px;color:#ff8c8c;">Needs work</h4><table role="presentation" width="100%" cellspacing="0" cellpadding="0">{comp_rows(group['poor'], 'No losing comps')}</table></td></tr>
+            </table>
+        </div>
+        '''
+        for group in recap["groups"]
+    )
+
+    return f'''
+    <div style="margin:0;padding:0;background:#071018;color:#f8f2df;font-family:Georgia,Arial,sans-serif;">
+        <div style="max-width:980px;margin:0 auto;padding:28px 18px;">
+            <div style="padding:24px;border:1px solid #6f5628;border-radius:22px;background:linear-gradient(135deg,#111820,#1d252c);">
+                <p style="margin:0 0 8px;color:#e8c56b;letter-spacing:3px;text-transform:uppercase;font-size:12px;font-weight:700;">High Council Hub</p>
+                <h1 style="margin:0;color:#fffaf0;font-size:34px;">Council Weekly Scroll</h1>
+                <p style="margin:10px 0 0;color:#c6ced8;font-size:15px;">Last 25 Joust check-in: recent comfort picks, wins, shaky spots, and rating/rank nudges.</p>
+                <p style="margin:10px 0 0;color:#e8c56b;font-size:13px;">For all-time data, open the Rater Profile and Chemistry tabs in High Council Hub.</p>
+                <p style="margin:14px 0 0;"><a href="{e(recap.get('appUrl'))}" style="display:inline-block;padding:10px 14px;border-radius:999px;background:#e8c56b;color:#101820;font-weight:700;text-decoration:none;">Open High Council Hub</a></p>
+            </div>
+
+            <h2 style="margin:22px 0 10px;color:#fff4d6;">Player Snapshots</h2>
+            <div style="overflow-x:auto;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="min-width:880px;border-collapse:collapse;background:#0b121a;border:1px solid #26313b;border-radius:16px;overflow:hidden;">
+                    <tr style="background:#151d25;color:#e8c56b;text-transform:uppercase;font-size:11px;letter-spacing:1.6px;">
+                        <th align="left" style="padding:10px;">Player</th><th align="left" style="padding:10px;">Update Nudges</th><th align="left" style="padding:10px;">Favorites</th><th align="left" style="padding:10px;">Most Played</th><th align="left" style="padding:10px;">Best W/L</th><th align="left" style="padding:10px;">Poor W/L</th>
+                    </tr>
+                    {player_rows}
+                </table>
+            </div>
+
+            <h2 style="margin:22px 0 10px;color:#fff4d6;">Duo And Trio Receipts</h2>
+            {group_blocks}
+        </div>
+    </div>
+    '''
+
+
+# This helper builds all recap data needed by both the send route and future
+# preview routes, keeping email content consistent with the Council Scroll tab.
+def build_council_scroll_email_recap() -> dict[str, Any]:
+    profiles = load_rater_stats()
+    state = load_app_state()
+    catalog = state.get("catalog") or []
+    rankings = state.get("all_rankings") or {}
+    recent_history = state.get("recent_history") or []
+    app_base_url = public_app_base_url()
+    players = [build_player_recap_for_email(player, profiles.get(player, {}), catalog, rankings, recent_history, app_base_url) for player in PLAYERS]
+    group_specs = [
+        ("Trinity: Joey + Jami + Darian", ["Joey", "Jami", "Darian"]),
+        ("Duo: Joey + Jami", ["Joey", "Jami"]),
+        ("Duo: Joey + Darian", ["Joey", "Darian"]),
+        ("Duo: Jami + Darian", ["Jami", "Darian"]),
+    ]
+    groups = []
+    for label, members in group_specs:
+        group = build_group_recap_for_email(profiles, members)
+        groups.append({**group, "label": label})
+    return {"players": players, "groups": groups, "appUrl": app_base_url}
+
+
+# This helper sends a finished HTML recap through Resend's HTTP API. Keeping it
+# as a small wrapper makes local failures easy to report in the UI.
+def send_resend_email(to_emails: list[str], subject: str, html_body: str) -> dict[str, Any]:
+    api_key = get_secret("RESEND_API_KEY")
+    from_email = get_secret("RECAP_FROM_EMAIL")
+    if not api_key:
+        raise RuntimeError("RESEND_API_KEY is not configured.")
+    if not from_email:
+        raise RuntimeError("RECAP_FROM_EMAIL is not configured.")
+    if not to_emails:
+        raise RuntimeError("No recap recipients are configured.")
+
+    response = HTTP.post(
+        "https://api.resend.com/emails",
+        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        json={"from": from_email, "to": to_emails, "subject": subject, "html": html_body},
+        timeout=20,
+    )
+    if not response.ok:
+        raise RuntimeError(f"Resend returned {response.status_code}: {response.text}")
+    return response.json()
+
 # This helper loads the local activity fallback log so recent changes can still
 # appear in the Activity tab when Supabase history reads are unavailable.
 def load_local_activity_log() -> list[dict]:
@@ -2469,6 +2779,41 @@ def api_rater_stats_status():
 
     return jsonify({"ok": True, "results": results})
 
+
+
+# This route sends the Council Scroll recap through Resend. Test mode is wired
+# to Joey only so the first production checks cannot accidentally email the room.
+@app.post("/api/council-scroll/email")
+def api_council_scroll_email():
+    payload = request.get_json(silent=True) or {}
+    recap_key = str(payload.get("recapKey") or request.headers.get("X-Recap-Key") or "")
+    if not check_recap_key(recap_key):
+        return jsonify({"ok": False, "message": "Unauthorized recap request."}), 401
+
+    test_mode = bool(payload.get("test", True))
+    if test_mode:
+        recipients = parse_email_recipients(get_secret("RECAP_TEST_TO_EMAIL", "joeymonachino@gmail.com"))
+        subject = "Test: High Council Weekly Scroll"
+    else:
+        recipients = parse_email_recipients(get_secret("RECAP_TO_EMAILS"))
+        subject = "High Council Weekly Scroll"
+
+    try:
+        recap = build_council_scroll_email_recap()
+        html_body = build_council_scroll_email_html(recap)
+        result = send_resend_email(recipients, subject, html_body)
+    except Exception as exc:  # noqa: BLE001
+        return jsonify({"ok": False, "message": str(exc)}), 500
+
+    return jsonify(
+        {
+            "ok": True,
+            "message": f"Sent {'test ' if test_mode else ''}Council Scroll recap to {', '.join(recipients)}.",
+            "recipients": recipients,
+            "resendId": result.get("id"),
+            "test": test_mode,
+        }
+    )
 
 # This route fetches a focused rating-history slice for the analytics chart so
 # the browser doesn't have to download the entire history table every time.

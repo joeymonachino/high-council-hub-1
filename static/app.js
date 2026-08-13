@@ -71,6 +71,8 @@ const state = {
     },
     councilScroll: {
         section: "players",
+        emailing: false,
+        emailMessage: "",
     },
     ui: {
         isMobile: false,
@@ -1273,6 +1275,12 @@ function bindStaticEvents() {
             return;
         }
 
+        const councilEmailTrigger = event.target.closest("[data-send-council-scroll-email]");
+        if (councilEmailTrigger) {
+            sendCouncilScrollEmail();
+            return;
+        }
+
         const syncTrigger = event.target.closest("[data-sync-rater-stats]");
         if (syncTrigger) {
             syncRaterStats(syncTrigger.dataset.syncRaterStats === "all" ? "" : syncTrigger.dataset.syncRaterStats);
@@ -1483,6 +1491,33 @@ async function loadRaterStats() {
     state.raterStats.loaded = true;
     if (state.godDetail.god && elements.godModalBackdrop && !elements.godModalBackdrop.classList.contains("hidden")) {
         openGodDetail(state.godDetail.god);
+    }
+}
+
+
+// This helper sends a protected Joey-only recap through the Flask/Resend route
+// so the free Resend test sender can still be useful without domain verification.
+async function sendCouncilScrollEmail() {
+    const savedKey = sessionStorage.getItem("highCouncilRecapKey") || sessionStorage.getItem("highCouncilSyncKey") || "";
+    const recapKey = window.prompt("Enter your recap email key", savedKey);
+    if (!recapKey) return;
+
+    sessionStorage.setItem("highCouncilRecapKey", recapKey);
+    state.councilScroll.emailing = true;
+    state.councilScroll.emailMessage = "Preparing Joey-only recap...";
+    renderCouncilScrollTab();
+
+    try {
+        const payload = await api("/api/council-scroll/email", {
+            method: "POST",
+            body: JSON.stringify({ recapKey, test: true }),
+        });
+        state.councilScroll.emailMessage = `${payload.message || "Joey recap sent."} Forward it to the council from Gmail.`;
+    } catch (error) {
+        state.councilScroll.emailMessage = error.message || "Email recap failed.";
+    } finally {
+        state.councilScroll.emailing = false;
+        renderCouncilScrollTab();
     }
 }
 
@@ -3908,22 +3943,30 @@ const COUNCIL_SCROLL_RECENT_LIMIT = 25;
 // This helper finds a roster god with lenient name matching so Scroll cards can
 // connect match-history names to local artwork, ratings, and rankings.
 function findGodByName(name) {
-    const normalized = normalizeGodName(name);
-    const aliases = {
-        morrigan: "themorrigan",
-        themorrigan: "themorrigan",
-        morgenlefay: "morganlefay",
-        daji: "daji",
-        change: "change",
-    };
-    const target = aliases[normalized] || normalized;
-    return state.gods.find((god) => normalizeGodName(god.God) === target) || null;
+    const target = canonicalGodKey(name);
+    return state.gods.find((god) => canonicalGodKey(god.God) === target) || null;
 }
 
 // This helper keeps Scroll comparisons resilient to punctuation/casing from
 // Tracker, SmiteSource, and hand-loaded rows.
 function normalizeGodName(name) {
     return String(name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+// This helper applies known god-name aliases after normalization so activity,
+// match history, and roster rows point at the same council record.
+function canonicalGodKey(name) {
+    const normalized = normalizeGodName(name);
+    const aliases = {
+        morrigan: "themorrigan",
+        themorrigan: "themorrigan",
+        morgenlefay: "morganlefay",
+        morganlefay: "morganlefay",
+        daji: "daji",
+        change: "change",
+        bakekujira: "bakekujira",
+    };
+    return aliases[normalized] || normalized;
 }
 
 // This helper converts win/game counts into the compact record object used by
@@ -3996,6 +4039,15 @@ function buildCurrentFavorites(player, limit = 5) {
         .map((god) => ({ name: god.God, rating: god[player] || null, rank: rankingMap[god.God] || null }));
 }
 
+// This helper finds the newest rating/rank touch for one player+god so Scroll
+// nudges can call out played-a-lot picks that may deserve a refreshed opinion.
+function latestCouncilActivityForGod(player, godName) {
+    const target = canonicalGodKey(godName);
+    return [...(state.recentHistory || [])]
+        .filter((row) => row.player === player && canonicalGodKey(row.god_name) === target && ["rating", "rank"].includes(row.change_type || "rating"))
+        .sort((a, b) => new Date(b.changed_at || 0) - new Date(a.changed_at || 0))[0] || null;
+}
+
 // This helper counts ranking/rating gaps and lists recent gods that deserve a
 // quick update after actual play.
 function buildRecentUpdateNudges(player, recentGods, limit = 5) {
@@ -4008,8 +4060,11 @@ function buildRecentUpdateNudges(player, recentGods, limit = 5) {
             const hasRating = Number(catalogGod[player] || 0) > 0;
             const canonicalName = catalogGod.God || god.name;
             const hasRank = Boolean(rankingMap[canonicalName] || rankingMap[god.name]);
+            const recentGames = Number(god.games || god.gamesPlayed || 0);
+            const latestActivity = latestCouncilActivityForGod(player, canonicalName);
             const reasons = [];
             if (!hasRating || !hasRank) reasons.push("needs update");
+            if (hasRating && hasRank && recentGames >= 3 && !latestActivity) reasons.push(`${recentGames} recent plays, revisit`);
             return { ...god, name: canonicalName, rating: catalogGod[player] || null, rank: rankingMap[canonicalName] || rankingMap[god.name] || null, reasons };
         })
         .filter((god) => god.reasons.length)
@@ -4242,6 +4297,11 @@ function renderCouncilScrollTab() {
                     <p class="eyebrow">Council Scroll</p>
                     <h2>Last 25 Joust Check-In</h2>
                     <p>Recent play only: what everyone has been favoring, what is winning, what is struggling, and which ratings or ranks may need a fresh look.</p>
+                    <p class="scroll-recap-reminder">Want the full archive? Open Rater Profile for all-time player data or Chemistry for all-time duo/trio receipts.</p>
+                    <div class="scroll-recap-actions">
+                        <button class="btn-primary" type="button" data-send-council-scroll-email="true" ${state.councilScroll.emailing ? "disabled" : ""}>${state.councilScroll.emailing ? "Sending..." : "Email Recap To Joey"}</button>
+                        <span>${escapeHtml(state.councilScroll.emailMessage || "Joey-only until a sending domain is verified; forward it from Gmail.")}</span>
+                    </div>
                 </div>
                 <div class="scroll-recap-mini-stats hero-stats">
                     <span><strong>${formatMetric(totalRecent)}</strong><small>Player samples</small></span>
@@ -4504,6 +4564,44 @@ async function refreshData() {
     renderAll();
 }
 
+
+// This helper handles email deep links such as
+// `?god=Skadi&section=edit&player=Joey` by opening the god card directly to
+// Rate & Rank after the initial roster has loaded.
+function handleInitialGodDeepLink() {
+    const params = new URLSearchParams(window.location.search);
+    const requestedGod = params.get("god") || params.get("openGod");
+    if (!requestedGod) return false;
+
+    const god = findGodByName(requestedGod) || state.gods.find((row) => canonicalGodKey(row.God) === canonicalGodKey(requestedGod));
+    if (!god) return false;
+
+    const requestedPlayer = params.get("player") || "";
+    const requestedSection = params.get("section") || "council";
+    const sectionAliases = {
+        rate: "edit",
+        rank: "edit",
+        rating: "edit",
+        ratings: "edit",
+        edit: "edit",
+        rateandrank: "edit",
+    };
+    const sectionKey = sectionAliases[normalizeGodName(requestedSection)] || requestedSection;
+    const validSections = ["council", "ownership", "performance", "synergy", "recent", "edit"];
+
+    state.activeTab = "index";
+    state.godDetail.god = god.God;
+    state.godDetail.section = validSections.includes(sectionKey) ? sectionKey : "council";
+    if (state.config.players.includes(requestedPlayer)) {
+        state.godDetail.editPlayer = requestedPlayer;
+    }
+
+    openGodDetail(god.God);
+    renderTabs();
+    setTimeout(() => elements.godModalBackdrop?.scrollTo?.({ top: 0 }), 0);
+    return true;
+}
+
 // This block boots the whole frontend: gather elements, load data, fetch the
 // initial analytics history, and render every tab.
 document.addEventListener("DOMContentLoaded", async () => {
@@ -4516,8 +4614,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         await loadAnalyticsHistory();
         hydrateRaterStatsFromCache();
         renderAll();
+        handleInitialGodDeepLink();
         loadRaterStats().then(() => {
             renderAll();
+            handleInitialGodDeepLink();
         });
     } catch (error) {
         document.querySelector(".app-shell").innerHTML = emptyState("App Failed To Load", error.message);

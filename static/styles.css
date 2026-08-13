@@ -8775,3 +8775,35 @@ body {
     font-size: 0.68rem;
   }
 }
+
+/* This block styles the Council Scroll email action without making the recap
+   hero feel heavier on mobile. */
+.scroll-recap-reminder {
+    color: var(--gold-soft, #e8c56b) !important;
+    font-size: 0.9rem !important;
+    margin-top: 0.65rem !important;
+}
+
+.scroll-recap-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 1rem;
+}
+
+.scroll-recap-actions span {
+    color: var(--muted, #aeb6c2);
+    font-size: 0.88rem;
+}
+
+@media (max-width: 640px) {
+    .scroll-recap-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .scroll-recap-actions .btn-primary {
+        width: 100%;
+    }
+}
