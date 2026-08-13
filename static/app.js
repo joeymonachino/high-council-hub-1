@@ -2383,7 +2383,7 @@ function renderRaterStatsTab() {
             return `
                 <article class="favorite-profile-card" data-god-detail="${escapeHtml(god.God)}" role="button" tabindex="0">
                     <div class="favorite-rank-medallion">#${index + 1}</div>
-                    <div class="favorite-profile-art">${god.ImageUrl ? `<img class="god-art" src="${god.ImageUrl}" alt="${escapeHtml(god.God)}" loading="${imageLoading}" decoding="async" fetchpriority="${imagePriority}">` : `<div class="image-fallback">Art</div>`}</div>
+                    <div class="favorite-profile-art">${god.ImageUrl ? `<img class="god-art" src="${god.ImageUrl}" alt="${escapeHtml(god.God)}" loading="lazy" decoding="async">` : `<div class="image-fallback">Art</div>`}</div>
                     <div>
                         <strong>${escapeHtml(god.God)}</strong>
                         <div class="rank-meta">${escapeHtml(god.Role || "")} | ${escapeHtml(god.Pantheon || "")}</div>
@@ -4317,6 +4317,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.querySelector(".app-shell").innerHTML = emptyState("App Failed To Load", error.message);
     }
 });
+
 
 
 
