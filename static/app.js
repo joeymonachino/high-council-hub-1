@@ -2419,6 +2419,7 @@ function buildRaterProfile(player) {
         topGods: external.topGods || [],
         godStats: external.godStats || {},
         topRoles: external.topRoles || [],
+        opponentMatchups: external.opponentMatchups || {},
         recentMatches: external.recentMatches || [],
         chemistry: external.chemistry || {},
         insights: external.insights || {},
@@ -2470,6 +2471,47 @@ function bestGodsByWinRate(topGods, limit = 4, minimumGames = 3) {
         .slice(0, limit);
 }
 
+function renderOpponentRows(records = [], { emptyText = "No opponent sample yet", tone = "" } = {}) {
+    if (!records.length) return `<div class="rank-meta">${escapeHtml(emptyText)}</div>`;
+    return records.map((record) => {
+        const name = record.god || record.enemyGod || record.label || "Unknown";
+        const games = Number(record.games || 0);
+        const wins = Number(record.wins || 0);
+        const losses = Number(record.losses || Math.max(games - wins, 0));
+        const wr = Number(record.winRate || 0);
+        return `
+            <div class="mini-highlight-row opponent-row ${escapeHtml(tone)}">
+                <span><strong>${escapeHtml(name)}</strong><small>${formatWinLossRecord(wins, games)} | ${formatMetric(wr, 1, "%")} WR${record.class ? ` | ${escapeHtml(record.class)}` : ""}</small></span>
+                <strong class="${wr >= 55 ? "movement-up" : wr <= 45 && games ? "movement-down" : ""}">${wins}-${losses}</strong>
+            </div>
+        `;
+    }).join("");
+}
+
+function renderPlayerMatchupsSection(profile, selectedPlayer) {
+    const matchups = profile.opponentMatchups || {};
+    return `
+        <section class="rater-profile-panel">
+            <div class="section-kicker"><p class="eyebrow">Enemy Ledger</p><h3>${escapeHtml(selectedPlayer)} Matchups</h3></div>
+            <div class="profile-chip-row">
+                <span class="summary-pill">Raw match opponent data</span>
+                <span class="summary-pill">Joust only</span>
+                <span class="summary-pill">Nemesis = low WR against</span>
+            </div>
+            <div class="mini-highlight-grid rater-detail-grid matchup-grid">
+                <article class="mini-highlight-card nemesis-card"><div class="metric-label">Nemesis Gods</div>${renderOpponentRows(matchups.painGods || [], { emptyText: "No pain gods yet", tone: "rough" })}</article>
+                <article class="mini-highlight-card farm-card"><div class="metric-label">Farm Targets</div>${renderOpponentRows(matchups.farmGods || [], { emptyText: "No farm targets yet", tone: "good" })}</article>
+                <article class="mini-highlight-card"><div class="metric-label">Most Seen Enemies</div>${renderOpponentRows(matchups.mostSeenGods || [], { emptyText: "No enemy god sample yet" })}</article>
+                <article class="mini-highlight-card"><div class="metric-label">Class Pressure</div>
+                    ${renderOpponentRows(matchups.painClasses || [], { emptyText: "No class pain yet" })}
+                    <div class="metric-label" style="margin-top:12px;">Classes We Beat</div>
+                    ${renderOpponentRows(matchups.farmClasses || [], { emptyText: "No class farms yet" })}
+                </article>
+            </div>
+        </section>
+    `;
+}
+
 // This helper renders the live SmiteSource-backed rater dashboard cards with
 // graceful fallbacks for unlinked or data-light profiles.
 function renderRaterStatsTab() {
@@ -2481,6 +2523,7 @@ function renderRaterStatsTab() {
     const sections = [
         { key: "profile", label: "Profile" },
         { key: "favorites", label: "Favorites" },
+        { key: "matchups", label: "Matchups" },
         { key: "details", label: "Details" },
     ];
     if (!sections.some((section) => section.key === state.raterStats.section)) {
@@ -2582,6 +2625,8 @@ function renderRaterStatsTab() {
         </section>
     `;
 
+    const matchupsSection = renderPlayerMatchupsSection(profile, selectedPlayer);
+
     const detailsSection = `
         <section class="rater-profile-panel">
             <div class="section-kicker"><p class="eyebrow">Deep Cut</p><h3>${escapeHtml(selectedPlayer)} Details</h3></div>
@@ -2598,7 +2643,7 @@ function renderRaterStatsTab() {
         ? `<div class="status-banner">Rater stats hit an issue: ${escapeHtml(state.raterStats.error)}. Council-derived profile insights are still available below.</div>`
         : "";
 
-    const sectionMap = { profile: profileSection, favorites: favoritesSection, details: detailsSection };
+    const sectionMap = { profile: profileSection, favorites: favoritesSection, matchups: matchupsSection, details: detailsSection };
 
     elements.tabRaterStats.innerHTML = `
         <div class="panel tab-overview-panel">
@@ -2634,6 +2679,8 @@ function buildChemistryInsights() {
     const sessionMap = new Map();
     const groupMap = new Map();
     const trioQueueMap = new Map();
+    const opponentGodMap = new Map();
+    const opponentCompMap = new Map();
 
     state.config.players.forEach((player) => {
         const profile = buildRaterProfile(player);
@@ -2692,6 +2739,41 @@ function buildChemistryInsights() {
                 });
             }
 
+        });
+
+        (chemistry.opponentGodRecords || []).forEach((record) => {
+            const members = [...(record.members || [])].sort((left, right) => left.localeCompare(right));
+            if (members.length < 2 || !record.enemyGod) return;
+            const key = `${members.join("|")}|${record.enemyGod}`;
+            if (!opponentGodMap.has(key)) {
+                opponentGodMap.set(key, {
+                    enemyGod: record.enemyGod,
+                    label: record.enemyGod,
+                    members,
+                    games: Number(record.games || 0),
+                    wins: Number(record.wins || 0),
+                    losses: Number(record.losses || 0),
+                    winRate: Number(record.winRate || 0),
+                });
+            }
+        });
+
+        (chemistry.opponentCompRecords || []).forEach((record) => {
+            const members = [...(record.members || [])].sort((left, right) => left.localeCompare(right));
+            const enemies = [...(record.enemyGods || [])].sort((left, right) => left.localeCompare(right));
+            if (members.length < 2 || !enemies.length) return;
+            const key = `${members.join("|")}|${enemies.join("|")}`;
+            if (!opponentCompMap.has(key)) {
+                opponentCompMap.set(key, {
+                    label: record.label || enemies.join(" + "),
+                    enemyGods: enemies,
+                    members,
+                    games: Number(record.games || 0),
+                    wins: Number(record.wins || 0),
+                    losses: Number(record.losses || 0),
+                    winRate: Number(record.winRate || 0),
+                });
+            }
         });
 
         (chemistry.recentSessions || []).forEach((session) => {
@@ -2799,6 +2881,8 @@ function buildChemistryInsights() {
     const queueRecords = [...queueMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
     const trioQueueRecords = [...trioQueueMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
     const groupRecords = [...groupMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const opponentGodRecords = [...opponentGodMap.values()].map(finish).sort((a, b) => b.games - a.games || a.winRate - b.winRate || a.label.localeCompare(b.label));
+    const opponentCompRecords = [...opponentCompMap.values()].map(finish).sort((a, b) => b.games - a.games || a.winRate - b.winRate || a.label.localeCompare(b.label));
     const recentSessions = [...sessionMap.values()].sort((a, b) => new Date(b.startedAt) - new Date(a.startedAt));
 
     const duoFloor = duoRecords.filter((record) => record.games >= 2);
@@ -2821,6 +2905,8 @@ function buildChemistryInsights() {
         trioComboRecords,
         trioClassComboRecords,
         recentSessions,
+        opponentGodRecords,
+        opponentCompRecords,
         bestDuo: duoFloor[0] || duoRecords[0] || null,
         worstDuo: [...duoFloor].sort((a, b) => a.winRate - b.winRate || b.games - a.games || a.label.localeCompare(b.label))[0] || null,
         bestCombo: duoComboFloor[0] || duoComboRecords[0] || null,
@@ -2836,6 +2922,29 @@ function buildChemistryInsights() {
         recentWins: winSessions.slice(0, 6),
         recentLosses: lossSessions.slice(0, 6),
     };
+}
+
+function renderChemistryNemesisSection(insights) {
+    const withSample = (records = []) => records.filter((record) => Number(record.games || 0) >= 2);
+    const opponentGods = withSample(insights.opponentGodRecords || []);
+    const opponentComps = withSample(insights.opponentCompRecords || []);
+    const painGods = [...opponentGods].sort((a, b) => Number(a.winRate || 0) - Number(b.winRate || 0) || Number(b.losses || 0) - Number(a.losses || 0)).slice(0, 8);
+    const farmGods = [...opponentGods].sort((a, b) => Number(b.winRate || 0) - Number(a.winRate || 0) || Number(b.wins || 0) - Number(a.wins || 0)).slice(0, 8);
+    const painComps = [...opponentComps].sort((a, b) => Number(a.winRate || 0) - Number(b.winRate || 0) || Number(b.losses || 0) - Number(a.losses || 0)).slice(0, 6);
+    const farmComps = [...opponentComps].sort((a, b) => Number(b.winRate || 0) - Number(a.winRate || 0) || Number(b.wins || 0) - Number(a.wins || 0)).slice(0, 6);
+
+    const sub = (record) => `${escapeHtml((record.members || []).join(" + "))} | ${formatWinLossRecord(record.wins, record.games)} | ${formatMetric(record.winRate, 1, "%")} WR`;
+    return `
+        <section class="chemistry-nemesis-panel">
+            <div class="section-head"><div><p class="eyebrow">Enemy Ledger</p><h3>Who Ruins The Queue?</h3></div><span class="summary-pill">Exact duo/trio groups</span></div>
+            <div class="mini-highlight-grid matchup-grid">
+                <article class="mini-highlight-card nemesis-card"><div class="metric-label">Enemy Gods We Struggle Into</div>${renderChemistryRows(painGods, { emptyText: "No repeated pain gods yet", main: (record) => escapeHtml(record.enemyGod || record.label), sub, value: (record) => formatRecord(record), valueClass: "movement-down" })}</article>
+                <article class="mini-highlight-card farm-card"><div class="metric-label">Enemy Gods We Beat</div>${renderChemistryRows(farmGods, { emptyText: "No repeated farm gods yet", main: (record) => escapeHtml(record.enemyGod || record.label), sub, value: (record) => formatRecord(record), valueClass: "movement-up" })}</article>
+                <article class="mini-highlight-card nemesis-card"><div class="metric-label">Enemy Comps We Struggle Into</div>${renderChemistryRows(painComps, { emptyText: "No repeated enemy comps yet", main: (record) => escapeHtml(record.label), sub, value: (record) => formatRecord(record), valueClass: "movement-down" })}</article>
+                <article class="mini-highlight-card farm-card"><div class="metric-label">Enemy Comps We Beat</div>${renderChemistryRows(farmComps, { emptyText: "No repeated enemy comps beaten yet", main: (record) => escapeHtml(record.label), sub, value: (record) => formatRecord(record), valueClass: "movement-up" })}</article>
+            </div>
+        </section>
+    `;
 }
 
 // This helper renders the dedicated Chemistry tab so shared-match stats can
@@ -2885,9 +2994,11 @@ function renderChemistryTab() {
         const trinityShowcase = renderChemistryTrinityShowcase(insights, isMobile);
         const synergyMatrix = renderChemistrySynergyMatrix(insights, isMobile);
         const receiptsTimeline = renderChemistryReceiptsTimeline(insights, isMobile);
+        const nemesisSection = renderChemistryNemesisSection(insights);
         const sections = [
             { key: "trinity", label: "Trinity" },
             { key: "matrix", label: "Pairings" },
+            { key: "nemesis", label: "Nemesis" },
             { key: "timeline", label: "Receipts" },
         ];
         if (!sections.some((section) => section.key === state.chemistry.section)) {
@@ -2896,6 +3007,7 @@ function renderChemistryTab() {
         const sectionHtml = {
             trinity: `<section class="chemistry-headline-section">${trinityShowcase}</section>`,
             matrix: `<section class="chemistry-subtab-panel">${synergyMatrix}</section>`,
+            nemesis: `<section class="chemistry-subtab-panel">${nemesisSection}</section>`,
             timeline: `<section class="chemistry-subtab-panel">${receiptsTimeline}</section>`,
         };
         chemistryContent = `

@@ -929,6 +929,93 @@ def normalize_smitesource_match(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+
+# This helper maps raw match god labels/slugs back to the roster display name
+# so matchup summaries do not split gods like ix-chel / Ix Chel.
+def canonical_roster_god_name(value: str, metadata_by_key: dict[str, dict[str, Any]] | None = None) -> str:
+    metadata_by_key = metadata_by_key or {email_god_key(god.get("God") or ""): god for god in load_json_snapshot("gods_metadata.json")}
+    raw_value = str(value or "").strip()
+    key = normalize_god_identity_key(raw_value.replace("-", ""))
+    god_meta = metadata_by_key.get(key)
+    if god_meta and god_meta.get("God"):
+        return str(god_meta.get("God"))
+    if "-" in raw_value:
+        return " ".join(part.capitalize() for part in raw_value.split("-") if part)
+    return raw_value
+
+
+# This helper returns the enemy team players for one raw match row using the
+# current player's teamId from SmiteSource/Tracker payloads.
+def enemy_team_players(row: dict[str, Any]) -> list[dict[str, Any]]:
+    target_team_id = row.get("teamId")
+    enemies: list[dict[str, Any]] = []
+    for team in [row.get("team1Players") or [], row.get("team2Players") or []]:
+        if not isinstance(team, list):
+            continue
+        for participant in team:
+            if not isinstance(participant, dict):
+                continue
+            participant_team_id = participant.get("teamId")
+            if target_team_id is not None and participant_team_id == target_team_id:
+                continue
+            enemies.append(participant)
+    return enemies
+
+
+# This helper rolls one rater's raw Joust rows into "who ruins my night" and
+# "who do I beat" opponent summaries.
+def build_player_opponent_matchups(match_rows: list[dict[str, Any]], metadata_by_key: dict[str, dict[str, Any]] | None = None) -> dict[str, Any]:
+    metadata_by_key = metadata_by_key or {email_god_key(god.get("God") or ""): god for god in load_json_snapshot("gods_metadata.json")}
+    god_records: dict[str, dict[str, Any]] = {}
+    class_records: dict[str, dict[str, Any]] = {}
+
+    for row in match_rows:
+        if not isinstance(row, dict) or not is_joust_queue(str(row.get("queueType") or row.get("gameMode") or "")):
+            continue
+        won = bool(row.get("won"))
+        for enemy in enemy_team_players(row):
+            raw_god = enemy.get("godName") or enemy.get("godSlug") or ""
+            enemy_god = canonical_roster_god_name(str(raw_god), metadata_by_key)
+            if not enemy_god:
+                continue
+            god_meta = metadata_by_key.get(email_god_key(enemy_god), {})
+            enemy_class = god_meta.get("Class") or enemy.get("class") or "Unknown"
+            enemy_role = enemy.get("playedRole") or enemy.get("assignedRole") or "Unknown"
+            record = god_records.setdefault(
+                enemy_god,
+                {"god": enemy_god, "class": enemy_class, "role": enemy_role, "games": 0, "wins": 0, "losses": 0},
+            )
+            record["games"] += 1
+            record["wins"] += 1 if won else 0
+            record["losses"] += 0 if won else 1
+
+            class_record = class_records.setdefault(
+                str(enemy_class or "Unknown"),
+                {"label": str(enemy_class or "Unknown"), "games": 0, "wins": 0, "losses": 0},
+            )
+            class_record["games"] += 1
+            class_record["wins"] += 1 if won else 0
+            class_record["losses"] += 0 if won else 1
+
+    def finish(record: dict[str, Any]) -> dict[str, Any]:
+        games = int(record.get("games") or 0)
+        wins = int(record.get("wins") or 0)
+        record["winRate"] = round((wins / games) * 100, 1) if games else 0.0
+        return record
+
+    gods = [finish(record) for record in god_records.values()]
+    classes = [finish(record) for record in class_records.values()]
+    sample_gods = [record for record in gods if record["games"] >= 2] or gods
+    sample_classes = [record for record in classes if record["games"] >= 2] or classes
+    return {
+        "painGods": sorted(sample_gods, key=lambda item: (item["winRate"], -item["losses"], -item["games"], item["god"]))[:8],
+        "farmGods": sorted(sample_gods, key=lambda item: (-item["winRate"], -item["wins"], -item["games"], item["god"]))[:8],
+        "mostSeenGods": sorted(gods, key=lambda item: (-item["games"], item["winRate"], item["god"]))[:8],
+        "painClasses": sorted(sample_classes, key=lambda item: (item["winRate"], -item["losses"], item["label"]))[:5],
+        "farmClasses": sorted(sample_classes, key=lambda item: (-item["winRate"], -item["wins"], item["label"]))[:5],
+    }
+
+
 # This helper derives a compact profile summary from stored match history so the
 # app can render quickly from Supabase without waiting on live SmiteSource RPCs.
 def summarize_stored_match_rows(player: str, raw_match_rows: list[dict[str, Any]], profile_url: str, player_uuid: str) -> dict[str, Any]:
@@ -1083,6 +1170,7 @@ def summarize_stored_match_rows(player: str, raw_match_rows: list[dict[str, Any]
         "topGods": top_gods[:40],
         "godStats": {item["name"]: item for item in top_gods},
         "topRoles": top_roles[:4],
+        "opponentMatchups": build_player_opponent_matchups(valid_rows, god_metadata_by_key),
         "recentMatches": recent_matches,
         "chemistry": {},
         "selfHirezPlayerUuid": self_hirez_uuid,
@@ -1165,7 +1253,10 @@ def build_council_chemistry(player: str, player_hirez_uuid: str, identity_map: d
     shared_group_records: dict[str, dict[str, Any]] = {}
     duo_god_records: dict[str, dict[str, Any]] = {}
     group_god_records: dict[str, dict[str, Any]] = {}
+    opponent_god_records: dict[str, dict[str, Any]] = {}
+    opponent_comp_records: dict[str, dict[str, Any]] = {}
     recent_sessions: list[dict[str, Any]] = []
+    god_metadata_by_key = {email_god_key(god.get("God") or ""): god for god in load_json_snapshot("gods_metadata.json")}
     overall_wins = 0
     overall_losses = 0
     seen_session_keys: set[str] = set()
@@ -1321,6 +1412,33 @@ def build_council_chemistry(player: str, player_hirez_uuid: str, identity_map: d
             duo_combo["wins"] += 1 if won else 0
             duo_combo["losses"] += 0 if won else 1
 
+        # This block tracks enemy gods and enemy comps for the exact council
+        # group in this session, powering "nemesis" and "farm target" cards.
+        enemy_gods = []
+        for enemy in enemy_team_players(row):
+            enemy_name = canonical_roster_god_name(str(enemy.get("godName") or enemy.get("godSlug") or ""), god_metadata_by_key)
+            if enemy_name:
+                enemy_gods.append(enemy_name)
+                opponent_key = f"{'|'.join(group_key_members)}|{enemy_name}"
+                opponent_record = opponent_god_records.setdefault(
+                    opponent_key,
+                    {"enemyGod": enemy_name, "members": group_key_members, "games": 0, "wins": 0, "losses": 0},
+                )
+                opponent_record["games"] += 1
+                opponent_record["wins"] += 1 if won else 0
+                opponent_record["losses"] += 0 if won else 1
+
+        if enemy_gods:
+            enemy_comp = sorted(enemy_gods)
+            comp_key = f"{'|'.join(group_key_members)}|{'|'.join(enemy_comp)}"
+            opponent_comp = opponent_comp_records.setdefault(
+                comp_key,
+                {"label": " + ".join(enemy_comp), "enemyGods": enemy_comp, "members": group_key_members, "games": 0, "wins": 0, "losses": 0},
+            )
+            opponent_comp["games"] += 1
+            opponent_comp["wins"] += 1 if won else 0
+            opponent_comp["losses"] += 0 if won else 1
+
         # This block tracks the full shared god comp for any council session so
         # the frontend can surface true winning/losing duo and trio receipts
         # with clear "who played what" context.
@@ -1352,6 +1470,7 @@ def build_council_chemistry(player: str, player_hirez_uuid: str, identity_map: d
                 "participants": [player] + teammates,
                 "participantGods": participant_gods,
                 "partyLabel": party_label,
+                "enemyGods": enemy_gods,
                 "startedAt": row.get("startTimestamp") or "",
                 "kda": f"{int(row.get('kills') or 0)}/{int(row.get('deaths') or 0)}/{int(row.get('assists') or 0)}",
             }
@@ -1385,6 +1504,12 @@ def build_council_chemistry(player: str, player_hirez_uuid: str, identity_map: d
     group_god_list = [finish_record(record) for record in group_god_records.values() if len(record.get("members") or []) >= 2]
     group_god_list.sort(key=lambda item: (-item["games"], -item["winRate"], item["label"]))
 
+    opponent_god_list = [finish_record(record) for record in opponent_god_records.values() if len(record.get("members") or []) >= 2]
+    opponent_god_list.sort(key=lambda item: (-item["games"], item["winRate"], item["enemyGod"]))
+
+    opponent_comp_list = [finish_record(record) for record in opponent_comp_records.values() if len(record.get("members") or []) >= 2]
+    opponent_comp_list.sort(key=lambda item: (-item["games"], item["winRate"], item["label"]))
+
     recent_sessions.sort(key=lambda item: item.get("startedAt", ""), reverse=True)
 
     most_played_with = pair_list[0] if pair_list else None
@@ -1400,6 +1525,8 @@ def build_council_chemistry(player: str, player_hirez_uuid: str, identity_map: d
         "sharedGroups": shared_groups,
         "duoCombos": duo_combos[:5],
         "groupGodRecords": group_god_list,
+        "opponentGodRecords": opponent_god_list,
+        "opponentCompRecords": opponent_comp_list,
         "recentSessions": recent_sessions[:100],
         "mostPlayedWith": most_played_with,
         "bestDuo": best_duo,
@@ -1424,6 +1551,7 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
             "metrics": {},
             "topGods": [],
             "topRoles": [],
+            "opponentMatchups": {},
             "recentMatches": [],
             "chemistry": {},
             "selfHirezPlayerUuid": "",
@@ -1486,6 +1614,7 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
             "metrics": {},
             "topGods": [],
             "topRoles": [],
+            "opponentMatchups": build_player_opponent_matchups(stored_raw_match_rows),
             "recentMatches": [normalize_smitesource_match(row) for row in stored_raw_match_rows[:25]],
             "chemistry": {},
             "selfHirezPlayerUuid": self_hirez_uuid,
