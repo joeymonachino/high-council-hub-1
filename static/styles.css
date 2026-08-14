@@ -8837,3 +8837,13 @@ body {
         flex-direction: column;
     }
 }
+
+/* This note clarifies that god-card quick edits use rating-based auto-ordering
+   instead of requiring a manual rank field. */
+.god-edit-auto-rank {
+    align-self: center;
+    border: 1px solid rgba(232, 197, 107, 0.22);
+    border-radius: 999px;
+    color: var(--gold-soft, #e8c56b);
+    padding: 0.72rem 0.95rem;
+}

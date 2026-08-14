@@ -1944,8 +1944,8 @@ async function unlockGodQuickEdit(godName) {
     }
 }
 
-// This helper saves a single god rating/rank from the modal while preserving the
-// same backend save path used by the full Rate & Rank tab.
+// This helper saves a single god rating from the modal while preserving the
+// same backend save path and auto-sort behavior used by the full Rate & Rank tab.
 async function saveGodQuickEdit(godName) {
     const player = state.godDetail.editPlayer || state.config.players[0];
     if (!state.ranker.unlocked[player]) {
@@ -1955,16 +1955,14 @@ async function saveGodQuickEdit(godName) {
 
     const playerState = state.ranker.byPlayer[player];
     const rating = Math.max(0, Math.min(100, Number(document.getElementById("god-edit-rating")?.value || 0)));
-    const rankInput = Number(document.getElementById("god-edit-rank")?.value || 0);
 
     playerState.ratings[godName] = rating;
-    playerState.order = playerState.order.filter((name) => name !== godName);
-    if (rating > 0) {
-        const targetIndex = Number.isFinite(rankInput) && rankInput > 0
-            ? Math.max(0, Math.min(Math.floor(rankInput) - 1, playerState.order.length))
-            : playerState.order.length;
-        playerState.order.splice(targetIndex, 0, godName);
+    if (rating === 0) {
+        playerState.order = playerState.order.filter((name) => name !== godName);
+    } else if (!playerState.order.includes(godName)) {
+        playerState.order.push(godName);
     }
+    fullResort(playerState);
 
     persistRankerDraft(player);
     refreshDirtyState(player);
@@ -2197,7 +2195,7 @@ function openGodDetail(godName) {
                         <label class="field"><span>Council Member</span><select id="god-edit-player">${state.config.players.map((player) => `<option value="${escapeHtml(player)}" ${editPlayer === player ? "selected" : ""}>${escapeHtml(player)}</option>`).join("")}</select></label>
                         ${editUnlocked ? `
                             <label class="field"><span>Rating</span><input id="god-edit-rating" type="number" min="0" max="100" value="${editRating}"></label>
-                            <label class="field"><span>Rank</span><input id="god-edit-rank" type="number" min="1" max="${state.gods.length}" value="${escapeHtml(editRank)}" placeholder="Optional"></label>
+                            <div class="rank-meta god-edit-auto-rank">Current rank: ${editRank ? `#${escapeHtml(editRank)}` : "Unranked"}. Saving will auto-order this god by rating.</div>
                             <button class="btn-primary" id="god-edit-save" type="button">Save ${escapeHtml(god.God)}</button>
                         ` : `
                             <label class="field"><span>PIN</span><input id="god-edit-pin" type="password" placeholder="Enter ${escapeHtml(editPlayer)} PIN"></label>
