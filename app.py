@@ -1016,6 +1016,271 @@ def build_player_opponent_matchups(match_rows: list[dict[str, Any]], metadata_by
     }
 
 
+# This helper turns SmiteSource icon paths into readable item names so build
+# analytics can use the raw_match.loadout payload without needing a new table.
+def display_item_name(item: dict[str, Any]) -> str:
+    for key in ("itemName", "name", "displayName", "itemDisplayName"):
+        value = str(item.get(key) or "").strip()
+        if value:
+            return value
+
+    icon_path = str(item.get("itemIconPath") or "").replace("\\", "/")
+    filename = Path(icon_path).stem if icon_path else ""
+    cleaned = re.sub(r"^(Icons?|T_Icon|SMITE2_Icon|Icon)_(Starter_|T[123]_|Relic_)?", "", filename, flags=re.IGNORECASE)
+    cleaned = re.sub(r"^(Starter_|T[123]_|Relic_)", "", cleaned, flags=re.IGNORECASE)
+    cleaned = cleaned.replace("Throth", "Thoth").replace("_", " ")
+    cleaned = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", cleaned)
+    cleaned = re.sub(r"(?<=[a-z])of(?= [A-Z])", " Of", cleaned)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    return cleaned or "Unknown Item"
+
+
+# This map upgrades old/internal raw item names to the current in-game label when
+# we have manually verified the relationship from match history.
+CURRENT_BUILD_ITEM_NAME_ALIASES = {
+    "serpent spear": "Oath-Sworn Spear",
+    "obsidian macuahuitl": "Titan's Bane",
+    "balors eye": "Obsidian Shard",
+    "eldritch orb": "Rod of Tahuti",
+    "soul devourer": "Soul Reaver",
+    "baneful rapier": "Demon Blade",
+    "shoguns ofuda": "Shogun's Kusari",
+    "brawlers ruin": "Brawler's Beat Stick",
+    "lorg mor": "Gladiator Shield",
+}
+
+
+# This set hides retired/legacy final items from the build tab. Those names can
+# still exist in old raw_match payloads, but showing them as current build advice
+# makes the god card more confusing than useful.
+LEGACY_BUILD_ITEM_NAMES = set()
+
+
+# This helper extracts completed/final item slots from a raw loadout. Starters,
+# relics, aspects, consumables, talents, and T1/T2 components are excluded so the
+# build tab reads as finished items rather than every purchased component.
+def core_loadout_items(row: dict[str, Any]) -> list[dict[str, Any]]:
+    loadout = row.get("loadout") or row.get("items") or []
+    if not isinstance(loadout, list):
+        return []
+
+    core_items: list[dict[str, Any]] = []
+    for item in sorted([entry for entry in loadout if isinstance(entry, dict)], key=lambda entry: int(entry.get("slotIndex") or 0)):
+        slot_category = str(item.get("slotCategory") or "").strip().lower()
+        icon_path = str(item.get("itemIconPath") or "").replace("\\", "/")
+        if slot_category != "items":
+            continue
+        if "/T1/" in icon_path or "/T2/" in icon_path or "AspectsInfluences" in icon_path:
+            continue
+        name = display_item_name(item)
+        normalized_item_name = name.lower().strip()
+        if not name or name == "Unknown Item" or normalized_item_name.startswith("aspect ") or normalized_item_name in LEGACY_BUILD_ITEM_NAMES:
+            continue
+        display_name = CURRENT_BUILD_ITEM_NAME_ALIASES.get(normalized_item_name, name)
+        core_items.append(
+            {
+                "name": display_name,
+                "category": "Final Item",
+                "slotIndex": int(item.get("slotIndex") or 0),
+                "itemMasterId": str(item.get("itemMasterId") or ""),
+                "itemHexId": str(item.get("itemHexId") or ""),
+            }
+        )
+    return core_items
+
+
+# This helper extracts the starter item separately from completed items. Some
+# aspect matches use an Aspect_* loadout entry in the starter slot, so those are
+# ignored here and the true aspect is handled by loadout_aspect_name instead.
+def loadout_starter_item(row: dict[str, Any]) -> dict[str, Any] | None:
+    loadout = row.get("loadout") or row.get("items") or []
+    if not isinstance(loadout, list):
+        return None
+
+    for item in sorted([entry for entry in loadout if isinstance(entry, dict)], key=lambda entry: int(entry.get("slotIndex") or 0)):
+        slot_category = str(item.get("slotCategory") or "").strip().lower()
+        icon_path = str(item.get("itemIconPath") or "").replace("\\", "/")
+        if slot_category != "starter":
+            continue
+        if re.search(r"(^|_)Aspect_", Path(icon_path).stem if icon_path else "", flags=re.IGNORECASE):
+            continue
+        name = display_item_name(item)
+        if not name or name == "Unknown Item":
+            continue
+        return {
+            "name": CURRENT_BUILD_ITEM_NAME_ALIASES.get(name.lower().strip(), name),
+            "category": "Starter",
+            "slotIndex": int(item.get("slotIndex") or 0),
+            "itemMasterId": str(item.get("itemMasterId") or ""),
+            "itemHexId": str(item.get("itemHexId") or ""),
+        }
+    return None
+
+
+# This helper extracts the actual god aspect selected by the player. The
+# loadout can contain generic influence entries like Arcanist/Barbarian, but
+# true god aspects live on the match/player aspectName fields.
+def loadout_aspect_name(row: dict[str, Any]) -> str:
+    row_aspect_name = str(row.get("aspectName") or "").strip()
+    if row_aspect_name:
+        return row_aspect_name
+
+    self_hirez_uuid = str(row.get("hirezPlayerUuid") or "").strip()
+    self_team_id = row.get("teamId")
+    self_god_key = normalize_god_identity_key(str(row.get("godName") or row.get("godSlug") or ""))
+
+    for team in [row.get("team1Players") or [], row.get("team2Players") or []]:
+        if not isinstance(team, list):
+            continue
+        for participant in team:
+            if not isinstance(participant, dict):
+                continue
+            participant_aspect = str(participant.get("aspectName") or "").strip()
+            if not participant_aspect:
+                continue
+            participant_hirez = str(participant.get("hirezPlayerUuid") or "").strip()
+            participant_god_key = normalize_god_identity_key(str(participant.get("godName") or participant.get("godSlug") or ""))
+            participant_team_id = participant.get("teamId")
+            if self_hirez_uuid and participant_hirez == self_hirez_uuid:
+                return participant_aspect
+            if self_team_id == participant_team_id and self_god_key and participant_god_key == self_god_key:
+                return participant_aspect
+
+    return "No Aspect"
+
+
+# This helper builds per-god item receipts for one rater. It intentionally sends
+# only aggregated rows to the browser so the God modal can stay quick to open.
+def build_core_item_stats(match_rows: list[dict[str, Any]], god_metadata_by_key: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    god_builds: dict[str, dict[str, Any]] = {}
+
+    def empty_bucket(god_name: str) -> dict[str, Any]:
+        return {
+            "godName": god_name,
+            "games": 0,
+            "wins": 0,
+            "topItems": {},
+            "starterItems": {},
+            "corePaths": {},
+            "recentBuilds": [],
+        }
+
+    def add_build_sample(bucket: dict[str, Any], items: list[dict[str, Any]], starter: dict[str, Any] | None, won: bool, row: dict[str, Any]) -> None:
+        bucket["games"] += 1
+        bucket["wins"] += 1 if won else 0
+
+        if starter:
+            starter_key = starter.get("itemMasterId") or starter.get("itemHexId") or starter["name"].lower()
+            starter_record = bucket["starterItems"].setdefault(
+                starter_key,
+                {"name": starter["name"], "category": "Starter", "games": 0, "wins": 0},
+            )
+            starter_record["games"] += 1
+            starter_record["wins"] += 1 if won else 0
+
+        seen_item_keys: set[str] = set()
+        for item in items:
+            item_key = item.get("itemMasterId") or item.get("itemHexId") or item["name"].lower()
+            if item_key in seen_item_keys:
+                continue
+            seen_item_keys.add(item_key)
+            item_record = bucket["topItems"].setdefault(
+                item_key,
+                {"name": item["name"], "category": item["category"], "games": 0, "wins": 0},
+            )
+            item_record["games"] += 1
+            item_record["wins"] += 1 if won else 0
+
+        path_items = [item["name"] for item in items[:4]]
+        if path_items:
+            path_key = "|".join(path_items)
+            path_record = bucket["corePaths"].setdefault(
+                path_key,
+                {"items": path_items, "label": " -> ".join(path_items), "games": 0, "wins": 0},
+            )
+            path_record["games"] += 1
+            path_record["wins"] += 1 if won else 0
+
+        if items and len(bucket["recentBuilds"]) < 5:
+            bucket["recentBuilds"].append(
+                {
+                    "items": [item["name"] for item in items[:6]],
+                    "won": won,
+                    "startedAt": row.get("startTimestamp") or row.get("startedAt") or "",
+                }
+            )
+
+    def finish_bucket(bucket: dict[str, Any]) -> dict[str, Any]:
+        total_games = int(bucket.get("games") or 0)
+        total_wins = int(bucket.get("wins") or 0)
+
+        def finish_record(record: dict[str, Any]) -> dict[str, Any]:
+            games = int(record.get("games") or 0)
+            wins = int(record.get("wins") or 0)
+            return {
+                **record,
+                "pickRate": round((games / total_games) * 100, 1) if total_games else 0.0,
+                "winRate": round((wins / games) * 100, 1) if games else 0.0,
+            }
+
+        top_items = [finish_record(record) for record in bucket["topItems"].values()]
+        starter_items = [finish_record(record) for record in bucket["starterItems"].values()]
+        core_paths = [finish_record(record) for record in bucket["corePaths"].values()]
+        return {
+            "godName": bucket.get("godName") or "",
+            "games": total_games,
+            "wins": total_wins,
+            "winRate": round((total_wins / total_games) * 100, 1) if total_games else 0.0,
+            "topItems": sorted(top_items, key=lambda item: (-item["games"], -item["pickRate"], -item["winRate"], item["name"]))[:8],
+            "starterItems": sorted(starter_items, key=lambda item: (-item["games"], -item["pickRate"], -item["winRate"], item["name"]))[:6],
+            "corePaths": sorted(core_paths, key=lambda item: (-item["games"], -item["pickRate"], -item["winRate"], item["label"]))[:6],
+            "recentBuilds": bucket["recentBuilds"],
+        }
+
+    for row in match_rows:
+        if not isinstance(row, dict):
+            continue
+        raw_god_name = str(row.get("godName") or "").strip()
+        if not raw_god_name:
+            continue
+        god_meta = god_metadata_by_key.get(email_god_key(raw_god_name), {})
+        god_name = str(god_meta.get("God") or raw_god_name)
+        items = core_loadout_items(row)
+        starter = loadout_starter_item(row)
+        won = bool(row.get("won"))
+        aspect_name = loadout_aspect_name(row)
+        bucket = god_builds.setdefault(god_name, {**empty_bucket(god_name), "aspectStats": {}})
+        add_build_sample(bucket, items, starter, won, row)
+
+        aspect_bucket = bucket["aspectStats"].setdefault(aspect_name, empty_bucket(god_name))
+        add_build_sample(aspect_bucket, items, starter, won, row)
+
+    finished: dict[str, Any] = {}
+    for god_name, bucket in god_builds.items():
+        aspect_stats = {
+            aspect_name: finish_bucket(aspect_bucket)
+            for aspect_name, aspect_bucket in bucket.get("aspectStats", {}).items()
+        }
+        finished[god_name] = {
+            **finish_bucket(bucket),
+            "aspects": sorted(
+                [
+                    {
+                        "name": aspect_name,
+                        "games": stats["games"],
+                        "wins": stats["wins"],
+                        "winRate": stats["winRate"],
+                        "pickRate": round((stats["games"] / max(int(bucket.get("games") or 0), 1)) * 100, 1),
+                    }
+                    for aspect_name, stats in aspect_stats.items()
+                ],
+                key=lambda item: (-item["games"], item["name"]),
+            ),
+            "aspectStats": aspect_stats,
+        }
+    return finished
+
+
 # This helper derives a compact profile summary from stored match history so the
 # app can render quickly from Supabase without waiting on live SmiteSource RPCs.
 def summarize_stored_match_rows(player: str, raw_match_rows: list[dict[str, Any]], profile_url: str, player_uuid: str) -> dict[str, Any]:
@@ -1171,6 +1436,7 @@ def summarize_stored_match_rows(player: str, raw_match_rows: list[dict[str, Any]
         "godStats": {item["name"]: item for item in top_gods},
         "topRoles": top_roles[:4],
         "opponentMatchups": build_player_opponent_matchups(valid_rows, god_metadata_by_key),
+        "buildStats": build_core_item_stats(valid_rows, god_metadata_by_key),
         "recentMatches": recent_matches,
         "chemistry": {},
         "selfHirezPlayerUuid": self_hirez_uuid,

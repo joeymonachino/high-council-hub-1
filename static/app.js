@@ -37,6 +37,11 @@ const state = {
         attackType: "",
         damageType: "",
     },
+    items: {
+        search: "",
+        category: "All",
+        sort: "Most used",
+    },
     analytics: {
         god: "",
         players: [],
@@ -70,6 +75,7 @@ const state = {
         god: "",
         section: "council",
         editPlayer: "Joey",
+        buildAspect: "All",
     },
     councilScroll: {
         section: "players",
@@ -1169,6 +1175,7 @@ function cacheElements() {
     elements.filterDamageType = document.getElementById("filter-damage-type");
     elements.filtersReset = document.getElementById("filters-reset");
     elements.tabIndex = document.getElementById("tab-index");
+    elements.tabItems = document.getElementById("tab-items");
     elements.tabRankings = document.getElementById("tab-rankings");
     elements.tabFavorites = document.getElementById("tab-favorites");
     elements.tabTierlist = document.getElementById("tab-tierlist");
@@ -1924,6 +1931,115 @@ function godMatchInsights(godName) {
 }
 
 
+// This helper renders the small gold-edged stat cards used across detail views.
+function dossierStat(label, value, note = "", toneClass = "") {
+    return `
+        <article class="god-dossier-stat ${toneClass}">
+            <span>${escapeHtml(label)}</span>
+            <strong>${escapeHtml(value)}</strong>
+            ${note ? `<small>${escapeHtml(note)}</small>` : ""}
+        </article>
+    `;
+}
+// This helper combines each rater's server-side build receipts into one compact
+// god-card summary without shipping full raw match payloads to the browser.
+function godCoreItemInsights(godName, aspectFilter = "All") {
+    const targetKey = canonicalGodKey(godName);
+    const byPlayer = [];
+    const itemMap = new Map();
+    const starterMap = new Map();
+    const pathMap = new Map();
+    const aspectMap = new Map();
+    let totalGames = 0;
+    let totalWins = 0;
+
+    state.config.players.forEach((player) => {
+        const profile = buildRaterProfile(player);
+        const buildStats = profile.buildStats || {};
+        const statKey = Object.keys(buildStats).find((key) => canonicalGodKey(key) === targetKey);
+        const stats = statKey ? buildStats[statKey] : null;
+        if (!stats || !Number(stats.games || 0)) return;
+
+        (stats.aspects || []).forEach((aspect) => {
+            const key = aspect.name || "No Aspect";
+            const record = aspectMap.get(key) || { name: key, games: 0, wins: 0 };
+            record.games += Number(aspect.games || 0);
+            record.wins += Number(aspect.wins || 0);
+            aspectMap.set(key, record);
+        });
+
+        const selectedStats = aspectFilter && aspectFilter !== "All" ? (stats.aspectStats || {})[aspectFilter] : stats;
+        if (!selectedStats || !Number(selectedStats.games || 0)) return;
+
+        const games = Number(selectedStats.games || 0);
+        const wins = Number(selectedStats.wins || 0);
+        totalGames += games;
+        totalWins += wins;
+        byPlayer.push({ player, ...selectedStats, games, wins });
+
+        (selectedStats.starterItems || []).forEach((starter) => {
+            const key = starter.name || starter.label || "Unknown Starter";
+            const record = starterMap.get(key) || { name: key, category: "Starter", games: 0, wins: 0 };
+            record.games += Number(starter.games || 0);
+            record.wins += Number(starter.wins || 0);
+            starterMap.set(key, record);
+        });
+
+        (selectedStats.topItems || []).forEach((item) => {
+            const key = item.name || item.label || "Unknown Item";
+            const record = itemMap.get(key) || { name: key, category: item.category || "Items", games: 0, wins: 0 };
+            record.games += Number(item.games || 0);
+            record.wins += Number(item.wins || 0);
+            itemMap.set(key, record);
+        });
+
+        (selectedStats.corePaths || []).forEach((path) => {
+            const key = (path.items || []).join("|") || path.label || "Core path";
+            const record = pathMap.get(key) || { label: path.label || (path.items || []).join(" -> "), items: path.items || [], games: 0, wins: 0 };
+            record.games += Number(path.games || 0);
+            record.wins += Number(path.wins || 0);
+            pathMap.set(key, record);
+        });
+    });
+
+    const finish = (record) => {
+        const games = Number(record.games || 0);
+        const wins = Number(record.wins || 0);
+        return {
+            ...record,
+            games,
+            wins,
+            pickRate: totalGames ? games / totalGames * 100 : 0,
+            winRate: games ? wins / games * 100 : 0,
+        };
+    };
+
+    const aspects = [...aspectMap.values()].map((aspect) => {
+        const games = Number(aspect.games || 0);
+        const wins = Number(aspect.wins || 0);
+        return {
+            ...aspect,
+            games,
+            wins,
+            pickRate: games ? games / Math.max([...aspectMap.values()].reduce((sum, row) => sum + Number(row.games || 0), 0), 1) * 100 : 0,
+            winRate: games ? wins / games * 100 : 0,
+        };
+    }).sort((a, b) => b.games - a.games || a.name.localeCompare(b.name));
+
+    return {
+        aspectFilter,
+        aspects,
+        totalGames,
+        totalWins,
+        winRate: totalGames ? totalWins / totalGames * 100 : 0,
+        starterItems: [...starterMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.name.localeCompare(b.name)).slice(0, 6),
+        topItems: [...itemMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.name.localeCompare(b.name)).slice(0, 8),
+        corePaths: [...pathMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label)).slice(0, 5),
+        byPlayer: byPlayer.sort((a, b) => Number(b.games || 0) - Number(a.games || 0) || b.wins - a.wins),
+    };
+}
+
+
 // This helper unlocks one council member from inside a god detail modal.
 async function unlockGodQuickEdit(godName) {
     const player = state.godDetail.editPlayer || state.config.players[0];
@@ -1999,6 +2115,7 @@ function openGodDetail(godName) {
     if (state.godDetail.god !== godName) {
         state.godDetail.god = godName;
         state.godDetail.section = "council";
+        state.godDetail.buildAspect = "All";
     }
     if (!state.config.players.includes(state.godDetail.editPlayer)) {
         state.godDetail.editPlayer = state.config.players[0] || "Joey";
@@ -2008,6 +2125,8 @@ function openGodDetail(godName) {
     const playedRows = historyRows.filter((row) => row.games > 0);
     const bestPlayer = [...playedRows].sort((a, b) => Number(b.winRate || 0) - Number(a.winRate || 0) || b.games - a.games)[0] || null;
     const { recentRows, synergies } = godMatchInsights(godName);
+    const selectedBuildAspect = state.godDetail.buildAspect || "All";
+    const buildInsights = godCoreItemInsights(godName, selectedBuildAspect);
     const ownership = buildOwnershipSnapshot(godName);
     const coverage = coverageCount(god);
     const split = controversyScore(god);
@@ -2019,6 +2138,7 @@ function openGodDetail(godName) {
         { key: "performance", label: "Performance" },
         { key: "synergy", label: "Synergy" },
         { key: "recent", label: "Recent" },
+        { key: "builds", label: "Aspects & Items" },
         { key: "edit", label: "Rate & Rank" },
     ];
     if (!sections.some((section) => section.key === state.godDetail.section)) {
@@ -2045,13 +2165,6 @@ function openGodDetail(godName) {
     const bestSynergy = [...synergies].sort((a, b) => Number(b.winRate || 0) - Number(a.winRate || 0) || Number(b.games || 0) - Number(a.games || 0))[0] || null;
     const mostUsedSynergy = [...synergies].sort((a, b) => Number(b.games || 0) - Number(a.games || 0) || Number(b.winRate || 0) - Number(a.winRate || 0))[0] || null;
 
-    const dossierStat = (label, value, note = "", toneClass = "") => `
-        <article class="god-dossier-stat ${toneClass}">
-            <span>${escapeHtml(label)}</span>
-            <strong>${escapeHtml(value)}</strong>
-            ${note ? `<small>${escapeHtml(note)}</small>` : ""}
-        </article>
-    `;
 
     const councilPlayerCards = historyRows.map((row) => `
         <article class="god-player-card">
@@ -2113,6 +2226,60 @@ function openGodDetail(godName) {
             </div>
         </article>
     `).join("") : `<p class="rank-meta">No recent stored matches for this god in the current profile payload.</p>`;
+
+
+    const aspectToggleRows = [`All`, ...buildInsights.aspects.map((aspect) => aspect.name)].map((aspectName) => {
+        const aspect = buildInsights.aspects.find((row) => row.name === aspectName);
+        const isActive = selectedBuildAspect === aspectName || (!selectedBuildAspect && aspectName === "All");
+        const note = aspect ? `${formatWinLossRecord(aspect.wins, aspect.games)} | ${formatMetric(aspect.pickRate, 1, "%")}` : "All stored loadouts";
+        return `<button class="aspect-toggle-btn ${isActive ? "active" : ""}" type="button" data-build-aspect="${escapeHtml(aspectName)}"><strong>${escapeHtml(aspectName)}</strong><span>${escapeHtml(note)}</span></button>`;
+    }).join("");
+
+    const starterRows = buildInsights.starterItems.length ? buildInsights.starterItems.map((starter) => `
+        <article class="core-item-row starter-item-row">
+            <div>
+                <strong>${escapeHtml(starter.name)}</strong>
+                <small>Starter pick</small>
+            </div>
+            <div class="core-build-result">
+                <b>${formatMetric(starter.pickRate, 1, "%")}</b>
+                <span>${formatWinLossRecord(starter.wins, starter.games)} | ${formatMetric(starter.winRate, 1, "%")} WR</span>
+            </div>
+        </article>
+    `).join("") : `<p class="rank-meta">No starter item sample for this aspect/god yet.</p>`;
+
+    const coreItemRows = buildInsights.topItems.length ? buildInsights.topItems.map((item) => `
+        <article class="core-item-row">
+            <div>
+                <strong>${escapeHtml(item.name)}</strong>
+                <small>${escapeHtml(item.category || "Items")}</small>
+            </div>
+            <div class="core-build-result">
+                <b>${formatMetric(item.pickRate, 1, "%")}</b>
+                <span>${formatWinLossRecord(item.wins, item.games)} | ${formatMetric(item.winRate, 1, "%")} WR</span>
+            </div>
+        </article>
+    `).join("") : `<p class="rank-meta">No stored build item sample for this god yet.</p>`;
+
+    const corePathRows = buildInsights.corePaths.length ? buildInsights.corePaths.map((path) => `
+        <article class="core-path-row">
+            <div class="core-path-items">${(path.items || []).map((item) => `<span>${escapeHtml(item)}</span>`).join("") || `<span>${escapeHtml(path.label || "Core path")}</span>`}</div>
+            <div class="core-build-meter"><span style="width:${Math.max(3, Math.min(100, Number(path.pickRate || 0)))}%"></span></div>
+            <div class="core-path-meta"><strong>${formatMetric(path.pickRate, 1, "%")} bought</strong><span>${formatWinLossRecord(path.wins, path.games)} | ${formatMetric(path.winRate, 1, "%")} WR</span></div>
+        </article>
+    `).join("") : `<p class="rank-meta">No repeated core paths yet. Need more stored loadout samples.</p>`;
+
+    const playerBuildRows = buildInsights.byPlayer.length ? buildInsights.byPlayer.map((row) => {
+        const favoritePath = (row.corePaths || [])[0];
+        const favoriteItem = (row.topItems || [])[0];
+        return `
+            <article class="core-player-card">
+                <div class="core-player-head"><strong style="color:${playerColor(row.player)}">${escapeHtml(row.player)}</strong><span>${formatWinLossRecord(row.wins, row.games)}</span></div>
+                <p>${favoritePath ? escapeHtml(favoritePath.label || (favoritePath.items || []).join(" -> ")) : "No consistent path yet"}</p>
+                <small>${favoriteItem ? `Most bought: ${escapeHtml(favoriteItem.name)} (${formatMetric(favoriteItem.pickRate, 1, "%")})` : "No item sample"}</small>
+            </article>
+        `;
+    }).join("") : `<p class="rank-meta">No rater has stored build data for this god yet.</p>`;
 
     const editPlayer = state.godDetail.editPlayer;
     const editUnlocked = !!state.ranker.unlocked[editPlayer];
@@ -2187,6 +2354,24 @@ function openGodDetail(godName) {
                 <article class="detail-card-v2 wide god-dossier-card"><div class="section-head"><div><p class="eyebrow">Recent Games</p><h3>Latest Stored Matches</h3></div><span class="summary-pill">${recentRows.length} found</span></div><div class="god-recent-grid">${recentCards}</div></article>
             </section>
         `,
+        builds: `
+            <section class="god-modal-tab-panel god-dossier-panel">
+                <div class="god-dossier-grid">
+                    ${dossierStat("Aspect", selectedBuildAspect, selectedBuildAspect === "All" ? "all stored loadouts" : "filtered loadouts")}
+                    ${dossierStat("Build Sample", `${buildInsights.totalGames}`, "stored loadouts")}
+                    ${dossierStat("Build WR", buildInsights.totalGames ? formatMetric(buildInsights.winRate, 1, "%") : "--", buildInsights.totalGames ? formatWinLossRecord(buildInsights.totalWins, buildInsights.totalGames) : "No sample")}
+                    ${dossierStat("Starter", buildInsights.starterItems[0]?.name || "--", buildInsights.starterItems[0] ? `${formatMetric(buildInsights.starterItems[0].pickRate, 1, "%")} of games` : "No starter sample")}
+                    ${dossierStat("Most Bought", buildInsights.topItems[0]?.name || "--", buildInsights.topItems[0] ? `${formatMetric(buildInsights.topItems[0].pickRate, 1, "%")} of builds` : "No items yet")}
+                </div>
+                <article class="detail-card-v2 wide core-build-card aspect-filter-card"><div class="section-head"><div><p class="eyebrow">Aspect Filter</p><h3>Choose The Lens First</h3></div><span class="summary-pill">${buildInsights.aspects.length} detected</span></div><div class="aspect-toggle-row">${aspectToggleRows}</div></article>
+                <div class="core-build-grid">
+                    <article class="detail-card-v2 core-build-card"><div class="section-head"><div><p class="eyebrow">Starter Picks</p><h3>Opening Choice</h3></div></div><div class="core-item-list">${starterRows}</div></article>
+                    <article class="detail-card-v2 core-build-card"><div class="section-head"><div><p class="eyebrow">Council Items</p><h3>Most Bought</h3></div></div><div class="core-item-list">${coreItemRows}</div></article>
+                    <article class="detail-card-v2 core-build-card"><div class="section-head"><div><p class="eyebrow">Core Paths</p><h3>Common Starts</h3></div></div><div class="core-path-list">${corePathRows}</div></article>
+                    <article class="detail-card-v2 core-build-card"><div class="section-head"><div><p class="eyebrow">By Rater</p><h3>Who Builds What</h3></div></div><div class="core-player-grid">${playerBuildRows}</div></article>
+                </div>
+            </section>
+        `,
         edit: `
             <section class="god-modal-tab-panel god-dossier-panel">
                 <article class="detail-card-v2 wide god-edit-card god-dossier-card">
@@ -2228,6 +2413,13 @@ function openGodDetail(godName) {
     elements.godModalBackdrop.classList.remove("hidden");
     document.body.classList.add("modal-open");
 
+    elements.godModalContent.querySelectorAll("[data-build-aspect]").forEach((button) => {
+        button.addEventListener("click", () => {
+            state.godDetail.buildAspect = button.dataset.buildAspect || "All";
+            openGodDetail(godName);
+        });
+    });
+
     elements.godModalContent.querySelectorAll("[data-god-modal-section]").forEach((button) => {
         button.addEventListener("click", () => {
             state.godDetail.section = button.dataset.godModalSection || "council";
@@ -2250,6 +2442,198 @@ function closeGodDetail() {
 }
 
 // This helper renders the rankings tab.
+// This helper aggregates starter and completed item usage from council loadouts
+// so the Items tab can answer what the group actually builds and wins with.
+function buildCouncilItemCatalog() {
+    const itemMap = new Map();
+
+    const addItem = ({ item, player, godName, category }) => {
+        if (!item || !item.name) return;
+        const key = `${category}|${item.name}`;
+        const games = Number(item.games || 0);
+        const wins = Number(item.wins || 0);
+        if (!games) return;
+
+        const record = itemMap.get(key) || {
+            name: item.name,
+            category,
+            games: 0,
+            wins: 0,
+            gods: new Map(),
+            players: new Map(),
+        };
+
+        record.games += games;
+        record.wins += wins;
+
+        const godRecord = record.gods.get(godName) || { name: godName, games: 0, wins: 0 };
+        godRecord.games += games;
+        godRecord.wins += wins;
+        record.gods.set(godName, godRecord);
+
+        const playerRecord = record.players.get(player) || { name: player, games: 0, wins: 0 };
+        playerRecord.games += games;
+        playerRecord.wins += wins;
+        record.players.set(player, playerRecord);
+
+        itemMap.set(key, record);
+    };
+
+    (state.config?.players || []).forEach((player) => {
+        const profile = buildRaterProfile(player);
+        Object.entries(profile.buildStats || {}).forEach(([godName, stats]) => {
+            (stats.starterItems || []).forEach((item) => addItem({ item, player, godName, category: "Starter" }));
+            (stats.topItems || []).forEach((item) => addItem({ item, player, godName, category: "Final Item" }));
+        });
+    });
+
+    const finish = (record) => {
+        const gods = [...record.gods.values()].map((god) => ({
+            ...god,
+            winRate: god.games ? god.wins / god.games * 100 : 0,
+        }));
+        const players = [...record.players.values()].map((player) => ({
+            ...player,
+            winRate: player.games ? player.wins / player.games * 100 : 0,
+        }));
+        const bestGod = [...gods]
+            .filter((god) => god.games >= 2)
+            .sort((a, b) => b.winRate - a.winRate || b.games - a.games || a.name.localeCompare(b.name))[0] || [...gods].sort((a, b) => b.winRate - a.winRate || b.games - a.games || a.name.localeCompare(b.name))[0];
+        const mostUsedGod = [...gods].sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.name.localeCompare(b.name))[0];
+        const topPlayer = [...players].sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.name.localeCompare(b.name))[0];
+        return {
+            ...record,
+            gods,
+            players,
+            bestGod,
+            mostUsedGod,
+            topPlayer,
+            losses: Math.max(record.games - record.wins, 0),
+            winRate: record.games ? record.wins / record.games * 100 : 0,
+        };
+    };
+
+    return [...itemMap.values()].map(finish);
+}
+
+// This helper renders the dedicated Items tab using only council loadout data
+// that has already been normalized by the backend item-alias map.
+function renderItemsTab() {
+    if (!elements.tabItems) return;
+
+    if (!state.raterStats.loaded && !Object.keys(state.raterStats.profiles || {}).length) {
+        elements.tabItems.innerHTML = emptyState("Loading Items", "Council loadouts are still being gathered.");
+        return;
+    }
+
+    const catalog = buildCouncilItemCatalog();
+    const search = (state.items.search || "").trim().toLowerCase();
+    const category = state.items.category || "All";
+    const sort = state.items.sort || "Most used";
+    let rows = catalog.filter((item) => {
+        const matchesSearch = !search || [item.name, item.category, item.bestGod?.name, item.mostUsedGod?.name, item.topPlayer?.name]
+            .filter(Boolean)
+            .some((value) => String(value).toLowerCase().includes(search));
+        const matchesCategory = category === "All" || item.category === category;
+        return matchesSearch && matchesCategory;
+    });
+
+    if (sort === "Best WR") {
+        rows = rows.sort((a, b) => b.winRate - a.winRate || b.games - a.games || a.name.localeCompare(b.name));
+    } else if (sort === "Name") {
+        rows = rows.sort((a, b) => a.name.localeCompare(b.name));
+    } else {
+        rows = rows.sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.name.localeCompare(b.name));
+    }
+
+    const finalItems = catalog.filter((item) => item.category === "Final Item");
+    const starters = catalog.filter((item) => item.category === "Starter");
+    const bestItem = [...finalItems].filter((item) => item.games >= 2).sort((a, b) => b.winRate - a.winRate || b.games - a.games)[0];
+    const mostUsed = [...catalog].sort((a, b) => b.games - a.games || b.winRate - a.winRate)[0];
+    const shakyItem = [...finalItems].filter((item) => item.games >= 2).sort((a, b) => a.winRate - b.winRate || b.games - a.games)[0];
+
+    const itemRows = rows.map((item) => `
+        <tr>
+            <td><strong>${escapeHtml(item.name)}</strong><div class="rank-meta">${escapeHtml(item.category)}</div></td>
+            <td>${formatWinLossRecord(item.wins, item.games)} <span class="rank-meta">${formatMetric(item.winRate, 1, "%")}</span></td>
+            <td>${item.bestGod ? `<strong>${escapeHtml(item.bestGod.name)}</strong><div class="rank-meta">${formatWinLossRecord(item.bestGod.wins, item.bestGod.games)} | ${formatMetric(item.bestGod.winRate, 1, "%")}</div>` : "--"}</td>
+            <td>${item.mostUsedGod ? `<strong>${escapeHtml(item.mostUsedGod.name)}</strong><div class="rank-meta">${formatMetric(item.mostUsedGod.games)} games</div>` : "--"}</td>
+            <td>${item.topPlayer ? `<strong style="color:${playerColor(item.topPlayer.name)}">${escapeHtml(item.topPlayer.name)}</strong><div class="rank-meta">${formatWinLossRecord(item.topPlayer.wins, item.topPlayer.games)}</div>` : "--"}</td>
+        </tr>
+    `).join("");
+
+    elements.tabItems.innerHTML = `
+        <div class="panel items-panel">
+            <div class="panel-heading split-heading">
+                <div>
+                    <p class="eyebrow">Armory</p>
+                    <h2>Items</h2>
+                    <p class="hero-text compact-copy">A quick read on starters and final items the council actually builds.</p>
+                </div>
+                <span class="summary-pill">${formatMetric(rows.length)} shown</span>
+            </div>
+
+            <div class="profile-summary-grid items-summary-grid">
+                ${dossierStat("Most Used", mostUsed?.name || "--", mostUsed ? `${formatWinLossRecord(mostUsed.wins, mostUsed.games)} | ${formatMetric(mostUsed.games)} games` : "No sample")}
+                ${dossierStat("Best Final", bestItem?.name || "--", bestItem ? `${formatWinLossRecord(bestItem.wins, bestItem.games)} | ${formatMetric(bestItem.winRate, 1, "%")}` : "Need more games")}
+                ${dossierStat("Watch Item", shakyItem?.name || "--", shakyItem ? `${formatWinLossRecord(shakyItem.wins, shakyItem.games)} | ${formatMetric(shakyItem.winRate, 1, "%")}` : "Need more games")}
+                ${dossierStat("Catalog", `${formatMetric(finalItems.length)} / ${formatMetric(starters.length)}`, "final items / starters")}
+            </div>
+
+            <section class="detail-card-v2 item-controls-card">
+                <div class="items-control-grid">
+                    <label class="field">
+                        <span>Search Item</span>
+                        <input id="item-search" type="text" value="${escapeHtml(state.items.search)}" placeholder="Soul Reaver, Bluestone, Joey..." autocomplete="off">
+                    </label>
+                    <label class="field">
+                        <span>Category</span>
+                        <select id="item-category">
+                            ${["All", "Final Item", "Starter"].map((option) => `<option value="${option}" ${category === option ? "selected" : ""}>${option}</option>`).join("")}
+                        </select>
+                    </label>
+                    <label class="field">
+                        <span>Sort</span>
+                        <select id="item-sort">
+                            ${["Most used", "Best WR", "Name"].map((option) => `<option value="${option}" ${sort === option ? "selected" : ""}>${option}</option>`).join("")}
+                        </select>
+                    </label>
+                </div>
+            </section>
+
+            <section class="detail-card-v2">
+                <div class="section-head"><div><p class="eyebrow">Loadout Ledger</p><h3>Council Item Performance</h3></div><span class="summary-pill">${escapeHtml(category)}</span></div>
+                <div class="detail-table-wrap">
+                    <table class="compact-table items-table">
+                        <thead><tr><th>Item</th><th>Record</th><th>Best God</th><th>Most Used On</th><th>Main User</th></tr></thead>
+                        <tbody>${itemRows || `<tr><td colspan="5">No items match the current filter.</td></tr>`}</tbody>
+                    </table>
+                </div>
+            </section>
+            ${renderBackToTop()}
+        </div>
+    `;
+
+    const searchInput = document.getElementById("item-search");
+    searchInput?.addEventListener("input", (event) => {
+        const cursor = event.target.selectionStart || 0;
+        state.items.search = event.target.value;
+        renderItemsTab();
+        requestAnimationFrame(() => {
+            const nextInput = document.getElementById("item-search");
+            nextInput?.focus();
+            nextInput?.setSelectionRange(cursor, cursor);
+        });
+    });
+    document.getElementById("item-category")?.addEventListener("change", (event) => {
+        state.items.category = event.target.value;
+        renderItemsTab();
+    });
+    document.getElementById("item-sort")?.addEventListener("change", (event) => {
+        state.items.sort = event.target.value;
+        renderItemsTab();
+    });
+}
 function renderRankingsTab() {
     const risers = [...state.gods].filter((god) => Number(god.Movement || 0) > 0).sort((a, b) => Number(b.Movement || 0) - Number(a.Movement || 0)).slice(0, 3);
     const fallers = [...state.gods].filter((god) => Number(god.Movement || 0) < 0).sort((a, b) => Number(a.Movement || 0) - Number(b.Movement || 0)).slice(0, 3);
@@ -2420,6 +2804,7 @@ function buildRaterProfile(player) {
         godStats: external.godStats || {},
         topRoles: external.topRoles || [],
         opponentMatchups: external.opponentMatchups || {},
+        buildStats: external.buildStats || {},
         recentMatches: external.recentMatches || [],
         chemistry: external.chemistry || {},
         insights: external.insights || {},
@@ -4660,7 +5045,7 @@ function renderDataHealthTab() {
 // This helper keeps the tab strip, visible panel, and contextual filter bar
 // in sync with state.activeTab so filters only appear where they affect results.
 function renderTabs() {
-    const visibleTabs = new Set(["index", "rater-stats", "chemistry", "analytics", "h2h", "council-scroll", "data-health", "ranker"]);
+    const visibleTabs = new Set(["index", "items", "rater-stats", "chemistry", "analytics", "h2h", "council-scroll", "data-health", "ranker"]);
     if (!visibleTabs.has(state.activeTab)) {
         state.activeTab = "index";
     }
@@ -4696,6 +5081,7 @@ function renderAll() {
     renderPodium();
     renderSidebar();
     renderIndexTab();
+    renderItemsTab();
     renderRankingsTab();
     renderFavoritesTab();
     renderRaterStatsTab();
