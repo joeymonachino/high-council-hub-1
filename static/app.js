@@ -23,6 +23,7 @@ const state = {
         cacheHydrated: false,
         selectedPlayer: "Joey",
         section: "profile",
+        godSort: "played",
     },
     chemistry: {
         section: "trinity",
@@ -1279,6 +1280,13 @@ function bindStaticEvents() {
         const raterSectionTrigger = event.target.closest("[data-rater-section]");
         if (raterSectionTrigger) {
             state.raterStats.section = raterSectionTrigger.dataset.raterSection || "profile";
+            renderRaterStatsTab();
+            return;
+        }
+
+        const raterGodSortTrigger = event.target.closest("[data-rater-god-sort]");
+        if (raterGodSortTrigger) {
+            state.raterStats.godSort = raterGodSortTrigger.dataset.raterGodSort || "played";
             renderRaterStatsTab();
             return;
         }
@@ -2873,6 +2881,101 @@ function renderOpponentRows(records = [], { emptyText = "No opponent sample yet"
     }).join("");
 }
 
+function raterGodSortLabel(sortKey) {
+    if (sortKey === "best") return "Best W/L";
+    if (sortKey === "worst") return "Lowest W/L";
+    return "Most Played";
+}
+
+function allRaterGodRows(profile, selectedPlayer, sortKey = "played") {
+    const godLookup = new Map(state.gods.map((god, index) => [god.God, { god, index }]));
+    const rows = Object.values(profile.godStats || {})
+        .filter((record) => Number(record.gamesPlayed || 0) > 0)
+        .map((record) => {
+            const lookup = godLookup.get(record.name) || {};
+            const god = lookup.god || {};
+            return {
+                ...record,
+                rating: Number.isFinite(Number(god[selectedPlayer])) ? Number(god[selectedPlayer]) : null,
+                rank: Number.isFinite(lookup.index) ? lookup.index + 1 : null,
+                role: record.role || god.Role || "",
+                pantheon: record.pantheon || god.Pantheon || "",
+            };
+        });
+
+    const byName = (left, right) => String(left.name || "").localeCompare(String(right.name || ""));
+    if (sortKey === "best") {
+        return rows.sort((left, right) =>
+            (Number(right.winRate || 0) - Number(left.winRate || 0))
+            || (Number(right.wins || 0) - Number(left.wins || 0))
+            || (Number(right.gamesPlayed || 0) - Number(left.gamesPlayed || 0))
+            || byName(left, right)
+        );
+    }
+    if (sortKey === "worst") {
+        return rows.sort((left, right) =>
+            (Number(left.winRate || 0) - Number(right.winRate || 0))
+            || ((Number(right.gamesPlayed || 0) - Number(right.wins || 0)) - (Number(left.gamesPlayed || 0) - Number(left.wins || 0)))
+            || (Number(right.gamesPlayed || 0) - Number(left.gamesPlayed || 0))
+            || byName(left, right)
+        );
+    }
+    return rows.sort((left, right) =>
+        (Number(right.gamesPlayed || 0) - Number(left.gamesPlayed || 0))
+        || (Number(right.winRate || 0) - Number(left.winRate || 0))
+        || byName(left, right)
+    );
+}
+
+function renderAllRaterGodsSection(profile, selectedPlayer) {
+    const sortKey = state.raterStats.godSort || "played";
+    const sortOptions = [
+        { key: "played", label: "Most Played" },
+        { key: "best", label: "Best W/L" },
+        { key: "worst", label: "Lowest W/L" },
+    ];
+    const rows = allRaterGodRows(profile, selectedPlayer, sortKey);
+    const totalGames = rows.reduce((sum, row) => sum + Number(row.gamesPlayed || 0), 0);
+    const tableRows = rows.length
+        ? rows.map((row, index) => {
+            const games = Number(row.gamesPlayed || 0);
+            const wins = Number(row.wins || 0);
+            const winRate = Number(row.winRate || 0);
+            return `
+                <tr class="rater-god-table-row" data-god-detail="${escapeHtml(row.name)}" tabindex="0" role="button">
+                    <td><span class="rater-god-rank">#${index + 1}</span></td>
+                    <td><strong>${escapeHtml(row.name)}</strong><small>${[row.role, row.pantheon].filter(Boolean).map(escapeHtml).join(" | ") || "God"}</small></td>
+                    <td>${formatMetric(games)}</td>
+                    <td>${formatWinLossRecord(wins, games)}</td>
+                    <td class="${winRate >= 55 ? "movement-up" : winRate <= 45 ? "movement-down" : ""}">${formatMetric(winRate, 1, "%")}</td>
+                    <td>${row.rating ? formatMetric(row.rating) : "--"}</td>
+                    <td>${row.rank ? `#${row.rank}` : "--"}</td>
+                    <td>${row.kdaRatio ? formatMetric(row.kdaRatio, 2) : "--"}</td>
+                </tr>
+            `;
+        }).join("")
+        : `<tr><td colspan="8"><div class="rank-meta">No stored Joust games found for ${escapeHtml(selectedPlayer)} yet.</div></td></tr>`;
+
+    return `
+        <section class="rater-profile-panel rater-all-gods-panel">
+            <div class="section-head">
+                <div class="section-kicker"><p class="eyebrow">Full God Ledger</p><h3>${escapeHtml(selectedPlayer)} All Gods</h3></div>
+                <span class="summary-pill">${formatMetric(rows.length)} gods | ${formatMetric(totalGames)} matches</span>
+            </div>
+            <div class="profile-chip-row rater-sort-row" role="tablist" aria-label="Sort all rater gods">
+                ${sortOptions.map((option) => `<button class="summary-pill sort-pill ${sortKey === option.key ? "active" : ""}" type="button" data-rater-god-sort="${option.key}" aria-selected="${sortKey === option.key ? "true" : "false"}">${escapeHtml(option.label)}</button>`).join("")}
+            </div>
+            <p class="rank-meta">Sorted by ${escapeHtml(raterGodSortLabel(sortKey))}. Rows are clickable if you want to open the god card for the deeper per-god view.</p>
+            <div class="rater-god-table-wrap">
+                <table class="rater-god-table">
+                    <thead><tr><th></th><th>God</th><th>Matches</th><th>W/L</th><th>WR</th><th>Rating</th><th>Rank</th><th>KDA</th></tr></thead>
+                    <tbody>${tableRows}</tbody>
+                </table>
+            </div>
+        </section>
+    `;
+}
+
 function renderPlayerMatchupsSection(profile, selectedPlayer) {
     const matchups = profile.opponentMatchups || {};
     return `
@@ -2908,6 +3011,7 @@ function renderRaterStatsTab() {
     const sections = [
         { key: "profile", label: "Profile" },
         { key: "favorites", label: "Favorites" },
+        { key: "all-gods", label: "All Gods" },
         { key: "matchups", label: "Matchups" },
         { key: "details", label: "Details" },
     ];
@@ -3010,6 +3114,8 @@ function renderRaterStatsTab() {
         </section>
     `;
 
+    const allGodsSection = renderAllRaterGodsSection(profile, selectedPlayer);
+
     const matchupsSection = renderPlayerMatchupsSection(profile, selectedPlayer);
 
     const detailsSection = `
@@ -3028,7 +3134,7 @@ function renderRaterStatsTab() {
         ? `<div class="status-banner">Rater stats hit an issue: ${escapeHtml(state.raterStats.error)}. Council-derived profile insights are still available below.</div>`
         : "";
 
-    const sectionMap = { profile: profileSection, favorites: favoritesSection, matchups: matchupsSection, details: detailsSection };
+    const sectionMap = { profile: profileSection, favorites: favoritesSection, "all-gods": allGodsSection, matchups: matchupsSection, details: detailsSection };
 
     elements.tabRaterStats.innerHTML = `
         <div class="panel tab-overview-panel">

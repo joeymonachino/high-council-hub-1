@@ -9128,3 +9128,123 @@ body {
     min-width: 780px;
   }
 }
+
+
+/* Phase 5B Rater Profile all-gods ledger: compact full-history table for each
+   council member, with mobile horizontal scrolling instead of cramped columns. */
+.rater-all-gods-panel {
+    min-width: 0;
+}
+
+.rater-sort-row {
+    gap: 8px;
+    margin: 6px 0 2px;
+}
+
+.sort-pill {
+    cursor: pointer;
+}
+
+.sort-pill.active {
+    color: #241a0e;
+    border-color: rgba(242, 202, 111, 0.72);
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+    box-shadow: 0 10px 24px rgba(224, 173, 75, 0.18);
+}
+
+.rater-god-table-wrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid rgba(240, 207, 131, 0.14);
+    border-radius: 16px;
+    background: rgba(5, 9, 14, 0.42);
+}
+
+.rater-god-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    color: var(--text-strong);
+}
+
+.rater-god-table th,
+.rater-god-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(240, 207, 131, 0.10);
+    text-align: left;
+    vertical-align: middle;
+}
+
+.rater-god-table th {
+    color: var(--gold-soft);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.18);
+}
+
+.rater-god-table td {
+    font-size: 0.88rem;
+}
+
+.rater-god-table td strong {
+    display: block;
+    color: var(--cream);
+}
+
+.rater-god-table td small {
+    display: block;
+    margin-top: 2px;
+    color: var(--muted-strong);
+    font-size: 0.72rem;
+}
+
+.rater-god-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.rater-god-table-row {
+    cursor: pointer;
+    transition: background 160ms ease, transform 160ms ease;
+}
+
+.rater-god-table-row:hover,
+.rater-god-table-row:focus-visible {
+    background: rgba(240, 207, 131, 0.08);
+    outline: none;
+}
+
+.rater-god-rank {
+    display: inline-grid;
+    min-width: 34px;
+    padding: 5px 8px;
+    place-items: center;
+    border: 1px solid rgba(240, 207, 131, 0.20);
+    border-radius: 999px;
+    color: var(--gold-soft);
+    background: rgba(0, 0, 0, 0.20);
+    font-size: 0.75rem;
+    font-weight: 900;
+}
+
+@media (max-width: 700px) {
+    .rater-god-table th,
+    .rater-god-table td {
+        padding: 9px 10px;
+    }
+
+    .rater-sort-row {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .rater-sort-row::-webkit-scrollbar {
+        display: none;
+    }
+}
