@@ -17,6 +17,7 @@ const state = {
     raterStats: {
         profiles: {},
         loaded: false,
+        loading: false,
         error: "",
         syncing: false,
         syncMessage: "",
@@ -40,8 +41,10 @@ const state = {
     },
     items: {
         search: "",
-        category: "All",
+        category: "Starter + Tier 3",
         sort: "Most used",
+        selected: "",
+        section: "overview",
     },
     analytics: {
         god: "",
@@ -1221,6 +1224,7 @@ function bindStaticEvents() {
         button.addEventListener("click", () => {
             state.activeTab = button.dataset.tab;
             renderTabs();
+            maybeLoadHeavyTabData();
         });
     });
 
@@ -1482,6 +1486,7 @@ async function loadBootstrap() {
     state.recentHistory = payload.recentHistory || [];
     state.errors = payload.errors || [];
     state.stats = payload.stats || {};
+    state.itemMetadata = payload.itemMetadata || [];
     state.analytics.god = payload.gods[0]?.God || "";
     state.analytics.players = [...payload.config.players];
     initializeRankerState();
@@ -1506,38 +1511,26 @@ async function loadDataHealth() {
     }
 }
 
-// This helper hydrates slower match-history stats from localStorage so a refresh
-// can show god-card, Chemistry, and Scroll data immediately while production
-// fetches a fresh Supabase-backed payload in the background.
-function hydrateRaterStatsFromCache() {
-    if (state.raterStats.loaded) return;
+// This helper clears older cached match summaries. Those summaries can become
+// wrong whenever importer/dedupe logic changes, so live API data is safer.
+function clearRaterStatsCache() {
     try {
-        const cached = JSON.parse(localStorage.getItem("highCouncilRaterStatsCache") || "null");
-        const maxAgeMs = 30 * 60 * 1000;
-        if (!cached || !cached.profiles || Date.now() - Number(cached.savedAt || 0) > maxAgeMs) return;
-        state.raterStats.profiles = cached.profiles;
-        state.raterStats.loaded = true;
-        state.raterStats.cacheHydrated = true;
-        state.raterStats.error = "";
+        localStorage.removeItem("highCouncilRaterStatsCache");
     } catch (error) {
-        // Ignore malformed cache; the network request below remains authoritative.
+        // Storage can fail in private browsing; the live API remains authoritative.
     }
 }
 
 function persistRaterStatsCache() {
-    try {
-        localStorage.setItem("highCouncilRaterStatsCache", JSON.stringify({
-            savedAt: Date.now(),
-            profiles: state.raterStats.profiles || {},
-        }));
-    } catch (error) {
-        // Storage can fail in private browsing; live app data should still work.
-    }
+    clearRaterStatsCache();
 }
 
 // This helper fetches the live SmiteSource-backed profile data used by the
 // Rater Stats tab while keeping the rest of the app responsive if it fails.
-async function loadRaterStats() {
+async function loadRaterStats({ force = false } = {}) {
+    if (state.raterStats.loading) return;
+    if (state.raterStats.loaded && !force) return;
+    state.raterStats.loading = true;
     try {
         const payload = await api("/api/rater-stats");
         state.raterStats.profiles = payload.profiles || payload || {};
@@ -1549,11 +1542,19 @@ async function loadRaterStats() {
             state.raterStats.profiles = {};
         }
         state.raterStats.error = error.message || "Rater stats are unavailable right now.";
+    } finally {
+        state.raterStats.loaded = true;
+        state.raterStats.loading = false;
     }
-    state.raterStats.loaded = true;
     if (state.godDetail.god && elements.godModalBackdrop && !elements.godModalBackdrop.classList.contains("hidden")) {
         openGodDetail(state.godDetail.god);
     }
+}
+
+function maybeLoadHeavyTabData() {
+    const heavyTabs = new Set(["items", "rater-stats", "chemistry", "council-scroll"]);
+    if (!heavyTabs.has(state.activeTab) || state.raterStats.loaded || state.raterStats.loading) return;
+    loadRaterStats().then(() => renderAll());
 }
 
 
@@ -1603,7 +1604,7 @@ async function syncRaterStats(player = "") {
                 ...(player ? { player } : {}),
             }),
         });
-        await loadRaterStats();
+        await loadRaterStats({ force: true });
         const inserted = (payload.results || []).reduce((sum, row) => sum + Number(row.inserted || 0), 0);
         const stored = (payload.results || []).reduce((sum, row) => sum + Number(row.stored || 0), 0);
         if (payload.ok === false) {
@@ -1650,7 +1651,7 @@ async function importSmitesourceHar() {
             if (!response.ok) {
                 throw new Error(payload?.message || `Import failed: ${response.status}`);
             }
-            await loadRaterStats();
+            await loadRaterStats({ force: true });
             state.raterStats.syncMessage = payload?.message || "HAR import complete.";
         } catch (error) {
             state.raterStats.syncMessage = error.message || "HAR import failed.";
@@ -2473,6 +2474,7 @@ function buildCouncilItemCatalog() {
 
         record.games += games;
         record.wins += wins;
+        if (!record.imageUrl && item.imageUrl) record.imageUrl = item.imageUrl;
 
         const godRecord = record.gods.get(godName) || { name: godName, games: 0, wins: 0 };
         godRecord.games += games;
@@ -2491,7 +2493,7 @@ function buildCouncilItemCatalog() {
         const profile = buildRaterProfile(player);
         Object.entries(profile.buildStats || {}).forEach(([godName, stats]) => {
             (stats.starterItems || []).forEach((item) => addItem({ item, player, godName, category: "Starter" }));
-            (stats.topItems || []).forEach((item) => addItem({ item, player, godName, category: "Final Item" }));
+            (stats.topItems || []).forEach((item) => addItem({ item, player, godName, category: item.category || "Tier 3" }));
         });
     });
 
@@ -2524,8 +2526,212 @@ function buildCouncilItemCatalog() {
     return [...itemMap.values()].map(finish);
 }
 
-// This helper renders the dedicated Items tab using only council loadout data
-// that has already been normalized by the backend item-alias map.
+// This helper joins council usage data with the optional local item metadata
+// snapshot so the Items tab can behave like a browsable armory catalog.
+function itemMetadataScore(row) {
+    if (!row) return 0;
+    return [row.imageUrl, row.summary, row.passive, ...(Array.isArray(row.stats) ? row.stats : [])]
+        .filter(Boolean)
+        .length;
+}
+
+function itemCatalogKey(value) {
+    return String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function normalizedItemCategory(value) {
+    const raw = String(value || "").trim();
+    const key = raw.toLowerCase();
+    if (["starter", "starters"].includes(key)) return "Starter";
+    if (["tier 3", "t3", "final item", "final items"].includes(key)) return "Tier 3";
+    if (["tier 2", "t2"].includes(key)) return "Tier 2";
+    if (["tier 1", "t1"].includes(key)) return "Tier 1";
+    if (["items", "item", "item-passive", "item-active"].includes(key)) return "Tier 3";
+    return raw || "Catalog";
+}
+
+function itemMetadataMap() {
+    const rows = Array.isArray(state.itemMetadata) ? state.itemMetadata : [];
+    const map = new Map();
+    rows.forEach((row) => {
+        const key = itemCatalogKey(row.name || row.displayName || "");
+        if (!key) return;
+        const existing = map.get(key);
+        if (!existing || itemMetadataScore(row) >= itemMetadataScore(existing)) {
+            map.set(key, row);
+        }
+    });
+    return map;
+}
+
+function enrichedItemCatalog() {
+    const metadata = itemMetadataMap();
+    const usageRows = buildCouncilItemCatalog().map((item) => ({
+        ...item,
+        metadata: metadata.get(itemCatalogKey(item.name || "")) || {},
+    }));
+    const seen = new Set(usageRows.map((item) => itemCatalogKey(item.name || "")));
+    const metadataOnlyRows = [...metadata.values()]
+        .filter((row) => {
+            const name = String(row.name || row.displayName || "");
+            return name && !seen.has(itemCatalogKey(name));
+        })
+        .map((row) => ({
+            name: row.name || row.displayName,
+            category: normalizedItemCategory(row.itemType || (Array.isArray(row.categoriesSeen) && row.categoriesSeen[0]) || "Catalog"),
+            games: 0,
+            wins: 0,
+            losses: 0,
+            winRate: 0,
+            imageUrl: row.imageUrl || "",
+            gods: [],
+            players: [],
+            bestGod: null,
+            mostUsedGod: null,
+            topPlayer: null,
+            metadata: row,
+        }));
+    return [...usageRows, ...metadataOnlyRows];
+}
+
+function statChipList(stats, limit = 5) {
+    const rows = Array.isArray(stats) ? stats.filter(Boolean).slice(0, limit) : [];
+    return rows.length ? rows.map((stat) => `<span class="item-stat-chip">${escapeHtml(stat)}</span>`).join("") : `<span class="item-stat-chip muted">Stats pending</span>`;
+}
+
+function itemPerformanceLine(item) {
+    if (!item || !item.games) return "No council sample yet";
+    return `${formatWinLossRecord(item.wins, item.games)} | ${formatMetric(item.winRate, 1, "%")} WR | ${formatMetric(item.games)} games`;
+}
+
+function itemDisplayImageUrl(item) {
+    const meta = item?.metadata || {};
+    return item?.imageUrl || meta.imageUrl || "";
+}
+
+function itemImageMarkup(item, className = "item-card-icon") {
+    const imageUrl = itemDisplayImageUrl(item);
+    const label = item?.name || "Item";
+    return `<div class="${className} ${imageUrl ? "" : "empty"}">${imageUrl ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(label)}" loading="lazy" decoding="async" onerror="this.parentElement.classList.add('empty');this.remove();">` : "?"}</div>`;
+}
+
+function openItemDetail(itemName) {
+    const catalog = enrichedItemCatalog();
+    const item = catalog.find((row) => row.name === itemName);
+    if (!item || !elements.godModalBackdrop || !elements.godModalContent) return;
+
+    if (state.items.selected !== itemName) {
+        state.items.selected = itemName;
+        state.items.section = "overview";
+    }
+
+    const meta = item.metadata || {};
+    const imageUrl = itemDisplayImageUrl(item);
+    const sections = [
+        { key: "overview", label: "Overview" },
+        { key: "stats", label: "Stats" },
+        { key: "council", label: "Council" },
+        { key: "gods", label: "Gods" },
+    ];
+    if (!sections.some((section) => section.key === state.items.section)) {
+        state.items.section = "overview";
+    }
+
+    const topGods = [...(item.gods || [])]
+        .sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.name.localeCompare(b.name))
+        .slice(0, 10);
+    const bestGods = [...(item.gods || [])]
+        .filter((god) => Number(god.games || 0) >= 2)
+        .sort((a, b) => b.winRate - a.winRate || b.games - a.games || a.name.localeCompare(b.name))
+        .slice(0, 8);
+    const topPlayers = [...(item.players || [])]
+        .sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.name.localeCompare(b.name))
+        .slice(0, 8);
+
+    const itemRows = (rows, emptyText) => rows.length ? rows.map((row) => `
+        <div class="mini-row-v2 item-modal-row">
+            <span><strong>${escapeHtml(row.name)}</strong><small>${formatWinLossRecord(row.wins, row.games)} | ${formatMetric(row.games)} games</small></span>
+            <b class="${Number(row.winRate || 0) >= 55 ? "movement-up" : Number(row.winRate || 0) <= 45 ? "movement-down" : ""}">${formatMetric(row.winRate, 1, "%")}</b>
+        </div>
+    `).join("") : `<p class="rank-meta">${escapeHtml(emptyText)}</p>`;
+
+    const sectionHtml = {
+        overview: `
+            <section class="god-modal-tab-panel item-modal-panel">
+                <div class="god-dossier-grid">
+                    ${dossierStat("Record", formatWinLossRecord(item.wins, item.games), `${formatMetric(item.winRate, 1, "%")} WR`)}
+                    ${dossierStat("Category", item.category || "--", meta.itemType || "Council loadout")}
+                    ${dossierStat("Main User", item.topPlayer?.name || "--", item.topPlayer ? itemPerformanceLine(item.topPlayer) : "No sample")}
+                    ${dossierStat("Most Used On", item.mostUsedGod?.name || "--", item.mostUsedGod ? itemPerformanceLine(item.mostUsedGod) : "No sample")}
+                </div>
+                <article class="detail-card-v2 wide item-lore-card">
+                    <p class="eyebrow">Armory Note</p>
+                    <h3>${escapeHtml(item.name)}</h3>
+                    <p>${escapeHtml(meta.summary || "This item has been seen in council match history. Add metadata to show its current description, stats, and passive here.")}</p>
+                    <div class="item-tag-row">
+                        <span>${escapeHtml(item.category)}</span>
+                        ${meta.cost ? `<span>${formatMetric(meta.cost)} gold</span>` : ""}
+                        ${meta.itemType ? `<span>${escapeHtml(meta.itemType)}</span>` : ""}
+                        ${(meta.tags || []).slice(0, 6).map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
+                    </div>
+                </article>
+            </section>
+        `,
+        stats: `
+            <section class="god-modal-tab-panel item-modal-panel">
+                <div class="core-build-grid">
+                    <article class="detail-card-v2 core-build-card"><p class="eyebrow">Stats</p><h3>Item Sheet</h3><div class="item-stat-list">${statChipList(meta.stats, 12)}</div></article>
+                    <article class="detail-card-v2 core-build-card"><p class="eyebrow">Passive</p><h3>Effect Text</h3><p class="item-passive-copy">${escapeHtml(meta.passive || "No passive text captured yet.")}</p></article>
+                </div>
+                ${meta.sourceUrl ? `<a class="source-link" href="${escapeHtml(meta.sourceUrl)}" target="_blank" rel="noopener">Open metadata source</a>` : ""}
+            </section>
+        `,
+        council: `
+            <section class="god-modal-tab-panel item-modal-panel">
+                <article class="detail-card-v2 wide"><div class="section-head"><div><p class="eyebrow">Council Usage</p><h3>Who Builds It</h3></div><span class="summary-pill">${itemPerformanceLine(item)}</span></div><div class="mini-list-v2">${itemRows(topPlayers, "No player sample yet.")}</div></article>
+            </section>
+        `,
+        gods: `
+            <section class="god-modal-tab-panel item-modal-panel">
+                <div class="core-build-grid">
+                    <article class="detail-card-v2 core-build-card"><div class="section-head"><div><p class="eyebrow">Most Used On</p><h3>God Samples</h3></div></div><div class="mini-list-v2">${itemRows(topGods, "No god sample yet.")}</div></article>
+                    <article class="detail-card-v2 core-build-card"><div class="section-head"><div><p class="eyebrow">Best Results</p><h3>Winning Looks</h3></div></div><div class="mini-list-v2">${itemRows(bestGods, "Need at least two games on a god.")}</div></article>
+                </div>
+            </section>
+        `,
+    };
+
+    elements.godModalContent.innerHTML = `
+        <div class="item-modal-hero">
+            <div class="item-modal-hero-glow"></div>
+            ${itemImageMarkup(item, "item-modal-icon")}
+            <div class="item-modal-copy">
+                <p class="eyebrow">Council Armory</p>
+                <h2>${escapeHtml(item.name)}</h2>
+                <p>${escapeHtml(meta.summary || `${item.category} from stored council loadouts.`)}</p>
+                <div class="item-tag-row"><span>${escapeHtml(item.category)}</span><span>${itemPerformanceLine(item)}</span>${meta.cost ? `<span>${formatMetric(meta.cost)} gold</span>` : ""}</div>
+            </div>
+            <div class="item-modal-score ${Number(item.winRate || 0) >= 55 ? "movement-up" : Number(item.winRate || 0) <= 45 ? "movement-down" : ""}">${formatMetric(item.winRate, 0, "%")}</div>
+        </div>
+        <div class="god-modal-body item-modal-body">
+            <div class="subtab-bar god-modal-tabs" role="tablist" aria-label="Item detail sections">${sections.map((section) => `<button class="subtab-btn ${state.items.section === section.key ? "active" : ""}" type="button" data-item-modal-section="${section.key}" role="tab" aria-selected="${state.items.section === section.key ? "true" : "false"}">${escapeHtml(section.label)}</button>`).join("")}</div>
+            <div class="subtab-content god-modal-tab-content">${sectionHtml[state.items.section]}</div>
+        </div>
+    `;
+
+    elements.godModalBackdrop.classList.remove("hidden");
+    document.body.classList.add("modal-open");
+
+    elements.godModalContent.querySelectorAll("[data-item-modal-section]").forEach((button) => {
+        button.addEventListener("click", () => {
+            state.items.section = button.dataset.itemModalSection || "overview";
+            openItemDetail(item.name);
+        });
+    });
+}
+
+// This helper renders the dedicated Items tab as a compact catalog: scan cards
+// first, click one item, then inspect stats/passives and council performance.
 function renderItemsTab() {
     if (!elements.tabItems) return;
 
@@ -2534,15 +2740,19 @@ function renderItemsTab() {
         return;
     }
 
-    const catalog = buildCouncilItemCatalog();
+    const catalog = enrichedItemCatalog();
     const search = (state.items.search || "").trim().toLowerCase();
     const category = state.items.category || "All";
     const sort = state.items.sort || "Most used";
     let rows = catalog.filter((item) => {
-        const matchesSearch = !search || [item.name, item.category, item.bestGod?.name, item.mostUsedGod?.name, item.topPlayer?.name]
+        const meta = item.metadata || {};
+        const matchesSearch = !search || [item.name, item.category, item.bestGod?.name, item.mostUsedGod?.name, item.topPlayer?.name, meta.summary, ...(meta.tags || []), ...(meta.stats || [])]
             .filter(Boolean)
             .some((value) => String(value).toLowerCase().includes(search));
-        const matchesCategory = category === "All" || item.category === category;
+        const buildCategories = new Set(["Starter", "Tier 3"]);
+        const matchesCategory = category === "All"
+            || item.category === category
+            || (category === "Starter + Tier 3" && buildCategories.has(item.category));
         return matchesSearch && matchesCategory;
     });
 
@@ -2554,21 +2764,22 @@ function renderItemsTab() {
         rows = rows.sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.name.localeCompare(b.name));
     }
 
-    const finalItems = catalog.filter((item) => item.category === "Final Item");
-    const starters = catalog.filter((item) => item.category === "Starter");
-    const bestItem = [...finalItems].filter((item) => item.games >= 2).sort((a, b) => b.winRate - a.winRate || b.games - a.games)[0];
-    const mostUsed = [...catalog].sort((a, b) => b.games - a.games || b.winRate - a.winRate)[0];
-    const shakyItem = [...finalItems].filter((item) => item.games >= 2).sort((a, b) => a.winRate - b.winRate || b.games - a.games)[0];
-
-    const itemRows = rows.map((item) => `
-        <tr>
-            <td><strong>${escapeHtml(item.name)}</strong><div class="rank-meta">${escapeHtml(item.category)}</div></td>
-            <td>${formatWinLossRecord(item.wins, item.games)} <span class="rank-meta">${formatMetric(item.winRate, 1, "%")}</span></td>
-            <td>${item.bestGod ? `<strong>${escapeHtml(item.bestGod.name)}</strong><div class="rank-meta">${formatWinLossRecord(item.bestGod.wins, item.bestGod.games)} | ${formatMetric(item.bestGod.winRate, 1, "%")}</div>` : "--"}</td>
-            <td>${item.mostUsedGod ? `<strong>${escapeHtml(item.mostUsedGod.name)}</strong><div class="rank-meta">${formatMetric(item.mostUsedGod.games)} games</div>` : "--"}</td>
-            <td>${item.topPlayer ? `<strong style="color:${playerColor(item.topPlayer.name)}">${escapeHtml(item.topPlayer.name)}</strong><div class="rank-meta">${formatWinLossRecord(item.topPlayer.wins, item.topPlayer.games)}</div>` : "--"}</td>
-        </tr>
-    `).join("");
+    const itemCards = rows.map((item) => {
+        const meta = item.metadata || {};
+        return `
+            <button class="item-catalog-card" type="button" data-item-detail="${escapeHtml(item.name)}">
+                <div class="item-card-topline"><span>${escapeHtml(item.category)}</span><strong>${itemPerformanceLine(item)}</strong></div>
+                <div class="item-card-main">
+                    ${itemImageMarkup(item)}
+                    <div><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(meta.summary || meta.passive || "Usage captured from council match history.")}</p></div>
+                </div>
+                <div class="item-card-tags">
+                    ${meta.cost ? `<span>${formatMetric(meta.cost)}g</span>` : ""}
+                    ${(meta.tags || []).slice(0, 3).map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
+                </div>
+            </button>
+        `;
+    }).join("");
 
     elements.tabItems.innerHTML = `
         <div class="panel items-panel">
@@ -2576,16 +2787,9 @@ function renderItemsTab() {
                 <div>
                     <p class="eyebrow">Armory</p>
                     <h2>Items</h2>
-                    <p class="hero-text compact-copy">A quick read on starters and final items the council actually builds.</p>
+                    <p class="hero-text compact-copy">A searchable catalog of what each item does and how the council performs with it.</p>
                 </div>
                 <span class="summary-pill">${formatMetric(rows.length)} shown</span>
-            </div>
-
-            <div class="profile-summary-grid items-summary-grid">
-                ${dossierStat("Most Used", mostUsed?.name || "--", mostUsed ? `${formatWinLossRecord(mostUsed.wins, mostUsed.games)} | ${formatMetric(mostUsed.games)} games` : "No sample")}
-                ${dossierStat("Best Final", bestItem?.name || "--", bestItem ? `${formatWinLossRecord(bestItem.wins, bestItem.games)} | ${formatMetric(bestItem.winRate, 1, "%")}` : "Need more games")}
-                ${dossierStat("Watch Item", shakyItem?.name || "--", shakyItem ? `${formatWinLossRecord(shakyItem.wins, shakyItem.games)} | ${formatMetric(shakyItem.winRate, 1, "%")}` : "Need more games")}
-                ${dossierStat("Catalog", `${formatMetric(finalItems.length)} / ${formatMetric(starters.length)}`, "final items / starters")}
             </div>
 
             <section class="detail-card-v2 item-controls-card">
@@ -2597,7 +2801,7 @@ function renderItemsTab() {
                     <label class="field">
                         <span>Category</span>
                         <select id="item-category">
-                            ${["All", "Final Item", "Starter"].map((option) => `<option value="${option}" ${category === option ? "selected" : ""}>${option}</option>`).join("")}
+                            ${["Starter + Tier 3", "All", "Tier 3", "Starter", "Tier 2", "Tier 1", "Catalog"].map((option) => `<option value="${option}" ${category === option ? "selected" : ""}>${option}</option>`).join("")}
                         </select>
                     </label>
                     <label class="field">
@@ -2609,15 +2813,7 @@ function renderItemsTab() {
                 </div>
             </section>
 
-            <section class="detail-card-v2">
-                <div class="section-head"><div><p class="eyebrow">Loadout Ledger</p><h3>Council Item Performance</h3></div><span class="summary-pill">${escapeHtml(category)}</span></div>
-                <div class="detail-table-wrap">
-                    <table class="compact-table items-table">
-                        <thead><tr><th>Item</th><th>Record</th><th>Best God</th><th>Most Used On</th><th>Main User</th></tr></thead>
-                        <tbody>${itemRows || `<tr><td colspan="5">No items match the current filter.</td></tr>`}</tbody>
-                    </table>
-                </div>
-            </section>
+            <section class="item-catalog-grid">${itemCards || emptyState("No Items Found", "No item usage matched the current filter.")}</section>
             ${renderBackToTop()}
         </div>
     `;
@@ -2640,6 +2836,11 @@ function renderItemsTab() {
     document.getElementById("item-sort")?.addEventListener("change", (event) => {
         state.items.sort = event.target.value;
         renderItemsTab();
+    });
+    elements.tabItems.querySelectorAll("[data-item-detail]").forEach((button) => {
+        button.addEventListener("click", () => {
+            openItemDetail(button.dataset.itemDetail || "");
+        });
     });
 }
 function renderRankingsTab() {
@@ -3000,6 +3201,52 @@ function renderPlayerMatchupsSection(profile, selectedPlayer) {
     `;
 }
 
+
+function renderSignaturePodium(profile, selectedPlayer, { compactHeader = false } = {}) {
+    const contenders = [...(profile.topGods || [])]
+        .filter((god) => Number(god.gamesPlayed || 0) > 0)
+        .sort((a, b) => Number(b.gamesPlayed || 0) - Number(a.gamesPlayed || 0) || Number(b.winRate || 0) - Number(a.winRate || 0) || String(a.name || "").localeCompare(String(b.name || "")))
+        .slice(0, 3);
+
+    if (!contenders.length) {
+        return `<article class="signature-podium empty"><p class="eyebrow">Signature Podium</p><h3>No main crowned yet</h3><p class="rank-meta">Stored Joust matches will crown ${escapeHtml(selectedPlayer)}'s top three once enough games are imported.</p></article>`;
+    }
+
+    const podiumOrder = [contenders[1], contenders[0], contenders[2]].filter(Boolean);
+    const podiumCard = (god, visualIndex) => {
+        const trueRank = contenders.indexOf(god) + 1;
+        const isMain = trueRank === 1;
+        return `
+            <button class="signature-podium-card ${isMain ? "main" : ""} place-${trueRank}" type="button" data-god-detail="${escapeHtml(god.name)}">
+                <div class="signature-podium-art">${god.imageUrl ? `<img src="${escapeHtml(god.imageUrl)}" alt="${escapeHtml(god.name)}" loading="lazy" decoding="async">` : `<span>${escapeHtml(String(god.name || "?").slice(0, 1))}</span>`}</div>
+                <div class="signature-medal">#${trueRank}</div>
+                <div class="signature-podium-copy">
+                    <small>${isMain ? "Main" : visualIndex === 0 ? "Second" : "Third"}</small>
+                    <strong>${escapeHtml(god.name)}</strong>
+                    <span>${formatWinLossRecord(god.wins, god.gamesPlayed)} | ${formatMetric(god.gamesPlayed)} games | ${formatMetric(god.winRate, 1, "%")} WR</span>
+                </div>
+            </button>
+        `;
+    };
+
+    const metrics = profile.metrics || {};
+    const headerStats = `
+        <div class="signature-profile-stats">
+            <span><strong>${formatMetric(metrics.winRate, 1, "%")}</strong><small>WR</small></span>
+            <span><strong>${formatMetric(metrics.kdaRatio, 2)}</strong><small>KDA</small></span>
+            <span><strong>${formatMetric(metrics.matches)}</strong><small>Matches</small></span>
+            <span><strong>${profile.ratedCount}</strong><small>Rated</small></span>
+        </div>
+    `;
+
+    return `
+        <article class="signature-podium ${compactHeader ? "profile-signature-podium" : ""}">
+            <div class="section-head signature-podium-head"><div><p class="eyebrow">Council Profile</p><h3>${escapeHtml(selectedPlayer)}'s Signature Gods</h3></div>${headerStats}</div>
+            <div class="signature-podium-stage">${podiumOrder.map(podiumCard).join("")}</div>
+        </article>
+    `;
+}
+
 // This helper renders the live SmiteSource-backed rater dashboard cards with
 // graceful fallbacks for unlinked or data-light profiles.
 function renderRaterStatsTab() {
@@ -3059,42 +3306,8 @@ function renderRaterStatsTab() {
         : `<div class="rank-meta">No favorites yet for ${escapeHtml(selectedPlayer)}.</div>`;
 
     const profileSection = `
-        <section class="rater-profile-panel">
-            <div class="rater-card-hero rater-signature-art rater-profile-hero">
-                ${signatureImage ? `<img class="god-art" src="${signatureImage}" alt="${escapeHtml(signatureName)}">` : `<div class="image-fallback">No Art</div>`}
-                <div class="god-overlay"></div>
-                <div class="rater-hero-topline">
-                    <div>
-                        <p class="eyebrow" style="color:rgba(255,255,255,0.78)">Council Profile</p>
-                        <h2>${escapeHtml(selectedPlayer)}</h2>
-                    </div>
-                    <div class="profile-chip-row rater-hero-pills">
-                        <span class="summary-pill">${escapeHtml(profile.archetype.title)}</span>
-                        <span class="summary-pill">${profile.ratedCount} rated</span>
-
-                    </div>
-                </div>
-                <div class="rater-signature-copy">
-                    <div>
-                        <span class="chip">Signature God</span>
-                        <h3>${escapeHtml(signatureName)}</h3>
-                        <div class="rank-meta" style="color:rgba(255,255,255,0.78)">${profile.topGods[0] ? `${formatWinLossRecord(profile.topGods[0].wins, profile.topGods[0].gamesPlayed)} | ${formatMetric(profile.topGods[0].gamesPlayed)} games | ${formatMetric(profile.topGods[0].winRate, 1, '%')} WR` : (profile.signature ? `${profile.signature[selectedPlayer]} council score` : 'No signature yet')}</div>
-                    </div>
-                    <div class="rater-hero-note">
-                        <div class="metric-label" style="color:rgba(255,255,255,0.72)">Read</div>
-                        <div class="rater-hero-archetype">${escapeHtml(profile.archetype.title)}</div>
-                        ${!isMobile ? `<p>${escapeHtml(profile.archetype.note)}</p>` : ''}
-                        <div class="rater-hero-submeta">
-                            ${[profile.favoriteRole?.label || 'Unknown role', favoritePantheon, recentForm, profile.insights.damageProfile || '', buildDna].filter(Boolean).map((item) => `<span>${escapeHtml(item)}</span>`).join('')}
-                        </div>
-                        <div class="rater-hero-metrics">
-                            <span class="summary-pill">${formatMetric(profile.metrics.winRate, 1, '%')} WR</span>
-                            <span class="summary-pill">${formatMetric(profile.metrics.kdaRatio, 2)} KDA</span>
-                            <span class="summary-pill">${formatMetric(profile.metrics.matches)} matches</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <section class="rater-profile-panel rater-profile-compact">
+            ${renderSignaturePodium(profile, selectedPlayer, { compactHeader: true })}
             <div class="mini-highlight-grid rater-quick-grid" style="margin-top:14px;">
                 <article class="mini-highlight-card"><div class="metric-label">Most Played</div>${mostPlayed.length ? mostPlayed.map((god) => `<div class="mini-highlight-row"><span><strong>${escapeHtml(god.name)}</strong><small>${formatWinLossRecord(god.wins, god.gamesPlayed)} | ${formatMetric(god.winRate, 1, '%')} WR</small></span><strong>${formatMetric(god.gamesPlayed)} games</strong></div>`).join('') : `<div class="rank-meta">${escapeHtml(availabilityNote)}</div>`}</article>
                 <article class="mini-highlight-card"><div class="metric-label">Best Win Rates</div>${bestWinRate.length ? bestWinRate.map((god) => `<div class="mini-highlight-row"><span><strong>${escapeHtml(god.name)}</strong><small>${formatWinLossRecord(god.wins, god.gamesPlayed)} over ${formatMetric(god.gamesPlayed)} games</small></span><strong>${formatMetric(god.winRate, 1, '%')}</strong></div>`).join('') : `<div class="rank-meta">Need at least 3 games on a god to crown a real win-rate pick.</div>`}</article>
@@ -5265,17 +5478,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
         await loadBootstrap();
         await loadAnalyticsHistory();
-        hydrateRaterStatsFromCache();
+        clearRaterStatsCache();
         renderAll();
         handleInitialGodDeepLink();
-        loadRaterStats().then(() => {
-            renderAll();
-            handleInitialGodDeepLink();
-        });
+        maybeLoadHeavyTabData();
     } catch (error) {
         document.querySelector(".app-shell").innerHTML = emptyState("App Failed To Load", error.message);
     }
 });
+
+
 
 
 

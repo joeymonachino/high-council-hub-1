@@ -1,0 +1,1208 @@
+[
+  {
+    "god_name": "Charon",
+    "joey": 65,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 80
+  },
+  {
+    "god_name": "The Morrigan",
+    "joey": 85,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Yemoja",
+    "joey": 80,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Achilles",
+    "joey": 80,
+    "darian": 27,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 70
+  },
+  {
+    "god_name": "Pele",
+    "joey": 99,
+    "darian": 89,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Kali",
+    "joey": 80,
+    "darian": 20,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Nut",
+    "joey": 67,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 90
+  },
+  {
+    "god_name": "Artemis",
+    "joey": 80,
+    "darian": 98,
+    "jami": 90,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 85
+  },
+  {
+    "god_name": "Artio",
+    "joey": 80,
+    "darian": 84,
+    "jami": 84,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 60
+  },
+  {
+    "god_name": "Baron Samedi",
+    "joey": 25,
+    "darian": 92,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 40
+  },
+  {
+    "god_name": "Amaterasu",
+    "joey": 85,
+    "darian": 16,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 30
+  },
+  {
+    "god_name": "Gilgamesh",
+    "joey": 85,
+    "darian": 6,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 60
+  },
+  {
+    "god_name": "Ne Zha",
+    "joey": 85,
+    "darian": 1,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Cerberus",
+    "joey": 85,
+    "darian": 52,
+    "jami": 85,
+    "jamie": 90,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 60
+  },
+  {
+    "god_name": "Hecate",
+    "joey": 75,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 50
+  },
+  {
+    "god_name": "Mordred",
+    "joey": 85,
+    "darian": 77,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Princess Bari",
+    "joey": 80,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Jing Wei",
+    "joey": 70,
+    "darian": null,
+    "jami": 75,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Athena",
+    "joey": 75,
+    "darian": 59,
+    "jami": 81,
+    "jamie": 90,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 90
+  },
+  {
+    "god_name": "Sylvanus",
+    "joey": 60,
+    "darian": 5,
+    "jami": 87,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Morgan le Fay",
+    "joey": 70,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Scylla",
+    "joey": 85,
+    "darian": 50,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Awilix",
+    "joey": 80,
+    "darian": 47,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 80
+  },
+  {
+    "god_name": "Bellona",
+    "joey": 99,
+    "darian": 59,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 60
+  },
+  {
+    "god_name": "Discordia",
+    "joey": 67,
+    "darian": 94,
+    "jami": 68,
+    "jamie": 80,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 40
+  },
+  {
+    "god_name": "Poseidon",
+    "joey": 70,
+    "darian": 69,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Agni",
+    "joey": 50,
+    "darian": 18,
+    "jami": 75,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 81
+  },
+  {
+    "god_name": "Aphrodite",
+    "joey": 65,
+    "darian": 70,
+    "jami": 75,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 1
+  },
+  {
+    "god_name": "Set",
+    "joey": 75,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Nike",
+    "joey": 63,
+    "darian": 85,
+    "jami": null,
+    "jamie": 100,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Hel",
+    "joey": 80,
+    "darian": 80,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 20
+  },
+  {
+    "god_name": "Chang'e",
+    "joey": 75,
+    "darian": 75,
+    "jami": null,
+    "jamie": 50,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 20
+  },
+  {
+    "god_name": "Kuzenbo",
+    "joey": 55,
+    "darian": 90,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Raijin",
+    "joey": 72,
+    "darian": 97,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Ix Chel",
+    "joey": 70,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 80
+  },
+  {
+    "god_name": "Charybdis",
+    "joey": 95,
+    "darian": 74,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 40
+  },
+  {
+    "god_name": "Freya",
+    "joey": 60,
+    "darian": 91,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 1
+  },
+  {
+    "god_name": "Lancelot",
+    "joey": 70,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Camazotz",
+    "joey": 70,
+    "darian": 33,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 30
+  },
+  {
+    "god_name": "Zhong Kui",
+    "joey": 73,
+    "darian": 90,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 85
+  },
+  {
+    "god_name": "Horus",
+    "joey": 80,
+    "darian": 24,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 70
+  },
+  {
+    "god_name": "Maman Brigitte",
+    "joey": 90,
+    "darian": 30,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Chernobog",
+    "joey": 60,
+    "darian": 32,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 50
+  },
+  {
+    "god_name": "Cthulhu",
+    "joey": 50,
+    "darian": 67,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 90
+  },
+  {
+    "god_name": "Arachne",
+    "joey": 40,
+    "darian": 96,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 20
+  },
+  {
+    "god_name": "Serqet",
+    "joey": 85,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Fafnir",
+    "joey": 50,
+    "darian": 8,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 50
+  },
+  {
+    "god_name": "Thoth",
+    "joey": 75,
+    "darian": 65,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Bastet",
+    "joey": 75,
+    "darian": 35,
+    "jami": null,
+    "jamie": 50,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 50
+  },
+  {
+    "god_name": "Chronos",
+    "joey": 50,
+    "darian": 10,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 50
+  },
+  {
+    "god_name": "Baba Yaga",
+    "joey": 50,
+    "darian": 58,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 75
+  },
+  {
+    "god_name": "Maui",
+    "joey": 85,
+    "darian": 23,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Erlang Shen",
+    "joey": 60,
+    "darian": 45,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 30
+  },
+  {
+    "god_name": "Yu Huang",
+    "joey": 50,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Surtr",
+    "joey": 100,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Nox",
+    "joey": 50,
+    "darian": 42,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Xing Tian",
+    "joey": 40,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 80
+  },
+  {
+    "god_name": "Hachiman",
+    "joey": 50,
+    "darian": 5,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 70
+  },
+  {
+    "god_name": "Tiamat",
+    "joey": 93,
+    "darian": 53,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Shiva",
+    "joey": 50,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Persephone",
+    "joey": 80,
+    "darian": 4,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Martichoras",
+    "joey": 40,
+    "darian": 60,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Terra",
+    "joey": 80,
+    "darian": 2,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Heimdallr",
+    "joey": 60,
+    "darian": 25,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 70
+  },
+  {
+    "god_name": "Ares",
+    "joey": 60,
+    "darian": 12,
+    "jami": 20,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 65
+  },
+  {
+    "god_name": "Bacchus",
+    "joey": 30,
+    "darian": 83,
+    "jami": 40,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 80
+  },
+  {
+    "god_name": "Thanatos",
+    "joey": 50,
+    "darian": 29,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "He Bo",
+    "joey": 60,
+    "darian": 2,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 30
+  },
+  {
+    "god_name": "Ah Muzen Cab",
+    "joey": 55,
+    "darian": 26,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 40
+  },
+  {
+    "god_name": "Olorun",
+    "joey": 55,
+    "darian": 22,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "King Arthur",
+    "joey": 40,
+    "darian": 43,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Ravana",
+    "joey": 25,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Ah Puch",
+    "joey": 40,
+    "darian": 17,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 50
+  },
+  {
+    "god_name": "Bakasura",
+    "joey": 30,
+    "darian": 11,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 1
+  },
+  {
+    "god_name": "Cu Chulainn",
+    "joey": 40,
+    "darian": 31,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 70
+  },
+  {
+    "god_name": "Bake Kujira",
+    "joey": 1,
+    "darian": 82,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 1
+  },
+  {
+    "god_name": "Tyr",
+    "joey": 1,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Vamana",
+    "joey": 5,
+    "darian": 1,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Ao Kuang",
+    "joey": 30,
+    "darian": 14,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 1
+  },
+  {
+    "god_name": "Kumbhakarna",
+    "joey": 1,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Chiron",
+    "joey": 30,
+    "darian": 46,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 95
+  },
+  {
+    "god_name": "Hades",
+    "joey": 40,
+    "darian": 2,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 60
+  },
+  {
+    "god_name": "Ishtar",
+    "joey": 50,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 40
+  },
+  {
+    "god_name": "Ratatoskr",
+    "joey": 50,
+    "darian": 100,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Susano",
+    "joey": 40,
+    "darian": 2,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Thor",
+    "joey": 70,
+    "darian": 5,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Tsukuyomi",
+    "joey": 55,
+    "darian": 36,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Zeus",
+    "joey": 50,
+    "darian": 21,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Daji",
+    "joey": 60,
+    "darian": 37,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 20
+  },
+  {
+    "god_name": "Neith",
+    "joey": 55,
+    "darian": 55,
+    "jami": 95,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 80
+  },
+  {
+    "god_name": "Aladdin",
+    "joey": 40,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 10
+  },
+  {
+    "god_name": "Anhur",
+    "joey": 70,
+    "darian": 39,
+    "jami": 55,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 75
+  },
+  {
+    "god_name": "Eset",
+    "joey": 90,
+    "darian": 44,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 70
+  },
+  {
+    "god_name": "Nemesis",
+    "joey": 60,
+    "darian": 54,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Sol",
+    "joey": 88,
+    "darian": 88,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Xbalanque",
+    "joey": 50,
+    "darian": 5,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Nu Wa",
+    "joey": 50,
+    "darian": 87,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Janus",
+    "joey": 68,
+    "darian": 63,
+    "jami": 69,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 70
+  },
+  {
+    "god_name": "Izanami",
+    "joey": 50,
+    "darian": 51,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 60
+  },
+  {
+    "god_name": "Apollo",
+    "joey": 40,
+    "darian": 13,
+    "jami": 79,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 82
+  },
+  {
+    "god_name": "Cernunnos",
+    "joey": 20,
+    "darian": 55,
+    "jami": 86,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 50
+  },
+  {
+    "god_name": "Merlin",
+    "joey": 40,
+    "darian": 60,
+    "jami": 82,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Sobek",
+    "joey": 50,
+    "darian": 66,
+    "jami": 83,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Cabrakan",
+    "joey": 35,
+    "darian": 34,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 40
+  },
+  {
+    "god_name": "Medusa",
+    "joey": 60,
+    "darian": 73,
+    "jami": null,
+    "jamie": 50,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 75
+  },
+  {
+    "god_name": "Ymir",
+    "joey": 40,
+    "darian": 78,
+    "jami": 100,
+    "jamie": 80,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Kukulkan",
+    "joey": 40,
+    "darian": 56,
+    "jami": 95,
+    "jamie": 80,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Hera",
+    "joey": 84,
+    "darian": 86,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 60
+  },
+  {
+    "god_name": "Danzaburou",
+    "joey": 72,
+    "darian": 9,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 70
+  },
+  {
+    "god_name": "Ganesha",
+    "joey": 40,
+    "darian": 81,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 100
+  },
+  {
+    "god_name": "Cupid",
+    "joey": 40,
+    "darian": 76,
+    "jami": 20,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 60
+  },
+  {
+    "god_name": "Khepri",
+    "joey": 25,
+    "darian": null,
+    "jami": 8,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Hercules",
+    "joey": 1,
+    "darian": 59,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 30
+  },
+  {
+    "god_name": "Hou Yi",
+    "joey": 1,
+    "darian": 4,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 50
+  },
+  {
+    "god_name": "Loki",
+    "joey": 1,
+    "darian": 3,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Mercury",
+    "joey": 1,
+    "darian": 2,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Sun Wukong",
+    "joey": 40,
+    "darian": 40,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Ullr",
+    "joey": 1,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Vulcan",
+    "joey": 1,
+    "darian": 1,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Atlas",
+    "joey": 70,
+    "darian": 66,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 90
+  },
+  {
+    "god_name": "Cliodhna",
+    "joey": 95,
+    "darian": 93,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 80
+  },
+  {
+    "god_name": "Skadi",
+    "joey": 100,
+    "darian": 100,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Guan Yu",
+    "joey": 50,
+    "darian": 45,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 50
+  },
+  {
+    "god_name": "Hua Mulan",
+    "joey": 86,
+    "darian": 19,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 90
+  },
+  {
+    "god_name": "Hun Batz",
+    "joey": 60,
+    "darian": 64,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 70
+  },
+  {
+    "god_name": "Osiris",
+    "joey": 50,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Fenrir",
+    "joey": 25,
+    "darian": 7,
+    "jami": 69,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 60
+  },
+  {
+    "god_name": "Anubis",
+    "joey": 40,
+    "darian": 15,
+    "jami": 95,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 80
+  },
+  {
+    "god_name": "Geb",
+    "joey": 40,
+    "darian": 62,
+    "jami": 76,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 80
+  },
+  {
+    "god_name": "Jormungandr",
+    "joey": 50,
+    "darian": 4,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 40
+  },
+  {
+    "god_name": "Odin",
+    "joey": 50,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Ra",
+    "joey": 60,
+    "darian": 41,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": null
+  },
+  {
+    "god_name": "Rama",
+    "joey": 40,
+    "darian": null,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 80
+  },
+  {
+    "god_name": "Chaac",
+    "joey": 20,
+    "darian": 70,
+    "jami": null,
+    "jamie": null,
+    "updated_at": "2026-08-17T11:30:30.505741+00:00",
+    "mike": 65
+  }
+]

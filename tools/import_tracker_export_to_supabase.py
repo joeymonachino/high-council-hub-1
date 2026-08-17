@@ -291,6 +291,10 @@ def import_tracker_export(player: str, tracker_id: str, export_path: Path, dry_r
 
     if missing_rows and not dry_run:
         sb_upsert("smitesource_match_history", missing_rows, "record_key")
+        try:
+            app.upsert_match_summary_rows(missing_rows)
+        except Exception:
+            pass
 
     return {
         "player": player,

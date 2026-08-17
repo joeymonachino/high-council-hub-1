@@ -1,0 +1,4301 @@
+[
+  {
+    "name": "Stone of Binding",
+    "display_name": "Stone of Binding",
+    "slug": "stone-of-binding",
+    "source": "history-alias",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/stone-of-binding.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "Items",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 13,
+    "updated_at": "2026-08-17T12:07:10.02927+00:00"
+  },
+  {
+    "name": "Obsidian Shard",
+    "display_name": "Obsidian Shard",
+    "slug": "obsidian-shard",
+    "source": "history",
+    "source_url": "",
+    "image_url": "",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 192,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Hand of the Abyss",
+    "display_name": "Hand of the Abyss",
+    "slug": "hand-of-the-abyss",
+    "source": "history",
+    "source_url": null,
+    "image_url": "",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 26,
+    "updated_at": "2026-08-17T12:04:13.841567+00:00"
+  },
+  {
+    "name": "Gladiator Shield",
+    "display_name": "Gladiator Shield",
+    "slug": "gladiator-shield",
+    "source": "history",
+    "source_url": "",
+    "image_url": "",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 99,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Erosion",
+    "display_name": "Erosion",
+    "slug": "erosion",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/erosion.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 7,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Ethereal Staff",
+    "display_name": "Ethereal Staff",
+    "slug": "ethereal-staff",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/ethereal-staff.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 3,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Evil Eye",
+    "display_name": "Evil Eye",
+    "slug": "evil-eye",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/evil-eye.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 47,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Flaming Pearl",
+    "display_name": "Flaming Pearl",
+    "slug": "flaming-pearl",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/flaming-pearl.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 3,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Freyas Tears",
+    "display_name": "Freyas Tears",
+    "slug": "freyas-tears",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/freyas-tears.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 25,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Gem",
+    "display_name": "Gem",
+    "slug": "gem",
+    "source": "history",
+    "source_url": "",
+    "image_url": "",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 10,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Genjis Guard",
+    "display_name": "Genjis Guard",
+    "slug": "genjis-guard",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/genjis-guard.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 163,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Gjallarflare",
+    "display_name": "Gjallarflare",
+    "slug": "gjallarflare",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/gjallarflare.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Consumable"
+    ],
+    "sample_count": 8,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Glorious Pridwen",
+    "display_name": "Glorious Pridwen",
+    "slug": "glorious-pridwen",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/glorious-pridwen.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 5,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Golden Blade",
+    "display_name": "Golden Blade",
+    "slug": "golden-blade",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/golden-blade.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 32,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Rod of Tahuti",
+    "display_name": "Rod of Tahuti",
+    "slug": "rod-of-tahuti",
+    "source": "history",
+    "source_url": "",
+    "image_url": "",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 173,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Brawler's Beat Stick",
+    "display_name": "Brawler's Beat Stick",
+    "slug": "brawler-ss-beat-stick",
+    "source": "history",
+    "source_url": "",
+    "image_url": "",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items",
+      "Talent"
+    ],
+    "sample_count": 53,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Resolute Mantle",
+    "display_name": "Resolute Mantle",
+    "slug": "resolute-mantle",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/resolute-mantle.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 74,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Restorative Amanita",
+    "display_name": "Restorative Amanita",
+    "slug": "restorative-amanita",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/restorative-amanita.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 22,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Ring",
+    "display_name": "Ring",
+    "slug": "ring",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/ring.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 10,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Riptalon",
+    "display_name": "Riptalon",
+    "slug": "riptalon",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/riptalon.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 80,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Rune",
+    "display_name": "Rune",
+    "slug": "rune",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/rune.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 6,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Runeforged Hammer",
+    "display_name": "Runeforged Hammer",
+    "slug": "runeforged-hammer",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/runeforged-hammer.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 131,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Sabre",
+    "display_name": "Sabre",
+    "slug": "sabre",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/sabre.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 3,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Sages Ring",
+    "display_name": "Sages Ring",
+    "slug": "sages-ring",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/sages-ring.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 8,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Sanguine Lash",
+    "display_name": "Sanguine Lash",
+    "slug": "sanguine-lash",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/sanguine-lash.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 15,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Screeching Gargoyle",
+    "display_name": "Screeching Gargoyle",
+    "slug": "screeching-gargoyle",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/screeching-gargoyle.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 5,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Scythe",
+    "display_name": "Scythe",
+    "slug": "scythe",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/scythe.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 6,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Selflessness",
+    "display_name": "Selflessness",
+    "slug": "selflessness",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/selflessness.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 29,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Shape Shifter Shield",
+    "display_name": "Shape Shifter Shield",
+    "slug": "shape-shifter-shield",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/shape-shifter-shield.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 18,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Shield",
+    "display_name": "Shield",
+    "slug": "shield",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/shield.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 9,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Acorn T2 Lively Acorn",
+    "display_name": "Acorn T2 Lively Acorn",
+    "slug": "acorn-t2-lively-acorn",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/acorn-t2-lively-acorn.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 1,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "magisshelter",
+    "display_name": "magisshelter",
+    "slug": "magisshelter",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/magisshelter.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 13,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Acorn T3 Bristlebush",
+    "display_name": "Acorn T3 Bristlebush",
+    "slug": "acorn-t3-bristlebush",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/acorn-t3-bristlebush.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 5,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Acorn T3 Thickbark",
+    "display_name": "Acorn T3 Thickbark",
+    "slug": "acorn-t3-thickbark",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/acorn-t3-thickbark.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 3,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Acorn T3 Thistlethorn",
+    "display_name": "Acorn T3 Thistlethorn",
+    "slug": "acorn-t3-thistlethorn",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/acorn-t3-thistlethorn.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 1,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Adamantine Sickle",
+    "display_name": "Adamantine Sickle",
+    "slug": "adamantine-sickle",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/adamantine-sickle.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Adroit Ring",
+    "display_name": "Adroit Ring",
+    "slug": "adroit-ring",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/adroit-ring.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 9,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Aegis of Acceleration",
+    "display_name": "Aegis of Acceleration",
+    "slug": "aegis-of-acceleration",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/aegis-of-acceleration.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Relic"
+    ],
+    "sample_count": 298,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Agility Greaves",
+    "display_name": "Agility Greaves",
+    "slug": "agility-greaves",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/agility-greaves.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Agility Relic",
+    "display_name": "Agility Relic",
+    "slug": "agility-relic",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/agility-relic.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Relic"
+    ],
+    "sample_count": 70,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Alchemist Coat",
+    "display_name": "Alchemist Coat",
+    "slug": "alchemist-coat",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/alchemist-coat.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 5,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Ancient Signet",
+    "display_name": "Ancient Signet",
+    "slug": "ancient-signet",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/ancient-signet.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 20,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Ancile Shield",
+    "display_name": "Ancile Shield",
+    "slug": "ancile-shield",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/ancile-shield.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 1,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Arondight",
+    "display_name": "Arondight",
+    "slug": "arondight",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/arondight.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 23,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Arrow",
+    "display_name": "Arrow",
+    "slug": "arrow",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/arrow.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 81,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Aspect Arcanist",
+    "display_name": "Aspect Arcanist",
+    "slug": "aspect-arcanist",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/aspect-arcanist.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 92,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Aspect Barbarian",
+    "display_name": "Aspect Barbarian",
+    "slug": "aspect-barbarian",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/aspect-barbarian.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 82,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Aspect Ranger",
+    "display_name": "Aspect Ranger",
+    "slug": "aspect-ranger",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/aspect-ranger.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 41,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Avenging Blade",
+    "display_name": "Avenging Blade",
+    "slug": "avenging-blade",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/avenging-blade.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 9,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Axe",
+    "display_name": "Axe",
+    "slug": "axe",
+    "source": "history",
+    "source_url": "",
+    "image_url": "",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 23,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Bancrofts Talon",
+    "display_name": "Bancrofts Talon",
+    "slug": "bancrofts-talon",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/bancrofts-talon.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 46,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Barbed Carver",
+    "display_name": "Barbed Carver",
+    "slug": "barbed-carver",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/barbed-carver.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 31,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Battle Axe",
+    "display_name": "Battle Axe",
+    "slug": "battle-axe",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/battle-axe.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 4,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Berserker",
+    "display_name": "Berserker",
+    "slug": "berserker",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/berserker.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 72,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Berserker's Shield",
+    "display_name": "Berserker's Shield",
+    "slug": "berserker-ss-shield",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/berserkers-shield.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 4,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Bindings of Lyngvi",
+    "display_name": "Bindings of Lyngvi",
+    "slug": "bindings-of-lyngvi",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/bindings-of-lyngvi.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 13,
+    "updated_at": "2026-08-17T12:04:13.590032+00:00"
+  },
+  {
+    "name": "Blink Rune",
+    "display_name": "Blink Rune",
+    "slug": "blink-rune",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/blink-rune.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Relic"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Blood Forged Blade",
+    "display_name": "Blood Forged Blade",
+    "slug": "blood-forged-blade",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/blood-forged-blade.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 3,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Blood-Bound Book",
+    "display_name": "Blood-Bound Book",
+    "slug": "blood-bound-book",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/blood-bound-book.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 12,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Bloodsoaked Shroud",
+    "display_name": "Bloodsoaked Shroud",
+    "slug": "bloodsoaked-shroud",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/bloodsoaked-shroud.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 9,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Bluestone Brooch",
+    "display_name": "Bluestone Brooch",
+    "slug": "bluestone-brooch",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/bluestone-brooch.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 65,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Bluestone Pendant",
+    "display_name": "Bluestone Pendant",
+    "slug": "bluestone-pendant",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/bluestone-pendant.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 64,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Book of Thoth",
+    "display_name": "Book of Thoth",
+    "slug": "book-of-thoth",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/book-of-thoth.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 129,
+    "updated_at": "2026-08-17T12:04:13.590032+00:00"
+  },
+  {
+    "name": "Bow",
+    "display_name": "Bow",
+    "slug": "bow",
+    "source": "history",
+    "source_url": "",
+    "image_url": "",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 10,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Bowl Drum",
+    "display_name": "Bowl Drum",
+    "slug": "bowl-drum",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/bowl-drum.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Bragis Harp",
+    "display_name": "Bragis Harp",
+    "slug": "bragis-harp",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/bragis-harp.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 100,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Breastplate of Valor",
+    "display_name": "Breastplate of Valor",
+    "slug": "breastplate-of-valor",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/breastplate-of-valor.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 84,
+    "updated_at": "2026-08-17T12:04:13.590032+00:00"
+  },
+  {
+    "name": "Buff Battle Cry",
+    "display_name": "Buff Battle Cry",
+    "slug": "buff-battle-cry",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/buff-battle-cry.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Consumable"
+    ],
+    "sample_count": 1,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Bumba's Cudgel",
+    "display_name": "Bumba's Cudgel",
+    "slug": "bumba-ss-cudgel",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/bumbas-cudgel.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Bumbas Cudgel",
+    "display_name": "Bumbas Cudgel",
+    "slug": "bumbas-cudgel",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/bumbas-cudgel.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 28,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Bumbas Dagger",
+    "display_name": "Bumbas Dagger",
+    "slug": "bumbas-dagger",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/bumbas-dagger.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 22,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Bumbas Hammer",
+    "display_name": "Bumbas Hammer",
+    "slug": "bumbas-hammer",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/bumbas-hammer.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 18,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Bumbas Spear",
+    "display_name": "Bumbas Spear",
+    "slug": "bumbas-spear",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/bumbas-spear.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 21,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Caestus",
+    "display_name": "Caestus",
+    "slug": "caestus",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/caestus.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Captains Ring",
+    "display_name": "Captains Ring",
+    "slug": "captains-ring",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/captains-ring.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 9,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Chandras Grace",
+    "display_name": "Chandras Grace",
+    "slug": "chandras-grace",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/chandras-grace.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 1,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Chronos Pendant",
+    "display_name": "Chronos Pendant",
+    "slug": "chronos-pendant",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/chronos-pendant.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 109,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Circes Hexstone",
+    "display_name": "Circes Hexstone",
+    "slug": "circes-hexstone",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/circes-hexstone.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 4,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Circlet",
+    "display_name": "Circlet",
+    "slug": "circlet",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/circlet.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 1,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Conduit Gem",
+    "display_name": "Conduit Gem",
+    "slug": "conduit-gem",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/conduit-gem.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 104,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Contagion",
+    "display_name": "Contagion",
+    "slug": "contagion",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/contagion.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 9,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Crusher",
+    "display_name": "Crusher",
+    "slug": "crusher",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/crusher.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 22,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Curios Gjallarflare",
+    "display_name": "Curios Gjallarflare",
+    "slug": "curios-gjallarflare",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/curios-gjallarflare.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Consumable"
+    ],
+    "sample_count": 38,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Cursed Sickle",
+    "display_name": "Cursed Sickle",
+    "slug": "cursed-sickle",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/cursed-sickle.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 3,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Curseweaver T3 Tweak",
+    "display_name": "Curseweaver T3 Tweak",
+    "slug": "curseweaver-t3-tweak",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/curseweaver-t3-tweak.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 11,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Dagger of Frenzy",
+    "display_name": "Dagger of Frenzy",
+    "slug": "dagger-of-frenzy",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/dagger-of-frenzy.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 40,
+    "updated_at": "2026-08-17T12:04:13.590032+00:00"
+  },
+  {
+    "name": "Damaru",
+    "display_name": "Damaru",
+    "slug": "damaru",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/damaru.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 6,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Daybreak Gavel",
+    "display_name": "Daybreak Gavel",
+    "slug": "daybreak-gavel",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/daybreak-gavel.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 3,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Death Metal",
+    "display_name": "Death Metal",
+    "slug": "death-metal",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/death-metal.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 4,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Death's Toll",
+    "display_name": "Death's Toll",
+    "slug": "death-ss-toll",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/deaths-toll.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 4,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Deathbringer",
+    "display_name": "Deathbringer",
+    "slug": "deathbringer",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/deathbringer.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items",
+      "Talent"
+    ],
+    "sample_count": 118,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Deaths Toll",
+    "display_name": "Deaths Toll",
+    "slug": "deaths-toll",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/deaths-toll.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 52,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Deaths Toll Upgrade",
+    "display_name": "Deaths Toll Upgrade",
+    "slug": "deaths-toll-upgrade",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/deaths-toll-upgrade.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 77,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Demon Blade",
+    "display_name": "Demon Blade",
+    "slug": "demon-blade",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/baneful-rapier.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 53,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Design Temp T3 New Sun Beam Bow",
+    "display_name": "Design Temp T3 New Sun Beam Bow",
+    "slug": "design-temp-t3-new-sun-beam-bow",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/design-temp-t3-new-sun-beam-bow.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 67,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Devours Gloves",
+    "display_name": "Devours Gloves",
+    "slug": "devours-gloves",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/devours-gloves.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 59,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Divine Ruin",
+    "display_name": "Divine Ruin",
+    "slug": "divine-ruin",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/divine-ruin.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 68,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Dominance",
+    "display_name": "Dominance",
+    "slug": "dominance",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/dominance.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 4,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Doom Orb",
+    "display_name": "Doom Orb",
+    "slug": "doom-orb",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/doom-orb.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 19,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Doublet of Binding",
+    "display_name": "Doublet of Binding",
+    "slug": "doublet-of-binding",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/doublet-of-binding.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 1,
+    "updated_at": "2026-08-17T12:04:13.590032+00:00"
+  },
+  {
+    "name": "Draconic Scales",
+    "display_name": "Draconic Scales",
+    "slug": "draconic-scales",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/draconic-scales.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 47,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Dreamers Idol",
+    "display_name": "Dreamers Idol",
+    "slug": "dreamers-idol",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/dreamers-idol.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 1,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Dwarf Forged Plate Physical",
+    "display_name": "Dwarf Forged Plate Physical",
+    "slug": "dwarf-forged-plate-physical",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/dwarf-forged-plate-physical.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 26,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Engraved Guard",
+    "display_name": "Engraved Guard",
+    "slug": "engraved-guard",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/engraved-guard.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 17,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "erosbow",
+    "display_name": "erosbow",
+    "slug": "erosbow",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/erosbow.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 35,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Eye of Erebus",
+    "display_name": "Eye of Erebus",
+    "slug": "eye-of-erebus",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/eye-of-erebus.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 5,
+    "updated_at": "2026-08-17T12:04:13.841567+00:00"
+  },
+  {
+    "name": "Eye of the Storm",
+    "display_name": "Eye of the Storm",
+    "slug": "eye-of-the-storm",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/eye-of-the-storm.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 1,
+    "updated_at": "2026-08-17T12:04:13.841567+00:00"
+  },
+  {
+    "name": "Gauntlet of Thebes",
+    "display_name": "Gauntlet of Thebes",
+    "slug": "gauntlet-of-thebes",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/gauntlet-of-thebes.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 21,
+    "updated_at": "2026-08-17T12:04:13.841567+00:00"
+  },
+  {
+    "name": "Gem of Focus",
+    "display_name": "Gem of Focus",
+    "slug": "gem-of-focus",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/gem-of-focus.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 86,
+    "updated_at": "2026-08-17T12:04:13.841567+00:00"
+  },
+  {
+    "name": "Gem of Isolation",
+    "display_name": "Gem of Isolation",
+    "slug": "gem-of-isolation",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/gem-of-isolation.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 4,
+    "updated_at": "2026-08-17T12:04:13.841567+00:00"
+  },
+  {
+    "name": "Hastened Fatalis",
+    "display_name": "Hastened Fatalis",
+    "slug": "hastened-fatalis",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/hastened-fatalis.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 155,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Heartseeker",
+    "display_name": "Heartseeker",
+    "slug": "heartseeker",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/heartseeker.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 65,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Heartwood CHarm",
+    "display_name": "Heartwood CHarm",
+    "slug": "heartwood-charm",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/heartwood-charm.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 4,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Helm of Radiance",
+    "display_name": "Helm of Radiance",
+    "slug": "helm-of-radiance",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/helm-of-radiance.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 11,
+    "updated_at": "2026-08-17T12:04:13.841567+00:00"
+  },
+  {
+    "name": "Heroism",
+    "display_name": "Heroism",
+    "slug": "heroism",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/heroism.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 38,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Hide of the Nemean Lion",
+    "display_name": "Hide of the Nemean Lion",
+    "slug": "hide-of-the-nemean-lion",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/hide-of-the-nemean-lion.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Hideofthe Nemean Lion",
+    "display_name": "Hideofthe Nemean Lion",
+    "slug": "hideofthe-nemean-lion",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/hideofthe-nemean-lion.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 28,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Hunters Bow",
+    "display_name": "Hunters Bow",
+    "slug": "hunters-bow",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/hunters-bow.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 45,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Hunters Cowl",
+    "display_name": "Hunters Cowl",
+    "slug": "hunters-cowl",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/hunters-cowl.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 38,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Hussars Wings",
+    "display_name": "Hussars Wings",
+    "slug": "hussars-wings",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/hussars-wings.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 5,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Hydras Lament",
+    "display_name": "Hydras Lament",
+    "slug": "hydras-lament",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/hydras-lament.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 70,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Influences Sunder",
+    "display_name": "Influences Sunder",
+    "slug": "influences-sunder",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/influences-sunder.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Relic"
+    ],
+    "sample_count": 92,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Influences Sundering Echo",
+    "display_name": "Influences Sundering Echo",
+    "slug": "influences-sundering-echo",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/influences-sundering-echo.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 5,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Infused Axe",
+    "display_name": "Infused Axe",
+    "slug": "infused-axe",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/infused-axe.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 7,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Items T3 Omen Drum",
+    "display_name": "Items T3 Omen Drum",
+    "slug": "items-t3-omen-drum",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/items-t3-omen-drum.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Jotunn's Revenge",
+    "display_name": "Jotunn's Revenge",
+    "slug": "jotunn-ss-revenge",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/jotunns-revenge.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Jotunns Revenge",
+    "display_name": "Jotunns Revenge",
+    "slug": "jotunns-revenge",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/jotunns-revenge.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 85,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Killing Stone",
+    "display_name": "Killing Stone",
+    "slug": "killing-stone",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/killing-stone.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 19,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Kinetic Cuirass",
+    "display_name": "Kinetic Cuirass",
+    "slug": "kinetic-cuirass",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/kinetic-cuirass.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 15,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Kopesh",
+    "display_name": "Kopesh",
+    "slug": "kopesh",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/kopesh.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 7,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Leather Cowl",
+    "display_name": "Leather Cowl",
+    "slug": "leather-cowl",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/leather-cowl.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 43,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Legionnaire Armor",
+    "display_name": "Legionnaire Armor",
+    "slug": "legionnaire-armor",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/legionnaire-armor.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 18,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Lernaean Bow",
+    "display_name": "Lernaean Bow",
+    "slug": "lernaean-bow",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/lernaean-bow.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 76,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Levianthans Hide",
+    "display_name": "Levianthans Hide",
+    "slug": "levianthans-hide",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/levianthans-hide.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 36,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Lucerne Hammer",
+    "display_name": "Lucerne Hammer",
+    "slug": "lucerne-hammer",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/lucerne-hammer.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 33,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Mana Tome",
+    "display_name": "Mana Tome",
+    "slug": "mana-tome",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/mana-tome.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 9,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Manchu Bow",
+    "display_name": "Manchu Bow",
+    "slug": "manchu-bow",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/manchu-bow.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 46,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Mantle of Discord",
+    "display_name": "Mantle of Discord",
+    "slug": "mantle-of-discord",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/mantle-of-discord.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 34,
+    "updated_at": "2026-08-17T12:04:13.841567+00:00"
+  },
+  {
+    "name": "Medal of Defense",
+    "display_name": "Medal of Defense",
+    "slug": "medal-of-defense",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/medal-of-defense.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 17,
+    "updated_at": "2026-08-17T12:04:13.841567+00:00"
+  },
+  {
+    "name": "Medal of Disruption",
+    "display_name": "Medal of Disruption",
+    "slug": "medal-of-disruption",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/medal-of-disruption.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 12,
+    "updated_at": "2026-08-17T12:04:13.841567+00:00"
+  },
+  {
+    "name": "Medallion",
+    "display_name": "Medallion",
+    "slug": "medallion",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/medallion.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 12,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Mercurys Talaria",
+    "display_name": "Mercurys Talaria",
+    "slug": "mercurys-talaria",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/mercurys-talaria.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Midgardian Mail",
+    "display_name": "Midgardian Mail",
+    "slug": "midgardian-mail",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/midgardian-mail.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 7,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Musashis Dual Swords",
+    "display_name": "Musashis Dual Swords",
+    "slug": "musashis-dual-swords",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/musashis-dual-swords.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 25,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Mystical Mail",
+    "display_name": "Mystical Mail",
+    "slug": "mystical-mail",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/mystical-mail.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 16,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Necronomicon",
+    "display_name": "Necronomicon",
+    "slug": "necronomicon",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/necronomicon.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 3,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Nimble Ring",
+    "display_name": "Nimble Ring",
+    "slug": "nimble-ring",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/nimble-ring.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 30,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Oath-Sworn Spear",
+    "display_name": "Oath-Sworn Spear",
+    "slug": "oath-sworn-spear",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/oath-sworn-spear.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 42,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Odysseus Bow",
+    "display_name": "Odysseus Bow",
+    "slug": "odysseus-bow",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/odysseus-bow.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 192,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Olmec Blue",
+    "display_name": "Olmec Blue",
+    "slug": "olmec-blue",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/olmec-blue.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items",
+      "Talent"
+    ],
+    "sample_count": 10,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Oni Hunter's Garb",
+    "display_name": "Oni Hunter's Garb",
+    "slug": "oni-hunter-ss-garb",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/oni-hunters-garb.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Oni Hunters Garb",
+    "display_name": "Oni Hunters Garb",
+    "slug": "oni-hunters-garb",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/oni-hunters-garb.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 81,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Oracle Staff",
+    "display_name": "Oracle Staff",
+    "slug": "oracle-staff",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/oracle-staff.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 22,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Parashu",
+    "display_name": "Parashu",
+    "slug": "parashu",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/parashu.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 5,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Pendulum Blade",
+    "display_name": "Pendulum Blade",
+    "slug": "pendulum-blade",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/pendulum-blade.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 1,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Phantom Shell",
+    "display_name": "Phantom Shell",
+    "slug": "phantom-shell",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/phantom-shell.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Relic"
+    ],
+    "sample_count": 267,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Pharaohs Curse",
+    "display_name": "Pharaohs Curse",
+    "slug": "pharaohs-curse",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/pharaohs-curse.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 13,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Plated Armor",
+    "display_name": "Plated Armor",
+    "slug": "plated-armor",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/plated-armor.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 1,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Polynomicon",
+    "display_name": "Polynomicon",
+    "slug": "polynomicon",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/polynomicon.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 37,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Prophetic Cloak",
+    "display_name": "Prophetic Cloak",
+    "slug": "prophetic-cloak",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/prophetic-cloak.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 80,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Qin's Blade",
+    "display_name": "Qin's Blade",
+    "slug": "qin-ss-blade",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/qins-blade.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Qins Blade",
+    "display_name": "Qins Blade",
+    "slug": "qins-blade",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/qins-blade.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 132,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Radiant Bulwark",
+    "display_name": "Radiant Bulwark",
+    "slug": "radiant-bulwark",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/radiant-bulwark.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Rage",
+    "display_name": "Rage",
+    "slug": "rage",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/rage.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 89,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Regrowth Striders",
+    "display_name": "Regrowth Striders",
+    "slug": "regrowth-striders",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/regrowth-striders.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 15,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Reliquary",
+    "display_name": "Reliquary",
+    "slug": "reliquary",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/reliquary.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 1,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Ring of Dispel",
+    "display_name": "Ring of Dispel",
+    "slug": "ring-of-dispel",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/ring-of-dispel.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 17,
+    "updated_at": "2026-08-17T12:04:14.115069+00:00"
+  },
+  {
+    "name": "Rod of Ascelpius T3",
+    "display_name": "Rod of Ascelpius T3",
+    "slug": "rod-of-ascelpius-t3",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/rod-of-ascelpius-t3.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 1,
+    "updated_at": "2026-08-17T12:04:14.115069+00:00"
+  },
+  {
+    "name": "Sands of Time",
+    "display_name": "Sands of Time",
+    "slug": "sands-of-time",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/sands-of-time.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 51,
+    "updated_at": "2026-08-17T12:04:14.115069+00:00"
+  },
+  {
+    "name": "Sands of Time Upgrade",
+    "display_name": "Sands of Time Upgrade",
+    "slug": "sands-of-time-upgrade",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/sands-of-time-upgrade.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 44,
+    "updated_at": "2026-08-17T12:04:14.115069+00:00"
+  },
+  {
+    "name": "Scepter of Dominion",
+    "display_name": "Scepter of Dominion",
+    "slug": "scepter-of-dominion",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/scepter-of-dominion.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 13,
+    "updated_at": "2026-08-17T12:04:14.115069+00:00"
+  },
+  {
+    "name": "Shell of Rebuke",
+    "display_name": "Shell of Rebuke",
+    "slug": "shell-of-rebuke",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/shell-of-rebuke.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 9,
+    "updated_at": "2026-08-17T12:04:14.115069+00:00"
+  },
+  {
+    "name": "Shield of the Phoenix",
+    "display_name": "Shield of the Phoenix",
+    "slug": "shield-of-the-phoenix",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/shield-of-the-phoenix.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 44,
+    "updated_at": "2026-08-17T12:04:14.115069+00:00"
+  },
+  {
+    "name": "shieldsplitter",
+    "display_name": "shieldsplitter",
+    "slug": "shieldsplitter",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/shieldsplitter.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 14,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Shifter's Shield",
+    "display_name": "Shifter's Shield",
+    "slug": "shifter-ss-shield",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/shifters-shield.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Shroud of Vengeance",
+    "display_name": "Shroud of Vengeance",
+    "slug": "shroud-of-vengeance",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/shroud-of-vengeance.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 15,
+    "updated_at": "2026-08-17T12:04:14.115069+00:00"
+  },
+  {
+    "name": "Silverbranch Bow",
+    "display_name": "Silverbranch Bow",
+    "slug": "silverbranch-bow",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/silverbranch-bow.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 4,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Skeggox",
+    "display_name": "Skeggox",
+    "slug": "skeggox",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/skeggox.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 34,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Soul Gem",
+    "display_name": "Soul Gem",
+    "slug": "soul-gem",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/soul-gem.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 51,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Soul Locket",
+    "display_name": "Soul Locket",
+    "slug": "soul-locket",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/soul-locket.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 6,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Soul Reaver",
+    "display_name": "Soul Reaver",
+    "slug": "soul-reaver",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/soul-devourer.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 80,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Soul Reliquary",
+    "display_name": "Soul Reliquary",
+    "slug": "soul-reliquary",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/soul-reliquary.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 5,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Spear of Desolation",
+    "display_name": "Spear of Desolation",
+    "slug": "spear-of-desolation",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/spear-of-desolation.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 98,
+    "updated_at": "2026-08-17T12:04:14.115069+00:00"
+  },
+  {
+    "name": "Shogun's Kusari",
+    "display_name": "Shogun's Kusari",
+    "slug": "shogun-ss-kusari",
+    "source": "history",
+    "source_url": "",
+    "image_url": "",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 82,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Spearofthe Magus",
+    "display_name": "Spearofthe Magus",
+    "slug": "spearofthe-magus",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/spearofthe-magus.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 6,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Spectral Armor",
+    "display_name": "Spectral Armor",
+    "slug": "spectral-armor",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/spectral-armor.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 78,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Sphere of Negation",
+    "display_name": "Sphere of Negation",
+    "slug": "sphere-of-negation",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/sphere-of-negation.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 45,
+    "updated_at": "2026-08-17T12:04:14.115069+00:00"
+  },
+  {
+    "name": "Spirit Robe",
+    "display_name": "Spirit Robe",
+    "slug": "spirit-robe",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/spirit-robe.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 180,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Staff of Cosmic Horror",
+    "display_name": "Staff of Cosmic Horror",
+    "slug": "staff-of-cosmic-horror",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/staff-of-cosmic-horror.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 17,
+    "updated_at": "2026-08-17T12:04:14.115069+00:00"
+  },
+  {
+    "name": "Staff of Myrddin",
+    "display_name": "Staff of Myrddin",
+    "slug": "staff-of-myrddin",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/staff-of-myrddin.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 11,
+    "updated_at": "2026-08-17T12:04:14.115069+00:00"
+  },
+  {
+    "name": "Stampede",
+    "display_name": "Stampede",
+    "slug": "stampede",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/stampede.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 41,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Stygian Anchor",
+    "display_name": "Stygian Anchor",
+    "slug": "stygian-anchor",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/stygian-anchor.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 60,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Sundering Axe",
+    "display_name": "Sundering Axe",
+    "slug": "sundering-axe",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/sundering-axe.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Sundering Axe Upgrade",
+    "display_name": "Sundering Axe Upgrade",
+    "slug": "sundering-axe-upgrade",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/sundering-axe-upgrade.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 106,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Survivors Sash",
+    "display_name": "Survivors Sash",
+    "slug": "survivors-sash",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/survivors-sash.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 14,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "t Blink 128",
+    "display_name": "t Blink 128",
+    "slug": "t-blink-128",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/t-blink-128.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Relic"
+    ],
+    "sample_count": 127,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "t Blink Abyss 128",
+    "display_name": "t Blink Abyss 128",
+    "slug": "t-blink-abyss-128",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/t-blink-abyss-128.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 16,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Talisman of Purification",
+    "display_name": "Talisman of Purification",
+    "slug": "talisman-of-purification",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/talisman-of-purification.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T12:04:14.115069+00:00"
+  },
+  {
+    "name": "Tekko Kagi",
+    "display_name": "Tekko Kagi",
+    "slug": "tekko-kagi",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/tekko-kagi.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 17,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "The Executioner",
+    "display_name": "The Executioner",
+    "slug": "the-executioner",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/the-executioner.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items",
+      "Talent"
+    ],
+    "sample_count": 29,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "The Reaper",
+    "display_name": "The Reaper",
+    "slug": "the-reaper",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/the-reaper.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 13,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "The World Stone",
+    "display_name": "The World Stone",
+    "slug": "the-world-stone",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/the-world-stone.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 48,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Time Lock Aegis",
+    "display_name": "Time Lock Aegis",
+    "slug": "time-lock-aegis",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/time-lock-aegis.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 4,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Titan's Bane",
+    "display_name": "Titan's Bane",
+    "slug": "titan-ss-bane",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/titans-bane.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 294,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Totem of Death",
+    "display_name": "Totem of Death",
+    "slug": "totem-of-death",
+    "source": "history",
+    "source_url": null,
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/totem-of-death.jpg",
+    "summary": null,
+    "cost": null,
+    "item_type": null,
+    "tags": [],
+    "stats": [],
+    "passive": null,
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 51,
+    "updated_at": "2026-08-17T12:04:14.115069+00:00"
+  },
+  {
+    "name": "Toxic Blade",
+    "display_name": "Toxic Blade",
+    "slug": "toxic-blade",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/toxic-blade.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 6,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Transcendence",
+    "display_name": "Transcendence",
+    "slug": "transcendence",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/transcendence.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 155,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Tritons Conch",
+    "display_name": "Tritons Conch",
+    "slug": "tritons-conch",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/tritons-conch.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 30,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Typhons Heart",
+    "display_name": "Typhons Heart",
+    "slug": "typhons-heart",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/typhons-heart.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 33,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Tyrfing",
+    "display_name": "Tyrfing",
+    "slug": "tyrfing",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/tyrfing.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 106,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Umbral Link",
+    "display_name": "Umbral Link",
+    "slug": "umbral-link",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/umbral-link.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 2,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Utility Purification Beads",
+    "display_name": "Utility Purification Beads",
+    "slug": "utility-purification-beads",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/utility-purification-beads.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Relic"
+    ],
+    "sample_count": 341,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Vampiric Cloak",
+    "display_name": "Vampiric Cloak",
+    "slug": "vampiric-cloak",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/vampiric-cloak.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 5,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Veve Charm",
+    "display_name": "Veve Charm",
+    "slug": "veve-charm",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/veve-charm.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 15,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Vital Amplifier",
+    "display_name": "Vital Amplifier",
+    "slug": "vital-amplifier",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/vital-amplifier.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 5,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Void Shard",
+    "display_name": "Void Shard",
+    "slug": "void-shard",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/void-shard.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 37,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Void Shield",
+    "display_name": "Void Shield",
+    "slug": "void-shield",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/void-shield.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 7,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Void Stone",
+    "display_name": "Void Stone",
+    "slug": "void-stone",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/void-stone.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 25,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "War Banner",
+    "display_name": "War Banner",
+    "slug": "war-banner",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/war-banner.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 50,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "War Flag",
+    "display_name": "War Flag",
+    "slug": "war-flag",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/war-flag.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Starter"
+    ],
+    "sample_count": 26,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Wish-Granting Pearl",
+    "display_name": "Wish-Granting Pearl",
+    "slug": "wish-granting-pearl",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/wish-granting-pearl.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 1,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Wyrmskin Hide",
+    "display_name": "Wyrmskin Hide",
+    "slug": "wyrmskin-hide",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/wyrmskin-hide.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 12,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Xibalban Effigy New",
+    "display_name": "Xibalban Effigy New",
+    "slug": "xibalban-effigy-new",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/xibalban-effigy-new.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 3,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Yogis Necklace",
+    "display_name": "Yogis Necklace",
+    "slug": "yogis-necklace",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/yogis-necklace.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items",
+      "Talent"
+    ],
+    "sample_count": 237,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Zisurru",
+    "display_name": "Zisurru",
+    "slug": "zisurru",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/zisurru.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 9,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  },
+  {
+    "name": "Zither",
+    "display_name": "Zither",
+    "slug": "zither",
+    "source": "history",
+    "source_url": "",
+    "image_url": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/zither.jpg",
+    "summary": "",
+    "cost": null,
+    "item_type": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "categories_seen": [
+      "Items"
+    ],
+    "sample_count": 6,
+    "updated_at": "2026-08-17T11:55:38.755201+00:00"
+  }
+]

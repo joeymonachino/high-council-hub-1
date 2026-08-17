@@ -3,6 +3,7 @@ from __future__ import annotations
 # This block imports the standard-library tools used for file access, dates,
 # lightweight caching, and configuration parsing.
 import base64
+import concurrent.futures
 import html
 import json
 import math
@@ -125,6 +126,8 @@ SMITESOURCE_RPC_BASE = "https://smitesource.com/rpc"
 SMITESOURCE_CACHE_TTL_SECONDS = int(os.environ.get("SMITESOURCE_CACHE_TTL_SECONDS", "1800"))
 SMITESOURCE_MATCH_PAGE_SIZE = int(os.environ.get("SMITESOURCE_MATCH_PAGE_SIZE", "20"))
 SMITESOURCE_MATCH_SAMPLE_SIZE = int(os.environ.get("SMITESOURCE_MATCH_SAMPLE_SIZE", "200"))
+MATCH_HISTORY_UI_ROW_LIMIT = int(os.environ.get("MATCH_HISTORY_UI_ROW_LIMIT", "5000"))
+MATCH_SUMMARY_MIN_ROWS = int(os.environ.get("MATCH_SUMMARY_MIN_ROWS", "1000"))
 
 
 # This block creates the Flask application object that owns the routes and
@@ -167,6 +170,7 @@ REMOTE_GOD_IMAGE_FALLBACKS = {
 MIN_REAL_IMAGE_BYTES = 512
 SMITESOURCE_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
 RATER_STATS_CACHE: tuple[float, str, dict[str, dict[str, Any]]] | None = None
+RATER_STATS_CACHE_VERSION = "item-tier-v3"
 HTTP = requests.Session()
 HTTP.trust_env = False
 
@@ -316,8 +320,47 @@ def sb_insert(table: str, records: list[dict]) -> None:
         raise RuntimeError(f"Supabase insert failed for {table}: {response.status_code} {response.text}")
 
 
+def sb_select_bootstrap(table: str, params: dict[str, str] | None = None, timeout: int = 4) -> list[dict]:
+    # Initial page load should never sit behind a slow Supabase edge response.
+    # Save/sync routes still use sb_select so write-critical paths remain strict.
+    response = requests.get(
+        sb_url(table),
+        headers=sb_headers("return=representation"),
+        params=params or {},
+        timeout=timeout,
+    )
+    response.raise_for_status()
+    data = response.json()
+    return data if isinstance(data, list) else []
+
+
 # This helper deletes a player's old personal rankings before rewriting the
 # current ordering, which avoids leaving stale rows behind.
+
+
+def sb_select_bootstrap_paged(table: str, params: dict[str, str] | None = None, timeout: int = 5, limit: int | None = None, page_size: int = 1000) -> list[dict]:
+    # PostgREST commonly caps one response at 1000 rows. Summary tables are
+    # lightweight, so we page them without touching the heavy raw_match JSON.
+    rows: list[dict[str, Any]] = []
+    target = limit or MATCH_HISTORY_UI_ROW_LIMIT
+    for start in range(0, target, page_size):
+        end = min(start + page_size - 1, target - 1)
+        response = requests.get(
+            sb_url(table),
+            headers={**sb_headers("return=representation"), "Range-Unit": "items", "Range": f"{start}-{end}"},
+            params=params or {},
+            timeout=timeout,
+        )
+        response.raise_for_status()
+        batch = response.json()
+        if not isinstance(batch, list) or not batch:
+            break
+        rows.extend(row for row in batch if isinstance(row, dict))
+        if len(batch) < page_size:
+            break
+    return rows
+
+
 def sb_delete_player_rankings(player: str) -> None:
     response = HTTP.delete(
         sb_url("personal_rankings"),
@@ -452,6 +495,43 @@ def smitesource_post(endpoint: str, payload: dict[str, Any]) -> dict[str, Any]:
 
 # This helper builds a stable key for one SmiteSource match row so we can dedupe
 # paginated responses and safely upsert them into Supabase.
+
+# This helper keeps source-specific item labels aligned before build analytics
+# touches them, especially when Tracker uses cleaner-but-different names.
+def display_build_item_alias(name: str) -> str:
+    raw_name = str(name or "").strip()
+    return CURRENT_BUILD_ITEM_NAME_ALIASES.get(raw_name.lower(), raw_name)
+
+
+# This helper returns the canonical app-level identity for one real player match.
+# It intentionally ignores source-specific match IDs because SmiteSource and
+# Tracker can refer to the same match using completely different identifiers.
+def canonical_match_key_for_row(player: str, row: dict[str, Any]) -> str:
+    raw_god = str(row.get("godName") or row.get("god_name") or row.get("godSlug") or "")
+    god_name = canonical_roster_god_name(raw_god) if raw_god else ""
+    timestamp = normalize_history_timestamp(str(row.get("startTimestamp") or row.get("startedAt") or row.get("started_at") or ""))
+    queue = normalize_queue_key(str(row.get("queueType") or row.get("queue_type") or row.get("gameMode") or ""))
+    god_key = normalize_god_identity_key(god_name or raw_god)
+    return "|".join([str(player or "").strip(), queue, timestamp, god_key])
+
+
+# This helper identifies where an imported row came from so we can preserve
+# source details without letting source IDs control duplicate behavior.
+def match_source_for_row(row: dict[str, Any], fallback: str = "smitesource") -> str:
+    source = str(row.get("_source") or row.get("source") or fallback or "").strip().lower()
+    if "tracker" in source:
+        return "tracker"
+    if "smitesource" in source:
+        return "smitesource"
+    return source or fallback
+
+
+# This helper keeps source IDs available for debugging while canonical keys keep
+# inserts from duplicating the same real match across providers.
+def source_match_id_for_row(row: dict[str, Any]) -> str:
+    return str(row.get("matchUuid") or row.get("matchId") or row.get("hirezMatchId") or "").strip()
+
+
 def smitesource_match_key(row: dict[str, Any]) -> str:
     return str(
         row.get("matchId")
@@ -514,22 +594,33 @@ def fetch_smitesource_match_rows(player_uuid: str, target_count: int | None = No
 # This helper reshapes one SmiteSource match row into a Supabase-friendly record
 # with both indexed fields and the original JSON payload preserved.
 def normalize_smitesource_history_record(player: str, profile_player_uuid: str, row: dict[str, Any]) -> dict[str, Any]:
-    match_key = smitesource_match_key(row)
+    source = match_source_for_row(row)
+    source_match_id = source_match_id_for_row(row)
+    canonical_match_key = canonical_match_key_for_row(player, row)
+    match_key = canonical_match_key or smitesource_match_key(row)
+    raw_match = dict(row)
+    raw_match.setdefault("_source", source)
+    raw_match.setdefault("sourceMatchId", source_match_id)
+    raw_match.setdefault("canonicalMatchKey", canonical_match_key)
+
     return {
         "record_key": f"{player}:{match_key}",
         "player": player,
         "profile_player_uuid": profile_player_uuid,
         "hirez_player_uuid": str(row.get("hirezPlayerUuid") or ""),
         "match_key": match_key,
-        "match_id": str(row.get("matchId") or row.get("matchUuid") or ""),
-        "god_name": str(row.get("godName") or ""),
+        "match_id": match_key,
+        "source": source,
+        "source_match_id": source_match_id,
+        "canonical_match_key": canonical_match_key or match_key,
+        "god_name": str(canonical_roster_god_name(str(row.get("godName") or "")) or row.get("godName") or ""),
         "queue_type": str(row.get("queueType") or row.get("gameMode") or ""),
         "won": bool(row.get("won")),
         "party_size": int(row.get("partySize") or 0) if str(row.get("partySize") or "").strip() else None,
         "party_label": str(row.get("partyLabel") or ""),
         "team_id": int(row.get("teamId") or 0) if str(row.get("teamId") or "").strip() else None,
-        "started_at": row.get("startTimestamp") or None,
-        "raw_match": row,
+        "started_at": row.get("startTimestamp") or row.get("startedAt") or None,
+        "raw_match": raw_match,
         "synced_at": datetime.now(timezone.utc).isoformat(),
     }
 
@@ -540,7 +631,7 @@ def load_stored_match_history(player: str) -> list[dict[str, Any]]:
     rows = sb_select_all(
         "smitesource_match_history",
         {
-            "select": "record_key,player,profile_player_uuid,hirez_player_uuid,match_key,started_at,raw_match",
+            "select": "record_key,player,profile_player_uuid,hirez_player_uuid,match_key,match_id,source,source_match_id,canonical_match_key,started_at,raw_match",
             "player": f"eq.{player}",
             "order": "started_at.desc",
         },
@@ -585,15 +676,36 @@ def stored_match_history_dedupe_sets(player: str) -> tuple[set[str], set[str], i
 # This helper loads every stored match-history row needed for rater stats in a
 # single Supabase request. It avoids the production slowdown from reading one
 # player at a time on cold serverless starts.
-def load_all_stored_match_history() -> list[dict[str, Any]]:
-    rows = sb_select_all(
-        "smitesource_match_history",
-        {
-            "select": "record_key,player,profile_player_uuid,hirez_player_uuid,match_key,started_at,synced_at,raw_match",
-            "order": "started_at.desc",
-        },
-    )
-    return [row for row in rows if isinstance(row, dict)]
+def load_all_stored_match_history(timeout: int | None = None, limit: int | None = None) -> list[dict[str, Any]]:
+    params = {
+        "select": "record_key,player,profile_player_uuid,hirez_player_uuid,match_key,match_id,source,source_match_id,canonical_match_key,started_at,synced_at,raw_match",
+        "order": "started_at.desc",
+    }
+    if not timeout:
+        rows = sb_select_all("smitesource_match_history", params)
+        return [row for row in rows if isinstance(row, dict)]
+
+    # PostgREST can cap a single response below our requested limit, so the UI
+    # path still paginates. Small pages keep each raw_match response manageable.
+    rows: list[dict[str, Any]] = []
+    page_size = 200
+    target = limit or MATCH_HISTORY_UI_ROW_LIMIT
+    for start in range(0, target, page_size):
+        end = min(start + page_size - 1, target - 1)
+        response = requests.get(
+            sb_url("smitesource_match_history"),
+            headers={**sb_headers("return=representation"), "Range-Unit": "items", "Range": f"{start}-{end}"},
+            params=params,
+            timeout=timeout,
+        )
+        response.raise_for_status()
+        batch = response.json()
+        if not isinstance(batch, list) or not batch:
+            break
+        rows.extend(row for row in batch if isinstance(row, dict))
+        if len(batch) < page_size:
+            break
+    return rows
 
 
 def group_stored_match_history_by_player(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
@@ -603,6 +715,362 @@ def group_stored_match_history_by_player(rows: list[dict[str, Any]]) -> dict[str
         if player in grouped:
             grouped[player].append(row)
     return grouped
+
+
+def compact_match_participant(row: dict[str, Any]) -> dict[str, Any]:
+    # Store only the participant fields needed for chemistry/opponent views.
+    return {
+        "hirezPlayerUuid": str(row.get("hirezPlayerUuid") or ""),
+        "displayName": str(row.get("displayName") or row.get("personDisplayName") or ""),
+        "personDisplayName": str(row.get("personDisplayName") or row.get("displayName") or ""),
+        "teamId": row.get("teamId"),
+        "godName": canonical_roster_god_name(str(row.get("godName") or row.get("godSlug") or "")),
+        "godSlug": str(row.get("godSlug") or ""),
+        "playedRole": str(row.get("playedRole") or row.get("assignedRole") or ""),
+        "assignedRole": str(row.get("assignedRole") or row.get("playedRole") or ""),
+        "aspectName": str(row.get("aspectName") or ""),
+    }
+
+
+def compact_team_sides(row: dict[str, Any]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    target_team_id = team_id_key(row.get("teamId"))
+    team_players: list[dict[str, Any]] = []
+    enemy_players: list[dict[str, Any]] = []
+    for team in [row.get("team1Players") or [], row.get("team2Players") or []]:
+        if not isinstance(team, list):
+            continue
+        for participant in team:
+            if not isinstance(participant, dict):
+                continue
+            compact = compact_match_participant(participant)
+            participant_team_id = team_id_key(participant.get("teamId"))
+            if target_team_id and participant_team_id == target_team_id:
+                team_players.append(compact)
+            elif target_team_id:
+                enemy_players.append(compact)
+    return team_players, enemy_players
+
+
+def team_id_key(value: Any) -> str:
+    raw_value = str(value or "").strip().lower()
+    if raw_value in {"1", "1.0"}:
+        return "1"
+    if raw_value in {"2", "2.0"}:
+        return "2"
+    return raw_value
+
+
+def safe_int_or_none(value: Any) -> int | None:
+    try:
+        if value in (None, ""):
+            return None
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def safe_int_value(value: Any, default: int = 0) -> int:
+    parsed = safe_int_or_none(value)
+    return default if parsed is None else parsed
+
+
+def safe_float_value(value: Any, default: float = 0.0) -> float:
+    try:
+        if value in (None, ""):
+            return default
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def summary_rows_for_history_records(records: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    player_rows: list[dict[str, Any]] = []
+    item_rows: list[dict[str, Any]] = []
+
+    for record in records:
+        raw = record.get("raw_match") if isinstance(record.get("raw_match"), dict) else {}
+        if not raw:
+            continue
+        record_key = str(record.get("record_key") or "")
+        if not record_key:
+            continue
+
+        team_players, enemy_players = compact_team_sides(raw)
+        god_name = str(record.get("god_name") or canonical_roster_god_name(str(raw.get("godName") or raw.get("godSlug") or "")))
+        queue_type = str(record.get("queue_type") or raw.get("queueType") or raw.get("gameMode") or "")
+        started_at = record.get("started_at") or raw.get("startTimestamp") or raw.get("startedAt")
+        duration_seconds = raw.get("playerDurationSeconds") or raw.get("matchDurationSeconds") or raw.get("durationSeconds") or 0
+        aspect_name = loadout_aspect_name(raw)
+        same_team_participant_gods = {
+            str(participant.get("displayName") or participant.get("personDisplayName") or participant.get("hirezPlayerUuid") or ""): participant.get("godName")
+            for participant in team_players
+            if participant.get("godName")
+        }
+
+        player_rows.append(
+            {
+                "record_key": record_key,
+                "player": record.get("player"),
+                "profile_player_uuid": record.get("profile_player_uuid"),
+                "hirez_player_uuid": record.get("hirez_player_uuid") or raw.get("hirezPlayerUuid"),
+                "match_key": record.get("match_key"),
+                "match_id": record.get("match_id"),
+                "source": record.get("source") or raw.get("_source") or "smitesource",
+                "source_match_id": record.get("source_match_id") or raw.get("sourceMatchId"),
+                "canonical_match_key": record.get("canonical_match_key") or raw.get("canonicalMatchKey"),
+                "god_name": god_name,
+                "queue_type": queue_type,
+                "won": bool(record.get("won")),
+                "party_size": safe_int_or_none(record.get("party_size") or raw.get("partySize")),
+                "party_label": record.get("party_label") or raw.get("partyLabel") or "",
+                "team_id": safe_int_or_none(record.get("team_id") or raw.get("teamId")),
+                "role": raw.get("playedRole") or raw.get("assignedRole") or "Unknown",
+                "kills": safe_int_value(raw.get("kills")),
+                "deaths": safe_int_value(raw.get("deaths")),
+                "assists": safe_int_value(raw.get("assists")),
+                "total_damage": safe_float_value(raw.get("totalDamage")),
+                "total_gold": safe_float_value(raw.get("totalGoldEarned")),
+                "total_xp": safe_float_value(raw.get("totalXp") or raw.get("totalXpEarned")),
+                "wards": safe_int_value(raw.get("totalWardsPlaced")),
+                "duration_seconds": safe_float_value(duration_seconds),
+                "aspect_name": aspect_name,
+                "team_players": team_players,
+                "enemy_players": enemy_players,
+                "participant_gods": same_team_participant_gods,
+                "started_at": started_at,
+                "synced_at": record.get("synced_at"),
+            }
+        )
+
+        starter = loadout_starter_item(raw)
+        items = ([starter] if starter else []) + core_loadout_items(raw)
+        seen_item_keys: set[str] = set()
+        for item in items:
+            category = item.get("category") or "Item"
+            item_key = f"{record_key}:{category}:{item.get('slotIndex')}:{item.get('itemMasterId') or item.get('itemHexId') or item.get('name')}"
+            if item_key in seen_item_keys:
+                continue
+            seen_item_keys.add(item_key)
+            item_rows.append(
+                {
+                    "item_key": item_key,
+                    "record_key": record_key,
+                    "player": record.get("player"),
+                    "match_key": record.get("match_key"),
+                    "god_name": god_name,
+                    "queue_type": queue_type,
+                    "won": bool(record.get("won")),
+                    "started_at": started_at,
+                    "item_name": item.get("name") or "",
+                    "category": category,
+                    "slot_index": safe_int_or_none(item.get("slotIndex")),
+                    "item_master_id": item.get("itemMasterId") or "",
+                    "item_hex_id": item.get("itemHexId") or "",
+                    "image_url": item.get("imageUrl") or "",
+                }
+            )
+
+    return player_rows, item_rows
+
+
+def upsert_match_summary_rows(records: list[dict[str, Any]]) -> tuple[int, int]:
+    player_rows, item_rows = summary_rows_for_history_records(records)
+    try:
+        if player_rows:
+            sb_upsert("match_player_summary", player_rows, "record_key")
+        if item_rows:
+            sb_upsert("match_item_summary", item_rows, "item_key")
+    except Exception as exc:  # noqa: BLE001
+        response = getattr(exc, "response", None)
+        detail = response.text if response is not None else str(exc)
+        raise RuntimeError(f"Summary upsert failed: {detail}") from exc
+    return len(player_rows), len(item_rows)
+
+
+def load_all_match_summary_rows(timeout: int = 8, limit: int | None = None) -> list[dict[str, Any]]:
+    target = limit or MATCH_HISTORY_UI_ROW_LIMIT
+    player_rows = sb_select_bootstrap_paged(
+        "match_player_summary",
+        {
+            "select": "*",
+            "order": "started_at.desc",
+        },
+        timeout=timeout,
+        limit=target,
+    )
+    if not player_rows:
+        return []
+
+    item_rows = sb_select_bootstrap_paged(
+        "match_item_summary",
+        {
+            "select": "record_key,item_name,category,slot_index,item_master_id,item_hex_id,image_url",
+            "order": "slot_index.asc",
+        },
+        timeout=timeout,
+        limit=target * 8,
+    )
+    items_by_record: dict[str, list[dict[str, Any]]] = {}
+    for item in item_rows:
+        items_by_record.setdefault(str(item.get("record_key") or ""), []).append(item)
+
+    reconstructed: list[dict[str, Any]] = []
+    for row in player_rows:
+        team_players = row.get("team_players") if isinstance(row.get("team_players"), list) else []
+        enemy_players = row.get("enemy_players") if isinstance(row.get("enemy_players"), list) else []
+        team_id = row.get("team_id")
+        team1_players = team_players if team_id == 1 else enemy_players
+        team2_players = enemy_players if team_id == 1 else team_players
+        loadout = []
+        for item in items_by_record.get(str(row.get("record_key") or ""), []):
+            category = "Starter" if item.get("category") == "Starter" else "Items"
+            loadout.append(
+                {
+                    "slotCategory": category,
+                    "slotIndex": item.get("slot_index") or 0,
+                    "itemMasterId": item.get("item_master_id") or "",
+                    "itemHexId": item.get("item_hex_id") or "",
+                    "itemName": item.get("item_name") or "",
+                    "name": item.get("item_name") or "",
+                    "trackerImageUrl": item.get("image_url") or "",
+                    "imageUrl": item.get("image_url") or "",
+                    "summaryCategory": item.get("category") or "",
+                }
+            )
+        reconstructed.append(
+            {
+                "matchId": row.get("match_id") or row.get("match_key"),
+                "hirezMatchId": row.get("source_match_id") or row.get("match_id"),
+                "hirezPlayerUuid": row.get("hirez_player_uuid") or "",
+                "teamId": row.get("team_id"),
+                "won": bool(row.get("won")),
+                "godName": row.get("god_name") or "",
+                "godSlug": row.get("god_name") or "",
+                "queueType": row.get("queue_type") or "",
+                "gameMode": row.get("queue_type") or "",
+                "partySize": row.get("party_size") or 0,
+                "partyLabel": row.get("party_label") or "",
+                "playedRole": row.get("role") or "Unknown",
+                "assignedRole": row.get("role") or "Unknown",
+                "kills": row.get("kills") or 0,
+                "deaths": row.get("deaths") or 0,
+                "assists": row.get("assists") or 0,
+                "totalDamage": row.get("total_damage") or 0,
+                "totalGoldEarned": row.get("total_gold") or 0,
+                "totalXp": row.get("total_xp") or 0,
+                "totalXpEarned": row.get("total_xp") or 0,
+                "totalWardsPlaced": row.get("wards") or 0,
+                "playerDurationSeconds": row.get("duration_seconds") or 0,
+                "matchDurationSeconds": row.get("duration_seconds") or 0,
+                "aspectName": row.get("aspect_name") or "No Aspect",
+                "startTimestamp": row.get("started_at") or "",
+                "startedAt": row.get("started_at") or "",
+                "team1Players": team1_players,
+                "team2Players": team2_players,
+                "loadout": loadout,
+                "_summaryRecordKey": row.get("record_key") or "",
+            }
+        )
+    return reconstructed
+
+
+def stored_match_session_group_key(row: dict[str, Any]) -> str:
+    raw = row.get("raw_match") if isinstance(row.get("raw_match"), dict) else {}
+    row_identity = "|".join(
+        str(value or "").lower()
+        for value in [row.get("record_key"), row.get("match_key"), row.get("match_id"), row.get("source"), raw.get("_source")]
+    )
+    queue_value = normalize_queue_key(str(row.get("queue_type") or raw.get("queueType") or raw.get("gameMode") or ""))
+    timestamp_value = normalize_history_timestamp(str(row.get("started_at") or raw.get("startTimestamp") or raw.get("startedAt") or ""))
+    if "tracker" in row_identity:
+        return f"time:{queue_value}|{timestamp_value}"
+    match_id = str(row.get("source_match_id") or row.get("match_id") or raw.get("sourceMatchId") or raw.get("hirezMatchId") or raw.get("matchId") or "").strip()
+    if match_id and "|" not in match_id:
+        return f"match:{match_id}"
+    return f"time:{queue_value}|{timestamp_value}"
+
+
+def council_participant_from_history_row(row: dict[str, Any]) -> dict[str, Any]:
+    raw = row.get("raw_match") if isinstance(row.get("raw_match"), dict) else {}
+    player = str(row.get("player") or "")
+    alias = COUNCIL_PLAYER_ALIASES.get(player, {})
+    display_names = [str(value).strip() for value in alias.get("names", []) if str(value).strip()]
+    ids = [str(value).strip() for value in alias.get("ids", []) if str(value).strip()]
+    return {
+        "hirezPlayerUuid": str(raw.get("hirezPlayerUuid") or row.get("hirez_player_uuid") or (ids[0] if ids else "")),
+        "displayName": str(raw.get("displayName") or (display_names[0] if display_names else player)),
+        "personDisplayName": str(raw.get("personDisplayName") or raw.get("displayName") or (display_names[0] if display_names else player)),
+        "teamId": raw.get("teamId") or row.get("team_id") or 1,
+        "godName": canonical_roster_god_name(str(row.get("god_name") or raw.get("godName") or raw.get("godSlug") or "")),
+        "godSlug": str(raw.get("godSlug") or row.get("god_name") or raw.get("godName") or ""),
+        "playedRole": str(raw.get("playedRole") or raw.get("assignedRole") or "Unknown"),
+        "assignedRole": str(raw.get("assignedRole") or raw.get("playedRole") or "Unknown"),
+        "aspectName": str(raw.get("aspectName") or ""),
+    }
+
+
+def enrich_stored_match_rows_with_council_fanout(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    # Some manual/Tracker imports store one row per council player without full
+    # team arrays. Chemistry still needs those rows to see who queued together.
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        if not isinstance(row, dict) or row.get("player") not in PLAYERS:
+            continue
+        key = stored_match_session_group_key(row)
+        if key:
+            grouped.setdefault(key, []).append(row)
+
+    enriched_rows: list[dict[str, Any]] = []
+    for row in rows:
+        raw = row.get("raw_match") if isinstance(row.get("raw_match"), dict) else None
+        if not raw:
+            enriched_rows.append(row)
+            continue
+        key = stored_match_session_group_key(row)
+        group = grouped.get(key, [])
+        if len({member.get("player") for member in group}) < 2:
+            enriched_rows.append(row)
+            continue
+
+        row_copy = dict(row)
+        raw_copy = dict(raw)
+        raw_copy["_sessionGroupKey"] = key
+        own_team_id = raw_copy.get("teamId") or row.get("team_id") or 1
+        own_team_key = team_id_key(own_team_id)
+        raw_copy["teamId"] = own_team_id
+        group_players = {str(member.get("player") or "") for member in group if member.get("player") in PLAYERS}
+        council_team = [council_participant_from_history_row(member) for member in group if member.get("player") in PLAYERS]
+        for participant in council_team:
+            participant["teamId"] = own_team_id
+
+        existing_team = []
+        for team in [raw_copy.get("team1Players") or [], raw_copy.get("team2Players") or []]:
+            if not isinstance(team, list):
+                continue
+            for participant in team:
+                if isinstance(participant, dict) and team_id_key(participant.get("teamId")) == own_team_key:
+                    existing_team.append(dict(participant))
+
+        seen_people: set[str] = set()
+        merged_team: list[dict[str, Any]] = []
+        for participant in [*existing_team, *council_team]:
+            person_key = str(participant.get("hirezPlayerUuid") or participant.get("displayName") or participant.get("personDisplayName") or "").strip().lower()
+            if not person_key or person_key in seen_people:
+                continue
+            seen_people.add(person_key)
+            merged_team.append(participant)
+
+        if own_team_key == "2":
+            raw_copy["team2Players"] = merged_team
+            raw_copy.setdefault("team1Players", [])
+        else:
+            raw_copy["team1Players"] = merged_team
+            raw_copy.setdefault("team2Players", [])
+        raw_copy["partySize"] = max(len(group_players), int(raw_copy.get("partySize") or 1))
+        raw_copy["partyLabel"] = {1: "Solo", 2: "Duo", 3: "Trio"}.get(int(raw_copy.get("partySize") or 1), f"Party {raw_copy.get('partySize')}")
+        row_copy["raw_match"] = raw_copy
+        enriched_rows.append(row_copy)
+    return enriched_rows
 
 
 def latest_match_history_sync_token_from_rows(rows: list[dict[str, Any]]) -> str:
@@ -649,6 +1117,10 @@ def sync_smitesource_history_for_player(player: str, profile_url: str) -> dict[s
     records = [normalize_smitesource_history_record(player, player_uuid, row) for row in fetched_rows]
     if records:
         sb_upsert("smitesource_match_history", records, "record_key")
+        try:
+            upsert_match_summary_rows(records)
+        except Exception:
+            pass
 
     try:
         overview = smitesource_post(
@@ -736,6 +1208,229 @@ def smitesource_matches_from_payload(payload: dict[str, Any]) -> list[dict[str, 
     return []
 
 
+
+TRACKER_TEAM_IDS = {"order": 1, "chaos": 2}
+TRACKER_ITEM_CATEGORY_MAP = {
+    "starter": "Starter",
+    "relic": "Relic",
+    "item": "Items",
+    "item-active": "Items",
+    "item-passive": "Items",
+    "consumable": "Consumable",
+    "curio": "Consumable",
+    "talent": "Talent",
+    "aspect": "Talent",
+}
+TRACKER_GOD_ALIASES = {"mulan": "Hua Mulan"}
+
+
+# This helper reads a number stat from Tracker's segment stat shape.
+def tracker_stat_value(stats: dict[str, Any], key: str, default: Any = 0) -> Any:
+    value = stats.get(key) if isinstance(stats, dict) else None
+    if isinstance(value, dict) and "value" in value:
+        return value.get("value")
+    return default
+
+
+# This helper converts Tracker's role object/string into the plain role label the
+# rest of the app expects.
+def tracker_role_name(value: Any) -> str:
+    if isinstance(value, dict):
+        return str(value.get("name") or value.get("key") or "")
+    return str(value or "")
+
+
+# This helper converts one Tracker item object into our SmiteSource-compatible
+# loadout item shape while keeping Tracker's cleaner item name and image URL.
+def tracker_item_to_loadout(item: dict[str, Any]) -> dict[str, Any]:
+    equipment_type = str(item.get("equipmentType") or "").strip().lower()
+    raw_item_name = str(item.get("name") or "").strip()
+    item_name = display_build_item_alias(raw_item_name)
+    item_id = str(item.get("id") or item_name.lower().replace(" ", "-")).strip()
+    image_url = str(item.get("imageUrl") or "").strip() if item_name == raw_item_name else ""
+    image_name = image_url.split("?")[0].rstrip("/").split("/")[-1] if image_url else f"{item_id}.jpg"
+    return {
+        "slotCategory": TRACKER_ITEM_CATEGORY_MAP.get(equipment_type, "Unknown"),
+        "slotIndex": max(int(item.get("position") or 0) - 1, 0),
+        "itemMasterId": item_id,
+        "itemHexId": item_id,
+        "itemIconPath": f"Tracker/{image_name}",
+        "itemName": item_name,
+        "name": item_name,
+        "trackerId": item_id,
+        "trackerEquipmentType": equipment_type,
+        "trackerImageUrl": image_url,
+    }
+
+
+# This helper converts one Tracker participant segment into the raw_match row
+# shape consumed by rater stats, chemistry, opponent, and build analytics.
+def tracker_segment_to_match_row(segment: dict[str, Any], match: dict[str, Any], index: int) -> dict[str, Any]:
+    metadata = segment.get("metadata") if isinstance(segment.get("metadata"), dict) else {}
+    attributes = segment.get("attributes") if isinstance(segment.get("attributes"), dict) else {}
+    stats = segment.get("stats") if isinstance(segment.get("stats"), dict) else {}
+    match_attributes = match.get("attributes") if isinstance(match.get("attributes"), dict) else {}
+    match_metadata = match.get("metadata") if isinstance(match.get("metadata"), dict) else {}
+    team_label = str(metadata.get("teamId") or "").strip().lower()
+    winning_label = str(match_metadata.get("winningTeamId") or "").strip().lower()
+    team_id = TRACKER_TEAM_IDS.get(team_label)
+    winning_team_id = TRACKER_TEAM_IDS.get(winning_label)
+    placement = tracker_stat_value(stats, "placement", None)
+    won = bool(team_id and winning_team_id and team_id == winning_team_id)
+    if winning_team_id is None and placement is not None:
+        won = int(placement or 0) == 1
+
+    raw_god_name = str(metadata.get("godName") or metadata.get("god") or "").strip()
+    god_name = canonical_roster_god_name(TRACKER_GOD_ALIASES.get(raw_god_name.lower(), raw_god_name))
+    match_uuid = str(match_attributes.get("id") or "").strip()
+    player_identifier = str(attributes.get("platformUserIdentifier") or "").strip()
+    display_name = str(metadata.get("platformUserHandle") or "").strip()
+    duration = int(tracker_stat_value(stats, "timePlayed", match_metadata.get("duration") or 0) or match_metadata.get("duration") or 0)
+
+    return {
+        "matchPlayerId": f"tracker:{match_uuid}:{player_identifier or display_name or index}",
+        "matchId": match_uuid,
+        "matchUuid": match_uuid,
+        "hirezMatchId": match_uuid,
+        "hirezPlayerUuid": player_identifier or display_name,
+        "teamId": team_id,
+        "trackerTeamId": team_label,
+        "partySessionId": str(metadata.get("partyId") or ""),
+        "won": won,
+        "godRawName": f"Gods.{god_name.replace(' ', '')}" if god_name else "",
+        "assignedRole": tracker_role_name(metadata.get("assignedRole")),
+        "playedRole": tracker_role_name(metadata.get("playedRole")),
+        "kills": int(tracker_stat_value(stats, "kills", 0) or 0),
+        "deaths": int(tracker_stat_value(stats, "deaths", 0) or 0),
+        "assists": int(tracker_stat_value(stats, "assists", 0) or 0),
+        "totalDamage": int(tracker_stat_value(stats, "damage", 0) or 0),
+        "totalAllyHealing": int(tracker_stat_value(stats, "healing", 0) or 0),
+        "totalSelfHealing": int(tracker_stat_value(stats, "selfHealing", 0) or 0),
+        "totalGoldEarned": int(tracker_stat_value(stats, "goldEarned", 0) or 0),
+        "totalXp": int(tracker_stat_value(stats, "xpEarned", 0) or 0),
+        "totalXpEarned": int(tracker_stat_value(stats, "xpEarned", 0) or 0),
+        "totalDamageMitigated": int(tracker_stat_value(stats, "damageMitigated", 0) or 0),
+        "totalDamageTaken": int(tracker_stat_value(stats, "damageTaken", 0) or 0),
+        "totalWardsPlaced": int(tracker_stat_value(stats, "wardsPlaced", 0) or 0),
+        "totalStructureDamage": int(tracker_stat_value(stats, "structureDamage", 0) or 0),
+        "totalMinionDamage": int(tracker_stat_value(stats, "minionDamage", 0) or 0),
+        "totalNpcDamage": int(tracker_stat_value(stats, "npcDamage", 0) or 0),
+        "playerLevel": int(tracker_stat_value(stats, "level", 0) or 0),
+        "items": metadata.get("items") or [],
+        "playerDurationSeconds": duration,
+        "matchDurationSeconds": int(match_metadata.get("duration") or duration or 0),
+        "playerJoinedAt": match_metadata.get("timestamp"),
+        "queueType": "casual_joust" if str(match_attributes.get("gamemode") or "").lower() == "joust" and not match_metadata.get("isRanked") else str(match_attributes.get("gamemode") or match_metadata.get("gamemodeName") or ""),
+        "gameMode": match_metadata.get("gamemodeName") or "Joust",
+        "lobbyType": "Ranked" if match_metadata.get("isRanked") else "Casual",
+        "durationSeconds": int(match_metadata.get("duration") or duration or 0),
+        "startTimestamp": match_metadata.get("timestamp"),
+        "winningTeam": winning_team_id,
+        "winningTeamLabel": winning_label,
+        "godSlug": str(metadata.get("god") or god_name.lower().replace(" ", "-")),
+        "godName": god_name,
+        "displayName": display_name,
+        "personDisplayName": display_name,
+        "hasFullTeamDetails": True,
+        "partySize": 1,
+        "partyLabel": "Solo",
+        "godIconPath": str(metadata.get("godImageUrl") or ""),
+        "aspectMasterId": None,
+        "aspectSlug": None,
+        "aspectName": None,
+        "aspectIconPath": None,
+        "aspectItemHexId": None,
+        "isAspect": False,
+        "preferredRoute": {"platform": attributes.get("platformSlug") or "steam", "platformId": player_identifier},
+        "loadout": [tracker_item_to_loadout(item) for item in (metadata.get("items") or []) if isinstance(item, dict)],
+        "_source": "tracker",
+    }
+
+
+# This helper recognizes whether a Tracker participant segment belongs to a
+# known council member using Steam IDs and handles.
+def tracker_segment_council_player(segment: dict[str, Any]) -> str:
+    metadata = segment.get("metadata") if isinstance(segment.get("metadata"), dict) else {}
+    attributes = segment.get("attributes") if isinstance(segment.get("attributes"), dict) else {}
+    player_id = str(attributes.get("platformUserIdentifier") or "").strip().lower()
+    player_name = str(metadata.get("platformUserHandle") or "").strip().lower()
+    for player, identity in COUNCIL_PLAYER_ALIASES.items():
+        identity_ids = {str(value).strip().lower() for value in identity.get("ids", []) if str(value).strip()}
+        identity_names = {str(value).strip().lower() for value in identity.get("names", []) if str(value).strip()}
+        if (player_id and player_id in identity_ids) or (player_name and player_name in identity_names):
+            return player
+    return ""
+
+
+# This helper parses Tracker match-history HAR responses and converts council
+# participant rows into the same raw shape as SmiteSource rows.
+def extract_tracker_matches_from_har(har_payload: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
+    grouped: dict[str, list[dict[str, Any]]] = {player: [] for player in PLAYERS}
+    log = har_payload.get("log") if isinstance(har_payload.get("log"), dict) else {}
+    entries = log.get("entries") if isinstance(log.get("entries"), list) else []
+
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        request_payload = entry.get("request") if isinstance(entry.get("request"), dict) else {}
+        url = str(request_payload.get("url") or "")
+        if "api.tracker.gg/api/v2/smite2/standard/matches" not in url or "/live" in url:
+            continue
+        raw_text = har_response_text(entry)
+        if not raw_text:
+            continue
+        try:
+            payload = json.loads(raw_text)
+        except json.JSONDecodeError:
+            continue
+        root = payload.get("data") if isinstance(payload.get("data"), dict) else payload
+        matches = root.get("matches") if isinstance(root, dict) else []
+        if not isinstance(matches, list):
+            continue
+
+        for match_index, match in enumerate(match for match in matches if isinstance(match, dict)):
+            source_segments = [
+                segment for segment in (match.get("segments") or [])
+                if isinstance(segment, dict) and isinstance(segment.get("metadata"), dict) and segment["metadata"].get("godName")
+            ]
+            converted_rows = [tracker_segment_to_match_row(segment, match, match_index) for segment in source_segments]
+            team1 = [row for row in converted_rows if row.get("teamId") == 1]
+            team2 = [row for row in converted_rows if row.get("teamId") == 2]
+            for row in converted_rows:
+                row["team1Players"] = [dict(team_row) for team_row in team1]
+                row["team2Players"] = [dict(team_row) for team_row in team2]
+                same_team_council: list[str] = []
+                for other in converted_rows:
+                    if other.get("teamId") != row.get("teamId"):
+                        continue
+                    other_id = str(other.get("hirezPlayerUuid") or "").strip().lower()
+                    other_name = str(other.get("displayName") or "").strip().lower()
+                    for player, identity in COUNCIL_PLAYER_ALIASES.items():
+                        ids = {str(value).strip().lower() for value in identity.get("ids", []) if str(value).strip()}
+                        names = {str(value).strip().lower() for value in identity.get("names", []) if str(value).strip()}
+                        if (other_id and other_id in ids) or (other_name and other_name in names):
+                            same_team_council.append(player)
+                row["partySize"] = max(len(set(same_team_council)), 1)
+                row["partyLabel"] = {1: "Solo", 2: "Duo", 3: "Trio"}.get(row["partySize"], f"Party {row['partySize']}")
+
+            for segment, row in zip(source_segments, converted_rows):
+                player = tracker_segment_council_player(segment)
+                if player:
+                    grouped[player].append(row)
+
+    return {player: rows for player, rows in grouped.items() if rows}
+
+
+# This helper merges all supported HAR sources into one player-grouped payload.
+def extract_match_rows_from_har(har_payload: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
+    grouped: dict[str, list[dict[str, Any]]] = {player: [] for player in PLAYERS}
+    for extractor in (extract_smitesource_matches_from_har, extract_tracker_matches_from_har):
+        extracted = extractor(har_payload)
+        for player, rows in extracted.items():
+            grouped.setdefault(player, []).extend(rows)
+    return {player: rows for player, rows in grouped.items() if rows}
+
+
 # This helper parses a saved browser HAR and returns SmiteSource match rows
 # grouped by council player, preserving the original row payloads for Supabase.
 def extract_smitesource_matches_from_har(har_payload: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
@@ -775,7 +1470,7 @@ def extract_smitesource_matches_from_har(har_payload: dict[str, Any]) -> dict[st
 # This helper imports a SmiteSource browser HAR into the stored history table,
 # deduping against existing rows so repeated imports stay harmless.
 def import_smitesource_har_payload(har_payload: dict[str, Any]) -> dict[str, Any]:
-    grouped_rows = extract_smitesource_matches_from_har(har_payload)
+    grouped_rows = extract_match_rows_from_har(har_payload)
     results: list[dict[str, Any]] = []
 
     for player, rows in grouped_rows.items():
@@ -785,12 +1480,14 @@ def import_smitesource_har_payload(har_payload: dict[str, Any]) -> dict[str, Any
         seen_keys: set[str] = set()
         seen_signatures: set[str] = set()
         skipped_cross_source = 0
+        skipped_exact_key = 0
 
         for row in rows:
             record = normalize_smitesource_history_record(player, player_uuid, row)
-            match_key = str(record.get("match_key") or "")
+            match_key = str(record.get("match_key") or record.get("canonical_match_key") or "")
             signature = match_history_duplicate_signature(player, record)
             if not match_key or match_key in existing_keys or match_key in seen_keys:
+                skipped_exact_key += 1
                 continue
             if signature in existing_signatures or signature in seen_signatures:
                 skipped_cross_source += 1
@@ -801,13 +1498,20 @@ def import_smitesource_har_payload(har_payload: dict[str, Any]) -> dict[str, Any
 
         if records:
             sb_upsert("smitesource_match_history", records, "record_key")
+        try:
+            upsert_match_summary_rows(records)
+        except Exception:
+            pass
 
+        sources = sorted({match_source_for_row(row) for row in rows})
         results.append(
             {
                 "player": player,
+                "sources": sources,
                 "captured": len(rows),
                 "inserted": len(records),
                 "stored": stored_count + len(records),
+                "skippedExactKey": skipped_exact_key,
                 "skippedCrossSource": skipped_cross_source,
             }
         )
@@ -816,6 +1520,8 @@ def import_smitesource_har_payload(har_payload: dict[str, Any]) -> dict[str, Any
         "results": results,
         "captured": sum(item["captured"] for item in results),
         "inserted": sum(item["inserted"] for item in results),
+        "skippedExactKey": sum(item["skippedExactKey"] for item in results),
+        "skippedCrossSource": sum(item["skippedCrossSource"] for item in results),
     }
 
 
@@ -947,7 +1653,7 @@ def canonical_roster_god_name(value: str, metadata_by_key: dict[str, dict[str, A
 # This helper returns the enemy team players for one raw match row using the
 # current player's teamId from SmiteSource/Tracker payloads.
 def enemy_team_players(row: dict[str, Any]) -> list[dict[str, Any]]:
-    target_team_id = row.get("teamId")
+    target_team_id = team_id_key(row.get("teamId"))
     enemies: list[dict[str, Any]] = []
     for team in [row.get("team1Players") or [], row.get("team2Players") or []]:
         if not isinstance(team, list):
@@ -1045,20 +1751,91 @@ CURRENT_BUILD_ITEM_NAME_ALIASES = {
     "soul devourer": "Soul Reaver",
     "baneful rapier": "Demon Blade",
     "shoguns ofuda": "Shogun's Kusari",
+    "shogun's ofuda": "Shogun's Kusari",
     "brawlers ruin": "Brawler's Beat Stick",
+    "brawler's ruin": "Brawler's Beat Stick",
     "lorg mor": "Gladiator Shield",
+    "gladiator's shield": "Gladiator Shield",
+    "bindings of lyngvi": "Stone of Binding",
+    "bindings of lyngvi t3": "Stone of Binding",
 }
+CURRENT_BUILD_ITEM_IMAGE_SLUGS = {
+    "Oath-Sworn Spear": "oath-sworn-spear",
+    "Titan's Bane": "titans-bane",
+    "Obsidian Shard": "obsidian-shard",
+    "Rod of Tahuti": "rod-of-tahuti",
+    "Soul Reaver": "soul-reaver",
+    "Demon Blade": "demon-blade",
+    "Shogun's Kusari": "shoguns-kusari",
+    "Brawler's Beat Stick": "brawlers-beat-stick",
+    "Gladiator Shield": "gladiator-shield",
+    "Stone of Binding": "stone-of-binding",
+}
+TRACKER_ITEM_IMAGE_BASE = "https://trackercdn.com/cdn/tracker.gg/smite2/images/items"
 
 
 # This set hides retired/legacy final items from the build tab. Those names can
 # still exist in old raw_match payloads, but showing them as current build advice
 # makes the god card more confusing than useful.
 LEGACY_BUILD_ITEM_NAMES = set()
+NON_FINAL_ITEM_NAME_PATTERNS = [
+    r"^t blink",
+    r"blink",
+    r"aegis",
+    r"beads",
+    r"ward",
+    r"curio",
+    r"gjallarflare",
+    r"healing potion",
+    r"mana potion",
+    r"chalice",
+    r"^shard$",
+    r"shield splitter",
+    r"shieldsplitter",
+    r"design temp",
+    r"dwarf forged plate",
+    r"freya[s']? tears",
+    r"restorative amanita",
+    r"sanguine lash",
+]
 
 
-# This helper extracts completed/final item slots from a raw loadout. Starters,
-# relics, aspects, consumables, talents, and T1/T2 components are excluded so the
-# build tab reads as finished items rather than every purchased component.
+def is_probably_non_final_item_name(name: str) -> bool:
+    normalized = re.sub(r"[^a-z0-9 ]+", " ", str(name or "").lower())
+    normalized = re.sub(r"\s+", " ", normalized).strip()
+    return any(re.search(pattern, normalized) for pattern in NON_FINAL_ITEM_NAME_PATTERNS)
+
+
+# This helper classifies build items by where the source says they came from.
+# The raw feeds are too inconsistent for a perfect "final item" flag, so the app
+# keeps every non-relic/non-consumable build item and lets the UI prioritize
+# Starter + Tier 3 while still exposing Tier 1/2 when we need to audit them.
+def loadout_item_tier_category(item: dict[str, Any]) -> str:
+    summary_category = str(item.get("summaryCategory") or "").strip()
+    if summary_category:
+        return summary_category
+
+    slot_category = str(item.get("slotCategory") or "").strip().lower()
+    icon_path = str(item.get("itemIconPath") or "").replace("\\", "/")
+    icon_path_lower = icon_path.lower()
+    icon_stem = Path(icon_path).stem.lower() if icon_path else ""
+
+    if slot_category == "starter":
+        return "Starter"
+    if "/t3/" in icon_path_lower or "_t3_" in icon_stem or icon_stem.startswith("icon_t3") or icon_stem.startswith("icons_t3"):
+        return "Tier 3"
+    if "/t2/" in icon_path_lower or "_t2_" in icon_stem or icon_stem.startswith("icon_t2") or icon_stem.startswith("icons_t2"):
+        return "Tier 2"
+    if "/t1/" in icon_path_lower or "_t1_" in icon_stem or icon_stem.startswith("icon_t1") or icon_stem.startswith("icons_t1"):
+        return "Tier 1"
+    if slot_category in {"items", "item"} and safe_int_value(item.get("slotIndex")) >= 2:
+        return "Tier 3"
+    return "Tier 3"
+
+
+# This helper extracts all real build items from a raw loadout. Relics, aspects,
+# consumables, and talents are excluded, but lower-tier item rows are retained so
+# the catalog can show/audit them instead of silently guessing wrong.
 def core_loadout_items(row: dict[str, Any]) -> list[dict[str, Any]]:
     loadout = row.get("loadout") or row.get("items") or []
     if not isinstance(loadout, list):
@@ -1068,26 +1845,29 @@ def core_loadout_items(row: dict[str, Any]) -> list[dict[str, Any]]:
     for item in sorted([entry for entry in loadout if isinstance(entry, dict)], key=lambda entry: int(entry.get("slotIndex") or 0)):
         slot_category = str(item.get("slotCategory") or "").strip().lower()
         icon_path = str(item.get("itemIconPath") or "").replace("\\", "/")
-        if slot_category != "items":
+        if slot_category not in {"items", "item"}:
             continue
-        if "/T1/" in icon_path or "/T2/" in icon_path or "AspectsInfluences" in icon_path:
+        if "AspectsInfluences" in icon_path:
             continue
         name = display_item_name(item)
         normalized_item_name = name.lower().strip()
         if not name or name == "Unknown Item" or normalized_item_name.startswith("aspect ") or normalized_item_name in LEGACY_BUILD_ITEM_NAMES:
             continue
         display_name = CURRENT_BUILD_ITEM_NAME_ALIASES.get(normalized_item_name, name)
+        if is_probably_non_final_item_name(display_name):
+            continue
+        source_image_url = str(item.get("trackerImageUrl") or item.get("imageUrl") or item.get("iconUrl") or "")
         core_items.append(
             {
                 "name": display_name,
-                "category": "Final Item",
+                "category": loadout_item_tier_category(item),
                 "slotIndex": int(item.get("slotIndex") or 0),
                 "itemMasterId": str(item.get("itemMasterId") or ""),
                 "itemHexId": str(item.get("itemHexId") or ""),
+                "imageUrl": source_image_url if display_name == name else "",
             }
         )
     return core_items
-
 
 # This helper extracts the starter item separately from completed items. Some
 # aspect matches use an Aspect_* loadout entry in the starter slot, so those are
@@ -1107,12 +1887,15 @@ def loadout_starter_item(row: dict[str, Any]) -> dict[str, Any] | None:
         name = display_item_name(item)
         if not name or name == "Unknown Item":
             continue
+        display_name = CURRENT_BUILD_ITEM_NAME_ALIASES.get(name.lower().strip(), name)
+        source_image_url = str(item.get("trackerImageUrl") or item.get("imageUrl") or item.get("iconUrl") or "")
         return {
-            "name": CURRENT_BUILD_ITEM_NAME_ALIASES.get(name.lower().strip(), name),
+            "name": display_name,
             "category": "Starter",
             "slotIndex": int(item.get("slotIndex") or 0),
             "itemMasterId": str(item.get("itemMasterId") or ""),
             "itemHexId": str(item.get("itemHexId") or ""),
+            "imageUrl": source_image_url if display_name == name else "",
         }
     return None
 
@@ -1143,7 +1926,7 @@ def loadout_aspect_name(row: dict[str, Any]) -> str:
             participant_team_id = participant.get("teamId")
             if self_hirez_uuid and participant_hirez == self_hirez_uuid:
                 return participant_aspect
-            if self_team_id == participant_team_id and self_god_key and participant_god_key == self_god_key:
+            if team_id_key(self_team_id) == team_id_key(participant_team_id) and self_god_key and participant_god_key == self_god_key:
                 return participant_aspect
 
     return "No Aspect"
@@ -1173,8 +1956,10 @@ def build_core_item_stats(match_rows: list[dict[str, Any]], god_metadata_by_key:
             starter_key = starter.get("itemMasterId") or starter.get("itemHexId") or starter["name"].lower()
             starter_record = bucket["starterItems"].setdefault(
                 starter_key,
-                {"name": starter["name"], "category": "Starter", "games": 0, "wins": 0},
+                {"name": starter["name"], "category": "Starter", "games": 0, "wins": 0, "imageUrl": starter.get("imageUrl", "")},
             )
+            if not starter_record.get("imageUrl") and starter.get("imageUrl"):
+                starter_record["imageUrl"] = starter.get("imageUrl")
             starter_record["games"] += 1
             starter_record["wins"] += 1 if won else 0
 
@@ -1186,8 +1971,10 @@ def build_core_item_stats(match_rows: list[dict[str, Any]], god_metadata_by_key:
             seen_item_keys.add(item_key)
             item_record = bucket["topItems"].setdefault(
                 item_key,
-                {"name": item["name"], "category": item["category"], "games": 0, "wins": 0},
+                {"name": item["name"], "category": item["category"], "games": 0, "wins": 0, "imageUrl": item.get("imageUrl", "")},
             )
+            if not item_record.get("imageUrl") and item.get("imageUrl"):
+                item_record["imageUrl"] = item.get("imageUrl")
             item_record["games"] += 1
             item_record["wins"] += 1 if won else 0
 
@@ -1432,7 +2219,7 @@ def summarize_stored_match_rows(player: str, raw_match_rows: list[dict[str, Any]
             "wardsPerMatch": round(total_wards / total_matches, 1) if total_matches else None,
             "hoursPlayed": round(total_duration_seconds / 3600, 1) if total_duration_seconds else None,
         },
-        "topGods": top_gods[:40],
+        "topGods": top_gods,
         "godStats": {item["name"]: item for item in top_gods},
         "topRoles": top_roles[:4],
         "opponentMatchups": build_player_opponent_matchups(valid_rows, god_metadata_by_key),
@@ -1452,12 +2239,20 @@ def summarize_stored_match_rows(player: str, raw_match_rows: list[dict[str, Any]
 # This helper inspects a SmiteSource match row and returns the named council
 # teammates who were on the same team as the current player.
 def council_teammates_in_match(player: str, player_hirez_uuid: str, identity_map: dict[str, dict[str, Any]], row: dict[str, Any]) -> list[str]:
-    if not player_hirez_uuid:
-        return []
-
-    target_team_id = row.get("teamId")
+    target_team_id = team_id_key(row.get("teamId"))
     team_arrays = [row.get("team1Players") or [], row.get("team2Players") or []]
     teammates: list[str] = []
+    self_identity = identity_map.get(player, {})
+    self_ids = {
+        str(value).strip()
+        for value in [player_hirez_uuid, self_identity.get("hirezPlayerUuid"), *(self_identity.get("ids") or [])]
+        if str(value).strip()
+    }
+    self_names = {
+        str(value).strip().lower()
+        for value in [self_identity.get("displayName"), *(self_identity.get("names") or [])]
+        if str(value).strip()
+    }
 
     for team in team_arrays:
         if not isinstance(team, list):
@@ -1465,10 +2260,10 @@ def council_teammates_in_match(player: str, player_hirez_uuid: str, identity_map
         for teammate in team:
             if not isinstance(teammate, dict):
                 continue
-            teammate_uuid = teammate.get("hirezPlayerUuid")
-            teammate_team_id = teammate.get("teamId")
+            teammate_uuid = str(teammate.get("hirezPlayerUuid") or "").strip()
+            teammate_team_id = team_id_key(teammate.get("teamId"))
             teammate_display = str(teammate.get("displayName") or teammate.get("personDisplayName") or "").strip().lower()
-            if teammate_team_id != target_team_id or teammate_uuid == player_hirez_uuid:
+            if teammate_team_id != target_team_id or (teammate_uuid and teammate_uuid in self_ids) or (teammate_display and teammate_display in self_names):
                 continue
             for council_player, identity in identity_map.items():
                 identity_uuid = identity.get("hirezPlayerUuid", "")
@@ -1501,6 +2296,9 @@ def council_teammates_in_match(player: str, player_hirez_uuid: str, identity_map
 # match only counts once even if both SmiteSource and Tracker versions exist in
 # stored history.
 def chemistry_session_key(player: str, teammates: list[str], row: dict[str, Any], participant_gods: dict[str, str] | None = None) -> str:
+    group_key = str(row.get("_sessionGroupKey") or "").strip()
+    if group_key:
+        return group_key
     queue_value = normalize_queue_key(str(row.get("queueType") or row.get("gameMode") or ""))
     timestamp_value = normalize_history_timestamp(str(row.get("startTimestamp") or row.get("startedAt") or ""))
     members = sorted([player] + [member for member in teammates if member])
@@ -1848,6 +2646,7 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
 
         if stored_raw_match_rows:
             profile = summarize_stored_match_rows(player, stored_raw_match_rows, profile_url, player_uuid)
+            profile["historySource"] = history_source
             SMITESOURCE_CACHE[player] = (time.time(), profile)
             return profile
 
@@ -1895,6 +2694,29 @@ def build_smitesource_profile(player: str, profile_url: str) -> dict[str, Any]:
     return profile
 
 
+def unavailable_rater_profile(player: str, profile_url: str, error: str = "") -> dict[str, Any]:
+    player_uuid = smitesource_player_uuid(profile_url)
+    return {
+        "player": player,
+        "linked": bool(profile_url and player_uuid),
+        "available": False,
+        "profileUrl": profile_url,
+        "playerUuid": player_uuid,
+        "displayName": player,
+        "error": error,
+        "metrics": {},
+        "topGods": [],
+        "topRoles": [],
+        "opponentMatchups": {},
+        "recentMatches": [],
+        "chemistry": {},
+        "insights": {},
+        "rankSummary": "",
+        "peakRankSummary": "",
+        "historySource": "unavailable",
+    }
+
+
 # This helper loads the whole council's SmiteSource profiles in one pass so the
 # frontend can populate the stats tab from a single API request.
 def load_rater_stats() -> dict[str, dict[str, Any]]:
@@ -1902,12 +2724,34 @@ def load_rater_stats() -> dict[str, dict[str, Any]]:
 
     all_history_rows: list[dict[str, Any]] = []
     grouped_history: dict[str, list[dict[str, Any]]] = {player: [] for player in PLAYERS}
+    history_error = ""
+    history_loaded = False
+    history_source = "summary"
     try:
-        all_history_rows = load_all_stored_match_history()
+        try:
+            summary_raw_rows = load_all_match_summary_rows(timeout=5, limit=MATCH_HISTORY_UI_ROW_LIMIT)
+        except Exception:
+            summary_raw_rows = []
+        if summary_raw_rows and len(summary_raw_rows) >= MATCH_SUMMARY_MIN_ROWS:
+            all_history_rows = [
+                {
+                    "player": row.get("_summaryRecordKey", "").split(":", 1)[0],
+                    "record_key": row.get("_summaryRecordKey"),
+                    "synced_at": row.get("startedAt"),
+                    "raw_match": row,
+                }
+                for row in summary_raw_rows
+            ]
+        else:
+            history_source = "raw"
+            all_history_rows = load_all_stored_match_history(timeout=5, limit=MATCH_HISTORY_UI_ROW_LIMIT)
+        all_history_rows = enrich_stored_match_rows_with_council_fanout(all_history_rows)
         grouped_history = group_stored_match_history_by_player(all_history_rows)
-        current_sync_token = latest_match_history_sync_token_from_rows(all_history_rows)
-    except Exception:
-        current_sync_token = latest_match_history_sync_token()
+        current_sync_token = f"{RATER_STATS_CACHE_VERSION}:{history_source}:{latest_match_history_sync_token_from_rows(all_history_rows)}:{len(all_history_rows)}"
+        history_loaded = True
+    except Exception as exc:  # noqa: BLE001
+        current_sync_token = f"{RATER_STATS_CACHE_VERSION}:unavailable"
+        history_error = str(exc)
 
     if (
         RATER_STATS_CACHE
@@ -1930,6 +2774,9 @@ def load_rater_stats() -> dict[str, dict[str, Any]]:
         if stored_raw_match_rows:
             profile = summarize_stored_match_rows(player, stored_raw_match_rows, profile_url, player_uuid)
             SMITESOURCE_CACHE[player] = (time.time(), profile)
+        elif not history_loaded:
+            cached = SMITESOURCE_CACHE.get(player)
+            profile = cached[1] if cached and cached[1].get("available") else unavailable_rater_profile(player, profile_url, history_error)
         else:
             profile = build_smitesource_profile(player, profile_url)
         profiles[player] = profile
@@ -2562,6 +3409,102 @@ def merge_catalog(
     return catalog
 
 
+def item_metadata_slug(name: str) -> str:
+    cleaned = str(name or "").strip().lower().replace("'", "")
+    cleaned = cleaned.replace("&", "and")
+    cleaned = re.sub(r"[^a-z0-9]+", "-", cleaned)
+    return re.sub(r"-+", "-", cleaned).strip("-")
+
+
+def canonical_item_metadata_name(name: str) -> str:
+    return display_build_item_alias(str(name or "").strip())
+
+
+def is_hidden_item_metadata_row(row: dict[str, Any]) -> bool:
+    name = str(row.get("name") or row.get("displayName") or row.get("display_name") or "").strip().lower()
+    item_type = str(row.get("itemType") or row.get("item_type") or "").strip().lower()
+    categories = row.get("categoriesSeen") or row.get("categories_seen") or []
+    category_text = " ".join(str(value or "") for value in categories if value).lower() if isinstance(categories, list) else str(categories or "").lower()
+    return name.startswith("aspect ") or item_type.startswith("aspect") or "aspect" in category_text
+
+
+def canonical_item_image_url(name: str, current_url: str = "") -> str:
+    slug = CURRENT_BUILD_ITEM_IMAGE_SLUGS.get(name)
+    if slug:
+        return f"{TRACKER_ITEM_IMAGE_BASE}/{slug}.jpg"
+    return current_url
+
+
+def normalize_item_metadata_row(row: dict[str, Any]) -> dict[str, Any]:
+    # Supabase rows are snake_case, while the frontend snapshot shape is
+    # camelCase. This keeps both sources interchangeable.
+    raw_name = row.get("name") or row.get("displayName") or row.get("display_name") or ""
+    name = canonical_item_metadata_name(str(raw_name))
+    image_url = canonical_item_image_url(name, row.get("imageUrl") or row.get("image_url") or "")
+    return {
+        "name": name,
+        "displayName": name,
+        "slug": item_metadata_slug(name),
+        "source": row.get("source") or "",
+        "sourceUrl": row.get("sourceUrl") or row.get("source_url") or "",
+        "imageUrl": image_url,
+        "summary": row.get("summary") or "",
+        "cost": row.get("cost"),
+        "itemType": row.get("itemType") or row.get("item_type") or "",
+        "tags": row.get("tags") if isinstance(row.get("tags"), list) else [],
+        "stats": row.get("stats") if isinstance(row.get("stats"), list) else [],
+        "passive": row.get("passive") or "",
+        "categoriesSeen": row.get("categoriesSeen") or row.get("categories_seen") or [],
+        "sampleCount": row.get("sampleCount") or row.get("sample_count") or 0,
+        "updatedAt": row.get("updatedAt") or row.get("updated_at") or "",
+    }
+
+
+def item_metadata_score(row: dict[str, Any]) -> tuple[int, int, int, str]:
+    # Prefer useful catalog detail, then usage volume, then image-backed rows.
+    return (
+        1 if row.get("summary") or row.get("passive") or row.get("stats") else 0,
+        int(row.get("sampleCount") or 0),
+        1 if row.get("imageUrl") else 0,
+        str(row.get("name") or ""),
+    )
+
+
+def clean_item_metadata_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    by_name: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        if is_hidden_item_metadata_row(row):
+            continue
+        normalized = normalize_item_metadata_row(row)
+        name = str(normalized.get("name") or "")
+        if not name:
+            continue
+        existing = by_name.get(name)
+        if not existing or item_metadata_score(normalized) >= item_metadata_score(existing):
+            by_name[name] = normalized
+    return sorted(by_name.values(), key=lambda row: str(row.get("name") or "").lower())
+
+
+# This helper prefers a future Supabase item_metadata table but silently falls
+# back to the local JSON snapshot so the Items tab never depends on that table.
+def load_item_metadata_rows(live_rows: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
+    snapshot_rows = clean_item_metadata_rows(load_json_snapshot("item_metadata.json"))
+    if live_rows is None:
+        try:
+            live_rows = sb_select_bootstrap(
+                "item_metadata",
+                {
+                    "select": "name,display_name,slug,source,source_url,image_url,summary,cost,item_type,tags,stats,passive,categories_seen,sample_count,updated_at",
+                    "order": "name.asc",
+                },
+                timeout=3,
+            )
+        except Exception:  # noqa: BLE001
+            return snapshot_rows
+    normalized_rows = clean_item_metadata_rows([row for row in live_rows if row.get("name") or row.get("display_name") or row.get("displayName")])
+    return normalized_rows or snapshot_rows
+
+
 # This helper loads all core app data from Supabase and falls back to the JSON
 # snapshots when live reads fail, which keeps development smoother.
 def load_app_state() -> dict[str, Any]:
@@ -2570,37 +3513,36 @@ def load_app_state() -> dict[str, Any]:
 
     json_meta_rows = load_json_snapshot("gods_metadata.json")
     json_rating_rows = load_json_snapshot("council_ratings.json")
+    bootstrap_reads = {
+        "meta": ("gods_metadata", {"select": "*"}),
+        "ratings": ("council_ratings", {"select": "*"}),
+        "rankings": ("personal_rankings", {"select": "*"}),
+        "history": ("rating_history", {"select": "*", "order": "changed_at.desc", "limit": "120"}),
+        "item_metadata": ("item_metadata", {"select": "name,display_name,slug,source,source_url,image_url,summary,cost,item_type,tags,stats,passive,categories_seen,sample_count,updated_at", "order": "name.asc"}),
+    }
+    bootstrap_results: dict[str, list[dict[str, Any]]] = {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(bootstrap_reads)) as executor:
+        future_map = {executor.submit(sb_select_bootstrap, table, params): key for key, (table, params) in bootstrap_reads.items()}
+        for future in concurrent.futures.as_completed(future_map):
+            key = future_map[future]
+            try:
+                bootstrap_results[key] = future.result()
+            except Exception as exc:  # noqa: BLE001
+                bootstrap_results[key] = []
+                errors.append(f"{key} fallback: {exc}")
 
-    try:
-        meta_rows = sb_select("gods_metadata", {"select": "*"})
-    except Exception as exc:  # noqa: BLE001
-        meta_rows = json_meta_rows
-        errors.append(f"metadata fallback: {exc}")
-    else:
+    item_metadata_rows = load_item_metadata_rows(bootstrap_results.get("item_metadata"))
+
+    meta_rows = bootstrap_results.get("meta") or json_meta_rows
+    if bootstrap_results.get("meta"):
         meta_rows = merge_snapshot_rows(meta_rows, json_meta_rows, ("god_name", "God"))
 
-    try:
-        rating_rows = sb_select("council_ratings", {"select": "*"})
-    except Exception as exc:  # noqa: BLE001
-        rating_rows = json_rating_rows
-        errors.append(f"ratings fallback: {exc}")
-    else:
+    rating_rows = bootstrap_results.get("ratings") or json_rating_rows
+    if bootstrap_results.get("ratings"):
         rating_rows = merge_snapshot_rows(rating_rows, json_rating_rows, ("god_name", "God"))
 
-    try:
-        ranking_rows = sb_select("personal_rankings", {"select": "*"})
-    except Exception as exc:  # noqa: BLE001
-        ranking_rows = []
-        errors.append(f"personal rankings unavailable: {exc}")
-
-    try:
-        history_rows = sb_select(
-            "rating_history",
-            {"select": "*", "order": "changed_at.desc", "limit": "120"},
-        )
-    except Exception as exc:  # noqa: BLE001
-        history_rows = []
-        errors.append(f"history unavailable: {exc}")
+    ranking_rows = bootstrap_results.get("rankings") or []
+    history_rows = bootstrap_results.get("history") or []
 
     catalog = merge_catalog(meta_rows, rating_rows, ranking_rows)
     all_rankings = build_all_rankings(ranking_rows)
@@ -2615,6 +3557,7 @@ def load_app_state() -> dict[str, Any]:
         "catalog": catalog,
         "all_rankings": all_rankings,
         "recent_history": merged_history[:120],
+        "item_metadata": item_metadata_rows,
         "errors": errors,
         "stats": {
             "total_gods": total_gods,
@@ -2892,8 +3835,15 @@ def build_data_health_report() -> dict[str, Any]:
     meta_rows = load_table("gods_metadata", fallback=load_json_snapshot("gods_metadata.json"))
     rating_rows = load_table("council_ratings", fallback=load_json_snapshot("council_ratings.json"))
     ranking_rows = load_table("personal_rankings")
-    history_rows = load_table("rating_history", {"select": "*", "order": "changed_at.desc"})
-    match_rows = load_table("smitesource_match_history", {"select": "*", "order": "started_at.desc"})
+    history_rows = load_table("rating_history", {"select": "*", "order": "changed_at.desc", "limit": "500"})
+    match_rows = load_table(
+        "smitesource_match_history",
+        {
+            "select": "record_key,player,god_name,queue_type,won,party_size,party_label,match_key,match_id,source,source_match_id,canonical_match_key,started_at,synced_at",
+            "order": "started_at.desc",
+            "limit": "1500",
+        },
+    )
 
     roster_names = {str(row.get("god_name") or row.get("God") or "").strip().lower() for row in meta_rows if row.get("god_name") or row.get("God")}
     rating_names = {str(row.get("god_name") or row.get("God") or "").strip().lower() for row in rating_rows if row.get("god_name") or row.get("God")}
@@ -3046,6 +3996,7 @@ def api_bootstrap():
             "gods": state["catalog"],
             "allRankings": state["all_rankings"],
             "recentHistory": state["recent_history"],
+            "itemMetadata": state["item_metadata"],
             "errors": state["errors"],
         }
     )
@@ -3358,6 +4309,10 @@ if __name__ == "__main__":
     host = os.environ.get("FLASK_HOST", "127.0.0.1")
     port = int(os.environ.get("FLASK_PORT", "5000"))
     app.run(host=host, port=port, debug=True)
+
+
+
+
 
 
 

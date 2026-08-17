@@ -200,6 +200,10 @@ def sync_pages(
         records, stored_count = missing_records_for_player(player, player_uuid, fetched_rows)
         if records and not dry_run:
             app.sb_upsert("smitesource_match_history", records, "record_key")
+            try:
+                app.upsert_match_summary_rows(records)
+            except Exception:
+                pass
 
         results.append(
             {

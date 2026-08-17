@@ -1,0 +1,2459 @@
+[
+  {
+    "id": 5452,
+    "player": "Mike",
+    "god_name": "Ganesha",
+    "rank": 1,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5453,
+    "player": "Mike",
+    "god_name": "Chiron",
+    "rank": 2,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5454,
+    "player": "Mike",
+    "god_name": "Athena",
+    "rank": 3,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5455,
+    "player": "Mike",
+    "god_name": "Atlas",
+    "rank": 4,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5456,
+    "player": "Mike",
+    "god_name": "Cthulhu",
+    "rank": 5,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5457,
+    "player": "Mike",
+    "god_name": "Hua Mulan",
+    "rank": 6,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5458,
+    "player": "Mike",
+    "god_name": "Nut",
+    "rank": 7,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5459,
+    "player": "Mike",
+    "god_name": "Artemis",
+    "rank": 8,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5460,
+    "player": "Mike",
+    "god_name": "Zhong Kui",
+    "rank": 9,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5461,
+    "player": "Mike",
+    "god_name": "Apollo",
+    "rank": 10,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5462,
+    "player": "Mike",
+    "god_name": "Agni",
+    "rank": 11,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5463,
+    "player": "Mike",
+    "god_name": "Anubis",
+    "rank": 12,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5464,
+    "player": "Mike",
+    "god_name": "Awilix",
+    "rank": 13,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5465,
+    "player": "Mike",
+    "god_name": "Bacchus",
+    "rank": 14,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5466,
+    "player": "Mike",
+    "god_name": "Charon",
+    "rank": 15,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5467,
+    "player": "Mike",
+    "god_name": "Cliodhna",
+    "rank": 16,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5468,
+    "player": "Mike",
+    "god_name": "Geb",
+    "rank": 17,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5469,
+    "player": "Mike",
+    "god_name": "Ix Chel",
+    "rank": 18,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5470,
+    "player": "Mike",
+    "god_name": "Xing Tian",
+    "rank": 19,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5471,
+    "player": "Mike",
+    "god_name": "Rama",
+    "rank": 20,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5472,
+    "player": "Mike",
+    "god_name": "Neith",
+    "rank": 21,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5473,
+    "player": "Mike",
+    "god_name": "Anhur",
+    "rank": 22,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5474,
+    "player": "Mike",
+    "god_name": "Baba Yaga",
+    "rank": 23,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5475,
+    "player": "Mike",
+    "god_name": "Medusa",
+    "rank": 24,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5476,
+    "player": "Mike",
+    "god_name": "Achilles",
+    "rank": 25,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5477,
+    "player": "Mike",
+    "god_name": "Cu Chulainn",
+    "rank": 26,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5478,
+    "player": "Mike",
+    "god_name": "Danzaburou",
+    "rank": 27,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5479,
+    "player": "Mike",
+    "god_name": "Eset",
+    "rank": 28,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5480,
+    "player": "Mike",
+    "god_name": "Hachiman",
+    "rank": 29,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5481,
+    "player": "Mike",
+    "god_name": "Heimdallr",
+    "rank": 30,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5482,
+    "player": "Mike",
+    "god_name": "Horus",
+    "rank": 31,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5483,
+    "player": "Mike",
+    "god_name": "Hun Batz",
+    "rank": 32,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5484,
+    "player": "Mike",
+    "god_name": "Janus",
+    "rank": 33,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5485,
+    "player": "Mike",
+    "god_name": "Ares",
+    "rank": 34,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5486,
+    "player": "Mike",
+    "god_name": "Chaac",
+    "rank": 35,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5487,
+    "player": "Mike",
+    "god_name": "Artio",
+    "rank": 36,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5488,
+    "player": "Mike",
+    "god_name": "Bellona",
+    "rank": 37,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5489,
+    "player": "Mike",
+    "god_name": "Cerberus",
+    "rank": 38,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5490,
+    "player": "Mike",
+    "god_name": "Cupid",
+    "rank": 39,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5491,
+    "player": "Mike",
+    "god_name": "Fenrir",
+    "rank": 40,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5492,
+    "player": "Mike",
+    "god_name": "Gilgamesh",
+    "rank": 41,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5493,
+    "player": "Mike",
+    "god_name": "Hades",
+    "rank": 42,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5494,
+    "player": "Mike",
+    "god_name": "Hera",
+    "rank": 43,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5495,
+    "player": "Mike",
+    "god_name": "Izanami",
+    "rank": 44,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5496,
+    "player": "Mike",
+    "god_name": "Ah Puch",
+    "rank": 45,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5497,
+    "player": "Mike",
+    "god_name": "Bastet",
+    "rank": 46,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5498,
+    "player": "Mike",
+    "god_name": "Cernunnos",
+    "rank": 47,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5499,
+    "player": "Mike",
+    "god_name": "Chernobog",
+    "rank": 48,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5500,
+    "player": "Mike",
+    "god_name": "Chronos",
+    "rank": 49,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5501,
+    "player": "Mike",
+    "god_name": "Fafnir",
+    "rank": 50,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5502,
+    "player": "Mike",
+    "god_name": "Guan Yu",
+    "rank": 51,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5503,
+    "player": "Mike",
+    "god_name": "Hecate",
+    "rank": 52,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5504,
+    "player": "Mike",
+    "god_name": "Hou Yi",
+    "rank": 53,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5505,
+    "player": "Mike",
+    "god_name": "Ah Muzen Cab",
+    "rank": 54,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5506,
+    "player": "Mike",
+    "god_name": "Baron Samedi",
+    "rank": 55,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5507,
+    "player": "Mike",
+    "god_name": "Cabrakan",
+    "rank": 56,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5508,
+    "player": "Mike",
+    "god_name": "Charybdis",
+    "rank": 57,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5509,
+    "player": "Mike",
+    "god_name": "Discordia",
+    "rank": 58,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5510,
+    "player": "Mike",
+    "god_name": "Ishtar",
+    "rank": 59,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5511,
+    "player": "Mike",
+    "god_name": "Jormungandr",
+    "rank": 60,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5512,
+    "player": "Mike",
+    "god_name": "Amaterasu",
+    "rank": 61,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5513,
+    "player": "Mike",
+    "god_name": "Camazotz",
+    "rank": 62,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5514,
+    "player": "Mike",
+    "god_name": "Erlang Shen",
+    "rank": 63,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5515,
+    "player": "Mike",
+    "god_name": "He Bo",
+    "rank": 64,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5516,
+    "player": "Mike",
+    "god_name": "Hercules",
+    "rank": 65,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5517,
+    "player": "Mike",
+    "god_name": "Arachne",
+    "rank": 66,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5518,
+    "player": "Mike",
+    "god_name": "Chang'e",
+    "rank": 67,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5519,
+    "player": "Mike",
+    "god_name": "Daji",
+    "rank": 68,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5520,
+    "player": "Mike",
+    "god_name": "Hel",
+    "rank": 69,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5521,
+    "player": "Mike",
+    "god_name": "Aladdin",
+    "rank": 70,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5522,
+    "player": "Mike",
+    "god_name": "Aphrodite",
+    "rank": 71,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5523,
+    "player": "Mike",
+    "god_name": "Ao Kuang",
+    "rank": 72,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5524,
+    "player": "Mike",
+    "god_name": "Bakasura",
+    "rank": 73,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5525,
+    "player": "Mike",
+    "god_name": "Bake Kujira",
+    "rank": 74,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 5526,
+    "player": "Mike",
+    "god_name": "Freya",
+    "rank": 75,
+    "updated_at": "2026-05-08T17:14:00.218562+00:00"
+  },
+  {
+    "id": 3474,
+    "player": "Darian",
+    "god_name": "Skadi",
+    "rank": 1,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3475,
+    "player": "Darian",
+    "god_name": "Ratatoskr",
+    "rank": 2,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3476,
+    "player": "Darian",
+    "god_name": "Artemis",
+    "rank": 3,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3477,
+    "player": "Darian",
+    "god_name": "Raijin",
+    "rank": 4,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3478,
+    "player": "Darian",
+    "god_name": "Arachne",
+    "rank": 5,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3479,
+    "player": "Darian",
+    "god_name": "Discordia",
+    "rank": 6,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3480,
+    "player": "Darian",
+    "god_name": "Cliodhna",
+    "rank": 7,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3481,
+    "player": "Darian",
+    "god_name": "Baron Samedi",
+    "rank": 8,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3482,
+    "player": "Darian",
+    "god_name": "Freya",
+    "rank": 9,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3483,
+    "player": "Darian",
+    "god_name": "Kuzenbo",
+    "rank": 10,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3484,
+    "player": "Darian",
+    "god_name": "Zhong Kui",
+    "rank": 11,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3485,
+    "player": "Darian",
+    "god_name": "Pele",
+    "rank": 12,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3486,
+    "player": "Darian",
+    "god_name": "Sol",
+    "rank": 13,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3487,
+    "player": "Darian",
+    "god_name": "Nu Wa",
+    "rank": 14,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3488,
+    "player": "Darian",
+    "god_name": "Hera",
+    "rank": 15,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3489,
+    "player": "Darian",
+    "god_name": "Nike",
+    "rank": 16,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3490,
+    "player": "Darian",
+    "god_name": "Artio",
+    "rank": 17,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3491,
+    "player": "Darian",
+    "god_name": "Bacchus",
+    "rank": 18,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3492,
+    "player": "Darian",
+    "god_name": "Bake Kujira",
+    "rank": 19,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3493,
+    "player": "Darian",
+    "god_name": "Ganesha",
+    "rank": 20,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3494,
+    "player": "Darian",
+    "god_name": "Hel",
+    "rank": 21,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3495,
+    "player": "Darian",
+    "god_name": "Ymir",
+    "rank": 22,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3496,
+    "player": "Darian",
+    "god_name": "Mordred",
+    "rank": 23,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3497,
+    "player": "Darian",
+    "god_name": "Cupid",
+    "rank": 24,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3498,
+    "player": "Darian",
+    "god_name": "Chang'e",
+    "rank": 25,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3499,
+    "player": "Darian",
+    "god_name": "Charybdis",
+    "rank": 26,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3500,
+    "player": "Darian",
+    "god_name": "Medusa",
+    "rank": 27,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3501,
+    "player": "Darian",
+    "god_name": "Chaac",
+    "rank": 28,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3502,
+    "player": "Darian",
+    "god_name": "Aphrodite",
+    "rank": 29,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3503,
+    "player": "Darian",
+    "god_name": "Poseidon",
+    "rank": 30,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3504,
+    "player": "Darian",
+    "god_name": "Cthulhu",
+    "rank": 31,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3505,
+    "player": "Darian",
+    "god_name": "Sobek",
+    "rank": 32,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3506,
+    "player": "Darian",
+    "god_name": "Atlas",
+    "rank": 33,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3507,
+    "player": "Darian",
+    "god_name": "Thoth",
+    "rank": 34,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3508,
+    "player": "Darian",
+    "god_name": "Hun Batz",
+    "rank": 35,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3509,
+    "player": "Darian",
+    "god_name": "Janus",
+    "rank": 36,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3510,
+    "player": "Darian",
+    "god_name": "Geb",
+    "rank": 37,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3511,
+    "player": "Darian",
+    "god_name": "Martichoras",
+    "rank": 38,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3512,
+    "player": "Darian",
+    "god_name": "Merlin",
+    "rank": 39,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3513,
+    "player": "Darian",
+    "god_name": "Bellona",
+    "rank": 40,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3514,
+    "player": "Darian",
+    "god_name": "Hercules",
+    "rank": 41,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3515,
+    "player": "Darian",
+    "god_name": "Athena",
+    "rank": 42,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3516,
+    "player": "Darian",
+    "god_name": "Baba Yaga",
+    "rank": 43,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3517,
+    "player": "Darian",
+    "god_name": "Kukulkan",
+    "rank": 44,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3518,
+    "player": "Darian",
+    "god_name": "Neith",
+    "rank": 45,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3519,
+    "player": "Darian",
+    "god_name": "Cernunnos",
+    "rank": 46,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3520,
+    "player": "Darian",
+    "god_name": "Nemesis",
+    "rank": 47,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3521,
+    "player": "Darian",
+    "god_name": "Tiamat",
+    "rank": 48,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3522,
+    "player": "Darian",
+    "god_name": "Cerberus",
+    "rank": 49,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3523,
+    "player": "Darian",
+    "god_name": "Izanami",
+    "rank": 50,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3524,
+    "player": "Darian",
+    "god_name": "Scylla",
+    "rank": 51,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3525,
+    "player": "Darian",
+    "god_name": "Awilix",
+    "rank": 52,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3526,
+    "player": "Darian",
+    "god_name": "Chiron",
+    "rank": 53,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3527,
+    "player": "Darian",
+    "god_name": "Erlang Shen",
+    "rank": 54,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3528,
+    "player": "Darian",
+    "god_name": "Guan Yu",
+    "rank": 55,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3529,
+    "player": "Darian",
+    "god_name": "Eset",
+    "rank": 56,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3530,
+    "player": "Darian",
+    "god_name": "King Arthur",
+    "rank": 57,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3531,
+    "player": "Darian",
+    "god_name": "Nox",
+    "rank": 58,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3532,
+    "player": "Darian",
+    "god_name": "Ra",
+    "rank": 59,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3533,
+    "player": "Darian",
+    "god_name": "Sun Wukong",
+    "rank": 60,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3534,
+    "player": "Darian",
+    "god_name": "Anhur",
+    "rank": 61,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3535,
+    "player": "Darian",
+    "god_name": "Daji",
+    "rank": 62,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3536,
+    "player": "Darian",
+    "god_name": "Tsukuyomi",
+    "rank": 63,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3537,
+    "player": "Darian",
+    "god_name": "Bastet",
+    "rank": 64,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3538,
+    "player": "Darian",
+    "god_name": "Cabrakan",
+    "rank": 65,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3539,
+    "player": "Darian",
+    "god_name": "Camazotz",
+    "rank": 66,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3540,
+    "player": "Darian",
+    "god_name": "Chernobog",
+    "rank": 67,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3541,
+    "player": "Darian",
+    "god_name": "Cu Chulainn",
+    "rank": 68,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3542,
+    "player": "Darian",
+    "god_name": "Maman Brigitte",
+    "rank": 69,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3543,
+    "player": "Darian",
+    "god_name": "Thanatos",
+    "rank": 70,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3544,
+    "player": "Darian",
+    "god_name": "Achilles",
+    "rank": 71,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3545,
+    "player": "Darian",
+    "god_name": "Ah Muzen Cab",
+    "rank": 72,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3546,
+    "player": "Darian",
+    "god_name": "Heimdallr",
+    "rank": 73,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3547,
+    "player": "Darian",
+    "god_name": "Horus",
+    "rank": 74,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3548,
+    "player": "Darian",
+    "god_name": "Maui",
+    "rank": 75,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3549,
+    "player": "Darian",
+    "god_name": "Olorun",
+    "rank": 76,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3550,
+    "player": "Darian",
+    "god_name": "Zeus",
+    "rank": 77,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3551,
+    "player": "Darian",
+    "god_name": "Kali",
+    "rank": 78,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3552,
+    "player": "Darian",
+    "god_name": "Hua Mulan",
+    "rank": 79,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3553,
+    "player": "Darian",
+    "god_name": "Agni",
+    "rank": 80,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3554,
+    "player": "Darian",
+    "god_name": "Ah Puch",
+    "rank": 81,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3555,
+    "player": "Darian",
+    "god_name": "Amaterasu",
+    "rank": 82,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3556,
+    "player": "Darian",
+    "god_name": "Anubis",
+    "rank": 83,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3557,
+    "player": "Darian",
+    "god_name": "Ao Kuang",
+    "rank": 84,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3558,
+    "player": "Darian",
+    "god_name": "Apollo",
+    "rank": 85,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3559,
+    "player": "Darian",
+    "god_name": "Ares",
+    "rank": 86,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3560,
+    "player": "Darian",
+    "god_name": "Bakasura",
+    "rank": 87,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3561,
+    "player": "Darian",
+    "god_name": "Chronos",
+    "rank": 88,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3562,
+    "player": "Darian",
+    "god_name": "Danzaburou",
+    "rank": 89,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3563,
+    "player": "Darian",
+    "god_name": "Fafnir",
+    "rank": 90,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3564,
+    "player": "Darian",
+    "god_name": "Fenrir",
+    "rank": 91,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3565,
+    "player": "Darian",
+    "god_name": "Gilgamesh",
+    "rank": 92,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3566,
+    "player": "Darian",
+    "god_name": "Hachiman",
+    "rank": 93,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3567,
+    "player": "Darian",
+    "god_name": "Sylvanus",
+    "rank": 94,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3568,
+    "player": "Darian",
+    "god_name": "Thor",
+    "rank": 95,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3569,
+    "player": "Darian",
+    "god_name": "Xbalanque",
+    "rank": 96,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3570,
+    "player": "Darian",
+    "god_name": "Jormungandr",
+    "rank": 97,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3571,
+    "player": "Darian",
+    "god_name": "Persephone",
+    "rank": 98,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3572,
+    "player": "Darian",
+    "god_name": "Hou Yi",
+    "rank": 99,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3573,
+    "player": "Darian",
+    "god_name": "Loki",
+    "rank": 100,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3574,
+    "player": "Darian",
+    "god_name": "Hades",
+    "rank": 101,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3575,
+    "player": "Darian",
+    "god_name": "He Bo",
+    "rank": 102,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3576,
+    "player": "Darian",
+    "god_name": "Mercury",
+    "rank": 103,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3577,
+    "player": "Darian",
+    "god_name": "Susano",
+    "rank": 104,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3578,
+    "player": "Darian",
+    "god_name": "Terra",
+    "rank": 105,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3579,
+    "player": "Darian",
+    "god_name": "Ne Zha",
+    "rank": 106,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3580,
+    "player": "Darian",
+    "god_name": "Vamana",
+    "rank": 107,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 3581,
+    "player": "Darian",
+    "god_name": "Vulcan",
+    "rank": 108,
+    "updated_at": "2026-04-16T23:55:50.882535+00:00"
+  },
+  {
+    "id": 774,
+    "player": "Jami",
+    "god_name": "Ymir",
+    "rank": 1,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 775,
+    "player": "Jami",
+    "god_name": "Anubis",
+    "rank": 2,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 776,
+    "player": "Jami",
+    "god_name": "Kukulkan",
+    "rank": 3,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 777,
+    "player": "Jami",
+    "god_name": "Neith",
+    "rank": 4,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 778,
+    "player": "Jami",
+    "god_name": "Artemis",
+    "rank": 5,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 779,
+    "player": "Jami",
+    "god_name": "Sylvanus",
+    "rank": 6,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 780,
+    "player": "Jami",
+    "god_name": "Cernunnos",
+    "rank": 7,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 781,
+    "player": "Jami",
+    "god_name": "Cerberus",
+    "rank": 8,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 782,
+    "player": "Jami",
+    "god_name": "Artio",
+    "rank": 9,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 783,
+    "player": "Jami",
+    "god_name": "Sobek",
+    "rank": 10,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 784,
+    "player": "Jami",
+    "god_name": "Merlin",
+    "rank": 11,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 785,
+    "player": "Jami",
+    "god_name": "Athena",
+    "rank": 12,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 786,
+    "player": "Jami",
+    "god_name": "Apollo",
+    "rank": 13,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 787,
+    "player": "Jami",
+    "god_name": "Geb",
+    "rank": 14,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 788,
+    "player": "Jami",
+    "god_name": "Agni",
+    "rank": 15,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 789,
+    "player": "Jami",
+    "god_name": "Aphrodite",
+    "rank": 16,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 790,
+    "player": "Jami",
+    "god_name": "Jing Wei",
+    "rank": 17,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 791,
+    "player": "Jami",
+    "god_name": "Fenrir",
+    "rank": 18,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 792,
+    "player": "Jami",
+    "god_name": "Janus",
+    "rank": 19,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 793,
+    "player": "Jami",
+    "god_name": "Discordia",
+    "rank": 20,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 794,
+    "player": "Jami",
+    "god_name": "Anhur",
+    "rank": 21,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 795,
+    "player": "Jami",
+    "god_name": "Bacchus",
+    "rank": 22,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 796,
+    "player": "Jami",
+    "god_name": "Ares",
+    "rank": 23,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 797,
+    "player": "Jami",
+    "god_name": "Cupid",
+    "rank": 24,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 798,
+    "player": "Jami",
+    "god_name": "Khepri",
+    "rank": 25,
+    "updated_at": "2026-04-12T11:25:48.780738+00:00"
+  },
+  {
+    "id": 799,
+    "player": "Jamie",
+    "god_name": "Nike",
+    "rank": 1,
+    "updated_at": "2026-04-12T11:26:23.434902+00:00"
+  },
+  {
+    "id": 800,
+    "player": "Jamie",
+    "god_name": "Athena",
+    "rank": 2,
+    "updated_at": "2026-04-12T11:26:23.434902+00:00"
+  },
+  {
+    "id": 801,
+    "player": "Jamie",
+    "god_name": "Cerberus",
+    "rank": 3,
+    "updated_at": "2026-04-12T11:26:23.434902+00:00"
+  },
+  {
+    "id": 802,
+    "player": "Jamie",
+    "god_name": "Discordia",
+    "rank": 4,
+    "updated_at": "2026-04-12T11:26:23.434902+00:00"
+  },
+  {
+    "id": 803,
+    "player": "Jamie",
+    "god_name": "Kukulkan",
+    "rank": 5,
+    "updated_at": "2026-04-12T11:26:23.434902+00:00"
+  },
+  {
+    "id": 804,
+    "player": "Jamie",
+    "god_name": "Ymir",
+    "rank": 6,
+    "updated_at": "2026-04-12T11:26:23.434902+00:00"
+  },
+  {
+    "id": 805,
+    "player": "Jamie",
+    "god_name": "Bastet",
+    "rank": 7,
+    "updated_at": "2026-04-12T11:26:23.434902+00:00"
+  },
+  {
+    "id": 806,
+    "player": "Jamie",
+    "god_name": "Chang'e",
+    "rank": 8,
+    "updated_at": "2026-04-12T11:26:23.434902+00:00"
+  },
+  {
+    "id": 807,
+    "player": "Jamie",
+    "god_name": "Medusa",
+    "rank": 9,
+    "updated_at": "2026-04-12T11:26:23.434902+00:00"
+  },
+  {
+    "id": 9011,
+    "player": "Joey",
+    "god_name": "Skadi",
+    "rank": 1,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9012,
+    "player": "Joey",
+    "god_name": "Surtr",
+    "rank": 2,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9013,
+    "player": "Joey",
+    "god_name": "Pele",
+    "rank": 3,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9014,
+    "player": "Joey",
+    "god_name": "Bellona",
+    "rank": 4,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9015,
+    "player": "Joey",
+    "god_name": "Cliodhna",
+    "rank": 5,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9016,
+    "player": "Joey",
+    "god_name": "Charybdis",
+    "rank": 6,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9017,
+    "player": "Joey",
+    "god_name": "Tiamat",
+    "rank": 7,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9018,
+    "player": "Joey",
+    "god_name": "Maman Brigitte",
+    "rank": 8,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9019,
+    "player": "Joey",
+    "god_name": "Eset",
+    "rank": 9,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9020,
+    "player": "Joey",
+    "god_name": "Sol",
+    "rank": 10,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9021,
+    "player": "Joey",
+    "god_name": "Hua Mulan",
+    "rank": 11,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9022,
+    "player": "Joey",
+    "god_name": "The Morrigan",
+    "rank": 12,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9023,
+    "player": "Joey",
+    "god_name": "Serqet",
+    "rank": 13,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9024,
+    "player": "Joey",
+    "god_name": "Gilgamesh",
+    "rank": 14,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9025,
+    "player": "Joey",
+    "god_name": "Cerberus",
+    "rank": 15,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9026,
+    "player": "Joey",
+    "god_name": "Mordred",
+    "rank": 16,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9027,
+    "player": "Joey",
+    "god_name": "Maui",
+    "rank": 17,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9028,
+    "player": "Joey",
+    "god_name": "Ne Zha",
+    "rank": 18,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9029,
+    "player": "Joey",
+    "god_name": "Amaterasu",
+    "rank": 19,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9030,
+    "player": "Joey",
+    "god_name": "Scylla",
+    "rank": 20,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9031,
+    "player": "Joey",
+    "god_name": "Hera",
+    "rank": 21,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9032,
+    "player": "Joey",
+    "god_name": "Artio",
+    "rank": 22,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9033,
+    "player": "Joey",
+    "god_name": "Princess Bari",
+    "rank": 23,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9034,
+    "player": "Joey",
+    "god_name": "Persephone",
+    "rank": 24,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9035,
+    "player": "Joey",
+    "god_name": "Hel",
+    "rank": 25,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9036,
+    "player": "Joey",
+    "god_name": "Terra",
+    "rank": 26,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9037,
+    "player": "Joey",
+    "god_name": "Kali",
+    "rank": 27,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9038,
+    "player": "Joey",
+    "god_name": "Achilles",
+    "rank": 28,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9039,
+    "player": "Joey",
+    "god_name": "Artemis",
+    "rank": 29,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9040,
+    "player": "Joey",
+    "god_name": "Yemoja",
+    "rank": 30,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9041,
+    "player": "Joey",
+    "god_name": "Horus",
+    "rank": 31,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9042,
+    "player": "Joey",
+    "god_name": "Awilix",
+    "rank": 32,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9043,
+    "player": "Joey",
+    "god_name": "Hecate",
+    "rank": 33,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9044,
+    "player": "Joey",
+    "god_name": "Bastet",
+    "rank": 34,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9045,
+    "player": "Joey",
+    "god_name": "Athena",
+    "rank": 35,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9046,
+    "player": "Joey",
+    "god_name": "Set",
+    "rank": 36,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9047,
+    "player": "Joey",
+    "god_name": "Thoth",
+    "rank": 37,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9048,
+    "player": "Joey",
+    "god_name": "Chang'e",
+    "rank": 38,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9049,
+    "player": "Joey",
+    "god_name": "Zhong Kui",
+    "rank": 39,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9050,
+    "player": "Joey",
+    "god_name": "Danzaburou",
+    "rank": 40,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9051,
+    "player": "Joey",
+    "god_name": "Raijin",
+    "rank": 41,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9052,
+    "player": "Joey",
+    "god_name": "Morgan le Fay",
+    "rank": 42,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9053,
+    "player": "Joey",
+    "god_name": "Thor",
+    "rank": 43,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9054,
+    "player": "Joey",
+    "god_name": "Anhur",
+    "rank": 44,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9055,
+    "player": "Joey",
+    "god_name": "Atlas",
+    "rank": 45,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9056,
+    "player": "Joey",
+    "god_name": "Camazotz",
+    "rank": 46,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9057,
+    "player": "Joey",
+    "god_name": "Ix Chel",
+    "rank": 47,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9058,
+    "player": "Joey",
+    "god_name": "Jing Wei",
+    "rank": 48,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9059,
+    "player": "Joey",
+    "god_name": "Lancelot",
+    "rank": 49,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9060,
+    "player": "Joey",
+    "god_name": "Poseidon",
+    "rank": 50,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9061,
+    "player": "Joey",
+    "god_name": "Janus",
+    "rank": 51,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9062,
+    "player": "Joey",
+    "god_name": "Discordia",
+    "rank": 52,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9063,
+    "player": "Joey",
+    "god_name": "Nut",
+    "rank": 53,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9064,
+    "player": "Joey",
+    "god_name": "Charon",
+    "rank": 54,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9065,
+    "player": "Joey",
+    "god_name": "Aphrodite",
+    "rank": 55,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9066,
+    "player": "Joey",
+    "god_name": "Nike",
+    "rank": 56,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9067,
+    "player": "Joey",
+    "god_name": "Medusa",
+    "rank": 57,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9068,
+    "player": "Joey",
+    "god_name": "Ares",
+    "rank": 58,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9069,
+    "player": "Joey",
+    "god_name": "Chernobog",
+    "rank": 59,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9070,
+    "player": "Joey",
+    "god_name": "Daji",
+    "rank": 60,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9071,
+    "player": "Joey",
+    "god_name": "Erlang Shen",
+    "rank": 61,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9072,
+    "player": "Joey",
+    "god_name": "Freya",
+    "rank": 62,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9073,
+    "player": "Joey",
+    "god_name": "He Bo",
+    "rank": 63,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9074,
+    "player": "Joey",
+    "god_name": "Heimdallr",
+    "rank": 64,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9075,
+    "player": "Joey",
+    "god_name": "Hun Batz",
+    "rank": 65,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9076,
+    "player": "Joey",
+    "god_name": "Nemesis",
+    "rank": 66,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9077,
+    "player": "Joey",
+    "god_name": "Ra",
+    "rank": 67,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9078,
+    "player": "Joey",
+    "god_name": "Sylvanus",
+    "rank": 68,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9079,
+    "player": "Joey",
+    "god_name": "Neith",
+    "rank": 69,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9080,
+    "player": "Joey",
+    "god_name": "Ah Muzen Cab",
+    "rank": 70,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9081,
+    "player": "Joey",
+    "god_name": "Kuzenbo",
+    "rank": 71,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9082,
+    "player": "Joey",
+    "god_name": "Olorun",
+    "rank": 72,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9083,
+    "player": "Joey",
+    "god_name": "Tsukuyomi",
+    "rank": 73,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9084,
+    "player": "Joey",
+    "god_name": "Ishtar",
+    "rank": 74,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9085,
+    "player": "Joey",
+    "god_name": "Agni",
+    "rank": 75,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9086,
+    "player": "Joey",
+    "god_name": "Baba Yaga",
+    "rank": 76,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9087,
+    "player": "Joey",
+    "god_name": "Chronos",
+    "rank": 77,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9088,
+    "player": "Joey",
+    "god_name": "Cthulhu",
+    "rank": 78,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9089,
+    "player": "Joey",
+    "god_name": "Fafnir",
+    "rank": 79,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9090,
+    "player": "Joey",
+    "god_name": "Guan Yu",
+    "rank": 80,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9091,
+    "player": "Joey",
+    "god_name": "Hachiman",
+    "rank": 81,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9092,
+    "player": "Joey",
+    "god_name": "Izanami",
+    "rank": 82,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9093,
+    "player": "Joey",
+    "god_name": "Jormungandr",
+    "rank": 83,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9094,
+    "player": "Joey",
+    "god_name": "Nox",
+    "rank": 84,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9095,
+    "player": "Joey",
+    "god_name": "Nu Wa",
+    "rank": 85,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9096,
+    "player": "Joey",
+    "god_name": "Odin",
+    "rank": 86,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9097,
+    "player": "Joey",
+    "god_name": "Osiris",
+    "rank": 87,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9098,
+    "player": "Joey",
+    "god_name": "Ratatoskr",
+    "rank": 88,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9099,
+    "player": "Joey",
+    "god_name": "Shiva",
+    "rank": 89,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9100,
+    "player": "Joey",
+    "god_name": "Sobek",
+    "rank": 90,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9101,
+    "player": "Joey",
+    "god_name": "Thanatos",
+    "rank": 91,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9102,
+    "player": "Joey",
+    "god_name": "Xbalanque",
+    "rank": 92,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9103,
+    "player": "Joey",
+    "god_name": "Yu Huang",
+    "rank": 93,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9104,
+    "player": "Joey",
+    "god_name": "Zeus",
+    "rank": 94,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9105,
+    "player": "Joey",
+    "god_name": "Ah Puch",
+    "rank": 95,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9106,
+    "player": "Joey",
+    "god_name": "Aladdin",
+    "rank": 96,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9107,
+    "player": "Joey",
+    "god_name": "Anubis",
+    "rank": 97,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9108,
+    "player": "Joey",
+    "god_name": "Apollo",
+    "rank": 98,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9109,
+    "player": "Joey",
+    "god_name": "Arachne",
+    "rank": 99,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9110,
+    "player": "Joey",
+    "god_name": "Cu Chulainn",
+    "rank": 100,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9111,
+    "player": "Joey",
+    "god_name": "Cupid",
+    "rank": 101,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9112,
+    "player": "Joey",
+    "god_name": "Ganesha",
+    "rank": 102,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9113,
+    "player": "Joey",
+    "god_name": "Geb",
+    "rank": 103,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9114,
+    "player": "Joey",
+    "god_name": "Hades",
+    "rank": 104,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9115,
+    "player": "Joey",
+    "god_name": "King Arthur",
+    "rank": 105,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9116,
+    "player": "Joey",
+    "god_name": "Kukulkan",
+    "rank": 106,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9117,
+    "player": "Joey",
+    "god_name": "Martichoras",
+    "rank": 107,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9118,
+    "player": "Joey",
+    "god_name": "Merlin",
+    "rank": 108,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9119,
+    "player": "Joey",
+    "god_name": "Rama",
+    "rank": 109,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9120,
+    "player": "Joey",
+    "god_name": "Sun Wukong",
+    "rank": 110,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9121,
+    "player": "Joey",
+    "god_name": "Susano",
+    "rank": 111,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9122,
+    "player": "Joey",
+    "god_name": "Xing Tian",
+    "rank": 112,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9123,
+    "player": "Joey",
+    "god_name": "Ymir",
+    "rank": 113,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9124,
+    "player": "Joey",
+    "god_name": "Cabrakan",
+    "rank": 114,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9125,
+    "player": "Joey",
+    "god_name": "Ao Kuang",
+    "rank": 115,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9126,
+    "player": "Joey",
+    "god_name": "Bacchus",
+    "rank": 116,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9127,
+    "player": "Joey",
+    "god_name": "Bakasura",
+    "rank": 117,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9128,
+    "player": "Joey",
+    "god_name": "Chiron",
+    "rank": 118,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9129,
+    "player": "Joey",
+    "god_name": "Baron Samedi",
+    "rank": 119,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9130,
+    "player": "Joey",
+    "god_name": "Fenrir",
+    "rank": 120,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9131,
+    "player": "Joey",
+    "god_name": "Khepri",
+    "rank": 121,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9132,
+    "player": "Joey",
+    "god_name": "Ravana",
+    "rank": 122,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9133,
+    "player": "Joey",
+    "god_name": "Cernunnos",
+    "rank": 123,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9134,
+    "player": "Joey",
+    "god_name": "Chaac",
+    "rank": 124,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9135,
+    "player": "Joey",
+    "god_name": "Vamana",
+    "rank": 125,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9136,
+    "player": "Joey",
+    "god_name": "Bake Kujira",
+    "rank": 126,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9137,
+    "player": "Joey",
+    "god_name": "Hercules",
+    "rank": 127,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9138,
+    "player": "Joey",
+    "god_name": "Hou Yi",
+    "rank": 128,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9139,
+    "player": "Joey",
+    "god_name": "Kumbhakarna",
+    "rank": 129,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9140,
+    "player": "Joey",
+    "god_name": "Loki",
+    "rank": 130,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9141,
+    "player": "Joey",
+    "god_name": "Mercury",
+    "rank": 131,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9142,
+    "player": "Joey",
+    "god_name": "Tyr",
+    "rank": 132,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9143,
+    "player": "Joey",
+    "god_name": "Ullr",
+    "rank": 133,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  },
+  {
+    "id": 9144,
+    "player": "Joey",
+    "god_name": "Vulcan",
+    "rank": 134,
+    "updated_at": "2026-08-17T11:30:30.770673+00:00"
+  }
+]

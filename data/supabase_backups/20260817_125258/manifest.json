@@ -1,0 +1,35 @@
+{
+  "createdAt": "2026-08-17T12:53:09.169611+00:00",
+  "results": [
+    {
+      "table": "gods_metadata",
+      "rows": 134,
+      "file": "data\\supabase_backups\\20260817_125258\\gods_metadata.json"
+    },
+    {
+      "table": "council_ratings",
+      "rows": 134,
+      "file": "data\\supabase_backups\\20260817_125258\\council_ratings.json"
+    },
+    {
+      "table": "personal_rankings",
+      "rows": 351,
+      "file": "data\\supabase_backups\\20260817_125258\\personal_rankings.json"
+    },
+    {
+      "table": "rating_history",
+      "rows": 1857,
+      "file": "data\\supabase_backups\\20260817_125258\\rating_history.json"
+    },
+    {
+      "table": "smitesource_match_history",
+      "rows": 1324,
+      "file": "data\\supabase_backups\\20260817_125258\\smitesource_match_history.json"
+    },
+    {
+      "table": "item_metadata",
+      "rows": 226,
+      "file": "data\\supabase_backups\\20260817_125258\\item_metadata.json"
+    }
+  ]
+}
