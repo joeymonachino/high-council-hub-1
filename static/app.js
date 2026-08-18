@@ -2599,6 +2599,45 @@ function statChipList(stats, limit = 5) {
     return rows.length ? rows.map((stat) => `<span class="item-stat-chip">${escapeHtml(stat)}</span>`).join("") : `<span class="item-stat-chip muted">Stats pending</span>`;
 }
 
+function itemInlineStats(stats, limit = 4) {
+    const rows = Array.isArray(stats) ? stats.filter(Boolean).slice(0, limit) : [];
+    return rows.length ? rows.map((stat) => `<span>${escapeHtml(stat)}</span>`).join("") : `<span class="muted">Stats pending</span>`;
+}
+
+function itemTagValues(item) {
+    const meta = item?.metadata || {};
+    const rawValues = [item?.category, ...(Array.isArray(meta.tags) ? meta.tags : [])];
+    if (meta.itemType) rawValues.push(meta.itemType);
+    const values = rawValues
+        .filter(Boolean)
+        .flatMap((value) => {
+            const text = String(value).replace(/\s+/g, " ").trim();
+            const tagMatches = text.match(/Tier\s*\d+|Starter|Offensive|Defensive|Hybrid|Utility|Magical|Physical|God-Specific/gi);
+            return tagMatches && text.split(/\s+/).length > 2 ? tagMatches : [text];
+        })
+        .map((value) => String(value).replace(/\s+/g, " ").trim())
+        .filter((value) => value && !/^tier$/i.test(value) && !/^\d+$/.test(value));
+    return values.filter((value, index) => values.findIndex((other) => other.toLowerCase() === value.toLowerCase()) === index);
+}
+
+function itemTypeSubtitle(item) {
+    const category = String(item?.category || "").toLowerCase();
+    const tags = itemTagValues(item).filter((tag) => tag.toLowerCase() !== category && !/^tier\s*\d+$/i.test(tag));
+    return tags.length ? tags.slice(0, 3).join(" + ") : "Council loadout";
+}
+
+function itemPillMarkup(item, limit = 7) {
+    const meta = item?.metadata || {};
+    const category = String(item?.category || "").toLowerCase();
+    const pills = [item?.category, ...(meta.cost ? [`${formatMetric(meta.cost)}g`] : []), ...itemTagValues(item).filter((tag) => tag.toLowerCase() !== category)];
+    return pills
+        .filter(Boolean)
+        .filter((value, index, values) => values.findIndex((other) => String(other).toLowerCase() === String(value).toLowerCase()) === index)
+        .slice(0, limit)
+        .map((value) => `<span>${escapeHtml(value)}</span>`)
+        .join("");
+}
+
 function itemPerformanceLine(item) {
     if (!item || !item.games) return "No council sample yet";
     return `${formatWinLossRecord(item.wins, item.games)} | ${formatMetric(item.winRate, 1, "%")} WR | ${formatMetric(item.games)} games`;
@@ -2606,12 +2645,17 @@ function itemPerformanceLine(item) {
 
 function itemDisplayImageUrl(item) {
     const meta = item?.metadata || {};
-    return item?.imageUrl || meta.imageUrl || "";
+    return meta.imageUrl || item?.imageUrl || "";
+}
+
+function itemDisplayName(item) {
+    const meta = item?.metadata || {};
+    return meta.displayName || meta.display_name || item?.name || "Item";
 }
 
 function itemImageMarkup(item, className = "item-card-icon") {
     const imageUrl = itemDisplayImageUrl(item);
-    const label = item?.name || "Item";
+    const label = itemDisplayName(item);
     return `<div class="${className} ${imageUrl ? "" : "empty"}">${imageUrl ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(label)}" loading="lazy" decoding="async" onerror="this.parentElement.classList.add('empty');this.remove();">` : "?"}</div>`;
 }
 
@@ -2627,6 +2671,7 @@ function openItemDetail(itemName) {
 
     const meta = item.metadata || {};
     const imageUrl = itemDisplayImageUrl(item);
+    const displayName = itemDisplayName(item);
     const sections = [
         { key: "overview", label: "Overview" },
         { key: "stats", label: "Stats" },
@@ -2660,20 +2705,26 @@ function openItemDetail(itemName) {
             <section class="god-modal-tab-panel item-modal-panel">
                 <div class="god-dossier-grid">
                     ${dossierStat("Record", formatWinLossRecord(item.wins, item.games), `${formatMetric(item.winRate, 1, "%")} WR`)}
-                    ${dossierStat("Category", item.category || "--", meta.itemType || "Council loadout")}
+                    ${dossierStat("Category", item.category || "--", itemTypeSubtitle(item))}
                     ${dossierStat("Main User", item.topPlayer?.name || "--", item.topPlayer ? itemPerformanceLine(item.topPlayer) : "No sample")}
                     ${dossierStat("Most Used On", item.mostUsedGod?.name || "--", item.mostUsedGod ? itemPerformanceLine(item.mostUsedGod) : "No sample")}
                 </div>
-                <article class="detail-card-v2 wide item-lore-card">
-                    <p class="eyebrow">Armory Note</p>
-                    <h3>${escapeHtml(item.name)}</h3>
-                    <p>${escapeHtml(meta.summary || "This item has been seen in council match history. Add metadata to show its current description, stats, and passive here.")}</p>
-                    <div class="item-tag-row">
-                        <span>${escapeHtml(item.category)}</span>
-                        ${meta.cost ? `<span>${formatMetric(meta.cost)} gold</span>` : ""}
-                        ${meta.itemType ? `<span>${escapeHtml(meta.itemType)}</span>` : ""}
-                        ${(meta.tags || []).slice(0, 6).map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
-                    </div>
+                <div class="core-build-grid item-overview-grid">
+                    <article class="detail-card-v2 core-build-card">
+                        <p class="eyebrow">Attributes</p>
+                        <h3>Stats</h3>
+                        <div class="item-card-stats overview-stats">${itemInlineStats(meta.stats, 10)}</div>
+                    </article>
+                    <article class="detail-card-v2 core-build-card">
+                        <p class="eyebrow">Passive</p>
+                        <h3>Effect</h3>
+                        <p class="item-passive-copy">${escapeHtml(meta.passive || "No passive text captured yet.")}</p>
+                    </article>
+                </div>
+                <article class="detail-card-v2 wide item-metadata-card">
+                    <p class="eyebrow">Metadata</p>
+                    <h3>${escapeHtml(displayName)}</h3>
+                    <div class="item-tag-row">${itemPillMarkup(item, 8)}</div>
                 </article>
             </section>
         `,
@@ -2707,7 +2758,7 @@ function openItemDetail(itemName) {
             ${itemImageMarkup(item, "item-modal-icon")}
             <div class="item-modal-copy">
                 <p class="eyebrow">Council Armory</p>
-                <h2>${escapeHtml(item.name)}</h2>
+                <h2>${escapeHtml(displayName)}</h2>
                 <p>${escapeHtml(meta.summary || `${item.category} from stored council loadouts.`)}</p>
                 <div class="item-tag-row"><span>${escapeHtml(item.category)}</span><span>${itemPerformanceLine(item)}</span>${meta.cost ? `<span>${formatMetric(meta.cost)} gold</span>` : ""}</div>
             </div>
@@ -2746,12 +2797,15 @@ function renderItemsTab() {
     const sort = state.items.sort || "Most used";
     let rows = catalog.filter((item) => {
         const meta = item.metadata || {};
-        const matchesSearch = !search || [item.name, item.category, item.bestGod?.name, item.mostUsedGod?.name, item.topPlayer?.name, meta.summary, ...(meta.tags || []), ...(meta.stats || [])]
+        const tagValues = itemTagValues(item);
+        const matchesSearch = !search || [item.name, itemDisplayName(item), item.category, meta.itemType, item.bestGod?.name, item.mostUsedGod?.name, item.topPlayer?.name, meta.summary, meta.passive, ...(meta.tags || []), ...(meta.stats || [])]
             .filter(Boolean)
             .some((value) => String(value).toLowerCase().includes(search));
         const buildCategories = new Set(["Starter", "Tier 3"]);
         const matchesCategory = category === "All"
             || item.category === category
+            || meta.itemType === category
+            || tagValues.some((tag) => tag.toLowerCase() === category.toLowerCase())
             || (category === "Starter + Tier 3" && buildCategories.has(item.category));
         return matchesSearch && matchesCategory;
     });
@@ -2764,18 +2818,27 @@ function renderItemsTab() {
         rows = rows.sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.name.localeCompare(b.name));
     }
 
+    const categoryOptions = ["Starter + Tier 3", "All", "Tier 3", "Starter", "Tier 2", "Tier 1"];
+    const dynamicCategories = [...new Set(catalog.flatMap((item) => itemTagValues(item)))]
+        .filter((value) => value && !/^\\d+$/.test(String(value)) && !categoryOptions.some((option) => option.toLowerCase() === value.toLowerCase()))
+        .sort((a, b) => a.localeCompare(b));
     const itemCards = rows.map((item) => {
         const meta = item.metadata || {};
+        const tagValues = itemTagValues(item).filter((tag) => tag.toLowerCase() !== String(item.category || "").toLowerCase()).slice(0, 4);
         return `
-            <button class="item-catalog-card" type="button" data-item-detail="${escapeHtml(item.name)}">
+            <button class="item-catalog-card condensed" type="button" data-item-detail="${escapeHtml(item.name)}">
                 <div class="item-card-topline"><span>${escapeHtml(item.category)}</span><strong>${itemPerformanceLine(item)}</strong></div>
                 <div class="item-card-main">
                     ${itemImageMarkup(item)}
-                    <div><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(meta.summary || meta.passive || "Usage captured from council match history.")}</p></div>
+                    <div class="item-card-copy">
+                        <h3>${escapeHtml(itemDisplayName(item))}</h3>
+                        <div class="item-card-stats">${itemInlineStats(meta.stats, 4)}</div>
+                        ${meta.passive ? `<p class="item-card-passive">${escapeHtml(meta.passive)}</p>` : `<p class="item-card-passive muted">Passive pending.</p>`}
+                    </div>
                 </div>
                 <div class="item-card-tags">
                     ${meta.cost ? `<span>${formatMetric(meta.cost)}g</span>` : ""}
-                    ${(meta.tags || []).slice(0, 3).map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
+                    ${tagValues.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
                 </div>
             </button>
         `;
@@ -2801,7 +2864,7 @@ function renderItemsTab() {
                     <label class="field">
                         <span>Category</span>
                         <select id="item-category">
-                            ${["Starter + Tier 3", "All", "Tier 3", "Starter", "Tier 2", "Tier 1", "Catalog"].map((option) => `<option value="${option}" ${category === option ? "selected" : ""}>${option}</option>`).join("")}
+                            ${[...categoryOptions, ...dynamicCategories].map((option) => `<option value="${option}" ${category === option ? "selected" : ""}>${option}</option>`).join("")}
                         </select>
                     </label>
                     <label class="field">
@@ -5486,6 +5549,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.querySelector(".app-shell").innerHTML = emptyState("App Failed To Load", error.message);
     }
 });
+
+
 
 
 

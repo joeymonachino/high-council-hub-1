@@ -19,9 +19,13 @@ if str(REPO_ROOT) not in sys.path:
 
 import app  # noqa: E402
 
-BASE_URL = "https://smitevoodoo.com/items"
+BASE_URL = "https://smitebrain.com/items"
 TRACKER_ITEM_IMAGE_BASE = "https://trackercdn.com/cdn/tracker.gg/smite2/images/items"
-HEADERS = {"User-Agent": "HighCouncilHub/1.0 personal item metadata refresh"}
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+}
 
 TRACKER_IMAGE_SLUG_ALIASES = {
     "Titan's Bane": "titans-bane",
@@ -29,6 +33,52 @@ TRACKER_IMAGE_SLUG_ALIASES = {
     "Soul Reaver": "soul-reaver",
     "Demon Blade": "demon-blade",
     "Stone of Binding": "stone-of-binding",
+}
+
+SMITEBRAIN_ITEM_SLUG_ALIASES = {
+    "acorn t2 lively acorn": ["lively-acorn"],
+    "acorn t3 bristlebush": ["briskberry-acorn"],
+    "acorn t3 thickbark": ["ashwhorl-acorn"],
+    "acorn t3 thistlethorn": ["thistlethorn-acorn", "thistlethorn"],
+    "ancile shield": ["ancile"],
+    "arrow": ["gilded-arrow"],
+    "berserker": ["berserkers-shield"],
+    "berserker's shield": ["berserkers-shield"],
+    "blood forged blade": ["bloodforge"],
+    "bloodsoaked shroud": ["blood-soaked-shroud"],
+    "brawler's beat stick": ["brawlers-beat-stick"],
+    "bumba's cudgel": ["bumbas-cudgel"],
+    "bumbas dagger": ["bumbas-golden-dagger", "bumbas-dagger"],
+    "crusher": ["the-crusher"],
+    "curseweaver t3 tweak": ["curseweaver"],
+    "death's toll": ['deaths-toll'],
+    'deaths toll upgrade': ['deaths-embrace'],
+    'devours gloves': ['devourers-gauntlet'],
+    'draconic scales': ['draconic-scale'],
+    'erosbow': ['eros-bow'],
+    'gladiator shield': ['gladiators-shield'],
+    'hand of the abyss': ['bracer-of-the-abyss'],
+    'hideofthe nemean lion': ['hide-of-the-nemean-lion'],
+    'items t3 omen drum': ['omen-drum'],
+    "jotunn's revenge": ['jotunns-revenge'],
+    'levianthans hide': ['leviathans-hide'],
+    'magisshelter': ['magis-cloak'],
+    "oni hunter's garb": ['oni-hunters-garb'],
+    'parashu': ['avatars-parashu'],
+    'plated armor': ['plated-metal'],
+    "qin's blade": ['qins-blade'],
+    'rod of ascelpius t3': ['rod-of-asclepius'],
+    'sands of time upgrade': ['pendulum-of-the-ages'],
+    'shape shifter shield': ['shifters-shield'],
+    "shifter's shield": ['shifters-shield'],
+    "shogun's kusari": ['shoguns-ofuda'],
+    'soul locket': ['soul-reliquary'],
+    'spearofthe magus': ['spear-of-the-magus'],
+    'staff of cosmic horror': ['the-cosmic-horror'],
+    'sundering axe upgrade': ['sundering-arc'],
+    "titan's bane": ['titans-bane'],
+    'vampiric cloak': ['vampiric-shroud'],
+    'xibalban effigy new': ['xibalban-effigy'],
 }
 
 
@@ -108,28 +158,63 @@ def extract_section_text(markup: str, heading: str) -> str:
     return strip_tags(match.group(1))
 
 
+def meta_content(markup: str, property_name: str) -> str:
+    pattern = rf'<meta[^>]+(?:property|name)="{re.escape(property_name)}"[^>]+content="([^"]*)"'
+    match = re.search(pattern, markup, flags=re.I)
+    return html.unescape(match.group(1)).strip() if match else ""
+
+
+def extract_badges(markup: str) -> list[str]:
+    hero_match = re.search(r'<h1[^>]*>[\s\S]*?</h1>([\s\S]*?)<div[^>]*class="text-warning', markup, flags=re.I)
+    if not hero_match:
+        return []
+    return [strip_tags(value) for value in re.findall(r"<span[^>]*badge[^>]*>([\s\S]*?)</span>", hero_match.group(1), flags=re.I) if strip_tags(value)]
+
+
+def extract_smitebrain_stats(markup: str) -> list[str]:
+    # SmiteBrain stat rows render as paired spans inside justify-between rows.
+    rows = re.findall(
+        r'<div class="flex justify-between text-sm"><span class="text-neutral-content">([\s\S]*?)</span>\s*<span class="font-semibold text-white">([\s\S]*?)</span></div>',
+        markup,
+        flags=re.I,
+    )
+    return [f"{strip_tags(label)} {strip_tags(value)}" for label, value in rows if strip_tags(label) and strip_tags(value)]
+
+
+def extract_smitebrain_passive(markup: str) -> str:
+    # Passive/effect text is the whitespace-preserving paragraph after the stat rows.
+    candidates = re.findall(r'<p class="text-neutral-content text-sm whitespace-pre-wrap">([\s\S]*?)</p>', markup, flags=re.I)
+    for candidate in candidates:
+        text = strip_tags(candidate).replace("â¢", "-")
+        if text and not re.search(r"win rate|use rate|matches", text, flags=re.I):
+            return text
+    return ""
+
+
 def parse_item_page(name: str, markup: str, url: str) -> dict[str, Any]:
-    page_title = strip_tags(re.search(r"<h1[^>]*>([\s\S]*?)</h1>", markup, flags=re.I).group(1)) if re.search(r"<h1[^>]*>([\s\S]*?)</h1>", markup, flags=re.I) else name
-    summary_match = re.search(r"<h2[^>]*>[\s\S]*?</h2>\s*<p[^>]*>([\s\S]*?)</p>", markup, flags=re.I)
-    summary = strip_tags(summary_match.group(1)) if summary_match else ""
-    stats = extract_section_list(markup, "Stats")
-    passive = extract_section_text(markup, "Passive")
-    cost_match = re.search(r"costing\s+([0-9,]+)\s+gold", strip_tags(markup), flags=re.I)
-    type_match = re.search(r"is a\s+(Tier\s+\d+\s+[^,.]+|starter|defensive|offensive|hybrid)\s+item", strip_tags(markup), flags=re.I)
-    tags_match = re.search(r"Tagged:\s*([^\.]+)\.", strip_tags(markup), flags=re.I)
+    page_title_match = re.search(r"<h1[^>]*>([\s\S]*?)</h1>", markup, flags=re.I)
+    page_title = strip_tags(page_title_match.group(1)) if page_title_match else name
+    badges = extract_badges(markup)
+    cost_match = re.search(r">\s*([0-9,]+)\s+gold\s*<", markup, flags=re.I)
+    description = meta_content(markup, "description")
+    summary = re.sub(r"\s*Pulled from top ranked.*$", "", description, flags=re.I).strip()
+    if re.search(r"stats, recipe, cost, and the gods who build it most", summary, flags=re.I):
+        summary = ""
+    image_url = meta_content(markup, "og:image")
     return {
         "name": name,
-        "displayName": name,
+        "displayName": page_title or name,
         "slug": item_slug(name),
-        "source": "smitevoodoo",
+        "source": "smitebrain",
         "sourceUrl": url,
         "pageTitle": page_title,
+        "imageUrl": image_url,
         "summary": summary,
         "cost": int(cost_match.group(1).replace(",", "")) if cost_match else None,
-        "itemType": type_match.group(1).strip() if type_match else "",
-        "tags": [tag.strip() for tag in tags_match.group(1).split(",") if tag.strip()] if tags_match else [],
-        "stats": stats,
-        "passive": passive,
+        "itemType": " ".join(badges),
+        "tags": badges,
+        "stats": extract_smitebrain_stats(markup),
+        "passive": extract_smitebrain_passive(markup),
     }
 
 
@@ -194,16 +279,18 @@ def empty_metadata(name: str) -> dict[str, Any]:
 def fetch_metadata(name: str, timeout: int = 20) -> dict[str, Any]:
     slug = item_slug(name)
     candidates = [slug]
+    candidates.extend(SMITEBRAIN_ITEM_SLUG_ALIASES.get(str(name or "").strip().lower(), []))
     if "-s-" in slug:
         candidates.append(slug.replace("-s-", "s-"))
     if slug.endswith("-s"):
         candidates.append(slug[:-2] + "s")
     last_error = ""
     for candidate in dict.fromkeys(candidates):
-        url = f"{BASE_URL}/{candidate}.html"
+        url = f"{BASE_URL}/{candidate}"
         try:
             response = requests.get(url, headers=HEADERS, timeout=timeout)
-            if response.status_code == 200 and "SMITE 2 Item" in response.text:
+            response.encoding = "utf-8"
+            if response.status_code == 200 and ("SmiteBrain" in response.text or "SMITE 2 Item" in response.text):
                 return parse_item_page(name, response.text, url)
             last_error = f"{response.status_code} {url}"
         except requests.RequestException as exc:
@@ -283,7 +370,7 @@ def main() -> None:
         name = str(usage.get("name") or "")
         metadata = empty_metadata(name) if args.no_fetch else fetch_metadata(name)
         images = sorted(usage.get("images") or [])
-        metadata["imageUrl"] = images[0] if images else ""
+        metadata["imageUrl"] = metadata.get("imageUrl") or (images[0] if images else "")
         metadata["categoriesSeen"] = sorted(value for value in (usage.get("categories") or []) if value)
         metadata["sampleCount"] = usage.get("sampleCount", 0)
         rows.append(metadata)
@@ -300,4 +387,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 

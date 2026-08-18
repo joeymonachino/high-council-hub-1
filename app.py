@@ -1758,6 +1758,7 @@ CURRENT_BUILD_ITEM_NAME_ALIASES = {
     "gladiator's shield": "Gladiator Shield",
     "bindings of lyngvi": "Stone of Binding",
     "bindings of lyngvi t3": "Stone of Binding",
+    "freyas tears": "Freya's Tears",
 }
 CURRENT_BUILD_ITEM_IMAGE_SLUGS = {
     "Oath-Sworn Spear": "oath-sworn-spear",
@@ -1794,9 +1795,7 @@ NON_FINAL_ITEM_NAME_PATTERNS = [
     r"shieldsplitter",
     r"design temp",
     r"dwarf forged plate",
-    r"freya[s']? tears",
     r"restorative amanita",
-    r"sanguine lash",
 ]
 
 
@@ -3440,10 +3439,12 @@ def normalize_item_metadata_row(row: dict[str, Any]) -> dict[str, Any]:
     # camelCase. This keeps both sources interchangeable.
     raw_name = row.get("name") or row.get("displayName") or row.get("display_name") or ""
     name = canonical_item_metadata_name(str(raw_name))
-    image_url = canonical_item_image_url(name, row.get("imageUrl") or row.get("image_url") or "")
+    raw_display_name = row.get("displayName") or row.get("display_name") or name
+    display_name = display_build_item_alias(str(raw_display_name or name).strip())
+    image_url = canonical_item_image_url(display_name, row.get("imageUrl") or row.get("image_url") or "")
     return {
         "name": name,
-        "displayName": name,
+        "displayName": display_name or name,
         "slug": item_metadata_slug(name),
         "source": row.get("source") or "",
         "sourceUrl": row.get("sourceUrl") or row.get("source_url") or "",
