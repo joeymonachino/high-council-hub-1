@@ -4,3 +4,10 @@ __pycache__/
 .streamlit/secrets.toml
 secrets/
 local_activity_log.json
+
+# Local import/export artifacts
+*.har
+data/har_files/
+data/supabase_backups/
+data/backups/
+data/generated/*_test.json

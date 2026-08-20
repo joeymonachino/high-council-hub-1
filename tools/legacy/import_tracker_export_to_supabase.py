@@ -16,7 +16,7 @@ import requests
 
 # This block defines the local project paths so the importer can reuse the same
 # secrets setup as the Flask app.
-BASE_DIR = Path(__file__).resolve().parents[1]
+BASE_DIR = Path(__file__).resolve().parents[2]
 LOCAL_SECRETS_PATH = BASE_DIR / "secrets" / "app_secrets.toml"
 LOCAL_SECRETS_PATH_TXT = BASE_DIR / "secrets" / "app_secrets.toml.txt"
 SECRETS_PATH = LOCAL_SECRETS_PATH if LOCAL_SECRETS_PATH.exists() else LOCAL_SECRETS_PATH_TXT

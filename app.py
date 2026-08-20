@@ -11,7 +11,6 @@ import os
 import random
 import re
 import time
-import tomllib
 from datetime import datetime, timezone
 from pathlib import Path
 from statistics import mean
@@ -23,113 +22,48 @@ from urllib.parse import parse_qs, quote, unquote, urlparse
 import requests
 from flask import Flask, abort, jsonify, render_template, request, send_file
 
-
-# This block defines project paths so the Flask app can run either as a
-# self-contained app or as a local companion to the original Streamlit repo.
-BASE_DIR = Path(__file__).resolve().parent
-FALLBACK_SOURCE_REPO = Path(os.environ.get("SOURCE_REPO", r"C:\Users\joeym\Repos\high-council-hub-1"))
-DATA_DIR = (BASE_DIR / "data") if (BASE_DIR / "data").exists() else (FALLBACK_SOURCE_REPO / "data")
-ASSETS_DIR = (BASE_DIR / "assets") if (BASE_DIR / "assets").exists() else (FALLBACK_SOURCE_REPO / "assets")
-GODS_ASSETS_DIR = ASSETS_DIR / "gods"
-PANTHEONS_DIR = ASSETS_DIR / "pantheons"
-LOCAL_SECRETS_PATH = BASE_DIR / "secrets" / "app_secrets.toml"
-LOCAL_SECRETS_PATH_TXT = BASE_DIR / "secrets" / "app_secrets.toml.txt"
-LEGACY_LOCAL_SECRETS_PATH = Path.home() / "Documents" / "New project" / "secrets" / "app_secrets.toml"
-SECRETS_PATH = (
-    LOCAL_SECRETS_PATH
-    if LOCAL_SECRETS_PATH.exists()
-    else (
-        LOCAL_SECRETS_PATH_TXT
-        if LOCAL_SECRETS_PATH_TXT.exists()
-        else (
-            LEGACY_LOCAL_SECRETS_PATH
-            if LEGACY_LOCAL_SECRETS_PATH.exists()
-            else ((BASE_DIR / ".streamlit" / "secrets.toml") if (BASE_DIR / ".streamlit" / "secrets.toml").exists() else (FALLBACK_SOURCE_REPO / ".streamlit" / "secrets.toml"))
-        )
-    )
+from hub.config import (
+    ASSETS_DIR,
+    BASE_DIR,
+    COUNCIL_COLORS,
+    COUNCIL_PLAYER_ALIASES,
+    DATA_DIR,
+    GODS_ASSETS_DIR,
+    HOT_TAKE_THRESHOLD,
+    LOCAL_ACTIVITY_LOG_ENABLED,
+    LOCAL_ACTIVITY_LOG_PATH,
+    MATCH_HISTORY_UI_ROW_LIMIT,
+    MATCH_SUMMARY_MIN_ROWS,
+    PANTHEONS_DIR,
+    PLAYER_ABBR,
+    PLAYERS,
+    SMITESOURCE_CACHE_TTL_SECONDS,
+    SMITESOURCE_MATCH_PAGE_SIZE,
+    SMITESOURCE_MATCH_SAMPLE_SIZE,
+    SMITESOURCE_PROFILE_LINKS,
+    SMITESOURCE_RPC_BASE,
+    TIER_COLORS,
+    TIER_ORDER,
+    TIER_THRESHOLDS,
+    get_secret,
 )
-LOCAL_ACTIVITY_LOG_PATH = BASE_DIR / "local_activity_log.json"
-LOCAL_ACTIVITY_LOG_ENABLED = not bool(os.environ.get("VERCEL"))
-
-# This block keeps the app's core configuration in one place so both the
-# Python backend and the JavaScript frontend can share the same metadata.
-PLAYERS = ["Joey", "Darian", "Jami", "Jamie", "Mike"]
-PLAYER_ABBR = {
-    "Joey": "Jo",
-    "Darian": "Da",
-    "Jami": "Ji",
-    "Jamie": "Je",
-    "Mike": "Mi",
-}
-
-# This map lets Chemistry recognize the same council member across SmiteSource,
-# Tracker backfills, and any future manual imports that use alternate handles or
-# platform identifiers.
-COUNCIL_PLAYER_ALIASES = {
-    "Joey": {
-        "names": ["Joey", "littlem0nk"],
-        "ids": ["76561198000048896"],
-    },
-    "Darian": {
-        "names": ["Darian", "AntiSocialElf"],
-        "ids": ["76561198881409884"],
-    },
-    "Jami": {
-        "names": ["Jami", "crispyplug"],
-        "ids": ["76561198045467382"],
-    },
-    "Jamie": {
-        "names": ["Jamie"],
-        "ids": [],
-    },
-    "Mike": {
-        "names": ["Mike"],
-        "ids": [],
-    },
-}
-COUNCIL_COLORS = {
-    "Joey": "#d7a33d",
-    "Darian": "#4c8dd8",
-    "Jami": "#d46fa2",
-    "Jamie": "#4ea885",
-    "Mike": "#c44e5e",
-}
-TIER_THRESHOLDS = [
-    (95, "SS"),
-    (90, "S"),
-    (80, "A"),
-    (70, "B"),
-    (60, "C"),
-    (50, "D"),
-    (1, "F"),
-]
-TIER_ORDER = ["SS", "S", "A", "B", "C", "D", "F", "U"]
-TIER_COLORS = {
-    "SS": "#efd28e",
-    "S": "#d7aa58",
-    "A": "#bcc4d8",
-    "B": "#9fb5ce",
-    "C": "#97bea2",
-    "D": "#b09d82",
-    "F": "#b06a58",
-    "U": "#8d877d",
-}
-HOT_TAKE_THRESHOLD = 30
-SMITESOURCE_PROFILE_LINKS = {
-    "Joey": "https://smitesource.com/player/f29ca789-74f0-442f-937a-f72fcba045d3",
-    "Darian": "https://smitesource.com/player/8005a240-cd89-4f14-bc40-db769319cb43",
-    "Jami": "https://smitesource.com/player/8f5f48ca-10d1-4104-ab5d-bb80d4683313",
-    "Jamie": "",
-    "Mike": "https://smitesource.com/player/f09127e9-676e-498e-b09e-6e20924a91f5",
-}
-SMITESOURCE_RPC_BASE = "https://smitesource.com/rpc"
-SMITESOURCE_CACHE_TTL_SECONDS = int(os.environ.get("SMITESOURCE_CACHE_TTL_SECONDS", "1800"))
-SMITESOURCE_MATCH_PAGE_SIZE = int(os.environ.get("SMITESOURCE_MATCH_PAGE_SIZE", "20"))
-SMITESOURCE_MATCH_SAMPLE_SIZE = int(os.environ.get("SMITESOURCE_MATCH_SAMPLE_SIZE", "200"))
-MATCH_HISTORY_UI_ROW_LIMIT = int(os.environ.get("MATCH_HISTORY_UI_ROW_LIMIT", "5000"))
-MATCH_SUMMARY_MIN_ROWS = int(os.environ.get("MATCH_SUMMARY_MIN_ROWS", "1000"))
+from hub.http import HTTP
+from hub.snapshots import load_json_snapshot, merge_snapshot_rows
+from hub.supabase import (
+    sb_delete_player_rankings,
+    sb_headers,
+    sb_insert,
+    sb_select,
+    sb_select_all,
+    sb_select_bootstrap,
+    sb_select_bootstrap_paged,
+    sb_upsert,
+    sb_url,
+)
 
 
+# Shared paths, player metadata, Supabase secret lookup, and app-wide thresholds
+# live in hub.config so scripts and Flask routes stay aligned.
 # This block creates the Flask application object that owns the routes and
 # template/static configuration for the whole custom app.
 app = Flask(__name__)
@@ -171,10 +105,6 @@ MIN_REAL_IMAGE_BYTES = 512
 SMITESOURCE_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
 RATER_STATS_CACHE: tuple[float, str, dict[str, dict[str, Any]]] | None = None
 RATER_STATS_CACHE_VERSION = "item-tier-v3"
-HTTP = requests.Session()
-HTTP.trust_env = False
-
-
 # This helper rounds timestamps to the minute in UTC so chemistry can dedupe
 # overlapping sessions pulled from different sources.
 def normalize_history_timestamp(value: str) -> str:
@@ -219,193 +149,6 @@ def normalize_queue_key(value: str) -> str:
 # the source row came from SmiteSource labels like casual_joust or Tracker's Joust.
 def is_joust_queue(value: str) -> bool:
     return normalize_queue_key(value) == "joust"
-
-
-# This helper loads secrets from the old Streamlit file so the Flask version
-# can keep using the same Supabase URL, API key, and player PINs.
-def load_streamlit_secrets() -> dict[str, Any]:
-    if not SECRETS_PATH.exists():
-        return {}
-    with SECRETS_PATH.open("rb") as handle:
-        return tomllib.load(handle)
-
-
-# This helper reads a config value from environment variables first and then
-# falls back to the copied Streamlit secrets, which keeps local setup simple.
-def get_secret(name: str, default: str = "") -> str:
-    secrets = load_streamlit_secrets()
-    return os.environ.get(name, secrets.get(name, default))
-
-
-# This helper returns the shared Supabase REST headers used for all reads and
-# writes so the request code stays consistent.
-def sb_headers(prefer: str | None = None) -> dict[str, str]:
-    key = get_secret("SUPABASE_KEY")
-    headers = {
-        "apikey": key,
-        "Authorization": f"Bearer {key}",
-        "Content-Type": "application/json",
-    }
-    if prefer:
-        headers["Prefer"] = prefer
-    return headers
-
-
-# This helper builds a REST endpoint URL for a Supabase table name.
-def sb_url(table: str) -> str:
-    base_url = get_secret("SUPABASE_URL")
-    return f"{base_url}/rest/v1/{table}"
-
-
-# This helper performs a generic Supabase GET query and returns JSON rows.
-def sb_select(table: str, params: dict[str, str] | None = None) -> list[dict]:
-    response = HTTP.get(
-        sb_url(table),
-        headers=sb_headers("return=representation"),
-        params=params or {"select": "*"},
-        timeout=20,
-    )
-    response.raise_for_status()
-    return response.json()
-
-
-# This helper pages through a Supabase table so we can read larger history sets
-# without being limited to one REST page.
-def sb_select_all(table: str, params: dict[str, str] | None = None, page_size: int = 1000) -> list[dict]:
-    params = dict(params or {})
-    base_limit = max(1, min(page_size, 1000))
-    offset = 0
-    rows: list[dict] = []
-
-    while True:
-        page_params = dict(params)
-        page_params["limit"] = str(base_limit)
-        page_params["offset"] = str(offset)
-        batch = sb_select(table, page_params)
-        rows.extend(batch)
-        if len(batch) < base_limit:
-            break
-        offset += base_limit
-
-    return rows
-
-
-# This helper performs a generic Supabase UPSERT so we can preserve the same
-# merge-duplicate behavior that the Streamlit app used.
-def sb_upsert(table: str, records: list[dict], on_conflict: str) -> None:
-    if not records:
-        return
-    params = {"on_conflict": on_conflict} if on_conflict else {}
-    response = HTTP.post(
-        sb_url(table),
-        headers=sb_headers("resolution=merge-duplicates,return=minimal"),
-        params=params,
-        data=json.dumps(records),
-        timeout=20,
-    )
-    response.raise_for_status()
-
-
-# This helper inserts append-only history rows into Supabase.
-def sb_insert(table: str, records: list[dict]) -> None:
-    if not records:
-        return
-    response = HTTP.post(
-        sb_url(table),
-        headers=sb_headers("return=minimal"),
-        data=json.dumps(records),
-        timeout=20,
-    )
-    if not response.ok:
-        raise RuntimeError(f"Supabase insert failed for {table}: {response.status_code} {response.text}")
-
-
-def sb_select_bootstrap(table: str, params: dict[str, str] | None = None, timeout: int = 4) -> list[dict]:
-    # Initial page load should never sit behind a slow Supabase edge response.
-    # Save/sync routes still use sb_select so write-critical paths remain strict.
-    response = requests.get(
-        sb_url(table),
-        headers=sb_headers("return=representation"),
-        params=params or {},
-        timeout=timeout,
-    )
-    response.raise_for_status()
-    data = response.json()
-    return data if isinstance(data, list) else []
-
-
-# This helper deletes a player's old personal rankings before rewriting the
-# current ordering, which avoids leaving stale rows behind.
-
-
-def sb_select_bootstrap_paged(table: str, params: dict[str, str] | None = None, timeout: int = 5, limit: int | None = None, page_size: int = 1000) -> list[dict]:
-    # PostgREST commonly caps one response at 1000 rows. Summary tables are
-    # lightweight, so we page them without touching the heavy raw_match JSON.
-    rows: list[dict[str, Any]] = []
-    target = limit or MATCH_HISTORY_UI_ROW_LIMIT
-    for start in range(0, target, page_size):
-        end = min(start + page_size - 1, target - 1)
-        response = requests.get(
-            sb_url(table),
-            headers={**sb_headers("return=representation"), "Range-Unit": "items", "Range": f"{start}-{end}"},
-            params=params or {},
-            timeout=timeout,
-        )
-        response.raise_for_status()
-        batch = response.json()
-        if not isinstance(batch, list) or not batch:
-            break
-        rows.extend(row for row in batch if isinstance(row, dict))
-        if len(batch) < page_size:
-            break
-    return rows
-
-
-def sb_delete_player_rankings(player: str) -> None:
-    response = HTTP.delete(
-        sb_url("personal_rankings"),
-        headers=sb_headers("return=minimal"),
-        params={"player": f"eq.{player}"},
-        timeout=20,
-    )
-    response.raise_for_status()
-
-
-# This helper loads a local JSON snapshot from the old repo, which gives the
-# app a graceful read fallback if Supabase can't be reached during testing.
-def load_json_snapshot(name: str) -> list[dict]:
-    snapshot_path = DATA_DIR / name
-    if not snapshot_path.exists():
-        return []
-    with snapshot_path.open("r", encoding="utf-8") as handle:
-        return json.load(handle)
-
-
-# This helper uses a preferred key order to merge partial Supabase tables with
-# the local JSON snapshots so missing gods still appear without replacing live rows.
-def merge_snapshot_rows(primary_rows: list[dict], fallback_rows: list[dict], key_names: tuple[str, ...]) -> list[dict]:
-    merged: list[dict] = []
-    seen: set[str] = set()
-
-    def row_key(row: dict) -> str:
-        for key_name in key_names:
-            value = row.get(key_name)
-            if value is not None and str(value).strip():
-                return str(value).strip().lower()
-        return ""
-
-    for source in (primary_rows or []), (fallback_rows or []):
-        for row in source:
-            if not isinstance(row, dict):
-                continue
-            key = row_key(row)
-            if key and key in seen:
-                continue
-            if key:
-                seen.add(key)
-            merged.append(dict(row))
-
-    return merged
 
 
 # This helper extracts the SmiteSource player UUID from a linked profile URL so
@@ -1467,8 +1210,10 @@ def extract_smitesource_matches_from_har(har_payload: dict[str, Any]) -> dict[st
     return {player: rows for player, rows in grouped.items() if rows}
 
 
-# This helper imports a SmiteSource browser HAR into the stored history table,
-# deduping against existing rows so repeated imports stay harmless.
+# Historical naming note: this started as a SmiteSource-only importer, but it
+# now accepts every supported HAR source and normalizes them into the canonical
+# smitesource_match_history archive. Keep the function name stable because the
+# Flask route and wrapper scripts call it directly.
 def import_smitesource_har_payload(har_payload: dict[str, Any]) -> dict[str, Any]:
     grouped_rows = extract_match_rows_from_har(har_payload)
     results: list[dict[str, Any]] = []
