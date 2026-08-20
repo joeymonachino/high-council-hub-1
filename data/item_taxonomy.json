@@ -1,0 +1,3030 @@
+{
+  "version": 1,
+  "notes": "Curated item taxonomy for High Council Hub. Tags are intentionally build-purpose oriented, not broad keyword matches.",
+  "items": {
+    "Adamantine Sickle": {
+      "name": "Adamantine Sickle",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Lifesteal",
+        "Sustain",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "72f51267fbcadc5f"
+    },
+    "Adroit Ring": {
+      "name": "Adroit Ring",
+      "beginnerType": "Utility",
+      "tags": [
+        "Utility",
+        "Cooldown",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "d37be8aeea664222"
+    },
+    "Agility Greaves": {
+      "name": "Agility Greaves",
+      "beginnerType": "Utility",
+      "tags": [
+        "Utility",
+        "Movement Speed",
+        "Mobility",
+        "Basic Attack",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "a0b6e6a8fc9b3e51"
+    },
+    "Alchemist Coat": {
+      "name": "Alchemist Coat",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Magical Damage",
+        "Health",
+        "Mana",
+        "Mitigation",
+        "Utility",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "c59b569b535b88ac"
+    },
+    "Ancient Signet": {
+      "name": "Ancient Signet",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "Mana",
+        "Cooldown",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "898569540cc73971"
+    },
+    "Ancile": {
+      "name": "Ancile",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Magical Protection",
+        "Health",
+        "Crowd Control",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "e0084c707128eb30"
+    },
+    "Arondight": {
+      "name": "Arondight",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Cooldown",
+        "Mobility",
+        "Burst",
+        "Utility",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "65d86c2f42bcaeaf"
+    },
+    "Ashwhorl Acorn": {
+      "name": "Ashwhorl Acorn",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Damage",
+        "Attack Speed",
+        "Basic Attack",
+        "Movement Speed",
+        "Health",
+        "Tenacity",
+        "Sustain",
+        "Physical Protection",
+        "Magical Protection",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "33c0ad38f68bffdc"
+    },
+    "Avatar's Parashu": {
+      "name": "Avatar's Parashu",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Anti-Tank",
+        "Anti-Protections",
+        "% Penetration",
+        "Burst",
+        "Crowd Control",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "5502724b84d77510"
+    },
+    "Avenging Blade": {
+      "name": "Avenging Blade",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Damage",
+        "Health",
+        "Anti-Tank",
+        "Anti-Protections",
+        "Protection Reduction",
+        "Basic Attack",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "43b78845624d6500"
+    },
+    "Axe": {
+      "name": "Axe",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Tier 1"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "100db53c04bc19a6"
+    },
+    "Bancroft's Talon": {
+      "name": "Bancroft's Talon",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Lifesteal",
+        "Sustain",
+        "Mana",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "a8fc8e758fe55172"
+    },
+    "Bancrofts Talon": {
+      "name": "Bancrofts Talon",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Lifesteal",
+        "Sustain",
+        "Mana",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "a8fc8e758fe55172",
+      "aliasOf": "Bancroft's Talon"
+    },
+    "Barbed Carver": {
+      "name": "Barbed Carver",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Ability Damage",
+        "Lifesteal",
+        "Sustain",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "2586eb9f7ec61eda"
+    },
+    "Battle Axe": {
+      "name": "Battle Axe",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Damage",
+        "Health",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "f846412c88847b82"
+    },
+    "Berserker's Shield": {
+      "name": "Berserker's Shield",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Protection",
+        "Health",
+        "Attack Speed",
+        "Basic Attack",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "d22b8dfed33dba8e"
+    },
+    "Bindings Of Lyngvi": {
+      "name": "Bindings Of Lyngvi",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Anti-Tank",
+        "Anti-Protections",
+        "Protection Reduction",
+        "Crowd Control",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "505aa5244902f722",
+      "aliasOf": "Stone of Binding"
+    },
+    "Bindings of Lyngvi": {
+      "name": "Bindings of Lyngvi",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Anti-Tank",
+        "Anti-Protections",
+        "Protection Reduction",
+        "Crowd Control",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "505aa5244902f722",
+      "aliasOf": "Stone of Binding"
+    },
+    "Blood-Bound Book": {
+      "name": "Blood-Bound Book",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Lifesteal",
+        "Sustain",
+        "Shielding",
+        "Cooldown",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "0aa343fbe98b593e"
+    },
+    "Blood-soaked Shroud": {
+      "name": "Blood-soaked Shroud",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Hybrid",
+        "Health",
+        "Lifesteal",
+        "Sustain",
+        "Ability Damage"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "196353c7a984b4e9"
+    },
+    "Bloodforge": {
+      "name": "Bloodforge",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Lifesteal",
+        "Sustain",
+        "Shielding",
+        "Cooldown",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "b9e0343702c67d8e"
+    },
+    "Bluestone Brooch": {
+      "name": "Bluestone Brooch",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Hybrid",
+        "Physical Damage",
+        "Ability Damage",
+        "Health",
+        "Sustain",
+        "Anti-Tank",
+        "Anti-Health",
+        "% Health Damage"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "d663733dae3f66c9"
+    },
+    "Bluestone Pendant": {
+      "name": "Bluestone Pendant",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Offense",
+        "Physical Damage",
+        "Ability Damage",
+        "Sustain"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "88d34a5c7c8cc425"
+    },
+    "Book of Thoth": {
+      "name": "Book of Thoth",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Mana",
+        "Flat Penetration",
+        "Scaling",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "665bfb2a40b9376a"
+    },
+    "Bow": {
+      "name": "Bow",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Basic Attack",
+        "Attack Speed",
+        "Tier 1"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "73209e7c2976b2a4"
+    },
+    "Bowl Drum": {
+      "name": "Bowl Drum",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Ability Damage",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "3b1343c1a95c074e"
+    },
+    "Bracer of The Abyss": {
+      "name": "Bracer of The Abyss",
+      "beginnerType": "Offense",
+      "tags": [
+        "Tier 3",
+        "Offense",
+        "Magical Damage",
+        "Basic Attack",
+        "Attack Speed"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "e6a9fc7f5db9d460"
+    },
+    "Bragi's Harp": {
+      "name": "Bragi's Harp",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Magical Damage",
+        "Basic Attack",
+        "Attack Speed",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "e930760e322de9b7"
+    },
+    "Brawler's Beat Stick": {
+      "name": "Brawler's Beat Stick",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Damage",
+        "Magical Damage",
+        "Physical Protection",
+        "Magical Protection",
+        "Anti-Heal",
+        "Bruiser",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "db7c00858be63d72"
+    },
+    "Breastplate of Valor": {
+      "name": "Breastplate of Valor",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Cooldown",
+        "Mana",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "2fed8f5a6a489512"
+    },
+    "Briskberry Acorn": {
+      "name": "Briskberry Acorn",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Damage",
+        "Ability Damage",
+        "Crowd Control",
+        "Health",
+        "Sustain",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "e9fed2ded5ac96a4"
+    },
+    "Bumba's Cudgel": {
+      "name": "Bumba's Cudgel",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Hybrid",
+        "Physical Damage",
+        "Magical Damage",
+        "Health",
+        "Mana",
+        "Cooldown",
+        "Basic Attack"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "33949ee3b9739109"
+    },
+    "Bumba's Golden Dagger": {
+      "name": "Bumba's Golden Dagger",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Offense",
+        "Physical Damage",
+        "Magical Damage",
+        "Health",
+        "Basic Attack",
+        "Attack Speed"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "8e653d4e0f97b161"
+    },
+    "Bumba's Hammer": {
+      "name": "Bumba's Hammer",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Hybrid",
+        "Physical Damage",
+        "Magical Damage",
+        "Health",
+        "Cooldown",
+        "Basic Attack",
+        "Healing",
+        "Sustain"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "daaf117247ff1ec7"
+    },
+    "Bumba's Spear": {
+      "name": "Bumba's Spear",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Offense",
+        "Physical Damage",
+        "Magical Damage",
+        "Health",
+        "Basic Attack",
+        "Attack Speed"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "8887a4f0c88b684c"
+    },
+    "Bumbas Cudgel": {
+      "name": "Bumbas Cudgel",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Hybrid",
+        "Physical Damage",
+        "Magical Damage",
+        "Health",
+        "Mana",
+        "Cooldown",
+        "Basic Attack"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "33949ee3b9739109",
+      "aliasOf": "Bumba's Cudgel"
+    },
+    "Bumbas Dagger": {
+      "name": "Bumbas Dagger",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Offense",
+        "Physical Damage",
+        "Magical Damage",
+        "Health",
+        "Basic Attack",
+        "Attack Speed"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "8e653d4e0f97b161",
+      "aliasOf": "Bumba's Golden Dagger"
+    },
+    "Bumbas Hammer": {
+      "name": "Bumbas Hammer",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Hybrid",
+        "Physical Damage",
+        "Magical Damage",
+        "Health",
+        "Cooldown",
+        "Basic Attack",
+        "Healing",
+        "Sustain"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "daaf117247ff1ec7",
+      "aliasOf": "Bumba's Hammer"
+    },
+    "Bumbas Spear": {
+      "name": "Bumbas Spear",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Offense",
+        "Physical Damage",
+        "Magical Damage",
+        "Health",
+        "Basic Attack",
+        "Attack Speed"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "8887a4f0c88b684c",
+      "aliasOf": "Bumba's Spear"
+    },
+    "Caestus": {
+      "name": "Caestus",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Damage",
+        "Cooldown",
+        "Physical Protection",
+        "Magical Protection",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "73078d4077c1cfe5"
+    },
+    "Captain's Ring": {
+      "name": "Captain's Ring",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Cooldown",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "b20ae1a5b56a9253"
+    },
+    "Chandra's Grace": {
+      "name": "Chandra's Grace",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Health",
+        "Cooldown",
+        "Healing",
+        "Sustain",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "b7c87c358b1645ab"
+    },
+    "Chronos Pendant": {
+      "name": "Chronos Pendant",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Cooldown",
+        "Ability Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "68a5c3d2bf61e986",
+      "aliasOf": "Chronos' Pendant"
+    },
+    "Chronos' Pendant": {
+      "name": "Chronos' Pendant",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Cooldown",
+        "Ability Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "68a5c3d2bf61e986"
+    },
+    "Circe's Hexstone": {
+      "name": "Circe's Hexstone",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Health",
+        "Cooldown",
+        "Mobility",
+        "Crowd Control",
+        "Anti-Tank",
+        "Anti-Health",
+        "% Health Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "b3a7d4c670de4167"
+    },
+    "Circlet": {
+      "name": "Circlet",
+      "beginnerType": "Utility",
+      "tags": [
+        "Utility",
+        "Mana",
+        "Tier 1"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "a2d8940b8f5fa773"
+    },
+    "Conduit Gem": {
+      "name": "Conduit Gem",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "Mana"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "9c47f11e91efdd42"
+    },
+    "Contagion": {
+      "name": "Contagion",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Health",
+        "Crowd Control",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "5a3113e955c5618b"
+    },
+    "Cursed Sickle": {
+      "name": "Cursed Sickle",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Lifesteal",
+        "Sustain",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "ef11dce510276b44"
+    },
+    "Dagger of Frenzy": {
+      "name": "Dagger of Frenzy",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "Attack Speed",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "7493dca77056200d"
+    },
+    "Damaru": {
+      "name": "Damaru",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Magical Damage",
+        "Cooldown",
+        "Movement Speed",
+        "Mobility",
+        "Ability Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "d861f5bf9fd0aca7"
+    },
+    "Daybreak Gavel": {
+      "name": "Daybreak Gavel",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Damage",
+        "Magical Damage",
+        "Health",
+        "Healing",
+        "Sustain",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "54c16bb4fc496c7c"
+    },
+    "Death Metal": {
+      "name": "Death Metal",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Magical Damage",
+        "Crit",
+        "Basic Attack",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "9a595bd52a597932"
+    },
+    "Death's Embrace": {
+      "name": "Death's Embrace",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Hybrid",
+        "Physical Damage",
+        "Magical Damage",
+        "Basic Attack",
+        "Healing",
+        "Sustain",
+        "Mana",
+        "Cooldown"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "6865b9ceba9d4cd4"
+    },
+    "Death's Toll": {
+      "name": "Death's Toll",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Hybrid",
+        "Health",
+        "Basic Attack",
+        "Healing",
+        "Sustain",
+        "Mana"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "a4df09cf9b9f7bb9"
+    },
+    "Deathbringer": {
+      "name": "Deathbringer",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Crit",
+        "Basic Attack",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "6c3a100e1fcc3dbc"
+    },
+    "Demon Blade": {
+      "name": "Demon Blade",
+      "beginnerType": "Offense",
+      "tags": [
+        "Tier 3",
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "Attack Speed",
+        "Crit"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "b4c7bf4912151a23"
+    },
+    "Devourer's Gauntlet": {
+      "name": "Devourer's Gauntlet",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Lifesteal",
+        "Sustain",
+        "Scaling",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "400c307bb4eec75f"
+    },
+    "Divine Ruin": {
+      "name": "Divine Ruin",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "Flat Penetration",
+        "Anti-Heal",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "be65ddb41f7aaf53"
+    },
+    "Dominance": {
+      "name": "Dominance",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "% Penetration",
+        "Anti-Tank",
+        "Anti-Protections",
+        "Mana",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "54c9140e308f3ce6"
+    },
+    "Doom Orb": {
+      "name": "Doom Orb",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Mana",
+        "Movement Speed",
+        "Mobility",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "51b7f7e1727eed82"
+    },
+    "Doublet of Binding": {
+      "name": "Doublet of Binding",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Mitigation",
+        "Teamfight",
+        "Utility",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "00535c016ce5c545"
+    },
+    "Draconic Scale": {
+      "name": "Draconic Scale",
+      "beginnerType": "Defense",
+      "tags": [
+        "Tier 3",
+        "Defense",
+        "Physical Damage",
+        "Magical Damage",
+        "Physical Protection",
+        "Magical Protection",
+        "Health"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "e289b3fbdd30224b"
+    },
+    "Dreamer's Idol": {
+      "name": "Dreamer's Idol",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Anti-Tank",
+        "Anti-Protections",
+        "% Penetration",
+        "Burst",
+        "Crowd Control",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "7b6080d9c8291965"
+    },
+    "Engraved Guard": {
+      "name": "Engraved Guard",
+      "beginnerType": "Defense",
+      "tags": [
+        "Tier 2",
+        "Physical Damage",
+        "Magical Damage",
+        "Defense",
+        "Physical Protection",
+        "Magical Protection"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "bf8fc2323fd3c120"
+    },
+    "Eros' Bow": {
+      "name": "Eros' Bow",
+      "beginnerType": "Utility",
+      "tags": [
+        "Utility",
+        "Healing",
+        "Sustain",
+        "Basic Attack",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "44f2beb6ba38a95f"
+    },
+    "Erosbow": {
+      "name": "Erosbow",
+      "beginnerType": "Utility",
+      "tags": [
+        "Utility",
+        "Healing",
+        "Sustain",
+        "Basic Attack",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "44f2beb6ba38a95f",
+      "aliasOf": "Eros' Bow"
+    },
+    "Erosion": {
+      "name": "Erosion",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Health",
+        "Anti-Shield",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "39a03df2f0586a48"
+    },
+    "Ethereal Staff": {
+      "name": "Ethereal Staff",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Tier 3",
+        "Hybrid",
+        "Magical Damage",
+        "Health"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "3f451dea2e049f34"
+    },
+    "Evil Eye": {
+      "name": "Evil Eye",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2",
+        "Magical Damage"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "2857716d9cfa6939"
+    },
+    "Eye of Erebus": {
+      "name": "Eye of Erebus",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Anti-Tank",
+        "Anti-Health",
+        "% Health Damage",
+        "Slow",
+        "Utility",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "c128eb369b773c67"
+    },
+    "Eye of the Storm": {
+      "name": "Eye of the Storm",
+      "beginnerType": "Offense",
+      "tags": [
+        "Tier 3",
+        "Offense",
+        "Physical Damage",
+        "Health"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "89d728c3ba2362ee"
+    },
+    "Flaming Pearl": {
+      "name": "Flaming Pearl",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2",
+        "Magical Damage",
+        "Health"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "799886a2d556f66f"
+    },
+    "Freya's Tears": {
+      "name": "Freya's Tears",
+      "beginnerType": "Utility",
+      "tags": [
+        "Utility",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "25aa613dbd6b46d6"
+    },
+    "Gauntlet of Thebes": {
+      "name": "Gauntlet of Thebes",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Health",
+        "Scaling",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "02a262a028667a28"
+    },
+    "Gem": {
+      "name": "Gem",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Mana",
+        "Tier 1"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "74bf12000dbd784f"
+    },
+    "Gem of Focus": {
+      "name": "Gem of Focus",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Cooldown",
+        "Movement Speed",
+        "Mobility",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "f9c92b1a3227bea4"
+    },
+    "Gem of Isolation": {
+      "name": "Gem of Isolation",
+      "beginnerType": "Utility",
+      "tags": [
+        "Utility",
+        "Magical Damage",
+        "Ability Damage",
+        "Slow",
+        "Crowd Control",
+        "Health",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "7a19cf61becf56d0"
+    },
+    "Genji's Guard": {
+      "name": "Genji's Guard",
+      "beginnerType": "Defense",
+      "tags": [
+        "Tier 3",
+        "Defense",
+        "Magical Damage",
+        "Magical Protection",
+        "Mana",
+        "Cooldown"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "4944529de53712d6"
+    },
+    "Gilded Arrow": {
+      "name": "Gilded Arrow",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "Attack Speed",
+        "Economy"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "e99dd7e97c04bc33"
+    },
+    "Gladiator Shield": {
+      "name": "Gladiator Shield",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Protection",
+        "Health",
+        "Cooldown",
+        "Physical Damage",
+        "Ability Damage",
+        "Bruiser",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "0b63e2bcbc7a287d"
+    },
+    "Glorious Pridwen": {
+      "name": "Glorious Pridwen",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Cooldown",
+        "Shielding",
+        "Burst",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "b6dc930522696355"
+    },
+    "Golden Blade": {
+      "name": "Golden Blade",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Tier 3",
+        "Hybrid",
+        "Physical Damage",
+        "Health",
+        "Basic Attack",
+        "Attack Speed"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "ebe0538025ef5f3e"
+    },
+    "Hastened Fatalis": {
+      "name": "Hastened Fatalis",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Basic Attack",
+        "Attack Speed",
+        "Movement Speed",
+        "Mobility",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "898267096da88bc5"
+    },
+    "Heartseeker": {
+      "name": "Heartseeker",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Ability Damage",
+        "Anti-Tank",
+        "Anti-Health",
+        "% Health Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "82d8049ac05146a0"
+    },
+    "Heartwood Charm": {
+      "name": "Heartwood Charm",
+      "beginnerType": "Defense",
+      "tags": [
+        "Tier 3",
+        "Defense",
+        "Health",
+        "Mana",
+        "Cooldown"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "91f83b706f3ada73"
+    },
+    "Helm of Radiance": {
+      "name": "Helm of Radiance",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Magical Protection",
+        "Health",
+        "Aura",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "ad61f024d53610ff"
+    },
+    "Heroism": {
+      "name": "Heroism",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Health",
+        "Shielding",
+        "Teamfight",
+        "Economy"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "51c75c4f3c3dfe13"
+    },
+    "Hide of the Nemean Lion": {
+      "name": "Hide of the Nemean Lion",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Health",
+        "Anti-Basic Attack",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "2fa8041897ba9792"
+    },
+    "Hunter's Bow": {
+      "name": "Hunter's Bow",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2",
+        "Basic Attack",
+        "Attack Speed"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "4dc6bf9ee7d64145"
+    },
+    "Hunter's Cowl": {
+      "name": "Hunter's Cowl",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Offense",
+        "Basic Attack",
+        "Attack Speed",
+        "Lifesteal",
+        "Sustain"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "2b419b23646529da"
+    },
+    "Hussar's Wings": {
+      "name": "Hussar's Wings",
+      "beginnerType": "Defense",
+      "tags": [
+        "Tier 3",
+        "Defense",
+        "Physical Damage",
+        "Magical Damage",
+        "Physical Protection",
+        "Magical Protection",
+        "Health"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "50b92179da05cce6"
+    },
+    "Hydra's Lament": {
+      "name": "Hydra's Lament",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "Ability Damage",
+        "Cooldown",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "c8f2158704a64864"
+    },
+    "Infused Axe": {
+      "name": "Infused Axe",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2",
+        "Physical Damage",
+        "Mana"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "dd24153570180a6c"
+    },
+    "Jotunn's Revenge": {
+      "name": "Jotunn's Revenge",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Ability Damage",
+        "Cooldown",
+        "Flat Penetration",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "089e7f78fb039415"
+    },
+    "Jotunns Revenge": {
+      "name": "Jotunns Revenge",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Ability Damage",
+        "Cooldown",
+        "Flat Penetration",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "089e7f78fb039415",
+      "aliasOf": "Jotunn's Revenge"
+    },
+    "Killing Stone": {
+      "name": "Killing Stone",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Magical Damage",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "b9834e9f4b4e8d00"
+    },
+    "Kinetic Cuirass": {
+      "name": "Kinetic Cuirass",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Protection",
+        "Health",
+        "Physical Damage",
+        "Basic Attack",
+        "Bruiser",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "778cebb9e605809e"
+    },
+    "Kopesh": {
+      "name": "Kopesh",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2",
+        "Physical Damage",
+        "Basic Attack",
+        "Crit"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "a024ef7fbc335237"
+    },
+    "Leather Cowl": {
+      "name": "Leather Cowl",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Offense",
+        "Basic Attack",
+        "Attack Speed",
+        "Lifesteal",
+        "Sustain"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "c313050ffd38e1c6"
+    },
+    "Legionnaire Armor": {
+      "name": "Legionnaire Armor",
+      "beginnerType": "Defense",
+      "tags": [
+        "Tier 3",
+        "Tier 2",
+        "Physical Damage",
+        "Defense",
+        "Physical Protection"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "c4ebac63313056d2"
+    },
+    "Lernaean Bow": {
+      "name": "Lernaean Bow",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "Attack Speed",
+        "Anti-Shield",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "a681e670eb86fcce"
+    },
+    "Leviathan's Hide": {
+      "name": "Leviathan's Hide",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Health",
+        "Physical Protection",
+        "Magical Protection",
+        "Debuff",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "03488a52bf2b634e"
+    },
+    "Lively Acorn": {
+      "name": "Lively Acorn",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "8a5d8875d880933d"
+    },
+    "Lucerne Hammer": {
+      "name": "Lucerne Hammer",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2",
+        "Physical Damage"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "a1a6607386ecd4af"
+    },
+    "Magi's Cloak": {
+      "name": "Magi's Cloak",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Crowd Control",
+        "Tenacity",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "906efac28d6d6c42"
+    },
+    "Mana Tome": {
+      "name": "Mana Tome",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2",
+        "Mana"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "2cc25292133c80c1"
+    },
+    "Manchu Bow": {
+      "name": "Manchu Bow",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 3",
+        "Tier 2",
+        "Physical Damage",
+        "Basic Attack",
+        "Attack Speed"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "f0205790bd36e603"
+    },
+    "Mantle of Discord": {
+      "name": "Mantle of Discord",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Crowd Control",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "2720471810796043"
+    },
+    "Medal of Defense": {
+      "name": "Medal of Defense",
+      "beginnerType": "Defense",
+      "tags": [
+        "Tier 2",
+        "Physical Damage",
+        "Defense",
+        "Physical Protection",
+        "Health"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "92070a9df6a8cabc"
+    },
+    "Medal of Disruption": {
+      "name": "Medal of Disruption",
+      "beginnerType": "Defense",
+      "tags": [
+        "Tier 2",
+        "Magical Damage",
+        "Defense",
+        "Magical Protection",
+        "Health"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "59f742794c47dcd8"
+    },
+    "Medallion": {
+      "name": "Medallion",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 1",
+        "Health"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "d244b1ed41d30dba"
+    },
+    "Mercury's Talaria": {
+      "name": "Mercury's Talaria",
+      "beginnerType": "Offense",
+      "tags": [
+        "Tier 3",
+        "Offense"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "28d93e84609d3594"
+    },
+    "Midgardian Mail": {
+      "name": "Midgardian Mail",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Health",
+        "Debuff",
+        "Anti-Basic Attack",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "21ab5c391c699a89"
+    },
+    "Musashi's Dual Swords": {
+      "name": "Musashi's Dual Swords",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "Attack Speed",
+        "Movement Speed",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "b40240a6732e29ac"
+    },
+    "Mystical Mail": {
+      "name": "Mystical Mail",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Health",
+        "Aura",
+        "Anti-Shield",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "ef7b5ac1ce0b016b"
+    },
+    "Necronomicon": {
+      "name": "Necronomicon",
+      "beginnerType": "Offense",
+      "tags": [
+        "Tier 3",
+        "Offense",
+        "Magical Damage",
+        "Mana"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "e9110e2072a419fe"
+    },
+    "Nimble Ring": {
+      "name": "Nimble Ring",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Basic Attack",
+        "Attack Speed",
+        "Lifesteal",
+        "Sustain",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "6ca56d87bebe129d"
+    },
+    "Oath-Sworn Spear": {
+      "name": "Oath-Sworn Spear",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Flat Penetration",
+        "Cooldown",
+        "Ability Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "68d5cff66fb7e236"
+    },
+    "Obsidian Shard": {
+      "name": "Obsidian Shard",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Anti-Tank",
+        "Anti-Protections",
+        "% Penetration",
+        "Ability Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "b51fbcde0884d702"
+    },
+    "Odysseus' Bow": {
+      "name": "Odysseus' Bow",
+      "beginnerType": "Offense",
+      "tags": [
+        "Tier 3",
+        "Offense",
+        "Basic Attack",
+        "Attack Speed"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "44101d3da7715448"
+    },
+    "Olmec Blue": {
+      "name": "Olmec Blue",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2",
+        "Health"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "904de171aaa68261"
+    },
+    "Omen Drum": {
+      "name": "Omen Drum",
+      "beginnerType": "Offense",
+      "tags": [
+        "Tier 3",
+        "Offense"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "7387d4d88318fc80"
+    },
+    "Oni Hunter's Garb": {
+      "name": "Oni Hunter's Garb",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Magical Protection",
+        "Health",
+        "Mitigation",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "bba7162ba076f195"
+    },
+    "Oni Hunters Garb": {
+      "name": "Oni Hunters Garb",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Magical Protection",
+        "Health",
+        "Mitigation",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "bba7162ba076f195",
+      "aliasOf": "Oni Hunter's Garb"
+    },
+    "Oracle Staff": {
+      "name": "Oracle Staff",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2",
+        "Magical Damage",
+        "Mana"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "c745a2ab0d3226f1"
+    },
+    "Pendulum Blade": {
+      "name": "Pendulum Blade",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Cooldown",
+        "Mana",
+        "Ability Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "552654a87abde77f"
+    },
+    "Pendulum of The Ages": {
+      "name": "Pendulum of The Ages",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Mana",
+        "Cooldown"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "e48f6883fa14b1a2"
+    },
+    "Pharaoh's Curse": {
+      "name": "Pharaoh's Curse",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Magical Protection",
+        "Health",
+        "Anti-Shield",
+        "Debuff",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "cf5fc627f6f3d01c"
+    },
+    "Plated Metal": {
+      "name": "Plated Metal",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "ba05918c9f783ea3"
+    },
+    "Polynomicon": {
+      "name": "Polynomicon",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Basic Attack",
+        "Ability Damage",
+        "Burst",
+        "Mana",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "0749f725a53f6e49"
+    },
+    "Prophetic Cloak": {
+      "name": "Prophetic Cloak",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Mitigation",
+        "Scaling",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "a53eebf540fd0441"
+    },
+    "Qin's Blade": {
+      "name": "Qin's Blade",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "Attack Speed",
+        "Anti-Tank",
+        "Anti-Health",
+        "% Health Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "801b777e63634108"
+    },
+    "Qins Blade": {
+      "name": "Qins Blade",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "Attack Speed",
+        "Anti-Tank",
+        "Anti-Health",
+        "% Health Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "801b777e63634108",
+      "aliasOf": "Qin's Blade"
+    },
+    "Radiant Bulwark": {
+      "name": "Radiant Bulwark",
+      "beginnerType": "Defense",
+      "tags": [
+        "Tier 3",
+        "Defense",
+        "Physical Damage",
+        "Magical Damage",
+        "Physical Protection",
+        "Magical Protection"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "d3a46200c90953d4"
+    },
+    "Rage": {
+      "name": "Rage",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Crit",
+        "Basic Attack",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "b0a3235dff75ce76"
+    },
+    "Regrowth Striders": {
+      "name": "Regrowth Striders",
+      "beginnerType": "Utility",
+      "tags": [
+        "Utility",
+        "Movement Speed",
+        "Mobility",
+        "Healing",
+        "Sustain",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "d4c158709da23fd9"
+    },
+    "Reliquary": {
+      "name": "Reliquary",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 1",
+        "Mana"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "ac7f3a1d48ae7667"
+    },
+    "Resolute Mantle": {
+      "name": "Resolute Mantle",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Tenacity",
+        "Crowd Control",
+        "Healing",
+        "Sustain",
+        "Scaling",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "0dbe7cd7bb8cf941"
+    },
+    "Ring": {
+      "name": "Ring",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Attack Speed",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "50d108436448ea17"
+    },
+    "Ring of Dispel": {
+      "name": "Ring of Dispel",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2",
+        "Magical Damage",
+        "Cooldown"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "785052b85636f326"
+    },
+    "Riptalon": {
+      "name": "Riptalon",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "Lifesteal",
+        "Sustain",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "0cc66b4b5b0408f7"
+    },
+    "Rod of Asclepius": {
+      "name": "Rod of Asclepius",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Magical Damage",
+        "Healing",
+        "Sustain",
+        "Movement Speed",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "7c06b9e9a0af4c26"
+    },
+    "Rod of Tahuti": {
+      "name": "Rod of Tahuti",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "ef8a86d2e87084aa"
+    },
+    "Rune": {
+      "name": "Rune",
+      "beginnerType": "Defense",
+      "tags": [
+        "Tier 1",
+        "Magical Damage",
+        "Defense",
+        "Magical Protection"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "dc287093aa5727d3"
+    },
+    "Runeforged Hammer": {
+      "name": "Runeforged Hammer",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Tier 3",
+        "Hybrid",
+        "Physical Damage",
+        "Health"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "5096144867950981"
+    },
+    "Sabre": {
+      "name": "Sabre",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 1",
+        "Basic Attack",
+        "Crit"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "9f4f1ce02b9aa857"
+    },
+    "Sage's Ring": {
+      "name": "Sage's Ring",
+      "beginnerType": "Defense",
+      "tags": [
+        "Tier 2",
+        "Magical Damage",
+        "Defense",
+        "Magical Protection",
+        "Cooldown"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "feea271a7a01c174"
+    },
+    "Sands of Time": {
+      "name": "Sands of Time",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Offense",
+        "Magical Damage",
+        "Cooldown",
+        "Mana",
+        "Ability Damage"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "c8f1acdc619341f3"
+    },
+    "Sanguine Lash": {
+      "name": "Sanguine Lash",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Damage",
+        "Lifesteal",
+        "Sustain",
+        "Anti-Tank",
+        "Anti-Health",
+        "% Health Damage",
+        "Bruiser",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "a125fa8e55f310e2"
+    },
+    "Scepter of Dominion": {
+      "name": "Scepter of Dominion",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Tier 3",
+        "Hybrid",
+        "Magical Damage",
+        "Health",
+        "Mana"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "16afa929d154efcc"
+    },
+    "Screeching Gargoyle": {
+      "name": "Screeching Gargoyle",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "85d6af468b094f80"
+    },
+    "Scythe": {
+      "name": "Scythe",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Lifesteal",
+        "Sustain",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "2644a3b7118d36a5"
+    },
+    "Selflessness": {
+      "name": "Selflessness",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Health",
+        "Shielding",
+        "Teamfight"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "b944eb67e9de5312"
+    },
+    "Shape Shifter Shield": {
+      "name": "Shape Shifter Shield",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Protection",
+        "Magical Protection",
+        "Health",
+        "Physical Damage",
+        "Magical Damage",
+        "Bruiser",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "dc8d1e29453a844d",
+      "aliasOf": "Shifter's Shield"
+    },
+    "Shell of Rebuke": {
+      "name": "Shell of Rebuke",
+      "beginnerType": "Defense",
+      "tags": [
+        "Utility",
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Shielding",
+        "Mitigation",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "a71f4c21198aaeef"
+    },
+    "Shield": {
+      "name": "Shield",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Tier 1"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "bf7db67afe75f44b"
+    },
+    "Shield of the Phoenix": {
+      "name": "Shield of the Phoenix",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Health",
+        "Cooldown",
+        "Healing",
+        "Sustain",
+        "Mana",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "1ba89786fc1c5288"
+    },
+    "Shifter's Shield": {
+      "name": "Shifter's Shield",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Protection",
+        "Magical Protection",
+        "Health",
+        "Physical Damage",
+        "Magical Damage",
+        "Bruiser",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "dc8d1e29453a844d"
+    },
+    "Shifters Shield": {
+      "name": "Shifters Shield",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Protection",
+        "Magical Protection",
+        "Health",
+        "Physical Damage",
+        "Magical Damage",
+        "Bruiser",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "dc8d1e29453a844d",
+      "aliasOf": "Shifter's Shield"
+    },
+    "Shogun's Kusari": {
+      "name": "Shogun's Kusari",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Magical Protection",
+        "Health",
+        "Attack Speed",
+        "Aura",
+        "Teamfight",
+        "Basic Attack",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "965bbd4003ad6ab2"
+    },
+    "Shoguns Kusari": {
+      "name": "Shoguns Kusari",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Magical Protection",
+        "Health",
+        "Attack Speed",
+        "Aura",
+        "Teamfight",
+        "Basic Attack",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "965bbd4003ad6ab2",
+      "aliasOf": "Shogun's Kusari"
+    },
+    "Shroud Of Vengeance": {
+      "name": "Shroud Of Vengeance",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Tenacity",
+        "Crowd Control",
+        "Physical Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "11d7930bc93e48db"
+    },
+    "Silverbranch Bow": {
+      "name": "Silverbranch Bow",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "Attack Speed",
+        "% Penetration",
+        "Anti-Tank",
+        "Anti-Protections",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "2796204fea06328b"
+    },
+    "Skeggox": {
+      "name": "Skeggox",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "67d643861690b1f6"
+    },
+    "Soul Gem": {
+      "name": "Soul Gem",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "Flat Penetration",
+        "Cooldown",
+        "Lifesteal",
+        "Sustain",
+        "Healing",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "8ccf4a289e86fc4c"
+    },
+    "Soul Reaver": {
+      "name": "Soul Reaver",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "Anti-Tank",
+        "Anti-Health",
+        "% Health Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "b9b2467a0987241a"
+    },
+    "Soul Reliquary": {
+      "name": "Soul Reliquary",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Mana",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "1e75d8a4aa16fbc6"
+    },
+    "Spear of Desolation": {
+      "name": "Spear of Desolation",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "Flat Penetration",
+        "Cooldown",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "ed5adf4907d4aa9a"
+    },
+    "Spear Of The Magus": {
+      "name": "Spear Of The Magus",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "% Penetration",
+        "Anti-Tank",
+        "Anti-Protections",
+        "Debuff",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "f0f1e3146dbc486e"
+    },
+    "Spearofthe Magus": {
+      "name": "Spearofthe Magus",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "% Penetration",
+        "Anti-Tank",
+        "Anti-Protections",
+        "Debuff",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "f0f1e3146dbc486e",
+      "aliasOf": "Spear Of The Magus"
+    },
+    "Spectral Armor": {
+      "name": "Spectral Armor",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Health",
+        "Anti-Burst",
+        "Crit",
+        "Aura",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "11c9486cc6da25e5"
+    },
+    "Sphere of Negation": {
+      "name": "Sphere of Negation",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Magical Damage",
+        "Magical Protection",
+        "Shielding",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "a757ca02a28b4459"
+    },
+    "Spirit Robe": {
+      "name": "Spirit Robe",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Tenacity",
+        "Crowd Control",
+        "Healing",
+        "Sustain",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "285470d64714897b"
+    },
+    "Staff of Cosmic Horror": {
+      "name": "Staff of Cosmic Horror",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "Flat Penetration",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "a271ac56a1ee92e5",
+      "aliasOf": "The Cosmic Horror"
+    },
+    "Staff of Myrddin": {
+      "name": "Staff of Myrddin",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "Cooldown",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "7a04a419fd0b1fb9"
+    },
+    "Stampede": {
+      "name": "Stampede",
+      "beginnerType": "Utility",
+      "tags": [
+        "Utility",
+        "Physical Protection",
+        "Health",
+        "Movement Speed",
+        "Mobility",
+        "Slow",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "c3a64c0ca51d8a27"
+    },
+    "Stone of Binding": {
+      "name": "Stone of Binding",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Anti-Tank",
+        "Anti-Protections",
+        "Protection Reduction",
+        "Crowd Control",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "505aa5244902f722"
+    },
+    "Stygian Anchor": {
+      "name": "Stygian Anchor",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Anti-Heal",
+        "Debuff",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "d6b26931e7f4bb09"
+    },
+    "Sundering Arc": {
+      "name": "Sundering Arc",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Utility",
+        "True Damage",
+        "Burst"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "9174fe3b14b3e728"
+    },
+    "Sundering Axe": {
+      "name": "Sundering Axe",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Hybrid",
+        "Physical Protection",
+        "Magical Protection",
+        "Physical Damage",
+        "Magical Damage",
+        "Healing",
+        "Sustain",
+        "Bruiser"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "a131d6ca566b9d39"
+    },
+    "Survivor's Sash": {
+      "name": "Survivor's Sash",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Damage",
+        "Magical Damage",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "25a333311c8c24b6"
+    },
+    "Talisman of Purification": {
+      "name": "Talisman of Purification",
+      "beginnerType": "Utility",
+      "tags": [
+        "Utility",
+        "Cooldown",
+        "Crowd Control",
+        "Tenacity",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "24f9666ba8288dbd"
+    },
+    "Tekko-Kagi": {
+      "name": "Tekko-Kagi",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "Attack Speed",
+        "Flat Penetration",
+        "Mobility",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "4699e1e8f118d387"
+    },
+    "The Cosmic Horror": {
+      "name": "The Cosmic Horror",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "Flat Penetration",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "a271ac56a1ee92e5"
+    },
+    "The Crusher": {
+      "name": "The Crusher",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Ability Damage",
+        "Flat Penetration",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "37b6d565a54158d3"
+    },
+    "The Executioner": {
+      "name": "The Executioner",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Basic Attack",
+        "Attack Speed",
+        "Anti-Tank",
+        "Anti-Protections",
+        "Protection Reduction",
+        "Physical Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "5aad32d15318376d"
+    },
+    "The Reaper": {
+      "name": "The Reaper",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Flat Penetration",
+        "Lifesteal",
+        "Sustain",
+        "Healing",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "2deb06acdbb3874b"
+    },
+    "The World Stone": {
+      "name": "The World Stone",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "Flat Penetration",
+        "Cooldown",
+        "Mana",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "316ee613a296175a"
+    },
+    "Thistlethorn Acorn": {
+      "name": "Thistlethorn Acorn",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Damage",
+        "Ability Damage",
+        "Lifesteal",
+        "Sustain",
+        "Cooldown",
+        "Debuff",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "df1a627599c011d8"
+    },
+    "Titan's Bane": {
+      "name": "Titan's Bane",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Ability Damage",
+        "Anti-Tank",
+        "Anti-Protections",
+        "% Penetration",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "4ab3aa9c382517ab"
+    },
+    "Titans Bane": {
+      "name": "Titans Bane",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Ability Damage",
+        "Anti-Tank",
+        "Anti-Protections",
+        "% Penetration",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "4ab3aa9c382517ab",
+      "aliasOf": "Titan's Bane"
+    },
+    "Totem of Death": {
+      "name": "Totem of Death",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "Ability Damage",
+        "Cooldown",
+        "Anti-Tank",
+        "Anti-Health",
+        "% Health Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "61a4b84236a4933a"
+    },
+    "Toxic Blade": {
+      "name": "Toxic Blade",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "Attack Speed",
+        "Flat Penetration",
+        "Anti-Heal",
+        "Debuff",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "52fe1d38b23385a8"
+    },
+    "Transcendence": {
+      "name": "Transcendence",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Mana",
+        "Flat Penetration",
+        "Scaling",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "ac30602cc38862c5"
+    },
+    "Triton's Conch": {
+      "name": "Triton's Conch",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Damage",
+        "Magical Damage",
+        "Health",
+        "Aura",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "65e9cfe39d3bdc86"
+    },
+    "Typhon's Heart": {
+      "name": "Typhon's Heart",
+      "beginnerType": "Offense",
+      "tags": [
+        "Tier 3",
+        "Offense",
+        "Magical Damage",
+        "Lifesteal",
+        "Sustain"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "61eebf416b795103"
+    },
+    "Tyrfing": {
+      "name": "Tyrfing",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "Attack Speed",
+        "Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "61b49871f32839ef"
+    },
+    "Umbral Link": {
+      "name": "Umbral Link",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Protection",
+        "Lifesteal",
+        "Sustain",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "56b888180968f5db"
+    },
+    "Vampiric Shroud": {
+      "name": "Vampiric Shroud",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Hybrid",
+        "Health",
+        "Lifesteal",
+        "Sustain",
+        "Ability Damage",
+        "Mana"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "576b4d861024b957"
+    },
+    "Veve Charm": {
+      "name": "Veve Charm",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Health",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "1c76872600ebf9cf"
+    },
+    "Vital Amplifier": {
+      "name": "Vital Amplifier",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Damage",
+        "Magical Damage",
+        "Health",
+        "Attack Speed",
+        "Healing",
+        "Sustain",
+        "Basic Attack",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "cbcfbd5a0602e6d9"
+    },
+    "Void Shard": {
+      "name": "Void Shard",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Magical Damage",
+        "% Penetration",
+        "Anti-Tank",
+        "Anti-Protections",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "52e8b797aa190454"
+    },
+    "Void Shield": {
+      "name": "Void Shield",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Protection",
+        "Health",
+        "Physical Damage",
+        "Anti-Tank",
+        "Anti-Protections",
+        "Protection Reduction",
+        "Aura",
+        "Bruiser",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "ae9eb3dfa8ecca8c"
+    },
+    "Void Stone": {
+      "name": "Void Stone",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Magical Protection",
+        "Health",
+        "Magical Damage",
+        "Anti-Tank",
+        "Anti-Protections",
+        "Protection Reduction",
+        "Aura",
+        "Bruiser",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "74753577af205358"
+    },
+    "War Banner": {
+      "name": "War Banner",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Attack Speed",
+        "Healing",
+        "Sustain",
+        "Movement Speed",
+        "Teamfight"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "094d1726ff7b6715"
+    },
+    "War Flag": {
+      "name": "War Flag",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Attack Speed",
+        "Healing",
+        "Sustain",
+        "Movement Speed",
+        "Teamfight"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "fd0d600eebbd9978"
+    },
+    "Wish-Granting Pearl": {
+      "name": "Wish-Granting Pearl",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Magical Damage",
+        "Health",
+        "Mana",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "da8034ef42a685fe"
+    },
+    "Wyrmskin Hide": {
+      "name": "Wyrmskin Hide",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Damage",
+        "Magical Protection",
+        "Health",
+        "Mitigation",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "4d1d9d6d79207c43"
+    },
+    "Xibalban Effigy": {
+      "name": "Xibalban Effigy",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Mana",
+        "Mitigation",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "3410f7a12dd745b9"
+    },
+    "Xibalban Effigy New": {
+      "name": "Xibalban Effigy New",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Mana",
+        "Mitigation",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "3410f7a12dd745b9",
+      "aliasOf": "Xibalban Effigy"
+    },
+    "Yogi's Necklace": {
+      "name": "Yogi's Necklace",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Health",
+        "Mana",
+        "Healing",
+        "Sustain",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "a804e151c146f314"
+    },
+    "Zither": {
+      "name": "Zither",
+      "beginnerType": "Offense",
+      "tags": [
+        "Offense",
+        "Physical Damage",
+        "Magical Damage",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "8ba519309741d0cc"
+    }
+  }
+}

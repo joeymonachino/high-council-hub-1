@@ -8,6 +8,7 @@ const state = {
     recentHistory: [],
     errors: [],
     stats: {},
+    itemTaxonomy: {},
     dataHealth: {
         report: null,
         loaded: false,
@@ -42,6 +43,7 @@ const state = {
     items: {
         search: "",
         category: "Starter + Tier 3",
+        filters: [],
         sort: "Most used",
         selected: "",
         section: "overview",
@@ -1487,6 +1489,7 @@ async function loadBootstrap() {
     state.errors = payload.errors || [];
     state.stats = payload.stats || {};
     state.itemMetadata = payload.itemMetadata || [];
+    state.itemTaxonomy = payload.itemTaxonomy || {};
     state.analytics.god = payload.gods[0]?.God || "";
     state.analytics.players = [...payload.config.players];
     initializeRankerState();
@@ -2539,6 +2542,25 @@ function itemCatalogKey(value) {
     return String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
+function itemTaxonomyMap() {
+    const rows = state.itemTaxonomy?.items || {};
+    const map = new Map();
+    Object.values(rows).forEach((row) => {
+        const key = itemCatalogKey(row.name || "");
+        if (key) map.set(key, row);
+        if (row.aliasOf) {
+            const aliasKey = itemCatalogKey(row.aliasOf || "");
+            if (aliasKey && !map.has(aliasKey)) map.set(aliasKey, row);
+        }
+    });
+    return map;
+}
+
+function itemTaxonomyFor(item) {
+    const taxonomy = itemTaxonomyMap();
+    return taxonomy.get(itemCatalogKey(itemDisplayName(item))) || taxonomy.get(itemCatalogKey(item?.name || "")) || null;
+}
+
 function normalizedItemCategory(value) {
     const raw = String(value || "").trim();
     const key = raw.toLowerCase();
@@ -2604,6 +2626,178 @@ function itemInlineStats(stats, limit = 4) {
     return rows.length ? rows.map((stat) => `<span>${escapeHtml(stat)}</span>`).join("") : `<span class="muted">Stats pending</span>`;
 }
 
+
+const ITEM_FILTER_GROUPS = [
+    { key: "beginner", label: "Beginner Type", options: ["Offense", "Defense", "Hybrid", "Utility", "Starter"] },
+    { key: "purpose", label: "Purpose", options: ["Anti-Tank", "Anti-Heal", "Anti-Shield", "Cooldown", "Sustain", "Mobility", "Crowd Control", "Teamfight", "Economy"] },
+    { key: "antiTank", label: "Anti-Tank Tools", options: ["Anti-Health", "Anti-Protections", "% Health Damage", "% Penetration", "Flat Penetration", "Protection Reduction"] },
+    { key: "damage", label: "Damage Shape", options: ["Physical Damage", "Magical Damage", "Basic Attack", "Ability Damage", "Attack Speed", "Crit", "Burst"] },
+    { key: "defense", label: "Defense Shape", options: ["Physical Protection", "Magical Protection", "Health", "Mitigation", "Shielding", "Anti-Burst"] },
+    { key: "utility", label: "Utility + Sustain", options: ["Aura", "Tenacity", "Slow", "Mana", "Lifesteal", "Healing", "Movement Speed"] },
+    { key: "tier", label: "Tier", options: ["Starter", "Tier 3", "Tier 2", "Tier 1"] },
+];
+
+const ITEM_TAG_OVERRIDES = {
+    "sanguine lash": ["Hybrid", "Anti-Tank", "Anti-Health", "% Health Damage", "Bruiser", "Lifesteal", "Sustain", "Physical Damage"],
+    "eros bow": ["Utility", "Healing", "Sustain", "Basic Attack"],
+    "eros' bow": ["Utility", "Healing", "Sustain", "Basic Attack"],
+    "erosbow": ["Utility", "Healing", "Sustain", "Basic Attack"],
+    "eros's bow": ["Utility", "Healing", "Sustain", "Basic Attack"],
+    "lernaean bow": ["Offense", "Anti-Shield", "Physical Damage", "Basic Attack", "Attack Speed"],
+    "erosion": ["Defense", "Anti-Shield", "Physical Protection", "Magical Protection", "Health", "Anti-Burst"],
+    "mystical mail": ["Defense", "Anti-Shield", "Physical Protection", "Health", "Aura", "Teamfight"],
+    "pharaoh's curse": ["Defense", "Anti-Shield", "Magical Protection", "Health", "Debuff", "Teamfight"],
+    "void shield": ["Hybrid", "Anti-Tank", "Anti-Protections", "Protection Reduction", "Physical Protection", "Physical Damage", "Bruiser", "Aura"],
+    "titan's bane": ["Offense", "Anti-Tank", "Anti-Protections", "% Penetration", "Physical Damage", "Burst"],
+    "the executioner": ["Offense", "Anti-Tank", "Anti-Protections", "Protection Reduction", "Basic Attack", "Attack Speed", "Physical Damage"],
+    "executioner": ["Offense", "Anti-Tank", "Anti-Protections", "Protection Reduction", "Basic Attack", "Attack Speed", "Physical Damage"],
+    "soul reaver": ["Offense", "Anti-Tank", "Anti-Health", "% Health Damage", "Magical Damage", "Ability Damage"],
+    "qin's blade": ["Offense", "Anti-Tank", "Anti-Health", "% Health Damage", "Basic Attack", "Attack Speed", "Physical Damage"],
+    "divine ruin": ["Offense", "Anti-Heal", "Magical Damage", "Ability Damage", "Flat Penetration"],
+    "brawler's beat stick": ["Offense", "Anti-Heal", "Physical Damage", "Ability Damage", "Flat Penetration"],
+    "pestilence": ["Defense", "Anti-Heal", "Magical Protection", "Health", "Aura", "Teamfight"],
+    "contagion": ["Defense", "Anti-Heal", "Physical Protection", "Health", "Aura", "Teamfight"],
+    "shogun's kusari": ["Hybrid", "Magical Protection", "Attack Speed", "Aura", "Teamfight", "Basic Attack"],
+    "stone of binding": ["Hybrid", "Anti-Tank", "Anti-Protections", "Protection Reduction", "Crowd Control", "Aura", "Teamfight"],
+    "gem of isolation": ["Utility", "Slow", "Crowd Control", "Magical Damage", "Ability Damage"],
+    "breastplate of valor": ["Defense", "Physical Protection", "Cooldown", "Mana", "Anti-Burst"],
+    "genji's guard": ["Defense", "Magical Protection", "Cooldown", "Mana", "Anti-Burst"],
+    "rod of tahuti": ["Offense", "Magical Damage", "Burst", "Ability Damage"],
+    "spear of desolation": ["Offense", "Magical Damage", "Flat Penetration", "Cooldown", "Burst", "Ability Damage"],
+    "demon blade": ["Offense", "Crit", "Attack Speed", "Basic Attack", "Physical Damage"],
+    "deathbringer": ["Offense", "Crit", "Basic Attack", "Physical Damage", "Burst"],
+};
+
+function uniqueItemTags(tags) {
+    const cleaned = tags
+        .filter(Boolean)
+        .map((tag) => String(tag).replace(/\s+/g, " ").trim())
+        .filter(Boolean);
+    return cleaned.filter((tag, index) => cleaned.findIndex((other) => other.toLowerCase() === tag.toLowerCase()) === index);
+}
+
+function itemTextBlob(item) {
+    const meta = item?.metadata || {};
+    return [item?.name, itemDisplayName(item), item?.category, meta.itemType, meta.summary, meta.passive, ...(Array.isArray(meta.tags) ? meta.tags : []), ...(Array.isArray(meta.stats) ? meta.stats : [])]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+}
+
+function derivedItemTags(item) {
+    const meta = item?.metadata || {};
+    const text = itemTextBlob(item);
+    const statsText = Array.isArray(meta.stats) ? meta.stats.join(" ").toLowerCase() : "";
+    const passiveText = String(meta.passive || "").toLowerCase();
+    const tags = [item?.category, ...(Array.isArray(meta.tags) ? meta.tags : [])];
+    const has = (pattern) => pattern.test(text);
+    const hasStat = (pattern) => pattern.test(statsText);
+    const hasPassive = (pattern) => pattern.test(passiveText);
+
+    if (String(item?.category || "").toLowerCase() === "starter") tags.push("Starter");
+    if (/tier\s*3/i.test(String(item?.category || ""))) tags.push("Tier 3");
+    if (/tier\s*2/i.test(String(item?.category || ""))) tags.push("Tier 2");
+    if (/tier\s*1/i.test(String(item?.category || ""))) tags.push("Tier 1");
+
+    if (hasStat(/strength|physical power|physical damage|physical penetration/) || has(/physical/)) tags.push("Physical Damage");
+    if (hasStat(/intelligence|magical power|magical damage|magical penetration/) || has(/magical/)) tags.push("Magical Damage");
+    if (hasStat(/protection|armor|physical protection|magical protection/)) tags.push("Defense");
+    if (hasStat(/physical protection|physical armor/)) tags.push("Physical Protection");
+    if (hasStat(/magical protection|magical armor/)) tags.push("Magical Protection");
+    if (hasStat(/health|hp5/)) tags.push("Health");
+    if (hasStat(/cooldown|cdr/)) tags.push("Cooldown");
+    if (hasStat(/mana|mp5/)) tags.push("Mana");
+    if (hasStat(/attack speed/)) tags.push("Attack Speed", "Basic Attack");
+    if (hasStat(/critical|crit/)) tags.push("Crit", "Basic Attack");
+    if (hasStat(/lifesteal|life steal/)) tags.push("Lifesteal", "Sustain");
+    if (hasStat(/movement speed|move speed/)) tags.push("Movement Speed", "Mobility");
+    if (hasStat(/tenacity|crowd control reduction|ccr/)) tags.push("Tenacity", "Crowd Control");
+    if (hasStat(/penetration/)) tags.push("Anti-Tank", "Anti-Protections", "Flat Penetration");
+    if (hasStat(/%.*penetration|penetration.*%/)) tags.push("% Penetration");
+
+    const enemyHealthDamagePassive = hasPassive(/bonus (physical|magical)? ?damage\s*(=|equal to|equals).*?%.*?(target|enemy|god|gods|their).*?(base|item|max|current|missing)? ?health/)
+        || hasPassive(/(physical|magical) damage\s*(=|equal to|equals).*?%.*?(target|enemy|god|gods|their).*?(base|item|max|current|missing)? ?health/)
+        || hasPassive(/damage\s*(=|equal to|equals).*?%.*?(target|enemy|god|gods|their).*?(base|item|max|current|missing)? ?health/)
+        || hasPassive(/on enemy god hit.*bonus damage\s*(=|equal to|equals).*?[0-9.]+% of (their )?(current|max|maximum|missing) health/)
+        || hasPassive(/gods take additional damage\s*=\s*[0-9.]+% of their (current|max|maximum|missing) health/)
+        || hasPassive(/%\s*health (physical|magical) damage/);
+    const antiShieldPassive = hasPassive(/anti[- ]?shield|shield break|breaks? shields?|remove(?:s)? shields?|shields? are destroyed|shields? applied to enemy|-[0-9.]+% shields?|lose[s]? [0-9.]+% .*shield|health shield per|bonus damage.*shield|damage.*shielded|shielded enemies|against shields?/);
+
+    if (hasPassive(/anti[- ]?heal|healing.*reduc|reduc(?:es|ing)? healing|less healing|decreased healing/)) tags.push("Anti-Heal");
+    if (enemyHealthDamagePassive) tags.push("Anti-Tank", "Anti-Health", "% Health Damage");
+    if (hasPassive(/reduc(?:e|es|ing).*protection|protection.*reduc|shred|steal.*protection|ignore.*protection/)) tags.push("Anti-Tank", "Anti-Protections", "Protection Reduction");
+    if (hasPassive(/penetration|ignore.*armor|ignore.*defense/)) tags.push("Anti-Tank", "Anti-Protections");
+    if (antiShieldPassive) tags.push("Anti-Shield");
+    if (hasPassive(/shield|barrier/) && !antiShieldPassive) tags.push("Shielding", "Defense");
+    if (hasPassive(/mitigation|mitigate|damage reduction|reduced damage|take.*less damage/)) tags.push("Mitigation", "Anti-Burst", "Defense");
+    if (hasPassive(/slow|root|stun|silence|knock|cripple|fear|taunt|mesmerize|crowd control/)) tags.push("Crowd Control");
+    if (hasPassive(/aura|allied gods|nearby allies|nearby enemy|nearby enemies/)) tags.push("Aura", "Teamfight");
+    const selfSustainPassive = hasPassive(/heal yourself|heal all allies|heal the marked ally|you and allies.*heal|allied gods.*heal|restore.*health|health heal|health regen|regenerate|gain.*lifesteal|\+.*lifesteal|while shielded.*lifesteal/)
+        && !hasPassive(/enemy lifesteals|enemy gods? lifesteal|afflicted enemy/);
+    if (selfSustainPassive) tags.push("Sustain", "Healing");
+    if (hasPassive(/basic attack|basic attacks|on hit|successful hit/)) tags.push("Basic Attack");
+    if (hasPassive(/ability|abilities|when you hit an enemy god with an ability/)) tags.push("Ability Damage");
+    if (hasPassive(/bonus damage|additional damage|deal.*damage|burst/)) tags.push("Burst");
+    if (hasPassive(/gold|stack|evolve|evolves|quest|bounty/)) tags.push("Economy");
+
+    const overrideKey = String(itemDisplayName(item) || item?.name || "").toLowerCase();
+    tags.push(...(ITEM_TAG_OVERRIDES[overrideKey] || ITEM_TAG_OVERRIDES[String(item?.name || "").toLowerCase()] || []));
+
+    const offensiveSignals = ["Physical Damage", "Magical Damage", "Attack Speed", "Crit", "Burst", "Anti-Tank", "Basic Attack", "Ability Damage"].some((tag) => tags.some((itemTag) => itemTag.toLowerCase() === tag.toLowerCase()));
+    const defensiveSignals = ["Defense", "Physical Protection", "Magical Protection", "Health", "Mitigation", "Shielding", "Anti-Burst"].some((tag) => tags.some((itemTag) => itemTag.toLowerCase() === tag.toLowerCase()));
+    const utilitySignals = ["Utility", "Aura", "Crowd Control", "Teamfight", "Mobility", "Tenacity", "Slow", "Sustain"].some((tag) => tags.some((itemTag) => itemTag.toLowerCase() === tag.toLowerCase()));
+    if (String(item?.category || "").toLowerCase() === "starter") tags.push("Starter");
+    if (offensiveSignals && defensiveSignals) tags.push("Hybrid");
+    else if (defensiveSignals) tags.push("Defense");
+    else if (offensiveSignals) tags.push("Offense");
+    else if (utilitySignals) tags.push("Utility");
+
+    return uniqueItemTags(tags);
+}
+
+function itemStrategicTags(item) {
+    const taxonomy = itemTaxonomyFor(item);
+    if (taxonomy?.tags?.length) return uniqueItemTags(taxonomy.tags);
+    return uniqueItemTags([...itemTagValues(item), ...derivedItemTags(item)]);
+}
+
+function itemFilterOptionSet() {
+    return new Set(ITEM_FILTER_GROUPS.flatMap((group) => group.options).map((option) => option.toLowerCase()));
+}
+
+function itemFilterTags(item) {
+    const allowed = itemFilterOptionSet();
+    return itemStrategicTags(item).filter((tag) => allowed.has(tag.toLowerCase()));
+}
+
+function itemMatchesSelectedFilters(item, selectedFilters) {
+    if (!selectedFilters.length) return true;
+    const itemTags = itemFilterTags(item).map((tag) => tag.toLowerCase());
+    return ITEM_FILTER_GROUPS.every((group) => {
+        const selectedInGroup = selectedFilters.filter((tag) => group.options.some((option) => option.toLowerCase() === tag.toLowerCase()));
+        return !selectedInGroup.length || selectedInGroup.some((tag) => itemTags.includes(tag.toLowerCase()));
+    });
+}
+
+function renderItemFilterGroup(group, activeFilters, catalog) {
+    const catalogTags = new Set(catalog.flatMap((item) => itemFilterTags(item)).map((tag) => tag.toLowerCase()));
+    const options = group.options.filter((option) => catalogTags.has(option.toLowerCase()) || activeFilters.includes(option));
+    if (!options.length) return "";
+    return `
+        <fieldset class="item-filter-group">
+            <legend>${escapeHtml(group.label)}</legend>
+            <div class="item-filter-options">
+                ${options.map((option) => `
+                    <label class="item-filter-check ${activeFilters.includes(option) ? "active" : ""}">
+                        <input type="checkbox" value="${escapeHtml(option)}" ${activeFilters.includes(option) ? "checked" : ""} data-item-filter>
+                        <span>${escapeHtml(option)}</span>
+                    </label>
+                `).join("")}
+            </div>
+        </fieldset>
+    `;
+}
+
 function itemTagValues(item) {
     const meta = item?.metadata || {};
     const rawValues = [item?.category, ...(Array.isArray(meta.tags) ? meta.tags : [])];
@@ -2621,15 +2815,20 @@ function itemTagValues(item) {
 }
 
 function itemTypeSubtitle(item) {
+    const taxonomy = itemTaxonomyFor(item);
+    if (taxonomy?.beginnerType) {
+        const tags = itemStrategicTags(item).filter((tag) => tag !== taxonomy.beginnerType && !/^tier\s*\d+$/i.test(tag));
+        return tags.length ? `${taxonomy.beginnerType} | ${tags.slice(0, 2).join(" + ")}` : taxonomy.beginnerType;
+    }
     const category = String(item?.category || "").toLowerCase();
-    const tags = itemTagValues(item).filter((tag) => tag.toLowerCase() !== category && !/^tier\s*\d+$/i.test(tag));
+    const tags = itemStrategicTags(item).filter((tag) => tag.toLowerCase() !== category && !/^tier\s*\d+$/i.test(tag));
     return tags.length ? tags.slice(0, 3).join(" + ") : "Council loadout";
 }
 
 function itemPillMarkup(item, limit = 7) {
     const meta = item?.metadata || {};
     const category = String(item?.category || "").toLowerCase();
-    const pills = [item?.category, ...(meta.cost ? [`${formatMetric(meta.cost)}g`] : []), ...itemTagValues(item).filter((tag) => tag.toLowerCase() !== category)];
+    const pills = [item?.category, ...(meta.cost ? [`${formatMetric(meta.cost)}g`] : []), ...itemStrategicTags(item).filter((tag) => tag.toLowerCase() !== category)];
     return pills
         .filter(Boolean)
         .filter((value, index, values) => values.findIndex((other) => String(other).toLowerCase() === String(value).toLowerCase()) === index)
@@ -2793,21 +2992,15 @@ function renderItemsTab() {
 
     const catalog = enrichedItemCatalog();
     const search = (state.items.search || "").trim().toLowerCase();
-    const category = state.items.category || "All";
+    const activeFilters = Array.isArray(state.items.filters) ? state.items.filters : [];
     const sort = state.items.sort || "Most used";
     let rows = catalog.filter((item) => {
         const meta = item.metadata || {};
-        const tagValues = itemTagValues(item);
-        const matchesSearch = !search || [item.name, itemDisplayName(item), item.category, meta.itemType, item.bestGod?.name, item.mostUsedGod?.name, item.topPlayer?.name, meta.summary, meta.passive, ...(meta.tags || []), ...(meta.stats || [])]
+        const strategicTags = itemStrategicTags(item);
+        const matchesSearch = !search || [item.name, itemDisplayName(item), item.category, meta.itemType, item.bestGod?.name, item.mostUsedGod?.name, item.topPlayer?.name, meta.summary, meta.passive, ...strategicTags, ...(meta.stats || [])]
             .filter(Boolean)
             .some((value) => String(value).toLowerCase().includes(search));
-        const buildCategories = new Set(["Starter", "Tier 3"]);
-        const matchesCategory = category === "All"
-            || item.category === category
-            || meta.itemType === category
-            || tagValues.some((tag) => tag.toLowerCase() === category.toLowerCase())
-            || (category === "Starter + Tier 3" && buildCategories.has(item.category));
-        return matchesSearch && matchesCategory;
+        return matchesSearch && itemMatchesSelectedFilters(item, activeFilters);
     });
 
     if (sort === "Best WR") {
@@ -2818,13 +3011,11 @@ function renderItemsTab() {
         rows = rows.sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.name.localeCompare(b.name));
     }
 
-    const categoryOptions = ["Starter + Tier 3", "All", "Tier 3", "Starter", "Tier 2", "Tier 1"];
-    const dynamicCategories = [...new Set(catalog.flatMap((item) => itemTagValues(item)))]
-        .filter((value) => value && !/^\\d+$/.test(String(value)) && !categoryOptions.some((option) => option.toLowerCase() === value.toLowerCase()))
-        .sort((a, b) => a.localeCompare(b));
+    const filterGroups = ITEM_FILTER_GROUPS.map((group) => renderItemFilterGroup(group, activeFilters, catalog)).join("");
+    const activeFilterPills = activeFilters.length ? activeFilters.map((filter) => `<button class="filter-chip active removable" type="button" data-remove-item-filter="${escapeHtml(filter)}">${escapeHtml(filter)} x</button>`).join("") : `<span class="summary-pill muted">No item filters</span>`;
     const itemCards = rows.map((item) => {
         const meta = item.metadata || {};
-        const tagValues = itemTagValues(item).filter((tag) => tag.toLowerCase() !== String(item.category || "").toLowerCase()).slice(0, 4);
+        const tagValues = itemStrategicTags(item).filter((tag) => tag.toLowerCase() !== String(item.category || "").toLowerCase()).slice(0, 5);
         return `
             <button class="item-catalog-card condensed" type="button" data-item-detail="${escapeHtml(item.name)}">
                 <div class="item-card-topline"><span>${escapeHtml(item.category)}</span><strong>${itemPerformanceLine(item)}</strong></div>
@@ -2862,18 +3053,17 @@ function renderItemsTab() {
                         <input id="item-search" type="text" value="${escapeHtml(state.items.search)}" placeholder="Soul Reaver, Bluestone, Joey..." autocomplete="off">
                     </label>
                     <label class="field">
-                        <span>Category</span>
-                        <select id="item-category">
-                            ${[...categoryOptions, ...dynamicCategories].map((option) => `<option value="${option}" ${category === option ? "selected" : ""}>${option}</option>`).join("")}
-                        </select>
-                    </label>
-                    <label class="field">
                         <span>Sort</span>
                         <select id="item-sort">
                             ${["Most used", "Best WR", "Name"].map((option) => `<option value="${option}" ${sort === option ? "selected" : ""}>${option}</option>`).join("")}
                         </select>
                     </label>
                 </div>
+                <div class="item-filter-toolbar">
+                    <div class="item-active-filters">${activeFilterPills}</div>
+                    <button class="ghost-btn small" type="button" id="item-clear-filters" ${activeFilters.length ? "" : "disabled"}>Clear Filters</button>
+                </div>
+                <div class="item-filter-groups">${filterGroups}</div>
             </section>
 
             <section class="item-catalog-grid">${itemCards || emptyState("No Items Found", "No item usage matched the current filter.")}</section>
@@ -2892,8 +3082,23 @@ function renderItemsTab() {
             nextInput?.setSelectionRange(cursor, cursor);
         });
     });
-    document.getElementById("item-category")?.addEventListener("change", (event) => {
-        state.items.category = event.target.value;
+    elements.tabItems.querySelectorAll("[data-item-filter]").forEach((input) => {
+        input.addEventListener("change", () => {
+            const nextFilters = new Set(Array.isArray(state.items.filters) ? state.items.filters : []);
+            if (input.checked) nextFilters.add(input.value);
+            else nextFilters.delete(input.value);
+            state.items.filters = [...nextFilters];
+            renderItemsTab();
+        });
+    });
+    elements.tabItems.querySelectorAll("[data-remove-item-filter]").forEach((button) => {
+        button.addEventListener("click", () => {
+            state.items.filters = (state.items.filters || []).filter((filter) => filter !== button.dataset.removeItemFilter);
+            renderItemsTab();
+        });
+    });
+    document.getElementById("item-clear-filters")?.addEventListener("click", () => {
+        state.items.filters = [];
         renderItemsTab();
     });
     document.getElementById("item-sort")?.addEventListener("change", (event) => {

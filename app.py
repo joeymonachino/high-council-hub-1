@@ -3533,6 +3533,7 @@ def load_app_state() -> dict[str, Any]:
                 errors.append(f"{key} fallback: {exc}")
 
     item_metadata_rows = load_item_metadata_rows(bootstrap_results.get("item_metadata"))
+    item_taxonomy = load_json_snapshot("item_taxonomy.json")
 
     meta_rows = bootstrap_results.get("meta") or json_meta_rows
     if bootstrap_results.get("meta"):
@@ -3559,6 +3560,7 @@ def load_app_state() -> dict[str, Any]:
         "all_rankings": all_rankings,
         "recent_history": merged_history[:120],
         "item_metadata": item_metadata_rows,
+        "item_taxonomy": item_taxonomy,
         "errors": errors,
         "stats": {
             "total_gods": total_gods,
@@ -3998,6 +4000,7 @@ def api_bootstrap():
             "allRankings": state["all_rankings"],
             "recentHistory": state["recent_history"],
             "itemMetadata": state["item_metadata"],
+            "itemTaxonomy": state.get("item_taxonomy", {}),
             "errors": state["errors"],
         }
     )
