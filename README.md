@@ -84,7 +84,7 @@ More detail lives in `docs/processes.md`.
 app.py                  Flask routes and server-side data assembly
 hub/                    Shared config, HTTP session, and Supabase REST helpers
 templates/              HTML shell
-static/                 Browser app and styling
+static/                 Browser app, feature scripts, and styling
 assets/                 Local god/pantheon artwork
 data/                   App snapshots, generated catalogs, SQL, HAR drops, backups
 tools/importers/        Import and metadata refresh tools
@@ -101,3 +101,15 @@ Compatibility wrappers remain in `tools/` for the commands we use often, so old 
 Vercel runs `app.py` through `@vercel/python` using `vercel.json`. Add the same secrets as Vercel environment variables before deploying.
 
 The app should not write local files in production. Manual/import workflows should write to Supabase, not Vercel's read-only filesystem.
+
+## Frontend Files
+
+`static/core.js` contains shared client state, cached DOM handles, API helpers, and formatting helpers.
+
+`static/app.js` is the main controller and owns bootstrap loading, tab routing, and most tab renderers.
+
+`static/items.js` owns the item catalog, item filters, and item detail modal.
+
+`static/council-scroll.js` owns the Council Scroll recap view.
+
+`static/styles.css` contains broad shell/layout/component rules. `static/items.css` and `static/rater-profile.css` contain feature-specific styles loaded after the base stylesheet.

@@ -11,8 +11,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Forum&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- This block loads the shared stylesheet for the full custom frontend. -->
+    <!-- These stylesheets load from broad shell rules to feature-specific rules. -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='items.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='rater-profile.css') }}">
 
     <!-- Vercel Web Analytics -->
     <script>
@@ -124,9 +126,13 @@
         </section>
     </div>
 
-    <!-- This block loads the frontend controller that fetches bootstrap data,
-         renders all tabs, and manages rank-editing interactions. -->
+    <!-- These scripts load the custom frontend in layers: shared state/helpers,
+         the main controller, and feature modules that stay available before
+         DOMContentLoaded runs. -->
+    <script src="{{ url_for('static', filename='core.js') }}" defer></script>
     <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='items.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='council-scroll.js') }}" defer></script>
 </body>
 </html>
 
