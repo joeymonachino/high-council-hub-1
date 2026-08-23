@@ -13,7 +13,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "72f51267fbcadc5f"
+      "metadataFingerprint": "72f51267fbcadc5f",
+      "sourceName": ""
     },
     "Adroit Ring": {
       "name": "Adroit Ring",
@@ -24,7 +25,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "d37be8aeea664222"
+      "metadataFingerprint": "d37be8aeea664222",
+      "sourceName": ""
     },
     "Agility Greaves": {
       "name": "Agility Greaves",
@@ -37,7 +39,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "a0b6e6a8fc9b3e51"
+      "metadataFingerprint": "a0b6e6a8fc9b3e51",
+      "sourceName": ""
     },
     "Alchemist Coat": {
       "name": "Alchemist Coat",
@@ -52,7 +55,32 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "c59b569b535b88ac"
+      "metadataFingerprint": "c59b569b535b88ac",
+      "sourceName": ""
+    },
+    "Alternator Mod": {
+      "name": "Alternator Mod",
+      "beginnerType": "Utility",
+      "tags": [],
+      "reviewed": false,
+      "metadataFingerprint": "52e8826320bd65a2",
+      "sourceName": ""
+    },
+    "Amanita Charm": {
+      "name": "Amanita Charm",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Health",
+        "Sustain",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "696e58cfc60dd82e",
+      "sourceName": ""
     },
     "Ancient Signet": {
       "name": "Ancient Signet",
@@ -67,7 +95,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "898569540cc73971"
+      "metadataFingerprint": "898569540cc73971",
+      "sourceName": ""
     },
     "Ancile": {
       "name": "Ancile",
@@ -81,7 +110,24 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "e0084c707128eb30"
+      "metadataFingerprint": "e0084c707128eb30",
+      "sourceName": ""
+    },
+    "Archmage's Gem": {
+      "name": "Archmage's Gem",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Offense",
+        "Magical Damage",
+        "Physical Damage",
+        "Ability Damage",
+        "Mana",
+        "Burst"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "82f27a141c3d07e0",
+      "sourceName": ""
     },
     "Arondight": {
       "name": "Arondight",
@@ -96,7 +142,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "65d86c2f42bcaeaf"
+      "metadataFingerprint": "65d86c2f42bcaeaf",
+      "sourceName": ""
     },
     "Ashwhorl Acorn": {
       "name": "Ashwhorl Acorn",
@@ -115,7 +162,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "33c0ad38f68bffdc"
+      "metadataFingerprint": "33c0ad38f68bffdc",
+      "sourceName": ""
     },
     "Avatar's Parashu": {
       "name": "Avatar's Parashu",
@@ -131,7 +179,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "5502724b84d77510"
+      "metadataFingerprint": "5502724b84d77510",
+      "sourceName": ""
     },
     "Avenging Blade": {
       "name": "Avenging Blade",
@@ -147,7 +196,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "43b78845624d6500"
+      "metadataFingerprint": "43b78845624d6500",
+      "sourceName": ""
     },
     "Axe": {
       "name": "Axe",
@@ -158,7 +208,8 @@
         "Tier 1"
       ],
       "reviewed": true,
-      "metadataFingerprint": "100db53c04bc19a6"
+      "metadataFingerprint": "100db53c04bc19a6",
+      "sourceName": ""
     },
     "Bancroft's Talon": {
       "name": "Bancroft's Talon",
@@ -172,22 +223,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "a8fc8e758fe55172"
-    },
-    "Bancrofts Talon": {
-      "name": "Bancrofts Talon",
-      "beginnerType": "Offense",
-      "tags": [
-        "Offense",
-        "Magical Damage",
-        "Lifesteal",
-        "Sustain",
-        "Mana",
-        "Tier 3"
-      ],
-      "reviewed": true,
       "metadataFingerprint": "a8fc8e758fe55172",
-      "aliasOf": "Bancroft's Talon"
+      "sourceName": ""
     },
     "Barbed Carver": {
       "name": "Barbed Carver",
@@ -202,7 +239,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "2586eb9f7ec61eda"
+      "metadataFingerprint": "2586eb9f7ec61eda",
+      "sourceName": ""
     },
     "Battle Axe": {
       "name": "Battle Axe",
@@ -214,7 +252,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "f846412c88847b82"
+      "metadataFingerprint": "f846412c88847b82",
+      "sourceName": ""
     },
     "Berserker's Shield": {
       "name": "Berserker's Shield",
@@ -229,43 +268,18 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "d22b8dfed33dba8e"
+      "metadataFingerprint": "d22b8dfed33dba8e",
+      "sourceName": ""
     },
-    "Bindings Of Lyngvi": {
-      "name": "Bindings Of Lyngvi",
-      "beginnerType": "Defense",
+    "Blinking Abyss": {
+      "name": "Blinking Abyss",
+      "beginnerType": "Utility",
       "tags": [
-        "Defense",
-        "Physical Protection",
-        "Magical Protection",
-        "Anti-Tank",
-        "Anti-Protections",
-        "Protection Reduction",
-        "Crowd Control",
-        "Teamfight",
         "Tier 3"
       ],
-      "reviewed": true,
-      "metadataFingerprint": "505aa5244902f722",
-      "aliasOf": "Stone of Binding"
-    },
-    "Bindings of Lyngvi": {
-      "name": "Bindings of Lyngvi",
-      "beginnerType": "Defense",
-      "tags": [
-        "Defense",
-        "Physical Protection",
-        "Magical Protection",
-        "Anti-Tank",
-        "Anti-Protections",
-        "Protection Reduction",
-        "Crowd Control",
-        "Teamfight",
-        "Tier 3"
-      ],
-      "reviewed": true,
-      "metadataFingerprint": "505aa5244902f722",
-      "aliasOf": "Stone of Binding"
+      "reviewed": false,
+      "metadataFingerprint": "b1b54b464f071354",
+      "sourceName": ""
     },
     "Blood-Bound Book": {
       "name": "Blood-Bound Book",
@@ -280,7 +294,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "0aa343fbe98b593e"
+      "metadataFingerprint": "0aa343fbe98b593e",
+      "sourceName": ""
     },
     "Blood-soaked Shroud": {
       "name": "Blood-soaked Shroud",
@@ -294,7 +309,8 @@
         "Ability Damage"
       ],
       "reviewed": true,
-      "metadataFingerprint": "196353c7a984b4e9"
+      "metadataFingerprint": "196353c7a984b4e9",
+      "sourceName": ""
     },
     "Bloodforge": {
       "name": "Bloodforge",
@@ -309,7 +325,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "b9e0343702c67d8e"
+      "metadataFingerprint": "b9e0343702c67d8e",
+      "sourceName": ""
     },
     "Bluestone Brooch": {
       "name": "Bluestone Brooch",
@@ -326,7 +343,8 @@
         "% Health Damage"
       ],
       "reviewed": true,
-      "metadataFingerprint": "d663733dae3f66c9"
+      "metadataFingerprint": "d663733dae3f66c9",
+      "sourceName": ""
     },
     "Bluestone Pendant": {
       "name": "Bluestone Pendant",
@@ -339,7 +357,8 @@
         "Sustain"
       ],
       "reviewed": true,
-      "metadataFingerprint": "88d34a5c7c8cc425"
+      "metadataFingerprint": "88d34a5c7c8cc425",
+      "sourceName": ""
     },
     "Book of Thoth": {
       "name": "Book of Thoth",
@@ -353,7 +372,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "665bfb2a40b9376a"
+      "metadataFingerprint": "665bfb2a40b9376a",
+      "sourceName": ""
     },
     "Bow": {
       "name": "Bow",
@@ -365,7 +385,8 @@
         "Tier 1"
       ],
       "reviewed": true,
-      "metadataFingerprint": "73209e7c2976b2a4"
+      "metadataFingerprint": "73209e7c2976b2a4",
+      "sourceName": ""
     },
     "Bowl Drum": {
       "name": "Bowl Drum",
@@ -376,7 +397,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "3b1343c1a95c074e"
+      "metadataFingerprint": "3b1343c1a95c074e",
+      "sourceName": ""
     },
     "Bracer of The Abyss": {
       "name": "Bracer of The Abyss",
@@ -389,7 +411,8 @@
         "Attack Speed"
       ],
       "reviewed": false,
-      "metadataFingerprint": "e6a9fc7f5db9d460"
+      "metadataFingerprint": "e6a9fc7f5db9d460",
+      "sourceName": ""
     },
     "Bragi's Harp": {
       "name": "Bragi's Harp",
@@ -404,7 +427,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "e930760e322de9b7"
+      "metadataFingerprint": "e930760e322de9b7",
+      "sourceName": ""
     },
     "Brawler's Beat Stick": {
       "name": "Brawler's Beat Stick",
@@ -420,7 +444,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "db7c00858be63d72"
+      "metadataFingerprint": "db7c00858be63d72",
+      "sourceName": ""
     },
     "Breastplate of Valor": {
       "name": "Breastplate of Valor",
@@ -434,7 +459,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "2fed8f5a6a489512"
+      "metadataFingerprint": "2fed8f5a6a489512",
+      "sourceName": ""
     },
     "Briskberry Acorn": {
       "name": "Briskberry Acorn",
@@ -449,7 +475,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "e9fed2ded5ac96a4"
+      "metadataFingerprint": "e9fed2ded5ac96a4",
+      "sourceName": ""
     },
     "Bumba's Cudgel": {
       "name": "Bumba's Cudgel",
@@ -465,7 +492,8 @@
         "Basic Attack"
       ],
       "reviewed": true,
-      "metadataFingerprint": "33949ee3b9739109"
+      "metadataFingerprint": "33949ee3b9739109",
+      "sourceName": ""
     },
     "Bumba's Golden Dagger": {
       "name": "Bumba's Golden Dagger",
@@ -480,7 +508,8 @@
         "Attack Speed"
       ],
       "reviewed": true,
-      "metadataFingerprint": "8e653d4e0f97b161"
+      "metadataFingerprint": "8e653d4e0f97b161",
+      "sourceName": ""
     },
     "Bumba's Hammer": {
       "name": "Bumba's Hammer",
@@ -497,7 +526,8 @@
         "Sustain"
       ],
       "reviewed": true,
-      "metadataFingerprint": "daaf117247ff1ec7"
+      "metadataFingerprint": "daaf117247ff1ec7",
+      "sourceName": ""
     },
     "Bumba's Spear": {
       "name": "Bumba's Spear",
@@ -512,74 +542,8 @@
         "Attack Speed"
       ],
       "reviewed": true,
-      "metadataFingerprint": "8887a4f0c88b684c"
-    },
-    "Bumbas Cudgel": {
-      "name": "Bumbas Cudgel",
-      "beginnerType": "Starter",
-      "tags": [
-        "Starter",
-        "Hybrid",
-        "Physical Damage",
-        "Magical Damage",
-        "Health",
-        "Mana",
-        "Cooldown",
-        "Basic Attack"
-      ],
-      "reviewed": true,
-      "metadataFingerprint": "33949ee3b9739109",
-      "aliasOf": "Bumba's Cudgel"
-    },
-    "Bumbas Dagger": {
-      "name": "Bumbas Dagger",
-      "beginnerType": "Starter",
-      "tags": [
-        "Starter",
-        "Offense",
-        "Physical Damage",
-        "Magical Damage",
-        "Health",
-        "Basic Attack",
-        "Attack Speed"
-      ],
-      "reviewed": true,
-      "metadataFingerprint": "8e653d4e0f97b161",
-      "aliasOf": "Bumba's Golden Dagger"
-    },
-    "Bumbas Hammer": {
-      "name": "Bumbas Hammer",
-      "beginnerType": "Starter",
-      "tags": [
-        "Starter",
-        "Hybrid",
-        "Physical Damage",
-        "Magical Damage",
-        "Health",
-        "Cooldown",
-        "Basic Attack",
-        "Healing",
-        "Sustain"
-      ],
-      "reviewed": true,
-      "metadataFingerprint": "daaf117247ff1ec7",
-      "aliasOf": "Bumba's Hammer"
-    },
-    "Bumbas Spear": {
-      "name": "Bumbas Spear",
-      "beginnerType": "Starter",
-      "tags": [
-        "Starter",
-        "Offense",
-        "Physical Damage",
-        "Magical Damage",
-        "Health",
-        "Basic Attack",
-        "Attack Speed"
-      ],
-      "reviewed": true,
       "metadataFingerprint": "8887a4f0c88b684c",
-      "aliasOf": "Bumba's Spear"
+      "sourceName": ""
     },
     "Caestus": {
       "name": "Caestus",
@@ -593,7 +557,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "73078d4077c1cfe5"
+      "metadataFingerprint": "73078d4077c1cfe5",
+      "sourceName": ""
     },
     "Captain's Ring": {
       "name": "Captain's Ring",
@@ -605,7 +570,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "b20ae1a5b56a9253"
+      "metadataFingerprint": "b20ae1a5b56a9253",
+      "sourceName": ""
     },
     "Chandra's Grace": {
       "name": "Chandra's Grace",
@@ -620,21 +586,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "b7c87c358b1645ab"
-    },
-    "Chronos Pendant": {
-      "name": "Chronos Pendant",
-      "beginnerType": "Offense",
-      "tags": [
-        "Offense",
-        "Magical Damage",
-        "Cooldown",
-        "Ability Damage",
-        "Tier 3"
-      ],
-      "reviewed": true,
-      "metadataFingerprint": "68a5c3d2bf61e986",
-      "aliasOf": "Chronos' Pendant"
+      "metadataFingerprint": "b7c87c358b1645ab",
+      "sourceName": ""
     },
     "Chronos' Pendant": {
       "name": "Chronos' Pendant",
@@ -647,7 +600,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "68a5c3d2bf61e986"
+      "metadataFingerprint": "68a5c3d2bf61e986",
+      "sourceName": ""
     },
     "Circe's Hexstone": {
       "name": "Circe's Hexstone",
@@ -664,7 +618,21 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "b3a7d4c670de4167"
+      "metadataFingerprint": "b3a7d4c670de4167",
+      "sourceName": ""
+    },
+    "Circle of Protection": {
+      "name": "Circle of Protection",
+      "beginnerType": "Defense",
+      "tags": [
+        "Tier 2",
+        "Magical Damage",
+        "Defense",
+        "Magical Protection"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "5284007c616533c3",
+      "sourceName": ""
     },
     "Circlet": {
       "name": "Circlet",
@@ -675,7 +643,28 @@
         "Tier 1"
       ],
       "reviewed": true,
-      "metadataFingerprint": "a2d8940b8f5fa773"
+      "metadataFingerprint": "a2d8940b8f5fa773",
+      "sourceName": ""
+    },
+    "Cleric's Cloak": {
+      "name": "Cleric's Cloak",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "a357d9dd0d1d7aff",
+      "sourceName": ""
+    },
+    "Combat Boots": {
+      "name": "Combat Boots",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "5837c10e585f9031",
+      "sourceName": ""
     },
     "Conduit Gem": {
       "name": "Conduit Gem",
@@ -688,7 +677,8 @@
         "Mana"
       ],
       "reviewed": true,
-      "metadataFingerprint": "9c47f11e91efdd42"
+      "metadataFingerprint": "9c47f11e91efdd42",
+      "sourceName": ""
     },
     "Contagion": {
       "name": "Contagion",
@@ -701,7 +691,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "5a3113e955c5618b"
+      "metadataFingerprint": "5a3113e955c5618b",
+      "sourceName": ""
     },
     "Cursed Sickle": {
       "name": "Cursed Sickle",
@@ -713,7 +704,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "ef11dce510276b44"
+      "metadataFingerprint": "ef11dce510276b44",
+      "sourceName": ""
     },
     "Dagger of Frenzy": {
       "name": "Dagger of Frenzy",
@@ -727,7 +719,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "7493dca77056200d"
+      "metadataFingerprint": "7493dca77056200d",
+      "sourceName": ""
     },
     "Damaru": {
       "name": "Damaru",
@@ -743,7 +736,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "d861f5bf9fd0aca7"
+      "metadataFingerprint": "d861f5bf9fd0aca7",
+      "sourceName": ""
     },
     "Daybreak Gavel": {
       "name": "Daybreak Gavel",
@@ -759,7 +753,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "54c16bb4fc496c7c"
+      "metadataFingerprint": "54c16bb4fc496c7c",
+      "sourceName": ""
     },
     "Death Metal": {
       "name": "Death Metal",
@@ -774,7 +769,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "9a595bd52a597932"
+      "metadataFingerprint": "9a595bd52a597932",
+      "sourceName": ""
     },
     "Death's Embrace": {
       "name": "Death's Embrace",
@@ -791,7 +787,8 @@
         "Cooldown"
       ],
       "reviewed": true,
-      "metadataFingerprint": "6865b9ceba9d4cd4"
+      "metadataFingerprint": "6865b9ceba9d4cd4",
+      "sourceName": ""
     },
     "Death's Toll": {
       "name": "Death's Toll",
@@ -806,7 +803,8 @@
         "Mana"
       ],
       "reviewed": true,
-      "metadataFingerprint": "a4df09cf9b9f7bb9"
+      "metadataFingerprint": "a4df09cf9b9f7bb9",
+      "sourceName": ""
     },
     "Deathbringer": {
       "name": "Deathbringer",
@@ -820,7 +818,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "6c3a100e1fcc3dbc"
+      "metadataFingerprint": "6c3a100e1fcc3dbc",
+      "sourceName": ""
     },
     "Demon Blade": {
       "name": "Demon Blade",
@@ -834,7 +833,8 @@
         "Crit"
       ],
       "reviewed": false,
-      "metadataFingerprint": "b4c7bf4912151a23"
+      "metadataFingerprint": "b4c7bf4912151a23",
+      "sourceName": ""
     },
     "Devourer's Gauntlet": {
       "name": "Devourer's Gauntlet",
@@ -848,7 +848,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "400c307bb4eec75f"
+      "metadataFingerprint": "400c307bb4eec75f",
+      "sourceName": ""
     },
     "Divine Ruin": {
       "name": "Divine Ruin",
@@ -862,7 +863,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "be65ddb41f7aaf53"
+      "metadataFingerprint": "be65ddb41f7aaf53",
+      "sourceName": ""
     },
     "Dominance": {
       "name": "Dominance",
@@ -878,7 +880,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "54c9140e308f3ce6"
+      "metadataFingerprint": "54c9140e308f3ce6",
+      "sourceName": ""
     },
     "Doom Orb": {
       "name": "Doom Orb",
@@ -892,7 +895,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "51b7f7e1727eed82"
+      "metadataFingerprint": "51b7f7e1727eed82",
+      "sourceName": ""
     },
     "Doublet of Binding": {
       "name": "Doublet of Binding",
@@ -905,7 +909,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "00535c016ce5c545"
+      "metadataFingerprint": "00535c016ce5c545",
+      "sourceName": ""
     },
     "Draconic Scale": {
       "name": "Draconic Scale",
@@ -920,7 +925,8 @@
         "Health"
       ],
       "reviewed": false,
-      "metadataFingerprint": "e289b3fbdd30224b"
+      "metadataFingerprint": "e289b3fbdd30224b",
+      "sourceName": ""
     },
     "Dreamer's Idol": {
       "name": "Dreamer's Idol",
@@ -936,7 +942,30 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "7b6080d9c8291965"
+      "metadataFingerprint": "7b6080d9c8291965",
+      "sourceName": ""
+    },
+    "Dwarven Plate": {
+      "name": "Dwarven Plate",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "ff905a84904f7664",
+      "sourceName": ""
+    },
+    "Efficiency Mod": {
+      "name": "Efficiency Mod",
+      "beginnerType": "Utility",
+      "tags": [],
+      "reviewed": false,
+      "metadataFingerprint": "665228dd4cbe6417",
+      "sourceName": ""
     },
     "Engraved Guard": {
       "name": "Engraved Guard",
@@ -950,7 +979,8 @@
         "Magical Protection"
       ],
       "reviewed": false,
-      "metadataFingerprint": "bf8fc2323fd3c120"
+      "metadataFingerprint": "bf8fc2323fd3c120",
+      "sourceName": ""
     },
     "Eros' Bow": {
       "name": "Eros' Bow",
@@ -963,21 +993,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "44f2beb6ba38a95f"
-    },
-    "Erosbow": {
-      "name": "Erosbow",
-      "beginnerType": "Utility",
-      "tags": [
-        "Utility",
-        "Healing",
-        "Sustain",
-        "Basic Attack",
-        "Tier 3"
-      ],
-      "reviewed": true,
       "metadataFingerprint": "44f2beb6ba38a95f",
-      "aliasOf": "Eros' Bow"
+      "sourceName": ""
     },
     "Erosion": {
       "name": "Erosion",
@@ -992,7 +1009,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "39a03df2f0586a48"
+      "metadataFingerprint": "39a03df2f0586a48",
+      "sourceName": ""
     },
     "Ethereal Staff": {
       "name": "Ethereal Staff",
@@ -1004,7 +1022,8 @@
         "Health"
       ],
       "reviewed": false,
-      "metadataFingerprint": "3f451dea2e049f34"
+      "metadataFingerprint": "3f451dea2e049f34",
+      "sourceName": ""
     },
     "Evil Eye": {
       "name": "Evil Eye",
@@ -1014,7 +1033,8 @@
         "Magical Damage"
       ],
       "reviewed": false,
-      "metadataFingerprint": "2857716d9cfa6939"
+      "metadataFingerprint": "2857716d9cfa6939",
+      "sourceName": ""
     },
     "Eye of Erebus": {
       "name": "Eye of Erebus",
@@ -1030,7 +1050,23 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "c128eb369b773c67"
+      "metadataFingerprint": "c128eb369b773c67",
+      "sourceName": ""
+    },
+    "Eye of Providence": {
+      "name": "Eye of Providence",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Magical Protection",
+        "Utility",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "4ee3a0bf491296c5",
+      "sourceName": ""
     },
     "Eye of the Storm": {
       "name": "Eye of the Storm",
@@ -1042,7 +1078,8 @@
         "Health"
       ],
       "reviewed": false,
-      "metadataFingerprint": "89d728c3ba2362ee"
+      "metadataFingerprint": "89d728c3ba2362ee",
+      "sourceName": ""
     },
     "Flaming Pearl": {
       "name": "Flaming Pearl",
@@ -1053,7 +1090,8 @@
         "Health"
       ],
       "reviewed": false,
-      "metadataFingerprint": "799886a2d556f66f"
+      "metadataFingerprint": "799886a2d556f66f",
+      "sourceName": ""
     },
     "Freya's Tears": {
       "name": "Freya's Tears",
@@ -1063,7 +1101,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "25aa613dbd6b46d6"
+      "metadataFingerprint": "01958a0d161c4a97",
+      "sourceName": ""
     },
     "Gauntlet of Thebes": {
       "name": "Gauntlet of Thebes",
@@ -1078,7 +1117,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "02a262a028667a28"
+      "metadataFingerprint": "02a262a028667a28",
+      "sourceName": ""
     },
     "Gem": {
       "name": "Gem",
@@ -1090,7 +1130,8 @@
         "Tier 1"
       ],
       "reviewed": true,
-      "metadataFingerprint": "74bf12000dbd784f"
+      "metadataFingerprint": "74bf12000dbd784f",
+      "sourceName": ""
     },
     "Gem of Focus": {
       "name": "Gem of Focus",
@@ -1104,7 +1145,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "f9c92b1a3227bea4"
+      "metadataFingerprint": "f9c92b1a3227bea4",
+      "sourceName": ""
     },
     "Gem of Isolation": {
       "name": "Gem of Isolation",
@@ -1119,7 +1161,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "7a19cf61becf56d0"
+      "metadataFingerprint": "7a19cf61becf56d0",
+      "sourceName": ""
     },
     "Genji's Guard": {
       "name": "Genji's Guard",
@@ -1133,7 +1176,8 @@
         "Cooldown"
       ],
       "reviewed": false,
-      "metadataFingerprint": "4944529de53712d6"
+      "metadataFingerprint": "4944529de53712d6",
+      "sourceName": ""
     },
     "Gilded Arrow": {
       "name": "Gilded Arrow",
@@ -1147,10 +1191,11 @@
         "Economy"
       ],
       "reviewed": true,
-      "metadataFingerprint": "e99dd7e97c04bc33"
+      "metadataFingerprint": "e99dd7e97c04bc33",
+      "sourceName": ""
     },
-    "Gladiator Shield": {
-      "name": "Gladiator Shield",
+    "Gladiator's Shield": {
+      "name": "Gladiator's Shield",
       "beginnerType": "Hybrid",
       "tags": [
         "Hybrid",
@@ -1163,7 +1208,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "0b63e2bcbc7a287d"
+      "metadataFingerprint": "944790fb1c7f452b",
+      "sourceName": ""
     },
     "Glorious Pridwen": {
       "name": "Glorious Pridwen",
@@ -1179,7 +1225,23 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "b6dc930522696355"
+      "metadataFingerprint": "b6dc930522696355",
+      "sourceName": ""
+    },
+    "Gluttonous Grimoire": {
+      "name": "Gluttonous Grimoire",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Magical Damage",
+        "Health",
+        "Sustain",
+        "Ability Damage",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "2b2e3c71a315a1a6",
+      "sourceName": ""
     },
     "Golden Blade": {
       "name": "Golden Blade",
@@ -1193,7 +1255,8 @@
         "Attack Speed"
       ],
       "reviewed": false,
-      "metadataFingerprint": "ebe0538025ef5f3e"
+      "metadataFingerprint": "ebe0538025ef5f3e",
+      "sourceName": ""
     },
     "Hastened Fatalis": {
       "name": "Hastened Fatalis",
@@ -1207,7 +1270,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "898267096da88bc5"
+      "metadataFingerprint": "898267096da88bc5",
+      "sourceName": ""
     },
     "Heartseeker": {
       "name": "Heartseeker",
@@ -1222,7 +1286,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "82d8049ac05146a0"
+      "metadataFingerprint": "82d8049ac05146a0",
+      "sourceName": ""
     },
     "Heartwood Charm": {
       "name": "Heartwood Charm",
@@ -1235,7 +1300,23 @@
         "Cooldown"
       ],
       "reviewed": false,
-      "metadataFingerprint": "91f83b706f3ada73"
+      "metadataFingerprint": "91f83b706f3ada73",
+      "sourceName": ""
+    },
+    "Helm of Darkness": {
+      "name": "Helm of Darkness",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Magical Damage",
+        "Physical Protection",
+        "Health",
+        "Bruiser",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "667104fba349a529",
+      "sourceName": ""
     },
     "Helm of Radiance": {
       "name": "Helm of Radiance",
@@ -1249,7 +1330,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "ad61f024d53610ff"
+      "metadataFingerprint": "ad61f024d53610ff",
+      "sourceName": ""
     },
     "Heroism": {
       "name": "Heroism",
@@ -1265,7 +1347,8 @@
         "Economy"
       ],
       "reviewed": true,
-      "metadataFingerprint": "51c75c4f3c3dfe13"
+      "metadataFingerprint": "51c75c4f3c3dfe13",
+      "sourceName": ""
     },
     "Hide of the Nemean Lion": {
       "name": "Hide of the Nemean Lion",
@@ -1279,7 +1362,20 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "2fa8041897ba9792"
+      "metadataFingerprint": "2fa8041897ba9792",
+      "sourceName": ""
+    },
+    "Hooked Sword": {
+      "name": "Hooked Sword",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2",
+        "Basic Attack",
+        "Crit"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "710ded82525a6718",
+      "sourceName": ""
     },
     "Hunter's Bow": {
       "name": "Hunter's Bow",
@@ -1290,7 +1386,8 @@
         "Attack Speed"
       ],
       "reviewed": false,
-      "metadataFingerprint": "4dc6bf9ee7d64145"
+      "metadataFingerprint": "4dc6bf9ee7d64145",
+      "sourceName": ""
     },
     "Hunter's Cowl": {
       "name": "Hunter's Cowl",
@@ -1304,7 +1401,8 @@
         "Sustain"
       ],
       "reviewed": true,
-      "metadataFingerprint": "2b419b23646529da"
+      "metadataFingerprint": "2b419b23646529da",
+      "sourceName": ""
     },
     "Hussar's Wings": {
       "name": "Hussar's Wings",
@@ -1319,7 +1417,8 @@
         "Health"
       ],
       "reviewed": false,
-      "metadataFingerprint": "50b92179da05cce6"
+      "metadataFingerprint": "50b92179da05cce6",
+      "sourceName": ""
     },
     "Hydra's Lament": {
       "name": "Hydra's Lament",
@@ -1334,7 +1433,18 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "c8f2158704a64864"
+      "metadataFingerprint": "c8f2158704a64864",
+      "sourceName": ""
+    },
+    "Ileke Necklace": {
+      "name": "Ileke Necklace",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "0a737353507ed815",
+      "sourceName": ""
     },
     "Infused Axe": {
       "name": "Infused Axe",
@@ -1345,7 +1455,23 @@
         "Mana"
       ],
       "reviewed": false,
-      "metadataFingerprint": "dd24153570180a6c"
+      "metadataFingerprint": "dd24153570180a6c",
+      "sourceName": ""
+    },
+    "Jade Scepter": {
+      "name": "Jade Scepter",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Magical Damage",
+        "Health",
+        "Crowd Control",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "42102cff84ef26c0",
+      "sourceName": ""
     },
     "Jotunn's Revenge": {
       "name": "Jotunn's Revenge",
@@ -1359,22 +1485,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "089e7f78fb039415"
-    },
-    "Jotunns Revenge": {
-      "name": "Jotunns Revenge",
-      "beginnerType": "Offense",
-      "tags": [
-        "Offense",
-        "Physical Damage",
-        "Ability Damage",
-        "Cooldown",
-        "Flat Penetration",
-        "Tier 3"
-      ],
-      "reviewed": true,
       "metadataFingerprint": "089e7f78fb039415",
-      "aliasOf": "Jotunn's Revenge"
+      "sourceName": ""
     },
     "Killing Stone": {
       "name": "Killing Stone",
@@ -1387,7 +1499,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "b9834e9f4b4e8d00"
+      "metadataFingerprint": "b9834e9f4b4e8d00",
+      "sourceName": ""
     },
     "Kinetic Cuirass": {
       "name": "Kinetic Cuirass",
@@ -1402,7 +1515,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "778cebb9e605809e"
+      "metadataFingerprint": "778cebb9e605809e",
+      "sourceName": ""
     },
     "Kopesh": {
       "name": "Kopesh",
@@ -1414,7 +1528,8 @@
         "Crit"
       ],
       "reviewed": false,
-      "metadataFingerprint": "a024ef7fbc335237"
+      "metadataFingerprint": "a024ef7fbc335237",
+      "sourceName": ""
     },
     "Leather Cowl": {
       "name": "Leather Cowl",
@@ -1428,7 +1543,8 @@
         "Sustain"
       ],
       "reviewed": true,
-      "metadataFingerprint": "c313050ffd38e1c6"
+      "metadataFingerprint": "c313050ffd38e1c6",
+      "sourceName": ""
     },
     "Legionnaire Armor": {
       "name": "Legionnaire Armor",
@@ -1441,7 +1557,8 @@
         "Physical Protection"
       ],
       "reviewed": false,
-      "metadataFingerprint": "c4ebac63313056d2"
+      "metadataFingerprint": "c4ebac63313056d2",
+      "sourceName": ""
     },
     "Lernaean Bow": {
       "name": "Lernaean Bow",
@@ -1455,7 +1572,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "a681e670eb86fcce"
+      "metadataFingerprint": "a681e670eb86fcce",
+      "sourceName": ""
     },
     "Leviathan's Hide": {
       "name": "Leviathan's Hide",
@@ -1470,7 +1588,24 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "03488a52bf2b634e"
+      "metadataFingerprint": "03488a52bf2b634e",
+      "sourceName": ""
+    },
+    "Lifebinder": {
+      "name": "Lifebinder",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Magical Damage",
+        "Health",
+        "Healing",
+        "Sustain",
+        "Teamfight",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "3c2ac079719662eb",
+      "sourceName": ""
     },
     "Lively Acorn": {
       "name": "Lively Acorn",
@@ -1481,7 +1616,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "8a5d8875d880933d"
+      "metadataFingerprint": "8a5d8875d880933d",
+      "sourceName": ""
     },
     "Lucerne Hammer": {
       "name": "Lucerne Hammer",
@@ -1491,7 +1627,8 @@
         "Physical Damage"
       ],
       "reviewed": false,
-      "metadataFingerprint": "a1a6607386ecd4af"
+      "metadataFingerprint": "a1a6607386ecd4af",
+      "sourceName": ""
     },
     "Magi's Cloak": {
       "name": "Magi's Cloak",
@@ -1506,7 +1643,16 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "906efac28d6d6c42"
+      "metadataFingerprint": "906efac28d6d6c42",
+      "sourceName": ""
+    },
+    "Magic Acorn": {
+      "name": "Magic Acorn",
+      "beginnerType": "Utility",
+      "tags": [],
+      "reviewed": false,
+      "metadataFingerprint": "f4549187a622171e",
+      "sourceName": ""
     },
     "Mana Tome": {
       "name": "Mana Tome",
@@ -1516,7 +1662,8 @@
         "Mana"
       ],
       "reviewed": false,
-      "metadataFingerprint": "2cc25292133c80c1"
+      "metadataFingerprint": "2cc25292133c80c1",
+      "sourceName": ""
     },
     "Manchu Bow": {
       "name": "Manchu Bow",
@@ -1529,7 +1676,8 @@
         "Attack Speed"
       ],
       "reviewed": false,
-      "metadataFingerprint": "f0205790bd36e603"
+      "metadataFingerprint": "f0205790bd36e603",
+      "sourceName": ""
     },
     "Mantle of Discord": {
       "name": "Mantle of Discord",
@@ -1543,7 +1691,16 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "2720471810796043"
+      "metadataFingerprint": "2720471810796043",
+      "sourceName": ""
+    },
+    "Masterwork Mod": {
+      "name": "Masterwork Mod",
+      "beginnerType": "Utility",
+      "tags": [],
+      "reviewed": false,
+      "metadataFingerprint": "217e199f59bd3621",
+      "sourceName": ""
     },
     "Medal of Defense": {
       "name": "Medal of Defense",
@@ -1556,7 +1713,8 @@
         "Health"
       ],
       "reviewed": false,
-      "metadataFingerprint": "92070a9df6a8cabc"
+      "metadataFingerprint": "92070a9df6a8cabc",
+      "sourceName": ""
     },
     "Medal of Disruption": {
       "name": "Medal of Disruption",
@@ -1569,7 +1727,8 @@
         "Health"
       ],
       "reviewed": false,
-      "metadataFingerprint": "59f742794c47dcd8"
+      "metadataFingerprint": "59f742794c47dcd8",
+      "sourceName": ""
     },
     "Medallion": {
       "name": "Medallion",
@@ -1579,7 +1738,8 @@
         "Health"
       ],
       "reviewed": false,
-      "metadataFingerprint": "d244b1ed41d30dba"
+      "metadataFingerprint": "d244b1ed41d30dba",
+      "sourceName": ""
     },
     "Mercury's Talaria": {
       "name": "Mercury's Talaria",
@@ -1589,7 +1749,8 @@
         "Offense"
       ],
       "reviewed": false,
-      "metadataFingerprint": "28d93e84609d3594"
+      "metadataFingerprint": "28d93e84609d3594",
+      "sourceName": ""
     },
     "Midgardian Mail": {
       "name": "Midgardian Mail",
@@ -1603,7 +1764,18 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "21ab5c391c699a89"
+      "metadataFingerprint": "21ab5c391c699a89",
+      "sourceName": ""
+    },
+    "Mote of Chaos": {
+      "name": "Mote of Chaos",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "c1c2f57f1b64a001",
+      "sourceName": ""
     },
     "Musashi's Dual Swords": {
       "name": "Musashi's Dual Swords",
@@ -1617,7 +1789,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "b40240a6732e29ac"
+      "metadataFingerprint": "b40240a6732e29ac",
+      "sourceName": ""
     },
     "Mystical Mail": {
       "name": "Mystical Mail",
@@ -1632,7 +1805,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "ef7b5ac1ce0b016b"
+      "metadataFingerprint": "ef7b5ac1ce0b016b",
+      "sourceName": ""
     },
     "Necronomicon": {
       "name": "Necronomicon",
@@ -1644,7 +1818,8 @@
         "Mana"
       ],
       "reviewed": false,
-      "metadataFingerprint": "e9110e2072a419fe"
+      "metadataFingerprint": "e9110e2072a419fe",
+      "sourceName": ""
     },
     "Nimble Ring": {
       "name": "Nimble Ring",
@@ -1659,7 +1834,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "6ca56d87bebe129d"
+      "metadataFingerprint": "6ca56d87bebe129d",
+      "sourceName": ""
     },
     "Oath-Sworn Spear": {
       "name": "Oath-Sworn Spear",
@@ -1673,7 +1849,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "68d5cff66fb7e236"
+      "metadataFingerprint": "68d5cff66fb7e236",
+      "sourceName": ""
     },
     "Obsidian Shard": {
       "name": "Obsidian Shard",
@@ -1688,7 +1865,20 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "b51fbcde0884d702"
+      "metadataFingerprint": "b51fbcde0884d702",
+      "sourceName": ""
+    },
+    "Odigba": {
+      "name": "Odigba",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2",
+        "Health",
+        "Mana"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "74564448517c778e",
+      "sourceName": ""
     },
     "Odysseus' Bow": {
       "name": "Odysseus' Bow",
@@ -1700,7 +1890,8 @@
         "Attack Speed"
       ],
       "reviewed": false,
-      "metadataFingerprint": "44101d3da7715448"
+      "metadataFingerprint": "44101d3da7715448",
+      "sourceName": ""
     },
     "Olmec Blue": {
       "name": "Olmec Blue",
@@ -1710,7 +1901,8 @@
         "Health"
       ],
       "reviewed": false,
-      "metadataFingerprint": "904de171aaa68261"
+      "metadataFingerprint": "904de171aaa68261",
+      "sourceName": ""
     },
     "Omen Drum": {
       "name": "Omen Drum",
@@ -1720,7 +1912,8 @@
         "Offense"
       ],
       "reviewed": false,
-      "metadataFingerprint": "7387d4d88318fc80"
+      "metadataFingerprint": "7387d4d88318fc80",
+      "sourceName": ""
     },
     "Oni Hunter's Garb": {
       "name": "Oni Hunter's Garb",
@@ -1734,22 +1927,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "bba7162ba076f195"
-    },
-    "Oni Hunters Garb": {
-      "name": "Oni Hunters Garb",
-      "beginnerType": "Defense",
-      "tags": [
-        "Defense",
-        "Magical Protection",
-        "Health",
-        "Mitigation",
-        "Anti-Burst",
-        "Tier 3"
-      ],
-      "reviewed": true,
       "metadataFingerprint": "bba7162ba076f195",
-      "aliasOf": "Oni Hunter's Garb"
+      "sourceName": ""
     },
     "Oracle Staff": {
       "name": "Oracle Staff",
@@ -1760,7 +1939,8 @@
         "Mana"
       ],
       "reviewed": false,
-      "metadataFingerprint": "c745a2ab0d3226f1"
+      "metadataFingerprint": "c745a2ab0d3226f1",
+      "sourceName": ""
     },
     "Pendulum Blade": {
       "name": "Pendulum Blade",
@@ -1774,7 +1954,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "552654a87abde77f"
+      "metadataFingerprint": "552654a87abde77f",
+      "sourceName": ""
     },
     "Pendulum of The Ages": {
       "name": "Pendulum of The Ages",
@@ -1785,7 +1966,8 @@
         "Cooldown"
       ],
       "reviewed": false,
-      "metadataFingerprint": "e48f6883fa14b1a2"
+      "metadataFingerprint": "e48f6883fa14b1a2",
+      "sourceName": ""
     },
     "Pharaoh's Curse": {
       "name": "Pharaoh's Curse",
@@ -1800,7 +1982,22 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "cf5fc627f6f3d01c"
+      "metadataFingerprint": "cf5fc627f6f3d01c",
+      "sourceName": ""
+    },
+    "Phoenix Feather": {
+      "name": "Phoenix Feather",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Magical Protection",
+        "Health",
+        "Anti-Burst",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "90bc1a2e418154a2",
+      "sourceName": ""
     },
     "Plated Metal": {
       "name": "Plated Metal",
@@ -1809,7 +2006,8 @@
         "Tier 2"
       ],
       "reviewed": false,
-      "metadataFingerprint": "ba05918c9f783ea3"
+      "metadataFingerprint": "ba05918c9f783ea3",
+      "sourceName": ""
     },
     "Polynomicon": {
       "name": "Polynomicon",
@@ -1824,7 +2022,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "0749f725a53f6e49"
+      "metadataFingerprint": "0749f725a53f6e49",
+      "sourceName": ""
     },
     "Prophetic Cloak": {
       "name": "Prophetic Cloak",
@@ -1839,7 +2038,16 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "a53eebf540fd0441"
+      "metadataFingerprint": "a53eebf540fd0441",
+      "sourceName": ""
+    },
+    "Purification Beads": {
+      "name": "Purification Beads",
+      "beginnerType": "Utility",
+      "tags": [],
+      "reviewed": false,
+      "metadataFingerprint": "517c959fff56a069",
+      "sourceName": ""
     },
     "Qin's Blade": {
       "name": "Qin's Blade",
@@ -1855,24 +2063,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "801b777e63634108"
-    },
-    "Qins Blade": {
-      "name": "Qins Blade",
-      "beginnerType": "Offense",
-      "tags": [
-        "Offense",
-        "Physical Damage",
-        "Basic Attack",
-        "Attack Speed",
-        "Anti-Tank",
-        "Anti-Health",
-        "% Health Damage",
-        "Tier 3"
-      ],
-      "reviewed": true,
       "metadataFingerprint": "801b777e63634108",
-      "aliasOf": "Qin's Blade"
+      "sourceName": ""
     },
     "Radiant Bulwark": {
       "name": "Radiant Bulwark",
@@ -1886,7 +2078,8 @@
         "Magical Protection"
       ],
       "reviewed": false,
-      "metadataFingerprint": "d3a46200c90953d4"
+      "metadataFingerprint": "d3a46200c90953d4",
+      "sourceName": ""
     },
     "Rage": {
       "name": "Rage",
@@ -1899,7 +2092,25 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "b0a3235dff75ce76"
+      "metadataFingerprint": "b0a3235dff75ce76",
+      "sourceName": ""
+    },
+    "Ragnarok's Wake": {
+      "name": "Ragnarok's Wake",
+      "beginnerType": "Defense",
+      "tags": [
+        "Defense",
+        "Physical Protection",
+        "Health",
+        "Mobility",
+        "Crowd Control",
+        "Teamfight",
+        "Active",
+        "Tier 3"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "8edf206de8d5c842",
+      "sourceName": ""
     },
     "Regrowth Striders": {
       "name": "Regrowth Striders",
@@ -1913,7 +2124,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "d4c158709da23fd9"
+      "metadataFingerprint": "d4c158709da23fd9",
+      "sourceName": ""
     },
     "Reliquary": {
       "name": "Reliquary",
@@ -1923,7 +2135,8 @@
         "Mana"
       ],
       "reviewed": false,
-      "metadataFingerprint": "ac7f3a1d48ae7667"
+      "metadataFingerprint": "ac7f3a1d48ae7667",
+      "sourceName": ""
     },
     "Resolute Mantle": {
       "name": "Resolute Mantle",
@@ -1938,7 +2151,16 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "0dbe7cd7bb8cf941"
+      "metadataFingerprint": "0dbe7cd7bb8cf941",
+      "sourceName": ""
+    },
+    "Resonator Mod": {
+      "name": "Resonator Mod",
+      "beginnerType": "Utility",
+      "tags": [],
+      "reviewed": false,
+      "metadataFingerprint": "8424e35b3368216d",
+      "sourceName": ""
     },
     "Ring": {
       "name": "Ring",
@@ -1950,7 +2172,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "50d108436448ea17"
+      "metadataFingerprint": "50d108436448ea17",
+      "sourceName": ""
     },
     "Ring of Dispel": {
       "name": "Ring of Dispel",
@@ -1961,7 +2184,8 @@
         "Cooldown"
       ],
       "reviewed": false,
-      "metadataFingerprint": "785052b85636f326"
+      "metadataFingerprint": "785052b85636f326",
+      "sourceName": ""
     },
     "Riptalon": {
       "name": "Riptalon",
@@ -1975,7 +2199,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "0cc66b4b5b0408f7"
+      "metadataFingerprint": "0cc66b4b5b0408f7",
+      "sourceName": ""
     },
     "Rod of Asclepius": {
       "name": "Rod of Asclepius",
@@ -1990,7 +2215,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "7c06b9e9a0af4c26"
+      "metadataFingerprint": "7c06b9e9a0af4c26",
+      "sourceName": ""
     },
     "Rod of Tahuti": {
       "name": "Rod of Tahuti",
@@ -2003,7 +2229,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "ef8a86d2e87084aa"
+      "metadataFingerprint": "ef8a86d2e87084aa",
+      "sourceName": ""
     },
     "Rune": {
       "name": "Rune",
@@ -2015,7 +2242,8 @@
         "Magical Protection"
       ],
       "reviewed": false,
-      "metadataFingerprint": "dc287093aa5727d3"
+      "metadataFingerprint": "dc287093aa5727d3",
+      "sourceName": ""
     },
     "Runeforged Hammer": {
       "name": "Runeforged Hammer",
@@ -2027,7 +2255,18 @@
         "Health"
       ],
       "reviewed": false,
-      "metadataFingerprint": "5096144867950981"
+      "metadataFingerprint": "5096144867950981",
+      "sourceName": ""
+    },
+    "Runic Hide": {
+      "name": "Runic Hide",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 2"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "dfabae4b7fc7faef",
+      "sourceName": ""
     },
     "Sabre": {
       "name": "Sabre",
@@ -2038,7 +2277,8 @@
         "Crit"
       ],
       "reviewed": false,
-      "metadataFingerprint": "9f4f1ce02b9aa857"
+      "metadataFingerprint": "9f4f1ce02b9aa857",
+      "sourceName": ""
     },
     "Sage's Ring": {
       "name": "Sage's Ring",
@@ -2051,7 +2291,8 @@
         "Cooldown"
       ],
       "reviewed": false,
-      "metadataFingerprint": "feea271a7a01c174"
+      "metadataFingerprint": "feea271a7a01c174",
+      "sourceName": ""
     },
     "Sands of Time": {
       "name": "Sands of Time",
@@ -2065,7 +2306,8 @@
         "Ability Damage"
       ],
       "reviewed": true,
-      "metadataFingerprint": "c8f1acdc619341f3"
+      "metadataFingerprint": "c8f1acdc619341f3",
+      "sourceName": ""
     },
     "Sanguine Lash": {
       "name": "Sanguine Lash",
@@ -2082,7 +2324,21 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "a125fa8e55f310e2"
+      "metadataFingerprint": "d0314f86df1523f9",
+      "sourceName": ""
+    },
+    "Sash": {
+      "name": "Sash",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Hybrid",
+        "Physical Damage",
+        "Magical Damage",
+        "Tier 2"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "9227a7c698eccc74",
+      "sourceName": ""
     },
     "Scepter of Dominion": {
       "name": "Scepter of Dominion",
@@ -2095,7 +2351,8 @@
         "Mana"
       ],
       "reviewed": false,
-      "metadataFingerprint": "16afa929d154efcc"
+      "metadataFingerprint": "16afa929d154efcc",
+      "sourceName": ""
     },
     "Screeching Gargoyle": {
       "name": "Screeching Gargoyle",
@@ -2108,7 +2365,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "85d6af468b094f80"
+      "metadataFingerprint": "85d6af468b094f80",
+      "sourceName": ""
     },
     "Scythe": {
       "name": "Scythe",
@@ -2121,7 +2379,16 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "2644a3b7118d36a5"
+      "metadataFingerprint": "2644a3b7118d36a5",
+      "sourceName": ""
+    },
+    "Seismic Mod": {
+      "name": "Seismic Mod",
+      "beginnerType": "Utility",
+      "tags": [],
+      "reviewed": false,
+      "metadataFingerprint": "48a62e18b6c63130",
+      "sourceName": ""
     },
     "Selflessness": {
       "name": "Selflessness",
@@ -2136,24 +2403,24 @@
         "Teamfight"
       ],
       "reviewed": true,
-      "metadataFingerprint": "b944eb67e9de5312"
+      "metadataFingerprint": "b944eb67e9de5312",
+      "sourceName": ""
     },
-    "Shape Shifter Shield": {
-      "name": "Shape Shifter Shield",
-      "beginnerType": "Hybrid",
+    "Sharpshooter's Arrow": {
+      "name": "Sharpshooter's Arrow",
+      "beginnerType": "Starter",
       "tags": [
-        "Hybrid",
-        "Physical Protection",
-        "Magical Protection",
-        "Health",
+        "Starter",
+        "Offense",
         "Physical Damage",
-        "Magical Damage",
-        "Bruiser",
-        "Tier 3"
+        "Basic Attack",
+        "Attack Speed",
+        "Crit",
+        "Economy"
       ],
       "reviewed": true,
-      "metadataFingerprint": "dc8d1e29453a844d",
-      "aliasOf": "Shifter's Shield"
+      "metadataFingerprint": "7d069189b35cc290",
+      "sourceName": ""
     },
     "Shell of Rebuke": {
       "name": "Shell of Rebuke",
@@ -2169,7 +2436,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "a71f4c21198aaeef"
+      "metadataFingerprint": "a71f4c21198aaeef",
+      "sourceName": ""
     },
     "Shield": {
       "name": "Shield",
@@ -2180,7 +2448,8 @@
         "Tier 1"
       ],
       "reviewed": true,
-      "metadataFingerprint": "bf7db67afe75f44b"
+      "metadataFingerprint": "bf7db67afe75f44b",
+      "sourceName": ""
     },
     "Shield of the Phoenix": {
       "name": "Shield of the Phoenix",
@@ -2196,7 +2465,24 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "1ba89786fc1c5288"
+      "metadataFingerprint": "1ba89786fc1c5288",
+      "sourceName": ""
+    },
+    "Shield Splitter": {
+      "name": "Shield Splitter",
+      "beginnerType": "Hybrid",
+      "tags": [
+        "Tier 3",
+        "Hybrid",
+        "Physical Damage",
+        "Magical Damage",
+        "Defense",
+        "Physical Protection",
+        "Magical Protection"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "da6b6cf2610cad4e",
+      "sourceName": ""
     },
     "Shifter's Shield": {
       "name": "Shifter's Shield",
@@ -2212,27 +2498,11 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "dc8d1e29453a844d"
-    },
-    "Shifters Shield": {
-      "name": "Shifters Shield",
-      "beginnerType": "Hybrid",
-      "tags": [
-        "Hybrid",
-        "Physical Protection",
-        "Magical Protection",
-        "Health",
-        "Physical Damage",
-        "Magical Damage",
-        "Bruiser",
-        "Tier 3"
-      ],
-      "reviewed": true,
       "metadataFingerprint": "dc8d1e29453a844d",
-      "aliasOf": "Shifter's Shield"
+      "sourceName": ""
     },
-    "Shogun's Kusari": {
-      "name": "Shogun's Kusari",
+    "Shogun's Ofuda": {
+      "name": "Shogun's Ofuda",
       "beginnerType": "Hybrid",
       "tags": [
         "Hybrid",
@@ -2245,24 +2515,16 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "965bbd4003ad6ab2"
+      "metadataFingerprint": "3fcaca73d912745e",
+      "sourceName": ""
     },
-    "Shoguns Kusari": {
-      "name": "Shoguns Kusari",
-      "beginnerType": "Hybrid",
-      "tags": [
-        "Hybrid",
-        "Magical Protection",
-        "Health",
-        "Attack Speed",
-        "Aura",
-        "Teamfight",
-        "Basic Attack",
-        "Tier 3"
-      ],
-      "reviewed": true,
-      "metadataFingerprint": "965bbd4003ad6ab2",
-      "aliasOf": "Shogun's Kusari"
+    "Shrapnel Mod": {
+      "name": "Shrapnel Mod",
+      "beginnerType": "Utility",
+      "tags": [],
+      "reviewed": false,
+      "metadataFingerprint": "9bf4f2117fe3b2ef",
+      "sourceName": ""
     },
     "Shroud Of Vengeance": {
       "name": "Shroud Of Vengeance",
@@ -2277,7 +2539,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "11d7930bc93e48db"
+      "metadataFingerprint": "11d7930bc93e48db",
+      "sourceName": ""
     },
     "Silverbranch Bow": {
       "name": "Silverbranch Bow",
@@ -2293,7 +2556,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "2796204fea06328b"
+      "metadataFingerprint": "2796204fea06328b",
+      "sourceName": ""
     },
     "Skeggox": {
       "name": "Skeggox",
@@ -2304,7 +2568,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "67d643861690b1f6"
+      "metadataFingerprint": "67d643861690b1f6",
+      "sourceName": ""
     },
     "Soul Gem": {
       "name": "Soul Gem",
@@ -2321,7 +2586,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "8ccf4a289e86fc4c"
+      "metadataFingerprint": "8ccf4a289e86fc4c",
+      "sourceName": ""
     },
     "Soul Reaver": {
       "name": "Soul Reaver",
@@ -2336,7 +2602,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "b9b2467a0987241a"
+      "metadataFingerprint": "b9b2467a0987241a",
+      "sourceName": ""
     },
     "Soul Reliquary": {
       "name": "Soul Reliquary",
@@ -2348,7 +2615,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "1e75d8a4aa16fbc6"
+      "metadataFingerprint": "1e75d8a4aa16fbc6",
+      "sourceName": ""
     },
     "Spear of Desolation": {
       "name": "Spear of Desolation",
@@ -2363,7 +2631,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "ed5adf4907d4aa9a"
+      "metadataFingerprint": "ed5adf4907d4aa9a",
+      "sourceName": ""
     },
     "Spear Of The Magus": {
       "name": "Spear Of The Magus",
@@ -2379,24 +2648,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "f0f1e3146dbc486e"
-    },
-    "Spearofthe Magus": {
-      "name": "Spearofthe Magus",
-      "beginnerType": "Offense",
-      "tags": [
-        "Offense",
-        "Magical Damage",
-        "Ability Damage",
-        "% Penetration",
-        "Anti-Tank",
-        "Anti-Protections",
-        "Debuff",
-        "Tier 3"
-      ],
-      "reviewed": true,
       "metadataFingerprint": "f0f1e3146dbc486e",
-      "aliasOf": "Spear Of The Magus"
+      "sourceName": ""
     },
     "Spectral Armor": {
       "name": "Spectral Armor",
@@ -2412,7 +2665,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "11c9486cc6da25e5"
+      "metadataFingerprint": "11c9486cc6da25e5",
+      "sourceName": ""
     },
     "Sphere of Negation": {
       "name": "Sphere of Negation",
@@ -2426,7 +2680,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "a757ca02a28b4459"
+      "metadataFingerprint": "a757ca02a28b4459",
+      "sourceName": ""
     },
     "Spirit Robe": {
       "name": "Spirit Robe",
@@ -2442,22 +2697,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "285470d64714897b"
-    },
-    "Staff of Cosmic Horror": {
-      "name": "Staff of Cosmic Horror",
-      "beginnerType": "Offense",
-      "tags": [
-        "Offense",
-        "Magical Damage",
-        "Ability Damage",
-        "Flat Penetration",
-        "Burst",
-        "Tier 3"
-      ],
-      "reviewed": true,
-      "metadataFingerprint": "a271ac56a1ee92e5",
-      "aliasOf": "The Cosmic Horror"
+      "metadataFingerprint": "285470d64714897b",
+      "sourceName": ""
     },
     "Staff of Myrddin": {
       "name": "Staff of Myrddin",
@@ -2471,7 +2712,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "7a04a419fd0b1fb9"
+      "metadataFingerprint": "7a04a419fd0b1fb9",
+      "sourceName": ""
     },
     "Stampede": {
       "name": "Stampede",
@@ -2487,7 +2729,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "c3a64c0ca51d8a27"
+      "metadataFingerprint": "c3a64c0ca51d8a27",
+      "sourceName": ""
     },
     "Stone of Binding": {
       "name": "Stone of Binding",
@@ -2504,7 +2747,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "505aa5244902f722"
+      "metadataFingerprint": "505aa5244902f722",
+      "sourceName": ""
     },
     "Stygian Anchor": {
       "name": "Stygian Anchor",
@@ -2519,7 +2763,22 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "d6b26931e7f4bb09"
+      "metadataFingerprint": "d6b26931e7f4bb09",
+      "sourceName": ""
+    },
+    "Sun Beam Bow": {
+      "name": "Sun Beam Bow",
+      "beginnerType": "Offense",
+      "tags": [
+        "Tier 3",
+        "Offense",
+        "Physical Damage",
+        "Basic Attack",
+        "Attack Speed"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "eec6ea5b2c655ecf",
+      "sourceName": ""
     },
     "Sundering Arc": {
       "name": "Sundering Arc",
@@ -2531,7 +2790,8 @@
         "Burst"
       ],
       "reviewed": true,
-      "metadataFingerprint": "9174fe3b14b3e728"
+      "metadataFingerprint": "9174fe3b14b3e728",
+      "sourceName": ""
     },
     "Sundering Axe": {
       "name": "Sundering Axe",
@@ -2548,7 +2808,26 @@
         "Bruiser"
       ],
       "reviewed": true,
-      "metadataFingerprint": "a131d6ca566b9d39"
+      "metadataFingerprint": "a131d6ca566b9d39",
+      "sourceName": ""
+    },
+    "Sundering Echo": {
+      "name": "Sundering Echo",
+      "beginnerType": "Utility",
+      "tags": [
+        "Tier 3"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "c31363a930cdc718",
+      "sourceName": ""
+    },
+    "Surplus Mod": {
+      "name": "Surplus Mod",
+      "beginnerType": "Utility",
+      "tags": [],
+      "reviewed": false,
+      "metadataFingerprint": "dfb479a0007f4c07",
+      "sourceName": ""
     },
     "Survivor's Sash": {
       "name": "Survivor's Sash",
@@ -2560,7 +2839,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "25a333311c8c24b6"
+      "metadataFingerprint": "25a333311c8c24b6",
+      "sourceName": ""
     },
     "Talisman of Purification": {
       "name": "Talisman of Purification",
@@ -2574,7 +2854,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "24f9666ba8288dbd"
+      "metadataFingerprint": "24f9666ba8288dbd",
+      "sourceName": ""
     },
     "Tekko-Kagi": {
       "name": "Tekko-Kagi",
@@ -2589,7 +2870,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "4699e1e8f118d387"
+      "metadataFingerprint": "4699e1e8f118d387",
+      "sourceName": ""
     },
     "The Cosmic Horror": {
       "name": "The Cosmic Horror",
@@ -2603,7 +2885,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "a271ac56a1ee92e5"
+      "metadataFingerprint": "a271ac56a1ee92e5",
+      "sourceName": ""
     },
     "The Crusher": {
       "name": "The Crusher",
@@ -2617,7 +2900,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "37b6d565a54158d3"
+      "metadataFingerprint": "37b6d565a54158d3",
+      "sourceName": ""
     },
     "The Executioner": {
       "name": "The Executioner",
@@ -2633,7 +2917,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "5aad32d15318376d"
+      "metadataFingerprint": "5aad32d15318376d",
+      "sourceName": ""
     },
     "The Reaper": {
       "name": "The Reaper",
@@ -2648,7 +2933,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "2deb06acdbb3874b"
+      "metadataFingerprint": "2deb06acdbb3874b",
+      "sourceName": ""
     },
     "The World Stone": {
       "name": "The World Stone",
@@ -2663,7 +2949,16 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "316ee613a296175a"
+      "metadataFingerprint": "316ee613a296175a",
+      "sourceName": ""
+    },
+    "Thermal Mod": {
+      "name": "Thermal Mod",
+      "beginnerType": "Utility",
+      "tags": [],
+      "reviewed": false,
+      "metadataFingerprint": "5f3b9924e5ee9b8d",
+      "sourceName": ""
     },
     "Thistlethorn Acorn": {
       "name": "Thistlethorn Acorn",
@@ -2679,7 +2974,23 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "df1a627599c011d8"
+      "metadataFingerprint": "df1a627599c011d8",
+      "sourceName": ""
+    },
+    "Time-lock Aegis": {
+      "name": "Time-lock Aegis",
+      "beginnerType": "Defense",
+      "tags": [
+        "Tier 3",
+        "Physical Damage",
+        "Magical Damage",
+        "Defense",
+        "Physical Protection",
+        "Magical Protection"
+      ],
+      "reviewed": false,
+      "metadataFingerprint": "92277660b7160796",
+      "sourceName": ""
     },
     "Titan's Bane": {
       "name": "Titan's Bane",
@@ -2694,23 +3005,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "4ab3aa9c382517ab"
-    },
-    "Titans Bane": {
-      "name": "Titans Bane",
-      "beginnerType": "Offense",
-      "tags": [
-        "Offense",
-        "Physical Damage",
-        "Ability Damage",
-        "Anti-Tank",
-        "Anti-Protections",
-        "% Penetration",
-        "Tier 3"
-      ],
-      "reviewed": true,
       "metadataFingerprint": "4ab3aa9c382517ab",
-      "aliasOf": "Titan's Bane"
+      "sourceName": ""
     },
     "Totem of Death": {
       "name": "Totem of Death",
@@ -2726,7 +3022,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "61a4b84236a4933a"
+      "metadataFingerprint": "61a4b84236a4933a",
+      "sourceName": ""
     },
     "Toxic Blade": {
       "name": "Toxic Blade",
@@ -2742,7 +3039,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "52fe1d38b23385a8"
+      "metadataFingerprint": "52fe1d38b23385a8",
+      "sourceName": ""
     },
     "Transcendence": {
       "name": "Transcendence",
@@ -2756,7 +3054,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "ac30602cc38862c5"
+      "metadataFingerprint": "ac30602cc38862c5",
+      "sourceName": ""
     },
     "Triton's Conch": {
       "name": "Triton's Conch",
@@ -2771,7 +3070,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "65e9cfe39d3bdc86"
+      "metadataFingerprint": "65e9cfe39d3bdc86",
+      "sourceName": ""
     },
     "Typhon's Heart": {
       "name": "Typhon's Heart",
@@ -2784,7 +3084,8 @@
         "Sustain"
       ],
       "reviewed": false,
-      "metadataFingerprint": "61eebf416b795103"
+      "metadataFingerprint": "61eebf416b795103",
+      "sourceName": ""
     },
     "Tyrfing": {
       "name": "Tyrfing",
@@ -2798,7 +3099,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "61b49871f32839ef"
+      "metadataFingerprint": "61b49871f32839ef",
+      "sourceName": ""
     },
     "Umbral Link": {
       "name": "Umbral Link",
@@ -2812,7 +3114,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "56b888180968f5db"
+      "metadataFingerprint": "56b888180968f5db",
+      "sourceName": ""
     },
     "Vampiric Shroud": {
       "name": "Vampiric Shroud",
@@ -2827,7 +3130,8 @@
         "Mana"
       ],
       "reviewed": true,
-      "metadataFingerprint": "576b4d861024b957"
+      "metadataFingerprint": "576b4d861024b957",
+      "sourceName": ""
     },
     "Veve Charm": {
       "name": "Veve Charm",
@@ -2838,7 +3142,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "1c76872600ebf9cf"
+      "metadataFingerprint": "1c76872600ebf9cf",
+      "sourceName": ""
     },
     "Vital Amplifier": {
       "name": "Vital Amplifier",
@@ -2855,7 +3160,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "cbcfbd5a0602e6d9"
+      "metadataFingerprint": "cbcfbd5a0602e6d9",
+      "sourceName": ""
     },
     "Void Shard": {
       "name": "Void Shard",
@@ -2869,7 +3175,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "52e8b797aa190454"
+      "metadataFingerprint": "52e8b797aa190454",
+      "sourceName": ""
     },
     "Void Shield": {
       "name": "Void Shield",
@@ -2887,7 +3194,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "ae9eb3dfa8ecca8c"
+      "metadataFingerprint": "ae9eb3dfa8ecca8c",
+      "sourceName": ""
     },
     "Void Stone": {
       "name": "Void Stone",
@@ -2905,7 +3213,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "74753577af205358"
+      "metadataFingerprint": "74753577af205358",
+      "sourceName": ""
     },
     "War Banner": {
       "name": "War Banner",
@@ -2922,7 +3231,8 @@
         "Teamfight"
       ],
       "reviewed": true,
-      "metadataFingerprint": "094d1726ff7b6715"
+      "metadataFingerprint": "094d1726ff7b6715",
+      "sourceName": ""
     },
     "War Flag": {
       "name": "War Flag",
@@ -2939,7 +3249,23 @@
         "Teamfight"
       ],
       "reviewed": true,
-      "metadataFingerprint": "fd0d600eebbd9978"
+      "metadataFingerprint": "fd0d600eebbd9978",
+      "sourceName": ""
+    },
+    "Warrior's Axe": {
+      "name": "Warrior's Axe",
+      "beginnerType": "Starter",
+      "tags": [
+        "Starter",
+        "Hybrid",
+        "Physical Protection",
+        "Magical Protection",
+        "Sustain",
+        "Anti-Tank"
+      ],
+      "reviewed": true,
+      "metadataFingerprint": "7aff5654bf63bb7a",
+      "sourceName": ""
     },
     "Wish-Granting Pearl": {
       "name": "Wish-Granting Pearl",
@@ -2952,7 +3278,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "da8034ef42a685fe"
+      "metadataFingerprint": "da8034ef42a685fe",
+      "sourceName": ""
     },
     "Wyrmskin Hide": {
       "name": "Wyrmskin Hide",
@@ -2967,7 +3294,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "4d1d9d6d79207c43"
+      "metadataFingerprint": "4d1d9d6d79207c43",
+      "sourceName": ""
     },
     "Xibalban Effigy": {
       "name": "Xibalban Effigy",
@@ -2982,23 +3310,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "3410f7a12dd745b9"
-    },
-    "Xibalban Effigy New": {
-      "name": "Xibalban Effigy New",
-      "beginnerType": "Defense",
-      "tags": [
-        "Defense",
-        "Physical Protection",
-        "Magical Protection",
-        "Mana",
-        "Mitigation",
-        "Anti-Burst",
-        "Tier 3"
-      ],
-      "reviewed": true,
       "metadataFingerprint": "3410f7a12dd745b9",
-      "aliasOf": "Xibalban Effigy"
+      "sourceName": ""
     },
     "Yogi's Necklace": {
       "name": "Yogi's Necklace",
@@ -3012,7 +3325,8 @@
         "Tier 3"
       ],
       "reviewed": true,
-      "metadataFingerprint": "a804e151c146f314"
+      "metadataFingerprint": "a804e151c146f314",
+      "sourceName": ""
     },
     "Zither": {
       "name": "Zither",
@@ -3024,7 +3338,8 @@
         "Tier 2"
       ],
       "reviewed": true,
-      "metadataFingerprint": "8ba519309741d0cc"
+      "metadataFingerprint": "8ba519309741d0cc",
+      "sourceName": ""
     }
   }
 }

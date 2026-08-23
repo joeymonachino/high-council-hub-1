@@ -47,13 +47,16 @@ CURATED = {
     "Dusk Bringer": ["Offense", "Physical Damage", "Ability Damage", "Cooldown", "Burst", "Tier 3"],
     "Eldritch Dagger": ["Offense", "Physical Damage", "Basic Attack", "Attack Speed", "Flat Penetration", "Tier 3"],
     "Eye of Erebus": ["Offense", "Magical Damage", "Anti-Tank", "Anti-Health", "% Health Damage", "Slow", "Utility", "Tier 3"],
+    "Eye of Providence": ["Defense", "Physical Protection", "Magical Protection", "Utility", "Teamfight", "Tier 3"],
     "Gem of Focus": ["Offense", "Magical Damage", "Cooldown", "Movement Speed", "Mobility", "Tier 3"],
     "Gem of Isolation": ["Utility", "Magical Damage", "Ability Damage", "Slow", "Crowd Control", "Health", "Tier 3"],
+    "Gluttonous Grimoire": ["Hybrid", "Magical Damage", "Health", "Sustain", "Ability Damage", "Tier 3"],
     "Hastened Fatalis": ["Offense", "Basic Attack", "Attack Speed", "Movement Speed", "Mobility", "Tier 3"],
     "Heartseeker": ["Offense", "Physical Damage", "Ability Damage", "Anti-Tank", "Anti-Health", "% Health Damage", "Tier 3"],
     "Hydra's Lament": ["Offense", "Physical Damage", "Basic Attack", "Ability Damage", "Cooldown", "Burst", "Tier 3"],
     "Jotunn's Revenge": ["Offense", "Physical Damage", "Ability Damage", "Cooldown", "Flat Penetration", "Tier 3"],
     "Killing Stone": ["Offense", "Physical Damage", "Magical Damage", "Burst", "Tier 3"],
+    "Jade Scepter": ["Hybrid", "Magical Damage", "Health", "Crowd Control", "Teamfight", "Tier 3"],
     "Lernaean Bow": ["Offense", "Physical Damage", "Basic Attack", "Attack Speed", "Anti-Shield", "Tier 3"],
     "Magi's Shelter": ["Defense", "Magical Protection", "Health", "Crowd Control", "Tenacity", "Anti-Burst", "Tier 3"],
     "Magi's Cloak": ["Defense", "Physical Protection", "Magical Protection", "Crowd Control", "Tenacity", "Anti-Burst", "Tier 3"],
@@ -66,10 +69,12 @@ CURATED = {
     "Avatar's Parashu": ["Offense", "Physical Damage", "Anti-Tank", "Anti-Protections", "% Penetration", "Burst", "Crowd Control", "Tier 3"],
     "Parashu": ["Offense", "Physical Damage", "Anti-Tank", "Anti-Protections", "% Penetration", "Burst", "Crowd Control", "Tier 3"],
     "Pendulum of the Ages": ["Offense", "Magical Damage", "Cooldown", "Mana", "Ability Damage", "Tier 3"],
+    "Phoenix Feather": ["Defense", "Magical Protection", "Health", "Anti-Burst", "Tier 3"],
     "Pendulum Blade": ["Offense", "Physical Damage", "Cooldown", "Mana", "Ability Damage", "Tier 3"],
     "Polynomicon": ["Offense", "Magical Damage", "Basic Attack", "Ability Damage", "Burst", "Mana", "Tier 3"],
     "Qin's Blade": ["Offense", "Physical Damage", "Basic Attack", "Attack Speed", "Anti-Tank", "Anti-Health", "% Health Damage", "Tier 3"],
     "Rage": ["Offense", "Physical Damage", "Crit", "Basic Attack", "Tier 3"],
+    "Ragnarok's Wake": ["Defense", "Physical Protection", "Health", "Mobility", "Crowd Control", "Teamfight", "Active", "Tier 3"],
     "Riptalon": ["Offense", "Physical Damage", "Basic Attack", "Lifesteal", "Sustain", "Tier 3"],
     "Rod of Asclepius": ["Hybrid", "Magical Damage", "Healing", "Sustain", "Movement Speed", "Teamfight", "Tier 3"],
     "Rod of Tahuti": ["Offense", "Magical Damage", "Ability Damage", "Burst", "Tier 3"],
@@ -103,19 +108,23 @@ CURATED = {
     "Brawler's Beat Stick": ["Hybrid", "Physical Damage", "Magical Damage", "Physical Protection", "Magical Protection", "Anti-Heal", "Bruiser", "Tier 3"],
     "Breastplate of Valor": ["Defense", "Physical Protection", "Cooldown", "Mana", "Anti-Burst", "Tier 3"],
     "Chandra's Grace": ["Defense", "Health", "Cooldown", "Healing", "Sustain", "Teamfight", "Tier 3"],
+    "Amanita Charm": ["Defense", "Physical Protection", "Magical Protection", "Health", "Sustain", "Teamfight", "Tier 3"],
     "Circe's Hexstone": ["Defense", "Health", "Cooldown", "Mobility", "Crowd Control", "Anti-Tank", "Anti-Health", "% Health Damage", "Tier 3"],
     "Contagion": ["Defense", "Health", "Crowd Control", "Burst", "Tier 3"],
     "Daybreak Gavel": ["Hybrid", "Physical Damage", "Magical Damage", "Health", "Healing", "Sustain", "Burst", "Tier 3"],
     "Doublet of Binding": ["Defense", "Mitigation", "Teamfight", "Utility", "Tier 3"],
     "Erosion": ["Defense", "Physical Protection", "Magical Protection", "Health", "Anti-Shield", "Anti-Burst", "Tier 3"],
     "Gauntlet of Thebes": ["Defense", "Physical Protection", "Magical Protection", "Health", "Scaling", "Teamfight", "Tier 3"],
-    "Gladiator Shield": ["Hybrid", "Physical Protection", "Health", "Cooldown", "Physical Damage", "Ability Damage", "Bruiser", "Tier 3"],
+    "Gladiator's Shield": ["Hybrid", "Physical Protection", "Health", "Cooldown", "Physical Damage", "Ability Damage", "Bruiser", "Tier 3"],
     "Glorious Pridwen": ["Defense", "Physical Protection", "Magical Protection", "Cooldown", "Shielding", "Burst", "Teamfight", "Tier 3"],
+    "Dwarven Plate": ["Defense", "Physical Protection", "Magical Protection", "Anti-Burst", "Tier 3"],
     "Helm of Radiance": ["Defense", "Magical Protection", "Health", "Aura", "Teamfight", "Tier 3"],
+    "Helm of Darkness": ["Hybrid", "Magical Damage", "Physical Protection", "Health", "Bruiser", "Tier 3"],
     "Helm of the Phoenix": ["Defense", "Magical Protection", "Health", "Healing", "Sustain", "Tier 3"],
     "Hide of the Nemean Lion": ["Defense", "Physical Protection", "Health", "Anti-Basic Attack", "Anti-Burst", "Tier 3"],
     "Kinetic Cuirass": ["Hybrid", "Physical Protection", "Health", "Physical Damage", "Basic Attack", "Bruiser", "Tier 3"],
     "Leviathan's Hide": ["Defense", "Health", "Physical Protection", "Magical Protection", "Debuff", "Anti-Burst", "Tier 3"],
+    "Lifebinder": ["Hybrid", "Magical Damage", "Health", "Healing", "Sustain", "Teamfight", "Tier 3"],
     "Mantle of Discord": ["Defense", "Physical Protection", "Magical Protection", "Crowd Control", "Anti-Burst", "Tier 3"],
     "Midgardian Mail": ["Defense", "Physical Protection", "Health", "Debuff", "Anti-Basic Attack", "Tier 3"],
     "Mystical Mail": ["Defense", "Physical Protection", "Health", "Aura", "Anti-Shield", "Teamfight", "Tier 3"],
@@ -127,7 +136,7 @@ CURATED = {
     "Reverent Pridwen": ["Defense", "Physical Protection", "Magical Protection", "Cooldown", "Shielding", "Teamfight", "Tier 3"],
     "Shifter's Shield": ["Hybrid", "Physical Protection", "Magical Protection", "Health", "Physical Damage", "Magical Damage", "Bruiser", "Tier 3"],
     "Shield of the Phoenix": ["Defense", "Physical Protection", "Health", "Cooldown", "Healing", "Sustain", "Mana", "Tier 3"],
-    "Shogun's Kusari": ["Hybrid", "Magical Protection", "Health", "Attack Speed", "Aura", "Teamfight", "Basic Attack", "Tier 3"],
+    "Shogun's Ofuda": ["Hybrid", "Magical Protection", "Health", "Attack Speed", "Aura", "Teamfight", "Basic Attack", "Tier 3"],
     "Shroud Of Vengeance": ["Defense", "Physical Protection", "Magical Protection", "Tenacity", "Crowd Control", "Physical Damage", "Tier 3"],
     "Spectral Armor": ["Defense", "Physical Protection", "Health", "Anti-Burst", "Crit", "Aura", "Teamfight", "Tier 3"],
     "Sphere of Negation": ["Hybrid", "Magical Damage", "Magical Protection", "Shielding", "Anti-Burst", "Tier 3"],
@@ -147,6 +156,9 @@ CURATED = {
 
     # Starters and starter upgrades.
     "Gilded Arrow": ["Starter", "Offense", "Physical Damage", "Basic Attack", "Attack Speed", "Economy"],
+    "Archmage's Gem": ["Starter", "Offense", "Magical Damage", "Physical Damage", "Ability Damage", "Mana", "Burst"],
+    "Sharpshooter's Arrow": ["Starter", "Offense", "Physical Damage", "Basic Attack", "Attack Speed", "Crit", "Economy"],
+    "Warrior's Axe": ["Starter", "Hybrid", "Physical Protection", "Magical Protection", "Sustain", "Anti-Tank"],
     "Blood-soaked Shroud": ["Starter", "Hybrid", "Health", "Lifesteal", "Sustain", "Ability Damage"],
     "Bluestone Brooch": ["Starter", "Hybrid", "Physical Damage", "Ability Damage", "Health", "Sustain", "Anti-Tank", "Anti-Health", "% Health Damage"],
     "Bluestone Pendant": ["Starter", "Offense", "Physical Damage", "Ability Damage", "Sustain"],
@@ -223,11 +235,17 @@ ALIASES = {
     "Jotunns Revenge": "Jotunn's Revenge",
     "Oni Hunters Garb": "Oni Hunter's Garb",
     "Shifters Shield": "Shifter's Shield",
-    "Shoguns Kusari": "Shogun's Kusari",
+    "Shoguns Kusari": "Shogun's Ofuda",
+    "Shogun's Kusari": "Shogun's Ofuda",
     "Titans Bane": "Titan's Bane",
     "Bindings Of Lyngvi": "Stone of Binding",
     "Bindings of Lyngvi": "Stone of Binding",
     "Shape Shifter Shield": "Shifter's Shield",
+    "Gladiator Shield": "Gladiator's Shield",
+    "Dwarf Forged Plate Physical": "Dwarven Plate",
+    "Restorative Amanita": "Amanita Charm",
+    "Design Temp T3 New Sun Beam Bow": "Sun Beam Bow",
+    "Utility Purification Beads": "Purification Beads",
     "Spearofthe Magus": "Spear Of The Magus",
     "Staff of Cosmic Horror": "The Cosmic Horror",
     "Xibalban Effigy New": "Xibalban Effigy",
@@ -316,8 +334,9 @@ def build_taxonomy():
     items = {}
     rows_by_name = load_current_item_rows()
     for canonical, row in rows_by_name.items():
-        name = row.get("displayName") or row.get("name") or canonical
-        curated_tags = CURATED.get(canonical) or CURATED.get(name)
+        source_name = row.get("displayName") or row.get("name") or canonical
+        name = canonical
+        curated_tags = CURATED.get(canonical) or CURATED.get(source_name)
         if not curated_tags:
             curated_tags = tags_from_stats_type({
                 "name": canonical,
@@ -333,12 +352,9 @@ def build_taxonomy():
             "tags": tags,
             "reviewed": bool(CURATED.get(canonical) or CURATED.get(name)),
             "metadataFingerprint": metadata_fingerprint(row),
+            "sourceName": source_name if source_name != canonical else "",
         }
 
-    # Add aliases as lightweight reviewed records for matching duplicate metadata names.
-    for alias, target in ALIASES.items():
-        if target in items and alias not in items:
-            items[alias] = {**items[target], "name": alias, "aliasOf": target}
 
     return {
         "version": 1,
@@ -432,3 +448,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

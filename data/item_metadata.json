@@ -2,7 +2,7 @@
   {
     "name": "Acorn T2 Lively Acorn",
     "displayName": "Lively Acorn",
-    "slug": "acorn-t2-lively-acorn",
+    "slug": "lively-acorn",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/lively-acorn",
     "pageTitle": "Lively Acorn",
@@ -24,7 +24,7 @@
   {
     "name": "Acorn T3 Bristlebush",
     "displayName": "Briskberry Acorn",
-    "slug": "acorn-t3-bristlebush",
+    "slug": "briskberry-acorn",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/briskberry-acorn",
     "pageTitle": "Briskberry Acorn",
@@ -46,7 +46,7 @@
   {
     "name": "Acorn T3 Thickbark",
     "displayName": "Ashwhorl Acorn",
-    "slug": "acorn-t3-thickbark",
+    "slug": "ashwhorl-acorn",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/ashwhorl-acorn",
     "pageTitle": "Ashwhorl Acorn",
@@ -68,7 +68,7 @@
   {
     "name": "Acorn T3 Thistlethorn",
     "displayName": "Thistlethorn Acorn",
-    "slug": "acorn-t3-thistlethorn",
+    "slug": "thistlethorn-acorn",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/thistlethorn-acorn",
     "pageTitle": "Thistlethorn Acorn",
@@ -135,6 +135,23 @@
     "sampleCount": 9
   },
   {
+    "name": "Aegis of Acceleration",
+    "displayName": "Aegis of Acceleration",
+    "slug": "aegis-of-acceleration",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/aegis-of-acceleration",
+    "pageTitle": "Aegis of Acceleration",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/aegis-of-acceleration?v=ee5a9153",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "On Use: Become Immune (to damage and healing) for 1.5s. • Can only Move • On god Damage prevented: +7% Movement Speed for 6s (Max 3x) Cooldown: 140s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Agility Greaves",
     "displayName": "Agility Greaves",
     "slug": "agility-greaves",
@@ -159,6 +176,23 @@
     "sampleCount": 2
   },
   {
+    "name": "Agility Relic",
+    "displayName": "Agility Relic",
+    "slug": "agility-relic",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/agility-relic",
+    "pageTitle": "Agility Relic",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/agility-relic?v=7c3230cb",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "On Use: Dash in the direction you are currently moving Ranged Gods: +40% Attack projectile speed Melee Gods: -15% Attack movement penalty Cooldown: 20s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Alchemist Coat",
     "displayName": "Alchemist Coat",
     "slug": "alchemist-coat",
@@ -179,11 +213,55 @@
       "Max Health 250",
       "Mana Regen 2.5"
     ],
-    "passive": "Use a Consumable: Gain 10 Dampening for 8s. \u2022 Open inventory slot: Gain a Multi Potion once every 60s",
+    "passive": "Use a Consumable: Gain 10 Dampening for 8s. • Open inventory slot: Gain a Multi Potion once every 60s",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 5
+  },
+  {
+    "name": "Alternator Mod",
+    "displayName": "Alternator Mod",
+    "slug": "alternator-mod",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/alternator-mod",
+    "pageTitle": "Alternator Mod",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/alternator-mod?v=b36b35f6",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "Gain access to the Thumper Turret by alternating between an Inferno Cannon and Thumper each ability activation. Thumper pulses out an attack around it every 1s that deals 20/30/40/50/60 + 8% INT Magical Damage to all enemies in the area. Thumper's Rank will match Inferno Cannon's. Cooldown 6s. Set 1 - You can only have one Mod from each set. Can be built at level 1",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Amanita Charm",
+    "displayName": "Amanita Charm",
+    "slug": "amanita-charm",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/amanita-charm",
+    "pageTitle": "Amanita Charm",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/amanita-charm?v=82de78be",
+    "summary": "",
+    "cost": 2350,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Physical Protection Item 25",
+      "Magical Protection Item 25",
+      "Max Health 300",
+      "Health Regen 4"
+    ],
+    "passive": "On Use: Create a Healing Mushroom (6.4m radius) for 4.5s. • +3% Health Heal every 1.5s • +1 Stack of Damage Reduction per Heal • 10% Attack and Ability Damage Reduction per Stack • 5% Ultimate Damage Reduction per Stack • All Stacks removed after triggering Cooldown: 60s",
+    "categoriesSeen": [
+      "Tier 3"
+    ],
+    "sampleCount": 22
   },
   {
     "name": "Ancient Signet",
@@ -204,16 +282,39 @@
       "Intelligence 90",
       "Max Mana 250"
     ],
-    "passive": "Ability Hit: +20 (+12 per Level) bonus Magical Damage Kill or Assist a Minion: \u2022 -2s Cooldown Cooldown: 15s",
+    "passive": "Ability Hit: +20 (+12 per Level) bonus Magical Damage Kill or Assist a Minion: • -2s Cooldown Cooldown: 15s",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 20
   },
   {
+    "name": "Ancile",
+    "displayName": "Ancile",
+    "slug": "ancile",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/ancile",
+    "pageTitle": "Ancile",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/ancile?v=17e6192c",
+    "summary": "",
+    "cost": 2500,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Magical Protection Item 55",
+      "Max Health 300"
+    ],
+    "passive": "On Use: Your next Ability that damages a god Silences them for 1.5s Cooldown: 70s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Ancile Shield",
     "displayName": "Ancile",
-    "slug": "ancile-shield",
+    "slug": "ancile",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/ancile",
     "pageTitle": "Ancile",
@@ -236,6 +337,28 @@
     "sampleCount": 1
   },
   {
+    "name": "Archmage's Gem",
+    "displayName": "Archmage's Gem",
+    "slug": "archmages-gem",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/archmages-gem",
+    "pageTitle": "Archmage's Gem",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/archmages-gem?v=7ef3fff0",
+    "summary": "",
+    "cost": 2150,
+    "itemType": "Starter",
+    "tags": [
+      "Starter"
+    ],
+    "stats": [
+      "Max Mana 150",
+      "Mana Regen 4"
+    ],
+    "passive": "Adaptive Stat: +60 Strength or +90 Intelligence (based on highest item stat). Ability Hit a God: Deal bonus Magical Damage. • Damage = 40% of your Intelligence & 50% of your Strength Cooldown: 20s Requires Level 20.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Arondight",
     "displayName": "Arondight",
     "slug": "arondight",
@@ -254,7 +377,7 @@
       "Strength 55",
       "Cooldown Reduction 15%"
     ],
-    "passive": "On Use: Reveal enemy Gods within 17.6m for 6s. \u2022 Reveal persists through Stealth \u2022 If any God is revealed, +25% Movement Speed for 6s \u2022 First time you damage a revealed God: \u2022 +50 (+50% Strength) Physical Damage Cooldown: 60s",
+    "passive": "On Use: Reveal enemy Gods within 17.6m for 6s. • Reveal persists through Stealth • If any God is revealed, +25% Movement Speed for 6s • First time you damage a revealed God: • +50 (+50% Strength) Physical Damage Cooldown: 60s",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -263,7 +386,7 @@
   {
     "name": "Arrow",
     "displayName": "Gilded Arrow",
-    "slug": "arrow",
+    "slug": "gilded-arrow",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/gilded-arrow",
     "pageTitle": "Gilded Arrow",
@@ -278,11 +401,54 @@
       "Inhand Power 20",
       "Attack Speed 10%"
     ],
-    "passive": "Every 10s: Mark the highest Health enemy minion or jungle monster within 12.8m. \u2022 If you land the killing blow: \u2022 +3 Bonus Gold \u2022 +15% Attack Speed for 8s \u2022 +30 Mana Requires Level 20 to upgrade.",
+    "passive": "Every 10s: Mark the highest Health enemy minion or jungle monster within 12.8m. • If you land the killing blow: • +3 Bonus Gold • +15% Attack Speed for 8s • +30 Mana Requires Level 20 to upgrade.",
     "categoriesSeen": [
       "Starter"
     ],
     "sampleCount": 81
+  },
+  {
+    "name": "Ashwhorl Acorn",
+    "displayName": "Ashwhorl Acorn",
+    "slug": "ashwhorl-acorn",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/ashwhorl-acorn",
+    "pageTitle": "Ashwhorl Acorn",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/ashwhorl-acorn?v=e5021729",
+    "summary": "",
+    "cost": 2000,
+    "itemType": "God-Specific Tier 3",
+    "tags": [
+      "God-Specific",
+      "Tier 3"
+    ],
+    "stats": [],
+    "passive": "Non-Aspect: +45 Strength +15% Attack Speed Flurry fires out multiple Acorn projectiles that return back at max range, dealing damage and granting Movement Speed. Each enemy god hit provides Attack Speed. Aspect: +400 Health +15 Tenacity Flurry has 2 charges, Heals and provides Protections.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Avatar's Parashu",
+    "displayName": "Avatar's Parashu",
+    "slug": "avatars-parashu",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/avatars-parashu",
+    "pageTitle": "Avatar's Parashu",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/avatars-parashu?v=364203fa",
+    "summary": "",
+    "cost": 3700,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Strength 90",
+      "Magical Penetration 10%"
+    ],
+    "passive": "On Use: +25% Strength and Immune to Displacement for 10s. Cooldown: 120s",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Avenging Blade",
@@ -303,7 +469,7 @@
       "Strength 60",
       "Max Health 200"
     ],
-    "passive": "Attack hit a God: Debuff that God. \u2022 -3.5% Protections When Debuffed God Is in Jungle OR Heals 5% of their Health: \u2022 Stacks become twice as effective. Debuff lasts 4s, Stacks up to 3 times.",
+    "passive": "Attack hit a God: Debuff that God. • -3.5% Protections When Debuffed God Is in Jungle OR Heals 5% of their Health: • Stacks become twice as effective. Debuff lasts 4s, Stacks up to 3 times.",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -330,7 +496,32 @@
     "categoriesSeen": [
       "Tier 1"
     ],
-    "sampleCount": 23
+    "sampleCount": 24
+  },
+  {
+    "name": "Bancroft's Talon",
+    "displayName": "Bancroft's Talon",
+    "slug": "bancrofts-talon",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/bancrofts-talon",
+    "pageTitle": "Bancroft's Talon",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/bancrofts-talon?v=729eb812",
+    "summary": "",
+    "cost": 2300,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Intelligence 55",
+      "Max Mana 150",
+      "Mana Regen 2",
+      "Lifesteal 7.5%"
+    ],
+    "passive": "Gain bonus Intelligence and Lifesteal scaled from missing Health. • Caps at +60 Intelligence and +10% Lifesteal at 40% Health",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Bancrofts Talon",
@@ -353,11 +544,11 @@
       "Mana Regen 2",
       "Lifesteal 7.5%"
     ],
-    "passive": "Gain bonus Intelligence and Lifesteal scaled from missing Health. \u2022 Caps at +60 Intelligence and +10% Lifesteal at 40% Health",
+    "passive": "Gain bonus Intelligence and Lifesteal scaled from missing Health. • Caps at +60 Intelligence and +10% Lifesteal at 40% Health",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 46
+    "sampleCount": 47
   },
   {
     "name": "Barbed Carver",
@@ -378,7 +569,7 @@
       "Strength 40",
       "Lifesteal 7.5%"
     ],
-    "passive": "Ability Hit: Target gains +1 Stack of Jagged Wounds for 5s (max 3) \u2022 Triggers once per Ability, per target Each Stack: +8% (+1% per 10% Lifesteal) Attack and Ability Damage as Physical Damage.",
+    "passive": "Ability Hit: Target gains +1 Stack of Jagged Wounds for 5s (max 3) • Triggers once per Ability, per target Each Stack: +8% (+1% per 10% Lifesteal) Attack and Ability Damage as Physical Damage.",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -411,7 +602,7 @@
   {
     "name": "Berserker",
     "displayName": "Berserker's Shield",
-    "slug": "berserker",
+    "slug": "berserkers-shield",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/berserkers-shield",
     "pageTitle": "Berserker's Shield",
@@ -429,16 +620,16 @@
       "Health Regen 4",
       "Attack Speed 20%"
     ],
-    "passive": "When falling below 60% Health: Become Berserk for 8s. While Berserk: \u2022 +15 of Physical and Magical Protections \u2022 +25% Attack Speed",
+    "passive": "When falling below 60% Health: Become Berserk for 8s. While Berserk: • +15 of Physical and Magical Protections • +25% Attack Speed",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 72
+    "sampleCount": 77
   },
   {
     "name": "Berserker's Shield",
     "displayName": "Berserker's Shield",
-    "slug": "berserker-ss-shield",
+    "slug": "berserkers-shield",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/berserkers-shield",
     "pageTitle": "Berserker's Shield",
@@ -456,16 +647,53 @@
       "Health Regen 4",
       "Attack Speed 20%"
     ],
-    "passive": "When falling below 60% Health: Become Berserk for 8s. While Berserk: \u2022 +15 of Physical and Magical Protections \u2022 +25% Attack Speed",
+    "passive": "When falling below 60% Health: Become Berserk for 8s. While Berserk: • +15 of Physical and Magical Protections • +25% Attack Speed",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 2
   },
   {
+    "name": "Blink Rune",
+    "displayName": "Blink Rune",
+    "slug": "blink-rune",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/blink-rune",
+    "pageTitle": "Blink Rune",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/blink-rune?v=64c6b4f9",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "On Use: Teleport up to 5.6m. Cannot be used for 3s after dealing or taking God damage. Can be used while casting. Damage or Kill a God within 4s of use: -30s Cooldown. Cooldown: 170s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Blinking Abyss",
+    "displayName": "Blinking Abyss",
+    "slug": "blinking-abyss",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/blinking-abyss",
+    "pageTitle": "Blinking Abyss",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/blinking-abyss?v=384278c3",
+    "summary": "",
+    "cost": 2600,
+    "itemType": "Relic Tier 3",
+    "tags": [
+      "Relic",
+      "Tier 3"
+    ],
+    "stats": [],
+    "passive": "Adaptive Stat: +20 Strength or +35 Intelligence (based on highest item stat). +5% of all Stats from Items. On Use: Teleport up to 5.6m. Can be used in combat, but not while firing an ability. 1s after Teleport: Deal 25 (+10% Strength & Intelligence) Magical Damage in a 3.2m radius. If this damages a god, reduce cooldown by -65s. Cooldown: 200s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Blood Forged Blade",
     "displayName": "Bloodforge",
-    "slug": "blood-forged-blade",
+    "slug": "bloodforge",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/bloodforge",
     "pageTitle": "Bloodforge",
@@ -481,7 +709,7 @@
       "Strength 45",
       "Lifesteal 7.5%"
     ],
-    "passive": "On Use: + Health Shield for 6s. \u2022 Shield = 10% Max Health & 150% Strength from Items \u2022 While Shielded: +10% Lifesteal Kill a God: -25% Cooldown. Cooldown: 80s",
+    "passive": "On Use: + Health Shield for 6s. • Shield = 10% Max Health & 150% Strength from Items • While Shielded: +10% Lifesteal Kill a God: -25% Cooldown. Cooldown: 80s",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -506,16 +734,16 @@
       "Intelligence 80",
       "Lifesteal 7.5%"
     ],
-    "passive": "On Use: + Health Shield for 6s. \u2022 Shield = 7.5% Max Health & 75% Intelligence from Items \u2022 While Shielded: +10% Lifesteal Kill a God: -25% Cooldown. Cooldown: 80s",
+    "passive": "On Use: + Health Shield for 6s. • Shield = 7.5% Max Health & 75% Intelligence from Items • While Shielded: +10% Lifesteal Kill a God: -25% Cooldown. Cooldown: 80s",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 12
   },
   {
-    "name": "Bloodsoaked Shroud",
+    "name": "Blood-soaked Shroud",
     "displayName": "Blood-soaked Shroud",
-    "slug": "bloodsoaked-shroud",
+    "slug": "blood-soaked-shroud",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/blood-soaked-shroud",
     "pageTitle": "Blood-soaked Shroud",
@@ -530,11 +758,56 @@
       "Max Health 350",
       "Lifesteal 8%"
     ],
-    "passive": "Adaptive Stat: +40 Strength or +70 Intelligence (based on highest item stat). Ability Hit: \u2022 +1% Max Health Heal \u2022 +1% Max Mana Recovery Requires Level 20.",
+    "passive": "Adaptive Stat: +40 Strength or +70 Intelligence (based on highest item stat). Ability Hit: • +1% Max Health Heal • +1% Max Mana Recovery Requires Level 20.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Bloodforge",
+    "displayName": "Bloodforge",
+    "slug": "bloodforge",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/bloodforge",
+    "pageTitle": "Bloodforge",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/bloodforge?v=7164dbe5",
+    "summary": "",
+    "cost": 2550,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Strength 45",
+      "Lifesteal 7.5%"
+    ],
+    "passive": "On Use: + Health Shield for 6s. • Shield = 10% Max Health & 150% Strength from Items • While Shielded: +10% Lifesteal Kill a God: -25% Cooldown. Cooldown: 80s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Bloodsoaked Shroud",
+    "displayName": "Blood-soaked Shroud",
+    "slug": "blood-soaked-shroud",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/blood-soaked-shroud",
+    "pageTitle": "Blood-soaked Shroud",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/blood-soaked-shroud?v=c6b7f3c9",
+    "summary": "",
+    "cost": 2100,
+    "itemType": "Starter",
+    "tags": [
+      "Starter"
+    ],
+    "stats": [
+      "Max Health 350",
+      "Lifesteal 8%"
+    ],
+    "passive": "Adaptive Stat: +40 Strength or +70 Intelligence (based on highest item stat). Ability Hit: • +1% Max Health Heal • +1% Max Mana Recovery Requires Level 20.",
     "categoriesSeen": [
       "Starter"
     ],
-    "sampleCount": 9
+    "sampleCount": 10
   },
   {
     "name": "Bluestone Brooch",
@@ -555,11 +828,11 @@
       "Health Regen 4",
       "Mana Regen 2.5"
     ],
-    "passive": "Adaptive Stat: +30 Strength or +50 Intelligence (based on highest item stat). Ability Hit: +100 Physical Damage over 2s \u2022 Gods take additional damage = 7.5% of their current Health \u2022 Subsequent hits on the same target: 50% bonus damage for 3s Requires Level 20.",
+    "passive": "Adaptive Stat: +30 Strength or +50 Intelligence (based on highest item stat). Ability Hit: +100 Physical Damage over 2s • Gods take additional damage = 7.5% of their current Health • Subsequent hits on the same target: 50% bonus damage for 3s Requires Level 20.",
     "categoriesSeen": [
       "Starter"
     ],
-    "sampleCount": 65
+    "sampleCount": 66
   },
   {
     "name": "Bluestone Pendant",
@@ -579,11 +852,11 @@
       "Health Regen 1",
       "Mana Regen 1.5"
     ],
-    "passive": "Adaptive Stat: +15 Strength or +25 Intelligence (based on highest item stat). Ability Hit: +32 Physical Damage over 2s. \u2022 Subsequent hits on the same target: 50% bonus damage for 3s Requires Level 20 to upgrade.",
+    "passive": "Adaptive Stat: +15 Strength or +25 Intelligence (based on highest item stat). Ability Hit: +32 Physical Damage over 2s. • Subsequent hits on the same target: 50% bonus damage for 3s Requires Level 20 to upgrade.",
     "categoriesSeen": [
       "Starter"
     ],
-    "sampleCount": 64
+    "sampleCount": 66
   },
   {
     "name": "Book of Thoth",
@@ -605,11 +878,11 @@
       "Max Mana 350",
       "Mana Regen 4"
     ],
-    "passive": "+Intelligence equal to 5% of Mana from Items. Deal 900 Damage to Minions or Jungle Monsters: +1 Evolve Stack +1 Mana Infusion Stack (Max 50 Stacks) \u2022 Damage dealt to Gods counts double Per Mana Infusion Stack: +10 Mana. At 50 Evolve Stacks, Item evolves and gains: \u2022 Additional +Intelligence equal to 2% of Mana from Items \u2022 +5 Penetration \u2022 +100 Mana",
+    "passive": "+Intelligence equal to 5% of Mana from Items. Deal 900 Damage to Minions or Jungle Monsters: +1 Evolve Stack +1 Mana Infusion Stack (Max 50 Stacks) • Damage dealt to Gods counts double Per Mana Infusion Stack: +10 Mana. At 50 Evolve Stacks, Item evolves and gains: • Additional +Intelligence equal to 2% of Mana from Items • +5 Penetration • +100 Mana",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 129
+    "sampleCount": 131
   },
   {
     "name": "Bow",
@@ -632,7 +905,7 @@
     "categoriesSeen": [
       "Tier 1"
     ],
-    "sampleCount": 10
+    "sampleCount": 11
   },
   {
     "name": "Bowl Drum",
@@ -656,6 +929,53 @@
       "Tier 2"
     ],
     "sampleCount": 2
+  },
+  {
+    "name": "Bracer of the Abyss",
+    "displayName": "Bracer of The Abyss",
+    "slug": "bracer-of-the-abyss",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/bracer-of-the-abyss",
+    "pageTitle": "Bracer of The Abyss",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/bracer-of-the-abyss?v=4bfcc526",
+    "summary": "",
+    "cost": 2500,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Intelligence 60",
+      "Attack Speed 30%"
+    ],
+    "passive": "Hit enemy Gods or Jungle Bosses: +8 Attack Damage for 10s. Stacks up to 8 times.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Bragi's Harp",
+    "displayName": "Bragi's Harp",
+    "slug": "bragis-harp",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/bragis-harp",
+    "pageTitle": "Bragi's Harp",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/bragis-harp?v=a17b87b9",
+    "summary": "",
+    "cost": 2550,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Strength 35",
+      "Intelligence 25",
+      "Attack Speed 10%"
+    ],
+    "passive": "Attack Hit: +10 (+3 per Level) bonus Magical Damage. Structures and Bosses take half damage from Bragi's Harp",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Bragis Harp",
@@ -686,7 +1006,7 @@
   {
     "name": "Brawler's Beat Stick",
     "displayName": "Brawler's Beat Stick",
-    "slug": "brawler-ss-beat-stick",
+    "slug": "brawlers-beat-stick",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/brawlers-beat-stick",
     "pageTitle": "Brawler's Beat Stick",
@@ -706,7 +1026,7 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 52
+    "sampleCount": 58
   },
   {
     "name": "Breastplate of Valor",
@@ -733,12 +1053,32 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 84
+    "sampleCount": 91
+  },
+  {
+    "name": "Briskberry Acorn",
+    "displayName": "Briskberry Acorn",
+    "slug": "briskberry-acorn",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/briskberry-acorn",
+    "pageTitle": "Briskberry Acorn",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/briskberry-acorn?v=cab14afb",
+    "summary": "",
+    "cost": 2000,
+    "itemType": "God-Specific Tier 3",
+    "tags": [
+      "God-Specific",
+      "Tier 3"
+    ],
+    "stats": [],
+    "passive": "Non-Aspect: +45 Strength +8 Pathfinding Dart becomes wider and passes through enemy gods. Its Cooldown is reset on enemy god hit. It cannot be reset more than twice. Aspect: +400 Health +4 Health Regen +2 Mana Regen After hitting an enemy god with Dart, they are knocked back and explode after a delay.",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Bumba's Cudgel",
     "displayName": "Bumba's Cudgel",
-    "slug": "bumba-ss-cudgel",
+    "slug": "bumbas-cudgel",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/bumbas-cudgel",
     "pageTitle": "Bumba's Cudgel",
@@ -753,11 +1093,77 @@
       "Max Health 75",
       "Max Mana 50"
     ],
-    "passive": "Adaptive Stat: +15 Strength or +25 Intelligence (based on highest item stat). Ability Used: Buff next Attack within 8s. \u2022 +20 True Damage (+1 Per Level) to enemies within 1.92m of the target \u2022 Hit this Attack: -0.33s Cooldowns Requires Level 20 to upgrade.",
+    "passive": "Adaptive Stat: +15 Strength or +25 Intelligence (based on highest item stat). Ability Used: Buff next Attack within 8s. • +20 True Damage (+1 Per Level) to enemies within 1.92m of the target • Hit this Attack: -0.33s Cooldowns Requires Level 20 to upgrade.",
     "categoriesSeen": [
       "Starter"
     ],
     "sampleCount": 1
+  },
+  {
+    "name": "Bumba's Golden Dagger",
+    "displayName": "Bumba's Golden Dagger",
+    "slug": "bumbas-golden-dagger",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/bumbas-golden-dagger",
+    "pageTitle": "Bumba's Golden Dagger",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/bumbas-golden-dagger?v=e0928df2",
+    "summary": "",
+    "cost": 650,
+    "itemType": "Starter",
+    "tags": [
+      "Starter"
+    ],
+    "stats": [
+      "Max Health 50",
+      "Attack Speed 10%"
+    ],
+    "passive": "Adaptive Stat: +15 Strength or +25 Intelligence (based on highest item stat). On Attack Hit: 10% bonus Physical Damage to enemies within 1.92m of the target Requires Level 20 to upgrade.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Bumba's Hammer",
+    "displayName": "Bumba's Hammer",
+    "slug": "bumbas-hammer",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/bumbas-hammer",
+    "pageTitle": "Bumba's Hammer",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/bumbas-hammer?v=89fd8396",
+    "summary": "",
+    "cost": 2150,
+    "itemType": "Starter",
+    "tags": [
+      "Starter"
+    ],
+    "stats": [
+      "Max Health 200",
+      "Cooldown Reduction 10%"
+    ],
+    "passive": "Adaptive Stat: +35 Strength or +60 Intelligence (based on highest item stat). Ability Used: • Next Attack deals +60 True Damage to enemies within 1.92m of the target • Hit this Attack: -.66s Cooldowns, +60 Heal Requires Level 20.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Bumba's Spear",
+    "displayName": "Bumba's Spear",
+    "slug": "bumbas-spear",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/bumbas-spear",
+    "pageTitle": "Bumba's Spear",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/bumbas-spear?v=7edf81e5",
+    "summary": "",
+    "cost": 2150,
+    "itemType": "Starter",
+    "tags": [
+      "Starter"
+    ],
+    "stats": [
+      "Max Health 200",
+      "Attack Speed 30%"
+    ],
+    "passive": "Adaptive Stat: +35 Strength or +60 Intelligence (based on highest item stat). On Attack Hit: 25% bonus Physical Damage to Enemies within 1.92m of the target Requires Level 20.",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Bumbas Cudgel",
@@ -777,7 +1183,7 @@
       "Max Health 75",
       "Max Mana 50"
     ],
-    "passive": "Adaptive Stat: +15 Strength or +25 Intelligence (based on highest item stat). Ability Used: Buff next Attack within 8s. \u2022 +20 True Damage (+1 Per Level) to enemies within 1.92m of the target \u2022 Hit this Attack: -0.33s Cooldowns Requires Level 20 to upgrade.",
+    "passive": "Adaptive Stat: +15 Strength or +25 Intelligence (based on highest item stat). Ability Used: Buff next Attack within 8s. • +20 True Damage (+1 Per Level) to enemies within 1.92m of the target • Hit this Attack: -0.33s Cooldowns Requires Level 20 to upgrade.",
     "categoriesSeen": [
       "Starter"
     ],
@@ -786,7 +1192,7 @@
   {
     "name": "Bumbas Dagger",
     "displayName": "Bumba's Golden Dagger",
-    "slug": "bumbas-dagger",
+    "slug": "bumbas-golden-dagger",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/bumbas-golden-dagger",
     "pageTitle": "Bumba's Golden Dagger",
@@ -825,7 +1231,7 @@
       "Max Health 200",
       "Cooldown Reduction 10%"
     ],
-    "passive": "Adaptive Stat: +35 Strength or +60 Intelligence (based on highest item stat). Ability Used: \u2022 Next Attack deals +60 True Damage to enemies within 1.92m of the target \u2022 Hit this Attack: -.66s Cooldowns, +60 Heal Requires Level 20.",
+    "passive": "Adaptive Stat: +35 Strength or +60 Intelligence (based on highest item stat). Ability Used: • Next Attack deals +60 True Damage to enemies within 1.92m of the target • Hit this Attack: -.66s Cooldowns, +60 Heal Requires Level 20.",
     "categoriesSeen": [
       "Starter"
     ],
@@ -880,6 +1286,26 @@
     "sampleCount": 2
   },
   {
+    "name": "Captain's Ring",
+    "displayName": "Captain's Ring",
+    "slug": "captains-ring",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/captains-ring",
+    "pageTitle": "Captain's Ring",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/captains-ring?v=dc672cae",
+    "summary": "",
+    "cost": 800,
+    "itemType": "",
+    "tags": [],
+    "stats": [
+      "Physical Protection 10",
+      "Cooldown Reduction 10%"
+    ],
+    "passive": "",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Captains Ring",
     "displayName": "Captain's Ring",
     "slug": "captains-ring",
@@ -902,6 +1328,30 @@
     "sampleCount": 9
   },
   {
+    "name": "Chandra's Grace",
+    "displayName": "Chandra's Grace",
+    "slug": "chandras-grace",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/chandras-grace",
+    "pageTitle": "Chandra's Grace",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/chandras-grace?v=835caf2c",
+    "summary": "",
+    "cost": 2300,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Max Health 350",
+      "Cooldown Reduction 20%",
+      "Plating 5"
+    ],
+    "passive": "Every 30s: Lowest Health ally within 8.8m gain: • +20 Health Regen • +20 Mana Regen • 0.2s off Cooldowns, every 0.2s for 3s Buff lasts 3s. During Moonlight Phase: On trigger: • You also gain the Buff",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Chandras Grace",
     "displayName": "Chandra's Grace",
     "slug": "chandras-grace",
@@ -921,7 +1371,7 @@
       "Cooldown Reduction 20%",
       "Plating 5"
     ],
-    "passive": "Every 30s: Lowest Health ally within 8.8m gain: \u2022 +20 Health Regen \u2022 +20 Mana Regen \u2022 0.2s off Cooldowns, every 0.2s for 3s Buff lasts 3s. During Moonlight Phase: On trigger: \u2022 You also gain the Buff",
+    "passive": "Every 30s: Lowest Health ally within 8.8m gain: • +20 Health Regen • +20 Mana Regen • 0.2s off Cooldowns, every 0.2s for 3s Buff lasts 3s. During Moonlight Phase: On trigger: • You also gain the Buff",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -950,7 +1400,54 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 109
+    "sampleCount": 115
+  },
+  {
+    "name": "Chronos' Pendant",
+    "displayName": "Chronos' Pendant",
+    "slug": "chronos-pendant",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/chronos-pendant",
+    "pageTitle": "Chronos' Pendant",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/chronos-pendant?v=6e496a2a",
+    "summary": "",
+    "cost": 2400,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Intelligence 55",
+      "Cooldown Reduction 25%"
+    ],
+    "passive": "Every 10s: -1s Ability Cooldowns.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Circe's Hexstone",
+    "displayName": "Circe's Hexstone",
+    "slug": "circes-hexstone",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/circes-hexstone",
+    "pageTitle": "Circe's Hexstone",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/circes-hexstone?v=741ac103",
+    "summary": "",
+    "cost": 2750,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Max Health 250",
+      "Health Regen 4",
+      "Cooldown Reduction 10%"
+    ],
+    "passive": "On Use: • Become Polymorphed • Dash Forward, dealing 50 Physical Damage • +CC Immune • +60 Physical and Magical Protection On Enemy God Hit: • Knock Up • Bonus Damage equal to 10% of Current Health • -40s Cooldown Cooldown: 120s",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Circes Hexstone",
@@ -972,11 +1469,32 @@
       "Health Regen 4",
       "Cooldown Reduction 10%"
     ],
-    "passive": "On Use: \u2022 Become Polymorphed \u2022 Dash Forward, dealing 50 Physical Damage \u2022 +CC Immune \u2022 +60 Physical and Magical Protection On Enemy God Hit: \u2022 Knock Up \u2022 Bonus Damage equal to 10% of Current Health \u2022 -40s Cooldown Cooldown: 120s",
+    "passive": "On Use: • Become Polymorphed • Dash Forward, dealing 50 Physical Damage • +CC Immune • +60 Physical and Magical Protection On Enemy God Hit: • Knock Up • Bonus Damage equal to 10% of Current Health • -40s Cooldown Cooldown: 120s",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 4
+  },
+  {
+    "name": "Circle of Protection",
+    "displayName": "Circle of Protection",
+    "slug": "circle-of-protection",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/circle-of-protection",
+    "pageTitle": "Circle of Protection",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/circle-of-protection?v=6b6e9139",
+    "summary": "",
+    "cost": 750,
+    "itemType": "Tier 2",
+    "tags": [
+      "Tier 2"
+    ],
+    "stats": [
+      "Magical Protection 22"
+    ],
+    "passive": "",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Circlet",
@@ -1002,6 +1520,71 @@
     "sampleCount": 1
   },
   {
+    "name": "Cleric's Cloak",
+    "displayName": "Cleric's Cloak",
+    "slug": "clerics-cloak",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/clerics-cloak",
+    "pageTitle": "Cleric's Cloak",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/clerics-cloak?v=073dda46",
+    "summary": "",
+    "cost": 800,
+    "itemType": "Tier 2",
+    "tags": [
+      "Tier 2"
+    ],
+    "stats": [
+      "Crowd Control Reduction Item 5"
+    ],
+    "passive": "",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Clerics Cloak",
+    "displayName": "Cleric's Cloak",
+    "slug": "clerics-cloak",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/clerics-cloak",
+    "pageTitle": "Cleric's Cloak",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/clerics-cloak?v=073dda46",
+    "summary": "",
+    "cost": 800,
+    "itemType": "Tier 2",
+    "tags": [
+      "Tier 2"
+    ],
+    "stats": [
+      "Crowd Control Reduction Item 5"
+    ],
+    "passive": "",
+    "categoriesSeen": [
+      "Tier 2"
+    ],
+    "sampleCount": 2
+  },
+  {
+    "name": "Combat Boots",
+    "displayName": "Combat Boots",
+    "slug": "combat-boots",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/combat-boots",
+    "pageTitle": "Combat Boots",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/combat-boots?v=27c5e18b",
+    "summary": "",
+    "cost": 900,
+    "itemType": "Tier 2",
+    "tags": [
+      "Tier 2"
+    ],
+    "stats": [
+      "Pathfinding Item 8"
+    ],
+    "passive": "",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Conduit Gem",
     "displayName": "Conduit Gem",
     "slug": "conduit-gem",
@@ -1023,7 +1606,7 @@
     "categoriesSeen": [
       "Starter"
     ],
-    "sampleCount": 104
+    "sampleCount": 110
   },
   {
     "name": "Contagion",
@@ -1044,7 +1627,7 @@
       "Max Health 425",
       "Health Regen 6"
     ],
-    "passive": "Damaged by an Attack or Ability: Apply +1 Stack of Contagion (1 per hit) \u2022 If an enemy Lifesteals 100 Health from you: Apply +5 Stacks Attack or Hard Crowd Control an afflicted enemy: \u2022 Deal Magical Damage = 1% Max Health per stack in a 4m radius \u2022 Remove the Stacks",
+    "passive": "Damaged by an Attack or Ability: Apply +1 Stack of Contagion (1 per hit) • If an enemy Lifesteals 100 Health from you: Apply +5 Stacks Attack or Hard Crowd Control an afflicted enemy: • Deal Magical Damage = 1% Max Health per stack in a 4m radius • Remove the Stacks",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -1053,7 +1636,7 @@
   {
     "name": "Crusher",
     "displayName": "The Crusher",
-    "slug": "crusher",
+    "slug": "the-crusher",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/the-crusher",
     "pageTitle": "The Crusher",
@@ -1069,7 +1652,7 @@
       "Strength 55",
       "Magical Penetration Flat 10"
     ],
-    "passive": "Ability Hit: +Physical Damage. \u2022 Damage = 35% of your Strength \u2022 Damage is dealt over 1s \u2022 Subsequent hits on the same target deal 33% bonus Damage, over 3s.",
+    "passive": "Ability Hit: +Physical Damage. • Damage = 35% of your Strength • Damage is dealt over 1s • Subsequent hits on the same target deal 33% bonus Damage, over 3s.",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -1136,7 +1719,7 @@
       "Inhand Power 25",
       "Attack Speed 25%"
     ],
-    "passive": "On Use: \u2022 +10 (+4 per Level) Attack Damage \u2022 +20% (+1% per Level) Attack Speed Buff lasts 6 Attacks. Killing a God refreshes Cooldown. Cooldown: 15s",
+    "passive": "On Use: • +10 (+4 per Level) Attack Damage • +20% (+1% per Level) Attack Speed Buff lasts 6 Attacks. Killing a God refreshes Cooldown. Cooldown: 15s",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -1162,7 +1745,7 @@
       "Echo Item 20",
       "Cooldown Reduction 10%"
     ],
-    "passive": "Adaptive Stat: +35 Strength or +50 Intelligence (based on highest item stat). Each time you Echo hitting a God or Jungle Boss: Gain +1 Stack of Rhythm \u2022 Each Stack of Rhythm gives +2% Movement Speed for 5s up to 5 stacks. At 5 Stacks of Rhythm: Remove all stacks and gain Harmonized \u2022 Harmonized gives +15% Movement Speed for 10s. \u2022 While Harmonized you cannot gain Rhythm",
+    "passive": "Adaptive Stat: +35 Strength or +50 Intelligence (based on highest item stat). Each time you Echo hitting a God or Jungle Boss: Gain +1 Stack of Rhythm • Each Stack of Rhythm gives +2% Movement Speed for 5s up to 5 stacks. At 5 Stacks of Rhythm: Remove all stacks and gain Harmonized • Harmonized gives +15% Movement Speed for 10s. • While Harmonized you cannot gain Rhythm",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -1212,16 +1795,38 @@
       "Intelligence 40",
       "Crit Chance 20"
     ],
-    "passive": "On Use: \u2022 Lose all Intelligence. Gain 66% of it as Strength. \u2022 +25% Crit Chance Buff lasts 6s. Cooldown: 45s",
+    "passive": "On Use: • Lose all Intelligence. Gain 66% of it as Strength. • +25% Crit Chance Buff lasts 6s. Cooldown: 45s",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 4
   },
   {
+    "name": "Death's Embrace",
+    "displayName": "Death's Embrace",
+    "slug": "deaths-embrace",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/deaths-embrace",
+    "pageTitle": "Death's Embrace",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/deaths-embrace?v=5d8a25d1",
+    "summary": "",
+    "cost": 2150,
+    "itemType": "Starter",
+    "tags": [
+      "Starter"
+    ],
+    "stats": [
+      "Max Health 150",
+      "Lifesteal 5%"
+    ],
+    "passive": "Adaptive Stat: +40 Strength or +70 Intelligence (based on highest item stat). Attack Hit: • +1% Max Health Heal • +2% Max Mana Restore • -0.33s Non Ultimate Cooldowns Requires Level 20.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Death's Toll",
     "displayName": "Death's Toll",
-    "slug": "death-ss-toll",
+    "slug": "deaths-toll",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/deaths-toll",
     "pageTitle": "Death's Toll",
@@ -1235,7 +1840,7 @@
     "stats": [
       "Max Health 100"
     ],
-    "passive": "Adaptive Stat: +15 Strength or +25 Intelligence (based on highest item stat). Attack Hit: \u2022 +2 (+0.3% Max Health) Heal \u2022 +1 (+0.1% Max Mana) Restore Requires Level 20 to upgrade.",
+    "passive": "Adaptive Stat: +15 Strength or +25 Intelligence (based on highest item stat). Attack Hit: • +2 (+0.3% Max Health) Heal • +1 (+0.1% Max Mana) Restore Requires Level 20 to upgrade.",
     "categoriesSeen": [
       "Starter"
     ],
@@ -1283,16 +1888,16 @@
     "stats": [
       "Max Health 100"
     ],
-    "passive": "Adaptive Stat: +15 Strength or +25 Intelligence (based on highest item stat). Attack Hit: \u2022 +2 (+0.3% Max Health) Heal \u2022 +1 (+0.1% Max Mana) Restore Requires Level 20 to upgrade.",
+    "passive": "Adaptive Stat: +15 Strength or +25 Intelligence (based on highest item stat). Attack Hit: • +2 (+0.3% Max Health) Heal • +1 (+0.1% Max Mana) Restore Requires Level 20 to upgrade.",
     "categoriesSeen": [
       "Starter"
     ],
-    "sampleCount": 52
+    "sampleCount": 55
   },
   {
     "name": "Deaths Toll Upgrade",
     "displayName": "Death's Embrace",
-    "slug": "deaths-toll-upgrade",
+    "slug": "deaths-embrace",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/deaths-embrace",
     "pageTitle": "Death's Embrace",
@@ -1307,11 +1912,11 @@
       "Max Health 150",
       "Lifesteal 5%"
     ],
-    "passive": "Adaptive Stat: +40 Strength or +70 Intelligence (based on highest item stat). Attack Hit: \u2022 +1% Max Health Heal \u2022 +2% Max Mana Restore \u2022 -0.33s Non Ultimate Cooldowns Requires Level 20.",
+    "passive": "Adaptive Stat: +40 Strength or +70 Intelligence (based on highest item stat). Attack Hit: • +1% Max Health Heal • +2% Max Mana Restore • -0.33s Non Ultimate Cooldowns Requires Level 20.",
     "categoriesSeen": [
       "Starter"
     ],
-    "sampleCount": 77
+    "sampleCount": 78
   },
   {
     "name": "Demon Blade",
@@ -1340,9 +1945,9 @@
     "sampleCount": 53
   },
   {
-    "name": "Devours Gloves",
+    "name": "Devourer's Gauntlet",
     "displayName": "Devourer's Gauntlet",
-    "slug": "devours-gloves",
+    "slug": "devourers-gauntlet",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/devourers-gauntlet",
     "pageTitle": "Devourer's Gauntlet",
@@ -1358,7 +1963,30 @@
       "Strength 35",
       "Lifesteal 5%"
     ],
-    "passive": "Kill Minion or Jungle Monsters: +1 Stack. Each Stack grants: \u2022 +.4 Strength \u2022 +0.05% Lifesteal At 75 Stacks, gain: \u2022 +10 Strength \u2022 +3% Lifesteal \u2022 Continue to stack more Slowly; 10 Minion Kills: +1 Stack, Jungle Boss Kill or Assist: +4 Stacks",
+    "passive": "Kill Minion or Jungle Monsters: +1 Stack. Each Stack grants: • +.4 Strength • +0.05% Lifesteal At 75 Stacks, gain: • +10 Strength • +3% Lifesteal • Continue to stack more Slowly; 10 Minion Kills: +1 Stack, Jungle Boss Kill or Assist: +4 Stacks",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Devours Gloves",
+    "displayName": "Devourer's Gauntlet",
+    "slug": "devourers-gauntlet",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/devourers-gauntlet",
+    "pageTitle": "Devourer's Gauntlet",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/devourers-gauntlet?v=034e3cf9",
+    "summary": "",
+    "cost": 2500,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Strength 35",
+      "Lifesteal 5%"
+    ],
+    "passive": "Kill Minion or Jungle Monsters: +1 Stack. Each Stack grants: • +.4 Strength • +0.05% Lifesteal At 75 Stacks, gain: • +10 Strength • +3% Lifesteal • Continue to stack more Slowly; 10 Minion Kills: +1 Stack, Jungle Boss Kill or Assist: +4 Stacks",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -1382,11 +2010,11 @@
     "stats": [
       "Intelligence 85"
     ],
-    "passive": "On God Damaged: Apply 25% Healing Reduction for 5s and trigger Chain Lighting when off cooldown Chain Lighting: \u2022 Magical Damage = 40 + 20% Intelligence \u2022 Hits enemy and up to 4 nearby enemies within 4.8m \u2022 Can hit the same target more than once and applies the 25% Healing Reduction Cooldown: 15s. Healing Reduction does not stack with other similar effects.",
+    "passive": "On God Damaged: Apply 25% Healing Reduction for 5s and trigger Chain Lighting when off cooldown Chain Lighting: • Magical Damage = 40 + 20% Intelligence • Hits enemy and up to 4 nearby enemies within 4.8m • Can hit the same target more than once and applies the 25% Healing Reduction Cooldown: 15s. Healing Reduction does not stack with other similar effects.",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 68
+    "sampleCount": 71
   },
   {
     "name": "Dominance",
@@ -1409,11 +2037,11 @@
       "Mana Regen 4",
       "Attack Speed 15%"
     ],
-    "passive": "Basic Attacks gain an additional +20% Penetration \u2022 This effect ignores the Penetration cap",
+    "passive": "Basic Attacks gain an additional +20% Penetration • This effect ignores the Penetration cap",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 4
+    "sampleCount": 6
   },
   {
     "name": "Doom Orb",
@@ -1440,7 +2068,7 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 19
+    "sampleCount": 22
   },
   {
     "name": "Doublet of Binding",
@@ -1469,9 +2097,9 @@
     "sampleCount": 1
   },
   {
-    "name": "Draconic Scales",
+    "name": "Draconic Scale",
     "displayName": "Draconic Scale",
-    "slug": "draconic-scales",
+    "slug": "draconic-scale",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/draconic-scale",
     "pageTitle": "Draconic Scale",
@@ -1488,11 +2116,58 @@
       "Magical Protection Item 30",
       "Max Health 300"
     ],
-    "passive": "Damaged by a God: \u2022 Gain 4 Protections against that God's damage type \u2022 Stacks last 1.5s (max 7) \u2022 Stacks decay 1 at a time",
+    "passive": "Damaged by a God: • Gain 4 Protections against that God's damage type • Stacks last 1.5s (max 7) • Stacks decay 1 at a time",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Draconic Scales",
+    "displayName": "Draconic Scale",
+    "slug": "draconic-scale",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/draconic-scale",
+    "pageTitle": "Draconic Scale",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/draconic-scale?v=63ba5b15",
+    "summary": "",
+    "cost": 2700,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Physical Protection Item 30",
+      "Magical Protection Item 30",
+      "Max Health 300"
+    ],
+    "passive": "Damaged by a God: • Gain 4 Protections against that God's damage type • Stacks last 1.5s (max 7) • Stacks decay 1 at a time",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 47
+    "sampleCount": 49
+  },
+  {
+    "name": "Dreamer's Idol",
+    "displayName": "Dreamer's Idol",
+    "slug": "dreamers-idol",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/dreamers-idol",
+    "pageTitle": "Dreamer's Idol",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/dreamers-idol?v=6381e2fc",
+    "summary": "",
+    "cost": 3500,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Intelligence 130",
+      "Magical Penetration 10%"
+    ],
+    "passive": "On Use: • +25% Intelligence • Become Immune to Displacement Buff lasts 10s. Cooldown: 120s",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Dreamers Idol",
@@ -1513,11 +2188,53 @@
       "Intelligence 130",
       "Magical Penetration 10%"
     ],
-    "passive": "On Use: \u2022 +25% Intelligence \u2022 Become Immune to Displacement Buff lasts 10s. Cooldown: 120s",
+    "passive": "On Use: • +25% Intelligence • Become Immune to Displacement Buff lasts 10s. Cooldown: 120s",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 1
+  },
+  {
+    "name": "Dwarven Plate",
+    "displayName": "Dwarven Plate",
+    "slug": "dwarven-plate",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/dwarven-plate",
+    "pageTitle": "Dwarven Plate",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/dwarven-plate?v=fe5d3333",
+    "summary": "",
+    "cost": 2800,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Physical Protection Item 35",
+      "Magical Protection Item 35"
+    ],
+    "passive": "+35 bonus Physical Protections from items +15 bonus Magical Protections from items On Use: Switch which Protection is increased more. Cooldown: 30s",
+    "categoriesSeen": [
+      "Tier 3"
+    ],
+    "sampleCount": 26
+  },
+  {
+    "name": "Efficiency Mod",
+    "displayName": "Efficiency Mod",
+    "slug": "efficiency-mod",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/efficiency-mod",
+    "pageTitle": "Efficiency Mod",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/efficiency-mod?v=df212b2c",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "Do not gain access to the Thumper ability, instead your passive grants 20 CDR and 5 Intelligence + 1 Per Level, in addition to the other effects when triggered. Set 1 - You can only have one Mod from each set. Can be built at level 1",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Engraved Guard",
@@ -1544,9 +2261,9 @@
     "sampleCount": 17
   },
   {
-    "name": "erosbow",
+    "name": "Eros' Bow",
     "displayName": "Eros' Bow",
-    "slug": "erosbow",
+    "slug": "eros-bow",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/eros-bow",
     "pageTitle": "Eros' Bow",
@@ -1562,7 +2279,30 @@
       "Max Health 300",
       "Attack Speed 30%"
     ],
-    "passive": "On Use: Mark an ally god \u2022 Only one ally may be Marked at a time \u2022 Mark breaks if ally is more than 20m away On Attack Hit: \u2022 Heal the Marked ally for +2% of your Max Health Cooldown: 1s",
+    "passive": "On Use: Mark an ally god • Only one ally may be Marked at a time • Mark breaks if ally is more than 20m away On Attack Hit: • Heal the Marked ally for +2% of your Max Health Cooldown: 1s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "erosbow",
+    "displayName": "Eros' Bow",
+    "slug": "eros-bow",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/eros-bow",
+    "pageTitle": "Eros' Bow",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/eros-bow?v=adedb585",
+    "summary": "",
+    "cost": 2300,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Max Health 300",
+      "Attack Speed 30%"
+    ],
+    "passive": "On Use: Mark an ally god • Only one ally may be Marked at a time • Mark breaks if ally is more than 20m away On Attack Hit: • Heal the Marked ally for +2% of your Max Health Cooldown: 1s",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -1588,7 +2328,7 @@
       "Magical Protection 20",
       "Max Health 250"
     ],
-    "passive": "-30% Shields applied to enemy Gods within 11.2m. When this occurs: +10% of your Physical and Magical Protections for 6s. \u2022 Can stack up to 2 times",
+    "passive": "-30% Shields applied to enemy Gods within 11.2m. When this occurs: +10% of your Physical and Magical Protections for 6s. • Can stack up to 2 times",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -1614,7 +2354,7 @@
       "Max Health 250",
       "Crowd Control Reduction Item 15"
     ],
-    "passive": "Ability Hit a God: Steal 6% Max Health and Mana from a single target \u2022 Triggers once per Ability \u2022 Stacks last 60s \u2022 Stacks decay 1 at a time",
+    "passive": "Ability Hit a God: Steal 6% Max Health and Mana from a single target • Triggers once per Ability • Stacks last 60s • Stacks decay 1 at a time",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -1662,11 +2402,35 @@
       "Max Health 350",
       "Cooldown Reduction 15%"
     ],
-    "passive": "Adaptive Stat: +35 Strength or +50 Intelligence (based on highest item stat). On Use: Spawn a Watchful Eye that lasts 40s \u2022 Enemy enters range: Fires a seeking projectile: \u2022 Magical Damage equal to 15% of Enemy Max Health \u2022 Reveal and +25% Slow for 2.5s Cooldown: 40s During Moonlight Phase: \u2022 Each time you deal damage to a god: -2s Cooldown of this item (Once per target, per Attack or Ability).",
+    "passive": "Adaptive Stat: +35 Strength or +50 Intelligence (based on highest item stat). On Use: Spawn a Watchful Eye that lasts 40s • Enemy enters range: Fires a seeking projectile: • Magical Damage equal to 15% of Enemy Max Health • Reveal and +25% Slow for 2.5s Cooldown: 40s During Moonlight Phase: • Each time you deal damage to a god: -2s Cooldown of this item (Once per target, per Attack or Ability).",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 5
+  },
+  {
+    "name": "Eye of Providence",
+    "displayName": "Eye of Providence",
+    "slug": "eye-of-providence",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/eye-of-providence",
+    "pageTitle": "Eye of Providence",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/eye-of-providence?v=9891ed47",
+    "summary": "",
+    "cost": 2300,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Physical Protection Item 30",
+      "Magical Protection Item 30",
+      "Max Health 250"
+    ],
+    "passive": "Destroy a Ward: +50 Gold Open Consumable Slot: Gain a Sentry Ward once every 120s • If there is no open consumable slot, gain a Sentry Ward and restart timer the next time one is open. (Max 2 Wards can be Placed)",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Eye of the Storm",
@@ -1688,7 +2452,7 @@
       "Health Regen 4",
       "Echo Item 20"
     ],
-    "passive": "Each time you Echo: Gain +1 Stack At 20 Stacks Next time you Echo: \u2022 Open a storm within 4.8m, dealing Physical Damage every .5s for 3s. \u2022 Damage = 10 + 15% of your Strength \u2022 Storm will only spawn when hitting a God or Jungle Boss",
+    "passive": "Each time you Echo: Gain +1 Stack At 20 Stacks Next time you Echo: • Open a storm within 4.8m, dealing Physical Damage every .5s for 3s. • Damage = 10 + 15% of your Strength • Storm will only spawn when hitting a God or Jungle Boss",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -1716,7 +2480,33 @@
     "categoriesSeen": [
       "Tier 2"
     ],
-    "sampleCount": 3
+    "sampleCount": 6
+  },
+  {
+    "name": "Freya's Tears",
+    "displayName": "Freya's Tears",
+    "slug": "freyas-tears",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/freyas-tears",
+    "pageTitle": "Freya's Tears",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/freyas-tears?v=45cda571",
+    "summary": "",
+    "cost": 2600,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Physical Protection Item 30",
+      "Magical Protection Item 35",
+      "Cooldown Reduction 20%"
+    ],
+    "passive": "On 25% of your Health Lost: • +15 Physical and Magical Protections for 5s • Can stack up to 2 times",
+    "categoriesSeen": [
+      "Tier 3"
+    ],
+    "sampleCount": 35
   },
   {
     "name": "Gauntlet of Thebes",
@@ -1737,11 +2527,11 @@
       "Max Health 200",
       "Max Mana 150"
     ],
-    "passive": "Assist a Minion: +1 Stack. God Kill or Assist: +5 Stacks. Stacks grants +15 Max Health (max 40 Stacks). At 40 Stacks, Item evolves and gains: \u2022 +100 Max Health \u2022 +10 Physical and Magical Protection",
+    "passive": "Assist a Minion: +1 Stack. God Kill or Assist: +5 Stacks. Stacks grants +15 Max Health (max 40 Stacks). At 40 Stacks, Item evolves and gains: • +100 Max Health • +10 Physical and Magical Protection",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 21
+    "sampleCount": 22
   },
   {
     "name": "Gem",
@@ -1764,7 +2554,7 @@
     "categoriesSeen": [
       "Tier 1"
     ],
-    "sampleCount": 10
+    "sampleCount": 11
   },
   {
     "name": "Gem of Focus",
@@ -1817,6 +2607,31 @@
     "sampleCount": 4
   },
   {
+    "name": "Genji's Guard",
+    "displayName": "Genji's Guard",
+    "slug": "genjis-guard",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/genjis-guard",
+    "pageTitle": "Genji's Guard",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/genjis-guard?v=033367fc",
+    "summary": "",
+    "cost": 2350,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Magical Protection Item 55",
+      "Max Mana 200",
+      "Mana Regen 5",
+      "Cooldown Reduction 15%"
+    ],
+    "passive": "Hit by Magical Ability Damage: -3s Cooldowns. Cooldown: 20s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Genjis Guard",
     "displayName": "Genji's Guard",
     "slug": "genjis-guard",
@@ -1841,12 +2656,34 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 163
+    "sampleCount": 168
   },
   {
-    "name": "Gladiator Shield",
+    "name": "Gilded Arrow",
+    "displayName": "Gilded Arrow",
+    "slug": "gilded-arrow",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/gilded-arrow",
+    "pageTitle": "Gilded Arrow",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/gilded-arrow?v=ec08741b",
+    "summary": "",
+    "cost": 650,
+    "itemType": "Starter",
+    "tags": [
+      "Starter"
+    ],
+    "stats": [
+      "Inhand Power 20",
+      "Attack Speed 10%"
+    ],
+    "passive": "Every 10s: Mark the highest Health enemy minion or jungle monster within 12.8m. • If you land the killing blow: • +3 Bonus Gold • +15% Attack Speed for 8s • +30 Mana Requires Level 20 to upgrade.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Gladiator's Shield",
     "displayName": "Gladiator's Shield",
-    "slug": "gladiator-shield",
+    "slug": "gladiators-shield",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/gladiators-shield",
     "pageTitle": "Gladiator's Shield",
@@ -1863,11 +2700,11 @@
       "Max Health 200",
       "Cooldown Reduction 10%"
     ],
-    "passive": "Abilities deal bonus Physical Damage. \u2022 Damage = +10 + 40% of your Item Protections Triggers once per Ability, per god.",
+    "passive": "Abilities deal bonus Physical Damage. • Damage = +10 + 40% of your Item Protections Triggers once per Ability, per god.",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 98
+    "sampleCount": 105
   },
   {
     "name": "Glorious Pridwen",
@@ -1889,11 +2726,36 @@
       "Magical Protection 20",
       "Cooldown Reduction 12%"
     ],
-    "passive": "On Use: \u2022 Explode (4.8m radius): \u2022 Deal Magical Damage (40% of Protections) \u2022 Gain a Shield (125% of Protections) for 5s. \u2022 When the Shield expires or breaks: Explode again: Deal Magic Damage (70% of your Protections). Cooldown: 45s",
+    "passive": "On Use: • Explode (4.8m radius): • Deal Magical Damage (40% of Protections) • Gain a Shield (125% of Protections) for 5s. • When the Shield expires or breaks: Explode again: Deal Magic Damage (70% of your Protections). Cooldown: 45s",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 5
+  },
+  {
+    "name": "Gluttonous Grimoire",
+    "displayName": "Gluttonous Grimoire",
+    "slug": "gluttonous-grimoire",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/gluttonous-grimoire",
+    "pageTitle": "Gluttonous Grimoire",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/gluttonous-grimoire?v=07f6950a",
+    "summary": "",
+    "cost": 2600,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Intelligence 55",
+      "Max Health 150",
+      "Lifesteal 7.5%",
+      "Magical Penetration 10%"
+    ],
+    "passive": "Store 25% of your Lifesteal healing as bonus Magical Damage on your next Attack. • If at full Health: Store 40% instead • Stored damage is capped to 33% of your Max Health",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Golden Blade",
@@ -1916,16 +2778,16 @@
       "Max Health 200",
       "Attack Speed 20%"
     ],
-    "passive": "Attacks deal bonus Physical Damage. \u2022 Damage = +10 + 20% of your Item Protections \u2022 Damages all Enemies within 2.5m",
+    "passive": "Attacks deal bonus Physical Damage. • Damage = +10 + 20% of your Item Protections • Damages all Enemies within 2.5m",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 32
+    "sampleCount": 34
   },
   {
     "name": "Hand of the Abyss",
     "displayName": "Bracer of The Abyss",
-    "slug": "hand-of-the-abyss",
+    "slug": "bracer-of-the-abyss",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/bracer-of-the-abyss",
     "pageTitle": "Bracer of The Abyss",
@@ -1970,7 +2832,7 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 155
+    "sampleCount": 158
   },
   {
     "name": "Heartseeker",
@@ -1993,14 +2855,14 @@
       "Mana Regen 2",
       "Magical Penetration 10%"
     ],
-    "passive": "Ability Hit: +%Health Physical Damage. \u2022 Damage = 2% of your Strength, as a % of the target's Max Health.",
+    "passive": "Ability Hit: +%Health Physical Damage. • Damage = 2% of your Strength, as a % of the target's Max Health.",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 65
   },
   {
-    "name": "Heartwood CHarm",
+    "name": "Heartwood Charm",
     "displayName": "Heartwood Charm",
     "slug": "heartwood-charm",
     "source": "smitebrain",
@@ -2024,6 +2886,30 @@
       "Tier 3"
     ],
     "sampleCount": 4
+  },
+  {
+    "name": "Helm of Darkness",
+    "displayName": "Helm of Darkness",
+    "slug": "helm-of-darkness",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/helm-of-darkness",
+    "pageTitle": "Helm of Darkness",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/helm-of-darkness?v=2ef616b6",
+    "summary": "",
+    "cost": 2700,
+    "itemType": "Hybrid Tier 3",
+    "tags": [
+      "Hybrid",
+      "Tier 3"
+    ],
+    "stats": [
+      "Intelligence 40",
+      "Physical Protection 20",
+      "Magical Protection 25"
+    ],
+    "passive": "On Use: Become Stealthed and pass through players and walls for 6s. Cannot use while Casting. Cooldown: 90s During Moonlight Phase: • While Stealthed: +15% Movement Speed • Pass through an enemy god: • Physical Damage equal to 15% of your Max Health",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Helm of Radiance",
@@ -2069,7 +2955,7 @@
       "Magical Protection Item 45",
       "Max Health 250"
     ],
-    "passive": "+1 Gold per second. When an ally within 8.8m is hit by Hard Crowd Control: \u2022 Give them a Shield equal to 50 +10% of your Max Health Cooldown: 15s Requires Level 20.",
+    "passive": "+1 Gold per second. When an ally within 8.8m is hit by Hard Crowd Control: • Give them a Shield equal to 50 +10% of your Max Health Cooldown: 15s Requires Level 20.",
     "categoriesSeen": [
       "Starter"
     ],
@@ -2095,7 +2981,7 @@
       "Max Health 350",
       "Health Regen 4"
     ],
-    "passive": "On Use: Reflect: \u2022 40% of pre-mitigated Attack Damage \u2022 20% of pre-mitigated Ability Damage \u2022 Damage is Reflected as Physical Damage Buff lasts 4s. Cooldown: 60s",
+    "passive": "On Use: Reflect: • 40% of pre-mitigated Attack Damage • 20% of pre-mitigated Ability Damage • Damage is Reflected as Physical Damage Buff lasts 4s. Cooldown: 60s",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -2104,7 +2990,7 @@
   {
     "name": "Hideofthe Nemean Lion",
     "displayName": "Hide of the Nemean Lion",
-    "slug": "hideofthe-nemean-lion",
+    "slug": "hide-of-the-nemean-lion",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/hide-of-the-nemean-lion",
     "pageTitle": "Hide of the Nemean Lion",
@@ -2121,11 +3007,75 @@
       "Max Health 350",
       "Health Regen 4"
     ],
-    "passive": "On Use: Reflect: \u2022 40% of pre-mitigated Attack Damage \u2022 20% of pre-mitigated Ability Damage \u2022 Damage is Reflected as Physical Damage Buff lasts 4s. Cooldown: 60s",
+    "passive": "On Use: Reflect: • 40% of pre-mitigated Attack Damage • 20% of pre-mitigated Ability Damage • Damage is Reflected as Physical Damage Buff lasts 4s. Cooldown: 60s",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 28
+    "sampleCount": 29
+  },
+  {
+    "name": "Hooked Sword",
+    "displayName": "Hooked Sword",
+    "slug": "hooked-sword",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/hooked-sword",
+    "pageTitle": "Hooked Sword",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/hooked-sword?v=b8856e7b",
+    "summary": "",
+    "cost": 1000,
+    "itemType": "Tier 2",
+    "tags": [
+      "Tier 2"
+    ],
+    "stats": [
+      "Crit Chance 15"
+    ],
+    "passive": "",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Hunter's Bow",
+    "displayName": "Hunter's Bow",
+    "slug": "hunters-bow",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/hunters-bow",
+    "pageTitle": "Hunter's Bow",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/hunters-bow?v=054d1269",
+    "summary": "",
+    "cost": 750,
+    "itemType": "Tier 2",
+    "tags": [
+      "Tier 2"
+    ],
+    "stats": [
+      "Attack Speed 15%"
+    ],
+    "passive": "",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Hunter's Cowl",
+    "displayName": "Hunter's Cowl",
+    "slug": "hunters-cowl",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/hunters-cowl",
+    "pageTitle": "Hunter's Cowl",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/hunters-cowl?v=6bd4f7b6",
+    "summary": "",
+    "cost": 2100,
+    "itemType": "Starter",
+    "tags": [
+      "Starter"
+    ],
+    "stats": [
+      "Lifesteal 5%",
+      "Mana Regen 2.5"
+    ],
+    "passive": "Adaptive Stat: +55 Strength or +80 Intelligence (based on highest item stat). Within 8.8m of a God: +30% Attack Speed, +5% Lifesteal and +15% Movement Speed. Alone: +10% Movement Speed, +15% Attack Speed and +2.5% Lifesteal. Requires Level 20.",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Hunters Bow",
@@ -2148,7 +3098,7 @@
     "categoriesSeen": [
       "Tier 2"
     ],
-    "sampleCount": 45
+    "sampleCount": 46
   },
   {
     "name": "Hunters Cowl",
@@ -2172,7 +3122,31 @@
     "categoriesSeen": [
       "Starter"
     ],
-    "sampleCount": 38
+    "sampleCount": 39
+  },
+  {
+    "name": "Hussar's Wings",
+    "displayName": "Hussar's Wings",
+    "slug": "hussars-wings",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/hussars-wings",
+    "pageTitle": "Hussar's Wings",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/hussars-wings?v=49ef8806",
+    "summary": "",
+    "cost": 3500,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Physical Protection Item 35",
+      "Magical Protection Item 35",
+      "Max Health 500"
+    ],
+    "passive": "You are Immune to Slows.",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Hussars Wings",
@@ -2201,6 +3175,31 @@
     "sampleCount": 5
   },
   {
+    "name": "Hydra's Lament",
+    "displayName": "Hydra's Lament",
+    "slug": "hydras-lament",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/hydras-lament",
+    "pageTitle": "Hydra's Lament",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/hydras-lament?v=a35fc33e",
+    "summary": "",
+    "cost": 2450,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Strength 45",
+      "Max Mana 200",
+      "Mana Regen 4",
+      "Cooldown Reduction 10%"
+    ],
+    "passive": "Ability Used: Bonus Damage on your next successful Attack. • +30% for Melee or +20% for Ranged Buff lasts 8s.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Hydras Lament",
     "displayName": "Hydra's Lament",
     "slug": "hydras-lament",
@@ -2221,11 +3220,30 @@
       "Mana Regen 4",
       "Cooldown Reduction 10%"
     ],
-    "passive": "Ability Used: Bonus Damage on your next successful Attack. \u2022 +30% for Melee or +20% for Ranged Buff lasts 8s.",
+    "passive": "Ability Used: Bonus Damage on your next successful Attack. • +30% for Melee or +20% for Ranged Buff lasts 8s.",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 70
+  },
+  {
+    "name": "Ileke Necklace",
+    "displayName": "Ileke Necklace",
+    "slug": "ileke-necklace",
+    "source": "local",
+    "sourceUrl": "",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "",
+    "error": "404 https://smitebrain.com/items/ileke-necklace",
+    "imageUrl": "https://trackercdn.com/cdn/tracker.gg/smite2/images/items/ileke-necklace.jpg",
+    "categoriesSeen": [
+      "Tier 2"
+    ],
+    "sampleCount": 1
   },
   {
     "name": "Infused Axe",
@@ -2255,7 +3273,7 @@
   {
     "name": "Items T3 Omen Drum",
     "displayName": "Omen Drum",
-    "slug": "items-t3-omen-drum",
+    "slug": "omen-drum",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/omen-drum",
     "pageTitle": "Omen Drum",
@@ -2270,16 +3288,39 @@
     "stats": [
       "Echo Item 30"
     ],
-    "passive": "Adaptive Stat: +50 Strength or +75 Intelligence (based on highest item stat). Each time you Echo: Gain +1 Stack of Dark Resonance \u2022 Each Stack of Dark Resonance grants +10% Echo Damage up to 30 stacks. \u2022 Stacks last 6 seconds and stacks are halved when duration ends. While Damaru is Harmonized: \u2022 Gain +100% Echo Damage",
+    "passive": "Adaptive Stat: +50 Strength or +75 Intelligence (based on highest item stat). Each time you Echo: Gain +1 Stack of Dark Resonance • Each Stack of Dark Resonance grants +10% Echo Damage up to 30 stacks. • Stacks last 6 seconds and stacks are halved when duration ends. While Damaru is Harmonized: • Gain +100% Echo Damage",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 2
   },
   {
+    "name": "Jade Scepter",
+    "displayName": "Jade Scepter",
+    "slug": "jade-scepter",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/jade-scepter",
+    "pageTitle": "Jade Scepter",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/jade-scepter?v=78e16252",
+    "summary": "",
+    "cost": 2750,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Intelligence 100",
+      "Max Health 250"
+    ],
+    "passive": "On Use: Place a jade current at a target location. • After 1s it erupts, knocking away all gods. Enemies are knocked towards the caster. Cooldown: 60s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Jotunn's Revenge",
     "displayName": "Jotunn's Revenge",
-    "slug": "jotunn-ss-revenge",
+    "slug": "jotunns-revenge",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/jotunns-revenge",
     "pageTitle": "Jotunn's Revenge",
@@ -2297,7 +3338,7 @@
       "Magical Penetration Flat 5",
       "Cooldown Reduction 25%"
     ],
-    "passive": "God Kill or Assist: \u2022 -1s Cooldown for Non-Ultimate Abilities \u2022 -5s Cooldown for Ultimate Abilities",
+    "passive": "God Kill or Assist: • -1s Cooldown for Non-Ultimate Abilities • -5s Cooldown for Ultimate Abilities",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -2324,7 +3365,7 @@
       "Magical Penetration Flat 5",
       "Cooldown Reduction 25%"
     ],
-    "passive": "God Kill or Assist: \u2022 -1s Cooldown for Non-Ultimate Abilities \u2022 -5s Cooldown for Ultimate Abilities",
+    "passive": "God Kill or Assist: • -1s Cooldown for Non-Ultimate Abilities • -5s Cooldown for Ultimate Abilities",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -2378,7 +3419,7 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 12
+    "sampleCount": 19
   },
   {
     "name": "Kopesh",
@@ -2426,7 +3467,7 @@
     "categoriesSeen": [
       "Starter"
     ],
-    "sampleCount": 43
+    "sampleCount": 45
   },
   {
     "name": "Legionnaire Armor",
@@ -2450,7 +3491,7 @@
       "Tier 2",
       "Tier 3"
     ],
-    "sampleCount": 17
+    "sampleCount": 19
   },
   {
     "name": "Lernaean Bow",
@@ -2471,7 +3512,7 @@
       "Strength 40",
       "Attack Speed 30%"
     ],
-    "passive": "On Use: Fire 3 arrows that pierce enemies in a 10.5m line. \u2022 Deals 40% of your Attack Damage as Physical Damage \u2022 -50% Shield \u2022 Can Critically Strike Cooldown: 30s",
+    "passive": "On Use: Fire 3 arrows that pierce enemies in a 10.5m line. • Deals 40% of your Attack Damage as Physical Damage • -50% Shield • Can Critically Strike Cooldown: 30s",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -2480,7 +3521,7 @@
   {
     "name": "Levianthans Hide",
     "displayName": "Leviathan's Hide",
-    "slug": "levianthans-hide",
+    "slug": "leviathans-hide",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/leviathans-hide",
     "pageTitle": "Leviathan's Hide",
@@ -2502,6 +3543,74 @@
       "Tier 3"
     ],
     "sampleCount": 36
+  },
+  {
+    "name": "Leviathan's Hide",
+    "displayName": "Leviathan's Hide",
+    "slug": "leviathans-hide",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/leviathans-hide",
+    "pageTitle": "Leviathan's Hide",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/leviathans-hide?v=5b3067eb",
+    "summary": "",
+    "cost": 2500,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Physical Protection Item 45",
+      "Plating 5",
+      "Max Health 300"
+    ],
+    "passive": "Damaged by God Attack: That God is -10% Strength & Attack Damage for 4s. Attack an Enemy God: +8 Max Health Permanently. Damaged by an Enemy God: -0.5s once per Ability Cast or Attack. Cooldown: 10s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Lifebinder",
+    "displayName": "Lifebinder",
+    "slug": "lifebinder",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/lifebinder",
+    "pageTitle": "Lifebinder",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/lifebinder?v=e8ea9c13",
+    "summary": "",
+    "cost": 2400,
+    "itemType": "Hybrid Tier 3",
+    "tags": [
+      "Hybrid",
+      "Tier 3"
+    ],
+    "stats": [
+      "Intelligence 40",
+      "Max Health 300",
+      "Health Regen 3"
+    ],
+    "passive": "On Use: Fire a projectile that deals 60 (+8 per Level) Magic Damage. • Marks enemy Gods for 6s • First ally to damage a Marked target: • +60 (+8 per Level) Heal • +60 (+8 per Level) Shield • Consumes the Mark Cooldown: 20s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Lively Acorn",
+    "displayName": "Lively Acorn",
+    "slug": "lively-acorn",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/lively-acorn",
+    "pageTitle": "Lively Acorn",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/lively-acorn?v=2837e296",
+    "summary": "",
+    "cost": 600,
+    "itemType": "God-Specific Tier 2",
+    "tags": [
+      "God-Specific",
+      "Tier 2"
+    ],
+    "stats": [],
+    "passive": "Non-Aspect: +15 Strength Aspect: +175 Health",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Lucerne Hammer",
@@ -2527,9 +3636,9 @@
     "sampleCount": 33
   },
   {
-    "name": "magisshelter",
+    "name": "Magi's Cloak",
     "displayName": "Magi's Cloak",
-    "slug": "magisshelter",
+    "slug": "magis-cloak",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/magis-cloak",
     "pageTitle": "Magi's Cloak",
@@ -2545,7 +3654,47 @@
       "Physical Protection 35",
       "Magical Protection 35"
     ],
-    "passive": "Every 90s: Gain a Hard Crowd Control protective bubble. \u2022 When triggered, gain Crowd Control Immunity for 1.5s.",
+    "passive": "Every 90s: Gain a Hard Crowd Control protective bubble. • When triggered, gain Crowd Control Immunity for 1.5s.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Magic Acorn",
+    "displayName": "Magic Acorn",
+    "slug": "magic-acorn",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/magic-acorn",
+    "pageTitle": "Magic Acorn",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/magic-acorn?v=686978c7",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "Non-Aspect: +5 Strength Aspect: +50 Health",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "magisshelter",
+    "displayName": "Magi's Cloak",
+    "slug": "magis-cloak",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/magis-cloak",
+    "pageTitle": "Magi's Cloak",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/magis-cloak?v=a3401e03",
+    "summary": "",
+    "cost": 2400,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Physical Protection 35",
+      "Magical Protection 35"
+    ],
+    "passive": "Every 90s: Gain a Hard Crowd Control protective bubble. • When triggered, gain Crowd Control Immunity for 1.5s.",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -2573,7 +3722,7 @@
     "categoriesSeen": [
       "Tier 2"
     ],
-    "sampleCount": 9
+    "sampleCount": 10
   },
   {
     "name": "Manchu Bow",
@@ -2620,11 +3769,28 @@
       "Magical Protection Item 35",
       "Crowd Control Reduction Item 15"
     ],
-    "passive": "Damaged while below 40% Health: \u2022 Stuns enemies within 3.2m for 1s \u2022 +Crowd Control Immunity for 1s \u2022 +15 Dampening for 6s Cooldown: 110s",
+    "passive": "Damaged while below 40% Health: • Stuns enemies within 3.2m for 1s • +Crowd Control Immunity for 1s • +15 Dampening for 6s Cooldown: 110s",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 34
+  },
+  {
+    "name": "Masterwork Mod",
+    "displayName": "Masterwork Mod",
+    "slug": "masterwork-mod",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/masterwork-mod",
+    "pageTitle": "Masterwork Mod",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/masterwork-mod?v=477d82eb",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "Thumper gains 300 increased HP and applies a 10/15/20/25/30 Physical and Magical Protection buff to allied gods hit for 3s. Set 3 - You can only have one Mod from each set. Requires level 14.",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Medal of Defense",
@@ -2648,7 +3814,7 @@
     "categoriesSeen": [
       "Tier 2"
     ],
-    "sampleCount": 17
+    "sampleCount": 18
   },
   {
     "name": "Medal of Disruption",
@@ -2698,6 +3864,28 @@
     "sampleCount": 12
   },
   {
+    "name": "Mercury's Talaria",
+    "displayName": "Mercury's Talaria",
+    "slug": "mercurys-talaria",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/mercurys-talaria",
+    "pageTitle": "Mercury's Talaria",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/mercurys-talaria?v=133b4358",
+    "summary": "",
+    "cost": 2500,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Pathfinding Item 12"
+    ],
+    "passive": "Adaptive Stat: +40 Strength or +70 Intelligence (based on highest item stat). While out of combat: Store energy as you move. Your next non-Ultimate Ability deals up to 8% more Damage based on stored energy. • Movement Ability deals up to 10% more Damage instead",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Mercurys Talaria",
     "displayName": "Mercury's Talaria",
     "slug": "mercurys-talaria",
@@ -2715,7 +3903,7 @@
     "stats": [
       "Pathfinding Item 12"
     ],
-    "passive": "Adaptive Stat: +40 Strength or +70 Intelligence (based on highest item stat). While out of combat: Store energy as you move. Your next non-Ultimate Ability deals up to 8% more Damage based on stored energy. \u2022 Movement Ability deals up to 10% more Damage instead",
+    "passive": "Adaptive Stat: +40 Strength or +70 Intelligence (based on highest item stat). While out of combat: Store energy as you move. Your next non-Ultimate Ability deals up to 8% more Damage based on stored energy. • Movement Ability deals up to 10% more Damage instead",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -2745,6 +3933,48 @@
       "Tier 3"
     ],
     "sampleCount": 7
+  },
+  {
+    "name": "Mote of Chaos",
+    "displayName": "Mote of Chaos",
+    "slug": "mote-of-chaos",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/mote-of-chaos",
+    "pageTitle": "Mote of Chaos",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/mote-of-chaos?v=f8618511",
+    "summary": "",
+    "cost": 1250,
+    "itemType": "Tier 2",
+    "tags": [
+      "Tier 2"
+    ],
+    "stats": [],
+    "passive": "+5% of all Stats from Items.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Musashi's Dual Swords",
+    "displayName": "Musashi's Dual Swords",
+    "slug": "musashis-dual-swords",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/musashis-dual-swords",
+    "pageTitle": "Musashi's Dual Swords",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/musashis-dual-swords?v=2110e867",
+    "summary": "",
+    "cost": 2700,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Strength 35",
+      "Crit Chance 30"
+    ],
+    "passive": "Critically Strike: +15% Movement Speed for 5s.",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Musashis Dual Swords",
@@ -2790,11 +4020,11 @@
       "Physical Protection Item 40",
       "Max Health 300"
     ],
-    "passive": "Enemies Within 4m: 15 (+1 per Level) Magical Damage and lose 25% of Health Shield per 1s. Range Scaling Damage: \u2022 +50% at Close Range \u2022 -50% at Maximum Range",
+    "passive": "Enemies Within 4m: 15 (+1 per Level) Magical Damage and lose 25% of Health Shield per 1s. Range Scaling Damage: • +50% at Close Range • -50% at Maximum Range",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 16
+    "sampleCount": 18
   },
   {
     "name": "Necronomicon",
@@ -2816,7 +4046,7 @@
       "Max Mana 300",
       "Mana Regen 5"
     ],
-    "passive": "God Kill or Assist: +1 Stack of: \u2022 +30 Intelligence Stacks up to 6 times. On Death: Lose 4 Stacks.",
+    "passive": "God Kill or Assist: +1 Stack of: • +30 Intelligence Stacks up to 6 times. On Death: Lose 4 Stacks.",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -2842,7 +4072,7 @@
       "Attack Speed 20%",
       "Lifesteal 7.5%"
     ],
-    "passive": "For every 10 Intelligence: \u2022 +1 Attack Damage \u2022 +1% Attack Speed",
+    "passive": "For every 10 Intelligence: • +1 Attack Damage • +1% Attack Speed",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -2866,7 +4096,7 @@
     "stats": [
       "Strength 50"
     ],
-    "passive": "Ability Hit: Target's Physical Protection is reduced by 5 for 4s. \u2022 On God Kill or Assist: This effect increases by 1 Physical Protection. \u2022 This effect caps at 15 total Physical Protection reduction.",
+    "passive": "Ability Hit: Target's Physical Protection is reduced by 5 for 4s. • On God Kill or Assist: This effect increases by 1 Physical Protection. • This effect caps at 15 total Physical Protection reduction.",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -2891,11 +4121,33 @@
       "Intelligence 70",
       "Magical Penetration 20%"
     ],
-    "passive": "Gain the Shattering effect: First Ability Cast: Gains +20% Penetration \u2022 This effect ignores the Penetration cap \u2022 Shattering does not Stack with itself. Cooldown: 10s",
+    "passive": "Gain the Shattering effect: First Ability Cast: Gains +20% Penetration • This effect ignores the Penetration cap • Shattering does not Stack with itself. Cooldown: 10s",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 192
+    "sampleCount": 196
+  },
+  {
+    "name": "Odigba",
+    "displayName": "Odigba",
+    "slug": "odigba",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/odigba",
+    "pageTitle": "Odigba",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/odigba?v=7f639d3b",
+    "summary": "",
+    "cost": 800,
+    "itemType": "Tier 2",
+    "tags": [
+      "Tier 2"
+    ],
+    "stats": [
+      "Max Health 125",
+      "Max Mana 150"
+    ],
+    "passive": "God Kill or Assist: Heal +5% Max Health over 6s.",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Odysseus Bow",
@@ -2915,11 +4167,33 @@
     "stats": [
       "Attack Speed 45%"
     ],
-    "passive": "Every fourth Attack Hit: Trigger Chain Lightning. \u2022 Damage = 15 (+60% Attack Damage) Physical Damage \u2022 Hits target and up to 4 nearby enemies \u2022 Bounce Range: 4.8m \u2022 Can hit the same target more than once",
+    "passive": "Every fourth Attack Hit: Trigger Chain Lightning. • Damage = 15 (+60% Attack Damage) Physical Damage • Hits target and up to 4 nearby enemies • Bounce Range: 4.8m • Can hit the same target more than once",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 192
+    "sampleCount": 194
+  },
+  {
+    "name": "Odysseus' Bow",
+    "displayName": "Odysseus' Bow",
+    "slug": "odysseus-bow",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/odysseus-bow",
+    "pageTitle": "Odysseus' Bow",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/odysseus-bow?v=c73cb1e7",
+    "summary": "",
+    "cost": 2450,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Attack Speed 45%"
+    ],
+    "passive": "Every fourth Attack Hit: Trigger Chain Lightning. • Damage = 15 (+60% Attack Damage) Physical Damage • Hits target and up to 4 nearby enemies • Bounce Range: 4.8m • Can hit the same target more than once",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Olmec Blue",
@@ -2946,9 +4220,31 @@
     "sampleCount": 9
   },
   {
+    "name": "Omen Drum",
+    "displayName": "Omen Drum",
+    "slug": "omen-drum",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/omen-drum",
+    "pageTitle": "Omen Drum",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/omen-drum?v=7087fb10",
+    "summary": "",
+    "cost": 2800,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Echo Item 30"
+    ],
+    "passive": "Adaptive Stat: +50 Strength or +75 Intelligence (based on highest item stat). Each time you Echo: Gain +1 Stack of Dark Resonance • Each Stack of Dark Resonance grants +10% Echo Damage up to 30 stacks. • Stacks last 6 seconds and stacks are halved when duration ends. While Damaru is Harmonized: • Gain +100% Echo Damage",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Oni Hunter's Garb",
     "displayName": "Oni Hunter's Garb",
-    "slug": "oni-hunter-ss-garb",
+    "slug": "oni-hunters-garb",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/oni-hunters-garb",
     "pageTitle": "Oni Hunter's Garb",
@@ -2966,7 +4262,7 @@
       "Max Mana 200",
       "Mana Regen 8"
     ],
-    "passive": "For each enemy god within 8.8m: +4% Damage Mitigation \u2022 Max 3 stacks",
+    "passive": "For each enemy god within 8.8m: +4% Damage Mitigation • Max 3 stacks",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -2993,11 +4289,11 @@
       "Max Mana 200",
       "Mana Regen 8"
     ],
-    "passive": "For each enemy god within 8.8m: +4% Damage Mitigation \u2022 Max 3 stacks",
+    "passive": "For each enemy god within 8.8m: +4% Damage Mitigation • Max 3 stacks",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 81
+    "sampleCount": 87
   },
   {
     "name": "Oracle Staff",
@@ -3022,12 +4318,12 @@
     "categoriesSeen": [
       "Tier 2"
     ],
-    "sampleCount": 22
+    "sampleCount": 23
   },
   {
     "name": "Parashu",
     "displayName": "Avatar's Parashu",
-    "slug": "parashu",
+    "slug": "avatars-parashu",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/avatars-parashu",
     "pageTitle": "Avatar's Parashu",
@@ -3076,6 +4372,70 @@
     "sampleCount": 1
   },
   {
+    "name": "Pendulum of the Ages",
+    "displayName": "Pendulum of The Ages",
+    "slug": "pendulum-of-the-ages",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/pendulum-of-the-ages",
+    "pageTitle": "Pendulum of The Ages",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/pendulum-of-the-ages?v=c3767ff2",
+    "summary": "",
+    "cost": 2150,
+    "itemType": "Starter",
+    "tags": [
+      "Starter"
+    ],
+    "stats": [
+      "Mana Regen 4",
+      "Cooldown Reduction 20%"
+    ],
+    "passive": "Adaptive Stat: +45 Strength or +70 Intelligence (based on highest item stat). +4 Mana per second per 10% of missing Mana. +3 Strength or +7 Intelligence (based on highest item stat) per 10% of available Mana.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Phantom Shell",
+    "displayName": "Phantom Shell",
+    "slug": "phantom-shell",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/phantom-shell",
+    "pageTitle": "Phantom Shell",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/phantom-shell?v=faf89694",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "On Use: +100 (+10 per Level) Shield yourself and allies within 5.6m for 3s. Affected Gods: • Take 20% (+1% per Level) reduced Attack Damage • Can pass through players and player-made walls Cooldown: 120s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Pharaoh's Curse",
+    "displayName": "Pharaoh's Curse",
+    "slug": "pharaohs-curse",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/pharaohs-curse",
+    "pageTitle": "Pharaoh's Curse",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/pharaohs-curse?v=63380902",
+    "summary": "",
+    "cost": 2450,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Magical Protection Item 30",
+      "Plating 5",
+      "Max Health 250",
+      "Attack Speed 20%"
+    ],
+    "passive": "On Use: Enemies within 5.6m: • -50% Shields • -20% Movement Speed • -40% Attack Speed Debuff lasts 4s. Cooldown: 45s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Pharaohs Curse",
     "displayName": "Pharaoh's Curse",
     "slug": "pharaohs-curse",
@@ -3096,16 +4456,40 @@
       "Max Health 250",
       "Attack Speed 20%"
     ],
-    "passive": "On Use: Enemies within 5.6m: \u2022 -50% Shields \u2022 -20% Movement Speed \u2022 -40% Attack Speed Debuff lasts 4s. Cooldown: 45s",
+    "passive": "On Use: Enemies within 5.6m: • -50% Shields • -20% Movement Speed • -40% Attack Speed Debuff lasts 4s. Cooldown: 45s",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 13
   },
   {
+    "name": "Phoenix Feather",
+    "displayName": "Phoenix Feather",
+    "slug": "phoenix-feather",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/phoenix-feather",
+    "pageTitle": "Phoenix Feather",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/phoenix-feather?v=b53ffc77",
+    "summary": "",
+    "cost": 2400,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Magical Protection Item 35",
+      "Dampening 5",
+      "Max Health 300"
+    ],
+    "passive": "On Use: Fire 3 Pulses that Heal you and True Damage enemies within 3.2m. • Heal = +75 Health +7.5% Missing Health • True Damage = +3% Max Health from Items Cooldown: 120s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Plated Armor",
     "displayName": "Plated Metal",
-    "slug": "plated-armor",
+    "slug": "plated-metal",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/plated-metal",
     "pageTitle": "Plated Metal",
@@ -3124,6 +4508,27 @@
       "Tier 2"
     ],
     "sampleCount": 1
+  },
+  {
+    "name": "Plated Metal",
+    "displayName": "Plated Metal",
+    "slug": "plated-metal",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/plated-metal",
+    "pageTitle": "Plated Metal",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/plated-metal?v=b92f8c27",
+    "summary": "",
+    "cost": 900,
+    "itemType": "Tier 2",
+    "tags": [
+      "Tier 2"
+    ],
+    "stats": [
+      "Plating 9"
+    ],
+    "passive": "",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Polynomicon",
@@ -3145,7 +4550,7 @@
       "Max Mana 200",
       "Mana Regen 3"
     ],
-    "passive": "Ability Used: Your next Attack deals bonus Magical Damage \u2022 Damage = 80% of your Intelligence Cooldown: 2s",
+    "passive": "Ability Used: Your next Attack deals bonus Magical Damage • Damage = 80% of your Intelligence Cooldown: 2s",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -3171,16 +4576,33 @@
       "Magical Protection 22",
       "Cooldown Reduction 10%"
     ],
-    "passive": "Damage a God: +1 Protection Stack against the damage type they deal. Cooldown: 5s. At +15 of each Protection Stack, item evolves: \u2022 +10 Physical Protection and Magical Protection \u2022 +6% Damage Mitigation (or +12% if total Protections > 300)",
+    "passive": "Damage a God: +1 Protection Stack against the damage type they deal. Cooldown: 5s. At +15 of each Protection Stack, item evolves: • +10 Physical Protection and Magical Protection • +6% Damage Mitigation (or +12% if total Protections > 300)",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 79
+    "sampleCount": 80
+  },
+  {
+    "name": "Purification Beads",
+    "displayName": "Purification Beads",
+    "slug": "purification-beads",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/purification-beads",
+    "pageTitle": "Purification Beads",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/purification-beads?v=f7b6becb",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "On Use: Immune to Crowd Control for 2s. Cooldown: 150s",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Qin's Blade",
     "displayName": "Qin's Blade",
-    "slug": "qin-ss-blade",
+    "slug": "qins-blade",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/qins-blade",
     "pageTitle": "Qin's Blade",
@@ -3225,7 +4647,7 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 132
+    "sampleCount": 138
   },
   {
     "name": "Radiant Bulwark",
@@ -3247,7 +4669,7 @@
       "Magical Protection Item 20",
       "Plating 15"
     ],
-    "passive": "On Use: Create a wall of light that protects allies behind you for 6s. Grants them all your Plating, Dampening, and half of your Protections from enemies on the other side and yourself 20% Damage Mitigation. \u2022 You are Silenced, Disarmed, and cannot turn while channeling Cooldown: 100s",
+    "passive": "On Use: Create a wall of light that protects allies behind you for 6s. Grants them all your Plating, Dampening, and half of your Protections from enemies on the other side and yourself 20% Damage Mitigation. • You are Silenced, Disarmed, and cannot turn while channeling Cooldown: 100s",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -3272,11 +4694,34 @@
       "Strength 30",
       "Crit Chance 20"
     ],
-    "passive": "God Kill or Assist: \u2022 +4% Critical Strike Chance (Max 20%) After 5 God Kills or Assists: \u2022 +10% additional Critical Strike Chance",
+    "passive": "God Kill or Assist: • +4% Critical Strike Chance (Max 20%) After 5 God Kills or Assists: • +10% additional Critical Strike Chance",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 89
+  },
+  {
+    "name": "Ragnarok's Wake",
+    "displayName": "Ragnarok's Wake",
+    "slug": "ragnaroks-wake",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/ragnaroks-wake",
+    "pageTitle": "Ragnarok's Wake",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/ragnaroks-wake?v=6bd14d34",
+    "summary": "",
+    "cost": 2600,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Physical Protection Item 45",
+      "Max Health 250"
+    ],
+    "passive": "On Use: Buildup for 2s before flying for 2.5s to your target location as a meteor of Ragnarok. Can travel up to 30m. • Enemies near where you land take Deal 600 Magical Damage and are knocked straight up. Cooldown: 140s",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Regrowth Striders",
@@ -3298,7 +4743,7 @@
       "Mana Regen 3",
       "Cooldown Reduction 10%"
     ],
-    "passive": "Heal yourself with an Ability: \u2022 +25% Movement Speed (decays to 0%) for 4s \u2022 Cooldown: 10s Gain any Movement Speed buff: \u2022 +5% Health Heal over 10s",
+    "passive": "Heal yourself with an Ability: • +25% Movement Speed (decays to 0%) for 4s • Cooldown: 10s Gain any Movement Speed buff: • +5% Health Heal over 10s",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -3346,11 +4791,28 @@
       "Max Health 550",
       "Crowd Control Reduction Item 10"
     ],
-    "passive": "When Hard Crowd Controlled by an Ability: \u2022 +25 Health Regen and +5 Tenacity for 4s \u2022 This effect can stack \u2022 When stacks fall off, gain 0.5 Health Regen and 1 Tenacity permanently \u2022 Stacks up to 20 times",
+    "passive": "When Hard Crowd Controlled by an Ability: • +25 Health Regen and +5 Tenacity for 4s • This effect can stack • When stacks fall off, gain 0.5 Health Regen and 1 Tenacity permanently • Stacks up to 20 times",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 73
+    "sampleCount": 76
+  },
+  {
+    "name": "Resonator Mod",
+    "displayName": "Resonator Mod",
+    "slug": "resonator-mod",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/resonator-mod",
+    "pageTitle": "Resonator Mod",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/resonator-mod?v=acbe786b",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "Thumper gains 150 increased HP and applies an 10/15/20/25/30% Attack Speed debuff for 3s on hit. Set 2 - You can only have one Mod from each set. Requires level 7.",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Ring",
@@ -3373,7 +4835,7 @@
     "categoriesSeen": [
       "Tier 1"
     ],
-    "sampleCount": 10
+    "sampleCount": 11
   },
   {
     "name": "Ring of Dispel",
@@ -3420,16 +4882,16 @@
       "Lifesteal 7.5%",
       "Magical Penetration 10%"
     ],
-    "passive": "While Above 50% Health: +10% Attack Damage While Below 50% Health: \u2022 +25% Attack Damage \u2022 +7.5% Lifesteal",
+    "passive": "While Above 50% Health: +10% Attack Damage While Below 50% Health: • +25% Attack Damage • +7.5% Lifesteal",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 80
+    "sampleCount": 81
   },
   {
     "name": "Rod of Ascelpius T3",
     "displayName": "Rod of Asclepius",
-    "slug": "rod-of-ascelpius-t3",
+    "slug": "rod-of-asclepius",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/rod-of-asclepius",
     "pageTitle": "Rod of Asclepius",
@@ -3446,11 +4908,35 @@
       "Max Health 225",
       "Health Regen 3"
     ],
-    "passive": "On Use: Heal all allies within 8.8m. \u2022 +10% Health Heal over 10s \u2022 Counts as Ability healing If target has 6 debuffs: \u2022 +10% Health Heal instantly \u2022 Grants all non-damage immunities for 1s Costs 15% Mana. Cooldown: 90s",
+    "passive": "On Use: Heal all allies within 8.8m. • +10% Health Heal over 10s • Counts as Ability healing If target has 6 debuffs: • +10% Health Heal instantly • Grants all non-damage immunities for 1s Costs 15% Mana. Cooldown: 90s",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 1
+  },
+  {
+    "name": "Rod of Asclepius",
+    "displayName": "Rod of Asclepius",
+    "slug": "rod-of-asclepius",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/rod-of-asclepius",
+    "pageTitle": "Rod of Asclepius",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/rod-of-asclepius?v=6b11bce4",
+    "summary": "",
+    "cost": 2350,
+    "itemType": "Hybrid Tier 3",
+    "tags": [
+      "Hybrid",
+      "Tier 3"
+    ],
+    "stats": [
+      "Intelligence 65",
+      "Max Health 225",
+      "Health Regen 3"
+    ],
+    "passive": "On Use: Heal all allies within 8.8m. • +10% Health Heal over 10s • Counts as Ability healing If target has 6 debuffs: • +10% Health Heal instantly • Grants all non-damage immunities for 1s Costs 15% Mana. Cooldown: 90s",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Rod of Tahuti",
@@ -3477,7 +4963,7 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 173
+    "sampleCount": 178
   },
   {
     "name": "Rune",
@@ -3500,7 +4986,7 @@
     "categoriesSeen": [
       "Tier 1"
     ],
-    "sampleCount": 6
+    "sampleCount": 7
   },
   {
     "name": "Runeforged Hammer",
@@ -3522,11 +5008,32 @@
       "Max Health 350",
       "Health Regen 3"
     ],
-    "passive": "Hard Crowd Control a God: \u2022 Mark them with a Rune for 5s \u2022 Attack to forge the Rune, dealing +50 (+65% of your Item Protections) as Magical Damage Hard Crowd Control a God: -6s Item Cooldown. Cooldown: 30s",
+    "passive": "Hard Crowd Control a God: • Mark them with a Rune for 5s • Attack to forge the Rune, dealing +50 (+65% of your Item Protections) as Magical Damage Hard Crowd Control a God: -6s Item Cooldown. Cooldown: 30s",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 131
+    "sampleCount": 132
+  },
+  {
+    "name": "Runic Hide",
+    "displayName": "Runic Hide",
+    "slug": "runic-hide",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/runic-hide",
+    "pageTitle": "Runic Hide",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/runic-hide?v=34582fc1",
+    "summary": "",
+    "cost": 850,
+    "itemType": "Tier 2",
+    "tags": [
+      "Tier 2"
+    ],
+    "stats": [
+      "Dampening 10"
+    ],
+    "passive": "",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Sabre",
@@ -3552,6 +5059,28 @@
     "sampleCount": 3
   },
   {
+    "name": "Sage's Ring",
+    "displayName": "Sage's Ring",
+    "slug": "sages-ring",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/sages-ring",
+    "pageTitle": "Sage's Ring",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/sages-ring?v=ac1491a8",
+    "summary": "",
+    "cost": 800,
+    "itemType": "Tier 2",
+    "tags": [
+      "Tier 2"
+    ],
+    "stats": [
+      "Magical Protection 12",
+      "Cooldown Reduction 10%"
+    ],
+    "passive": "",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Sages Ring",
     "displayName": "Sage's Ring",
     "slug": "sages-ring",
@@ -3573,7 +5102,7 @@
     "categoriesSeen": [
       "Tier 2"
     ],
-    "sampleCount": 8
+    "sampleCount": 9
   },
   {
     "name": "Sands of Time",
@@ -3597,12 +5126,12 @@
     "categoriesSeen": [
       "Starter"
     ],
-    "sampleCount": 51
+    "sampleCount": 53
   },
   {
     "name": "Sands of Time Upgrade",
     "displayName": "Pendulum of The Ages",
-    "slug": "sands-of-time-upgrade",
+    "slug": "pendulum-of-the-ages",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/pendulum-of-the-ages",
     "pageTitle": "Pendulum of The Ages",
@@ -3621,7 +5150,54 @@
     "categoriesSeen": [
       "Starter"
     ],
-    "sampleCount": 44
+    "sampleCount": 45
+  },
+  {
+    "name": "Sanguine Lash",
+    "displayName": "Sanguine Lash",
+    "slug": "sanguine-lash",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/sanguine-lash",
+    "pageTitle": "Sanguine Lash",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/sanguine-lash?v=d0e0f479",
+    "summary": "",
+    "cost": 2650,
+    "itemType": "Hybrid Tier 3",
+    "tags": [
+      "Hybrid",
+      "Tier 3"
+    ],
+    "stats": [
+      "Magical Protection Item 30",
+      "Strength 25",
+      "Lifesteal 5%"
+    ],
+    "passive": "Enemy gods Within 4m: -0.75% Health (max 200) as Physical Damage per 1s. • +1% for every 10% Lifesteal On Use: • Now damages every 0.33s for 4s. • Cooldown: 60s",
+    "categoriesSeen": [
+      "Tier 3"
+    ],
+    "sampleCount": 16
+  },
+  {
+    "name": "Sash",
+    "displayName": "Sash",
+    "slug": "sash",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/sash",
+    "pageTitle": "Sash",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/sash?v=3306ca5d",
+    "summary": "",
+    "cost": 300,
+    "itemType": "Tier 1",
+    "tags": [
+      "Tier 1"
+    ],
+    "stats": [
+      "Health Regen 2"
+    ],
+    "passive": "",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Scepter of Dominion",
@@ -3644,7 +5220,7 @@
       "Max Mana 200",
       "Mana Regen 3"
     ],
-    "passive": "On Use: Create a zone that puts gods into Stasis. \u2022 The Zone appears after 1s \u2022 The Stasis lasts 2s Cooldown: 90s",
+    "passive": "On Use: Create a zone that puts gods into Stasis. • The Zone appears after 1s • The Stasis lasts 2s Cooldown: 90s",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -3668,7 +5244,7 @@
       "Magical Protection Item 50",
       "Cooldown Reduction 15%"
     ],
-    "passive": "On Use: Enemies in front of you: \u2022 Silenced for 1s \u2022 -10% Protections for 4s Cooldown: 90s During Moonlight Phase: \u2022 Hits enemies around you \u2022 Silence lasts 1.5s \u2022 -15% Protections",
+    "passive": "On Use: Enemies in front of you: • Silenced for 1s • -10% Protections for 4s Cooldown: 90s During Moonlight Phase: • Hits enemies around you • Silence lasts 1.5s • -15% Protections",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -3699,6 +5275,23 @@
     "sampleCount": 5
   },
   {
+    "name": "Seismic Mod",
+    "displayName": "Seismic Mod",
+    "slug": "seismic-mod",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/seismic-mod",
+    "pageTitle": "Seismic Mod",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/seismic-mod?v=f5406a60",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "Earthshaker Knocks Up and Trembles enemies it hits for 2s. Set 3 - You can only have one Mod from each set. Requires level 14.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Selflessness",
     "displayName": "Selflessness",
     "slug": "selflessness",
@@ -3717,7 +5310,7 @@
       "Magical Protection 10",
       "Max Health 100"
     ],
-    "passive": "Ally god within 8.8m is hit by Hard CC: \u2022 Shield them for 25+5% of your Max Health \u2022 Cooldown: 20s Requires Level 20 to upgrade.",
+    "passive": "Ally god within 8.8m is hit by Hard CC: • Shield them for 25+5% of your Max Health • Cooldown: 20s Requires Level 20 to upgrade.",
     "categoriesSeen": [
       "Starter"
     ],
@@ -3726,7 +5319,7 @@
   {
     "name": "Shape Shifter Shield",
     "displayName": "Shifter's Shield",
-    "slug": "shape-shifter-shield",
+    "slug": "shifters-shield",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/shifters-shield",
     "pageTitle": "Shifter's Shield",
@@ -3748,7 +5341,30 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 18
+    "sampleCount": 28
+  },
+  {
+    "name": "Sharpshooter's Arrow",
+    "displayName": "Sharpshooter's Arrow",
+    "slug": "sharpshooters-arrow",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/sharpshooters-arrow",
+    "pageTitle": "Sharpshooter's Arrow",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/sharpshooters-arrow?v=e95cf347",
+    "summary": "",
+    "cost": 2150,
+    "itemType": "Starter",
+    "tags": [
+      "Starter"
+    ],
+    "stats": [
+      "Inhand Power 60",
+      "Attack Speed 25%",
+      "Crit Chance 15"
+    ],
+    "passive": "+5% Gold Gain from Kills and Assists. Increased Attack damage to enemy gods farther away, capping at +10% at 6m. Requires Level 20.",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Shell of Rebuke",
@@ -3769,7 +5385,7 @@
       "Magical Protection Item 20",
       "Physical Protection Item 20"
     ],
-    "passive": "+7.5% of all Stats from Items. On Use: Create a field of rebuke for allies that mitigates 35% Damage, up to 400 (+50 Per Level). Upon Entering Field: \u2022 +100 (+10 per Level) Shield for 3s. While it holds gain player and player-made wall passthrough. Cooldown: 120s",
+    "passive": "+7.5% of all Stats from Items. On Use: Create a field of rebuke for allies that mitigates 35% Damage, up to 400 (+50 Per Level). Upon Entering Field: • +100 (+10 per Level) Shield for 3s. While it holds gain player and player-made wall passthrough. Cooldown: 120s",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -3819,16 +5435,40 @@
       "Max Health 225",
       "Cooldown Reduction 10%"
     ],
-    "passive": "Ability Hit a God: \u2022 +1.5% Health Heal \u2022 +2% Mana Restore Triggers once per Ability, per god.",
+    "passive": "Ability Hit a God: • +1.5% Health Heal • +2% Mana Restore Triggers once per Ability, per god.",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 44
+    "sampleCount": 46
+  },
+  {
+    "name": "Shield Splitter",
+    "displayName": "Shield Splitter",
+    "slug": "shield-splitter",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/shield-splitter",
+    "pageTitle": "Shield Splitter",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/shield-splitter?v=dd0520e7",
+    "summary": "",
+    "cost": 2400,
+    "itemType": "Hybrid Tier 3",
+    "tags": [
+      "Hybrid",
+      "Tier 3"
+    ],
+    "stats": [
+      "Strength 40",
+      "Physical Protection Item 15",
+      "Magical Protection Item 15"
+    ],
+    "passive": "On Use: Fire a projectile 11.2m forward. • +40 (+5 per Level) True Damage • If an enemy is Shielded: • -70% Shield • You gain a Shield equal to the amount of Shield reduced Cooldown: 15s",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Shifter's Shield",
     "displayName": "Shifter's Shield",
-    "slug": "shifter-ss-shield",
+    "slug": "shifters-shield",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/shifters-shield",
     "pageTitle": "Shifter's Shield",
@@ -3853,9 +5493,9 @@
     "sampleCount": 1
   },
   {
-    "name": "Shogun's Kusari",
+    "name": "Shogun's Ofuda",
     "displayName": "Shogun's Ofuda",
-    "slug": "shogun-ss-kusari",
+    "slug": "shoguns-ofuda",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/shoguns-ofuda",
     "pageTitle": "Shogun's Ofuda",
@@ -3877,7 +5517,24 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 80
+    "sampleCount": 81
+  },
+  {
+    "name": "Shrapnel Mod",
+    "displayName": "Shrapnel Mod",
+    "slug": "shrapnel-mod",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/shrapnel-mod",
+    "pageTitle": "Shrapnel Mod",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/shrapnel-mod?v=e0ff8272",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "Inferno Cannon applies additional damage over time on hit. Hits 6 times over 3s for 2/4/6/8/10 + 2% INT per hit. Set 2 - You can only have one Mod from each set. Requires level 7.",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Shroud of Vengeance",
@@ -3925,7 +5582,7 @@
       "Attack Speed 30%",
       "Penetration 10%"
     ],
-    "passive": "Every third Attack Hit: Fire a homing Silver Arrow at your target. \u2022 Damage = 25% of your Basic Attack Damage as Physical Damage \u2022 Fire 1 arrow for every 1 Attack Speed you have.",
+    "passive": "Every third Attack Hit: Fire a homing Silver Arrow at your target. • Damage = 25% of your Basic Attack Damage as Physical Damage • Fire 1 arrow for every 1 Attack Speed you have.",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -3976,16 +5633,16 @@
       "Magical Penetration Flat 5",
       "Cooldown Reduction 10%"
     ],
-    "passive": "Ability Hit: +1 Stack. Three Stacks: Next Ability Hit: \u2022 Deals Bonus Damage (40% Intelligence) \u2022 +20(+6 per Level) Heal you and allies within 3.2m \u2022 Removes the Stacks",
+    "passive": "Ability Hit: +1 Stack. Three Stacks: Next Ability Hit: • Deals Bonus Damage (40% Intelligence) • +20(+6 per Level) Heal you and allies within 3.2m • Removes the Stacks",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 51
+    "sampleCount": 55
   },
   {
     "name": "Soul Locket",
     "displayName": "Soul Reliquary",
-    "slug": "soul-locket",
+    "slug": "soul-reliquary",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/soul-reliquary",
     "pageTitle": "Soul Reliquary",
@@ -4030,7 +5687,7 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 80
+    "sampleCount": 85
   },
   {
     "name": "Soul Reliquary",
@@ -4076,16 +5733,39 @@
       "Magical Penetration Flat 10",
       "Cooldown Reduction 10%"
     ],
-    "passive": "God Kill: \u2022 -3s Non Ultimate Cooldowns \u2022 -10s Ultimate Cooldowns God Assist: \u2022 -1.5s Non Ultimate Cooldowns \u2022 -5s Ultimate Cooldowns",
+    "passive": "God Kill: • -3s Non Ultimate Cooldowns • -10s Ultimate Cooldowns God Assist: • -1.5s Non Ultimate Cooldowns • -5s Ultimate Cooldowns",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 98
   },
   {
+    "name": "Spear of the Magus",
+    "displayName": "Spear Of The Magus",
+    "slug": "spear-of-the-magus",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/spear-of-the-magus",
+    "pageTitle": "Spear Of The Magus",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/spear-of-the-magus?v=6374156f",
+    "summary": "",
+    "cost": 2700,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Intelligence 75",
+      "Magical Penetration 10%"
+    ],
+    "passive": "Ability Hit a God: That God is marked for 8s. Marked Gods take 5% increased damage from all sources.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
     "name": "Spearofthe Magus",
     "displayName": "Spear Of The Magus",
-    "slug": "spearofthe-magus",
+    "slug": "spear-of-the-magus",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/spear-of-the-magus",
     "pageTitle": "Spear Of The Magus",
@@ -4105,7 +5785,7 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 6
+    "sampleCount": 7
   },
   {
     "name": "Spectral Armor",
@@ -4131,7 +5811,7 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 76
+    "sampleCount": 78
   },
   {
     "name": "Sphere of Negation",
@@ -4178,16 +5858,16 @@
       "Magical Protection Item 20",
       "Crowd Control Reduction Item 15"
     ],
-    "passive": "Hit by Hard Crowd Control: \u2022 +40 Physical Protection \u2022 +40 Magical Protection \u2022 +4% Health Heal over time Buff lasts 6s.",
+    "passive": "Hit by Hard Crowd Control: • +40 Physical Protection • +40 Magical Protection • +4% Health Heal over time Buff lasts 6s.",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 180
+    "sampleCount": 189
   },
   {
     "name": "Staff of Cosmic Horror",
     "displayName": "The Cosmic Horror",
-    "slug": "staff-of-cosmic-horror",
+    "slug": "the-cosmic-horror",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/the-cosmic-horror",
     "pageTitle": "The Cosmic Horror",
@@ -4204,11 +5884,11 @@
       "Magical Penetration Flat 10",
       "Echo Item 20"
     ],
-    "passive": "Each time you Echo: +1 Stack. At 3 Stacks: Next time you Echo: \u2022 Spawn a tentacle that deals deals Bonus Magical Damage (45% Intelligence over 1.5s) \u2022 Stacks are removed when a tentacle spawns. \u2022 Tentacles can spawn once every second. \u2022 Tentacles will only spawn when hitting a God or Jungle Boss",
+    "passive": "Each time you Echo: +1 Stack. At 3 Stacks: Next time you Echo: • Spawn a tentacle that deals deals Bonus Magical Damage (45% Intelligence over 1.5s) • Stacks are removed when a tentacle spawns. • Tentacles can spawn once every second. • Tentacles will only spawn when hitting a God or Jungle Boss",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 17
+    "sampleCount": 19
   },
   {
     "name": "Staff of Myrddin",
@@ -4255,7 +5935,7 @@
       "Max Health 250",
       "Health Regen 5"
     ],
-    "passive": "On Use: You and allies within 6.4m gain: \u2022 Slow Immunity \u2022 +60% Movement Speed that decays to +20% over 4s Cooldown: 90s",
+    "passive": "On Use: You and allies within 6.4m gain: • Slow Immunity • +60% Movement Speed that decays to +20% over 4s Cooldown: 90s",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -4306,11 +5986,53 @@
       "Physical Protection Item 35",
       "Magical Protection Item 30"
     ],
-    "passive": "On God Damage Dealt: Apply 25% Healing Reduction for 5s & Apply 1 Stack of Stygian Sludge for 1.25s. (Max 5) Stacks fall off one at a time. \u2022 Triggers once per Ability, per god. Per Stack: \u2022 -3% Attack Speed \u2022 5% of their Healing Echoed to you Healing Reduction does not stack with other similar effects.",
+    "passive": "On God Damage Dealt: Apply 25% Healing Reduction for 5s & Apply 1 Stack of Stygian Sludge for 1.25s. (Max 5) Stacks fall off one at a time. • Triggers once per Ability, per god. Per Stack: • -3% Attack Speed • 5% of their Healing Echoed to you Healing Reduction does not stack with other similar effects.",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 60
+  },
+  {
+    "name": "Sun Beam Bow",
+    "displayName": "Sun Beam Bow",
+    "slug": "sun-beam-bow",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/sun-beam-bow",
+    "pageTitle": "Sun Beam Bow",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/sun-beam-bow?v=46d640e2",
+    "summary": "",
+    "cost": 2400,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Inhand Power 20",
+      "Attack Speed 10%"
+    ],
+    "passive": "Adaptive Stat: +20 Strength or +40 Intelligence (based on highest item stat). On Use: Fire +2 Projectiles per Attack • Deals 10 +30% Attack Damage as Magical Damage • 8.8m Range • Toggleable • -5% Max Mana per second while active. Structures and Bosses take 25% damage from Sun Beam Bow.",
+    "categoriesSeen": [
+      "Tier 3"
+    ],
+    "sampleCount": 67
+  },
+  {
+    "name": "Sundering Arc",
+    "displayName": "Sundering Arc",
+    "slug": "sundering-arc",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/sundering-arc",
+    "pageTitle": "Sundering Arc",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/sundering-arc?v=dc6dbe8e",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "On Use: • Bleed enemies, dealing 25 (+4 per Level) True Damage 3 times over 2s. Jungle Monsters and Bosses take 50 (+8 per Level) instead. Cooldown: 120s. -30s Cooldown if only used on Jungle Monsters/Bosses.",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Sundering Axe",
@@ -4330,7 +6052,7 @@
       "Physical Protection 30",
       "Magical Protection 30"
     ],
-    "passive": "Adaptive Stat: +30 Strength or +50 Intelligence (based on highest item stat). Damage a God: \u2022 +150 (+10% of your Item Protections) Bonus True Damage \u2022 +125 Heal Hits only one God per activation Requires Level 20. Cooldown: 8s",
+    "passive": "Adaptive Stat: +30 Strength or +50 Intelligence (based on highest item stat). Damage a God: • +150 (+10% of your Item Protections) Bonus True Damage • +125 Heal Hits only one God per activation Requires Level 20. Cooldown: 8s",
     "categoriesSeen": [
       "Starter"
     ],
@@ -4339,7 +6061,7 @@
   {
     "name": "Sundering Axe Upgrade",
     "displayName": "Sundering Arc",
-    "slug": "sundering-axe-upgrade",
+    "slug": "sundering-arc",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/sundering-arc",
     "pageTitle": "Sundering Arc",
@@ -4349,11 +6071,67 @@
     "itemType": "",
     "tags": [],
     "stats": [],
-    "passive": "On Use: \u2022 Bleed enemies, dealing 25 (+4 per Level) True Damage 3 times over 2s. Jungle Monsters and Bosses take 50 (+8 per Level) instead. Cooldown: 120s. -30s Cooldown if only used on Jungle Monsters/Bosses.",
+    "passive": "On Use: • Bleed enemies, dealing 25 (+4 per Level) True Damage 3 times over 2s. Jungle Monsters and Bosses take 50 (+8 per Level) instead. Cooldown: 120s. -30s Cooldown if only used on Jungle Monsters/Bosses.",
     "categoriesSeen": [
       "Starter"
     ],
-    "sampleCount": 106
+    "sampleCount": 107
+  },
+  {
+    "name": "Sundering Echo",
+    "displayName": "Sundering Echo",
+    "slug": "sundering-echo",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/sundering-echo",
+    "pageTitle": "Sundering Echo",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/sundering-echo?v=dbc053df",
+    "summary": "",
+    "cost": 2500,
+    "itemType": "Relic Tier 3",
+    "tags": [
+      "Relic",
+      "Tier 3"
+    ],
+    "stats": [],
+    "passive": "Adaptive Stat: +25 Strength or +45 Intelligence (based on highest item stat). +7.5% of all Stats from Items. On Use: • Bleed enemies, dealing 25 (+4 per Level) True Damage 5 times over 4s. Jungle Monsters and Bosses take 50 (+8 per Level) instead. • Enemies who die while bleeding explode, applying the bleed to nearby enemies. -30s Cooldown if only used on Jungle Monsters/Bosses. Cooldown: 120s",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Surplus Mod",
+    "displayName": "Surplus Mod",
+    "slug": "surplus-mod",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/surplus-mod",
+    "pageTitle": "Surplus Mod",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/surplus-mod?v=72738673",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "You can have 2 Inferno Cannons deployed at the same time. Set 3 - You can only have one Mod from each set. Requires level 14.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Survivor's Sash",
+    "displayName": "Survivor's Sash",
+    "slug": "survivors-sash",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/survivors-sash",
+    "pageTitle": "Survivor's Sash",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/survivors-sash?v=05bd99a0",
+    "summary": "",
+    "cost": 1000,
+    "itemType": "Tier 2",
+    "tags": [
+      "Tier 2"
+    ],
+    "stats": [],
+    "passive": "Adaptive Stat: +25 Strength or +35 Intelligence (based on highest item stat).",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Survivors Sash",
@@ -4374,7 +6152,7 @@
     "categoriesSeen": [
       "Tier 2"
     ],
-    "sampleCount": 14
+    "sampleCount": 15
   },
   {
     "name": "Talisman of Purification",
@@ -4394,7 +6172,7 @@
     "stats": [
       "Cooldown Reduction 20%"
     ],
-    "passive": "+7.5% of all Stats from Items. On Use: You and Allies within 6.4m: \u2022 Are Cleansed of all Crowd Control \u2022 Gain Crowd Control Immunity for 1s Cooldown: 140s",
+    "passive": "+7.5% of all Stats from Items. On Use: You and Allies within 6.4m: • Are Cleansed of all Crowd Control • Gain Crowd Control Immunity for 1s Cooldown: 140s",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -4425,6 +6203,77 @@
       "Tier 3"
     ],
     "sampleCount": 17
+  },
+  {
+    "name": "Tekko-Kagi",
+    "displayName": "Tekko-Kagi",
+    "slug": "tekko-kagi",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/tekko-kagi",
+    "pageTitle": "Tekko-Kagi",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/tekko-kagi?v=89e2dd2a",
+    "summary": "",
+    "cost": 2700,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Strength 35",
+      "Attack Speed 20%",
+      "Magical Penetration Flat 10"
+    ],
+    "passive": "Ability Used: Gain a stack of Momentum. Momentum grants +7% Pathfinding for 8s. Stacks up to 3 times.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "The Cosmic Horror",
+    "displayName": "The Cosmic Horror",
+    "slug": "the-cosmic-horror",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/the-cosmic-horror",
+    "pageTitle": "The Cosmic Horror",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/the-cosmic-horror?v=31862784",
+    "summary": "",
+    "cost": 2650,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Intelligence 55",
+      "Magical Penetration Flat 10",
+      "Echo Item 20"
+    ],
+    "passive": "Each time you Echo: +1 Stack. At 3 Stacks: Next time you Echo: • Spawn a tentacle that deals deals Bonus Magical Damage (45% Intelligence over 1.5s) • Stacks are removed when a tentacle spawns. • Tentacles can spawn once every second. • Tentacles will only spawn when hitting a God or Jungle Boss",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "The Crusher",
+    "displayName": "The Crusher",
+    "slug": "the-crusher",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/the-crusher",
+    "pageTitle": "The Crusher",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/the-crusher?v=d26c7751",
+    "summary": "",
+    "cost": 2750,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Strength 55",
+      "Magical Penetration Flat 10"
+    ],
+    "passive": "Ability Hit: +Physical Damage. • Damage = 35% of your Strength • Damage is dealt over 1s • Subsequent hits on the same target deal 33% bonus Damage, over 3s.",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "The Executioner",
@@ -4470,7 +6319,7 @@
       "Lifesteal 7.5%",
       "Magical Penetration Flat 10"
     ],
-    "passive": "Kill a God: \u2022 Heal +15% of Slain God's Max Health \u2022 Assist a God: Heal +7.5% of Slain God's Max Health. During Moonlight Phase: \u2022 Heal +15% of Slain God's Max Health, on Kill or Assist",
+    "passive": "Kill a God: • Heal +15% of Slain God's Max Health • Assist a God: Heal +7.5% of Slain God's Max Health. During Moonlight Phase: • Heal +15% of Slain God's Max Health, on Kill or Assist",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -4501,12 +6350,72 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 48
+    "sampleCount": 49
+  },
+  {
+    "name": "Thermal Mod",
+    "displayName": "Thermal Mod",
+    "slug": "thermal-mod",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/thermal-mod",
+    "pageTitle": "Thermal Mod",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/thermal-mod?v=a54a50e0",
+    "summary": "",
+    "cost": null,
+    "itemType": "",
+    "tags": [],
+    "stats": [],
+    "passive": "Backfire and Magma Bomb deal 30 + 15% INT Bonus Magical Damage. Set 2 - You can only have one Mod from each set. Requires level 7.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Thistlethorn Acorn",
+    "displayName": "Thistlethorn Acorn",
+    "slug": "thistlethorn-acorn",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/thistlethorn-acorn",
+    "pageTitle": "Thistlethorn Acorn",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/thistlethorn-acorn?v=cabe2b29",
+    "summary": "",
+    "cost": 2000,
+    "itemType": "God-Specific Tier 3",
+    "tags": [
+      "God-Specific",
+      "Tier 3"
+    ],
+    "stats": [],
+    "passive": "Non-Aspect: +45 Strength +5% Lifesteal Acorn Blast attaches to enemy gods, or stops at max range, and explodes after a delay. Aspect: +400 Health +10 Cooldown Rate Acorn Blast fires 5 projectiles and debuffs enemies hit, causing them to take more damage from you.",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Time-lock Aegis",
+    "displayName": "Time-lock Aegis",
+    "slug": "time-lock-aegis",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/time-lock-aegis",
+    "pageTitle": "Time-lock Aegis",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/time-lock-aegis?v=d5fa2c02",
+    "summary": "",
+    "cost": 2500,
+    "itemType": "Relic Tier 3",
+    "tags": [
+      "Relic",
+      "Tier 3"
+    ],
+    "stats": [
+      "Physical Protection Item 15",
+      "Magical Protection Item 15"
+    ],
+    "passive": "+6% of all Stats from Items. On Use: Become time-locked, unable to move and act. You are Immune (to damage and healing) for 2.25s. • While Time-Locked, rapidly restore 15s worth of Regen and 7.5s of Cooldowns. • Reactivate to exit early. Cooldown: 140s",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Titan's Bane",
     "displayName": "Titan's Bane",
-    "slug": "titan-ss-bane",
+    "slug": "titans-bane",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/titans-bane",
     "pageTitle": "Titan's Bane",
@@ -4522,7 +6431,7 @@
       "Strength 40",
       "Magical Penetration 20%"
     ],
-    "passive": "Gain the Shattering effect: First Ability Cast: Gains +20% Penetration \u2022 This effect ignores the Penetration cap \u2022 Shattering does not stack with itself. Cooldown: 10s",
+    "passive": "Gain the Shattering effect: First Ability Cast: Gains +20% Penetration • This effect ignores the Penetration cap • Shattering does not stack with itself. Cooldown: 10s",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -4548,11 +6457,11 @@
       "Echo Item 10",
       "Cooldown Reduction 20%"
     ],
-    "passive": "Each time you Echo: \u2022 Deals Bonus Magical Damage equal to 10% of target's Missing Health \u2022 Can only affect Gods and Jungle Bosses. \u2022 Can only occur once every second.",
+    "passive": "Each time you Echo: • Deals Bonus Magical Damage equal to 10% of target's Missing Health • Can only affect Gods and Jungle Bosses. • Can only occur once every second.",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 51
+    "sampleCount": 53
   },
   {
     "name": "Toxic Blade",
@@ -4575,11 +6484,11 @@
       "Attack Speed 20%",
       "Magical Penetration Flat 10"
     ],
-    "passive": "Hit a God with an Attack: Apply 25% Healing Reduction and 7% Attack Speed reduction for 5s. Gain 7% Attack Speed for 5s. \u2022 Attack Speed Buff and Debuff can stack up to 3 times.",
+    "passive": "Hit a God with an Attack: Apply 25% Healing Reduction and 7% Attack Speed reduction for 5s. Gain 7% Attack Speed for 5s. • Attack Speed Buff and Debuff can stack up to 3 times.",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 6
+    "sampleCount": 9
   },
   {
     "name": "Transcendence",
@@ -4601,11 +6510,35 @@
       "Max Mana 250",
       "Mana Regen 4"
     ],
-    "passive": "+Strength equal to 3% of Mana from Items. Deal 700 Damage to Minions or Jungle Monsters: +1 Evolve Stack +1 Mana Infusion Stack (Max 50 Stacks) \u2022 Damage dealt to Gods counts double Per Mana Infusion Stack: +10 Mana. At 50 Evolve Stacks, item evolves and gains: \u2022 +10 Penetration \u2022 +100 Mana",
+    "passive": "+Strength equal to 3% of Mana from Items. Deal 700 Damage to Minions or Jungle Monsters: +1 Evolve Stack +1 Mana Infusion Stack (Max 50 Stacks) • Damage dealt to Gods counts double Per Mana Infusion Stack: +10 Mana. At 50 Evolve Stacks, item evolves and gains: • +10 Penetration • +100 Mana",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 155
+  },
+  {
+    "name": "Triton's Conch",
+    "displayName": "Triton's Conch",
+    "slug": "tritons-conch",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/tritons-conch",
+    "pageTitle": "Triton's Conch",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/tritons-conch?v=d32c1898",
+    "summary": "",
+    "cost": 2700,
+    "itemType": "Hybrid Tier 3",
+    "tags": [
+      "Hybrid",
+      "Tier 3"
+    ],
+    "stats": [
+      "Strength 25",
+      "Intelligence 40",
+      "Max Health 250"
+    ],
+    "passive": "You and allies within 8.8m: • +5 (+0.5 per Level) Strength • +5 (+1 per Level) Intelligence",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Tritons Conch",
@@ -4627,11 +6560,34 @@
       "Intelligence 40",
       "Max Health 250"
     ],
-    "passive": "You and allies within 8.8m: \u2022 +5 (+0.5 per Level) Strength \u2022 +5 (+1 per Level) Intelligence",
+    "passive": "You and allies within 8.8m: • +5 (+0.5 per Level) Strength • +5 (+1 per Level) Intelligence",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 30
+  },
+  {
+    "name": "Typhon's Heart",
+    "displayName": "Typhon's Heart",
+    "slug": "typhons-heart",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/typhons-heart",
+    "pageTitle": "Typhon's Heart",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/typhons-heart?v=24ef814e",
+    "summary": "",
+    "cost": 2600,
+    "itemType": "Offensive Tier 3",
+    "tags": [
+      "Offensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Intelligence 80",
+      "Lifesteal 7.5%"
+    ],
+    "passive": "On Minion or Jungle Kill: +1 Stack On God Kill: +30 Stacks On Assist: +15 Stacks At 30 Stacks: Summon a Monster of Typhon • Health = 200 (+55 per Level) • Damage = 300% of your Lifesteal and 30% of your Intelligence • Your Lifesteal heals the monster If another would be summoned: • Fully Heal current monster • Buff it with +25% Health, Attack Speed, and Movement Speed (Stacks up to 5x)",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Typhons Heart",
@@ -4652,11 +6608,11 @@
       "Intelligence 80",
       "Lifesteal 7.5%"
     ],
-    "passive": "On Minion or Jungle Kill: +1 Stack On God Kill: +30 Stacks On Assist: +15 Stacks At 30 Stacks: Summon a Monster of Typhon \u2022 Health = 200 (+55 per Level) \u2022 Damage = 300% of your Lifesteal and 30% of your Intelligence \u2022 Your Lifesteal heals the monster If another would be summoned: \u2022 Fully Heal current monster \u2022 Buff it with +25% Health, Attack Speed, and Movement Speed (Stacks up to 5x)",
+    "passive": "On Minion or Jungle Kill: +1 Stack On God Kill: +30 Stacks On Assist: +15 Stacks At 30 Stacks: Summon a Monster of Typhon • Health = 200 (+55 per Level) • Damage = 300% of your Lifesteal and 30% of your Intelligence • Your Lifesteal heals the monster If another would be summoned: • Fully Heal current monster • Buff it with +25% Health, Attack Speed, and Movement Speed (Stacks up to 5x)",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 33
+    "sampleCount": 34
   },
   {
     "name": "Tyrfing",
@@ -4678,11 +6634,11 @@
       "Inhand Power 25",
       "Attack Speed 10%"
     ],
-    "passive": "Attacks deal +15 bonus Physical Damage. On God hit: \u2022 Increase bonus Damage by +15 for 4s \u2022 Stacks once, +1 Stack per 4 Levels (Max 6 Stacks)",
+    "passive": "Attacks deal +15 bonus Physical Damage. On God hit: • Increase bonus Damage by +15 for 4s • Stacks once, +1 Stack per 4 Levels (Max 6 Stacks)",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 106
+    "sampleCount": 109
   },
   {
     "name": "Umbral Link",
@@ -4703,7 +6659,7 @@
       "Physical Protection 40",
       "Lifesteal 10%"
     ],
-    "passive": "Above 50% Health: Split your Lifesteal Healing with allies within 11.2m. \u2022 +10 Physical and Magical Protections for 8s per unique ally Healed",
+    "passive": "Above 50% Health: Split your Lifesteal Healing with allies within 11.2m. • +10 Physical and Magical Protections for 8s per unique ally Healed",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -4712,7 +6668,7 @@
   {
     "name": "Vampiric Cloak",
     "displayName": "Vampiric Shroud",
-    "slug": "vampiric-cloak",
+    "slug": "vampiric-shroud",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/vampiric-shroud",
     "pageTitle": "Vampiric Shroud",
@@ -4727,11 +6683,33 @@
       "Max Health 100",
       "Lifesteal 4%"
     ],
-    "passive": "Adaptive Stat: +10 Strength or +20 Intelligence (based on highest item stat). Ability Hit: \u2022 +4 Health Heal \u2022 +4 Mana Recovery Once per target, per Ability. Requires Level 20 to upgrade.",
+    "passive": "Adaptive Stat: +10 Strength or +20 Intelligence (based on highest item stat). Ability Hit: • +4 Health Heal • +4 Mana Recovery Once per target, per Ability. Requires Level 20 to upgrade.",
     "categoriesSeen": [
       "Starter"
     ],
     "sampleCount": 5
+  },
+  {
+    "name": "Vampiric Shroud",
+    "displayName": "Vampiric Shroud",
+    "slug": "vampiric-shroud",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/vampiric-shroud",
+    "pageTitle": "Vampiric Shroud",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/vampiric-shroud?v=e58462de",
+    "summary": "",
+    "cost": 600,
+    "itemType": "Starter",
+    "tags": [
+      "Starter"
+    ],
+    "stats": [
+      "Max Health 100",
+      "Lifesteal 4%"
+    ],
+    "passive": "Adaptive Stat: +10 Strength or +20 Intelligence (based on highest item stat). Ability Hit: • +4 Health Heal • +4 Mana Recovery Once per target, per Ability. Requires Level 20 to upgrade.",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Veve Charm",
@@ -4754,7 +6732,7 @@
     "categoriesSeen": [
       "Tier 2"
     ],
-    "sampleCount": 15
+    "sampleCount": 16
   },
   {
     "name": "Vital Amplifier",
@@ -4776,7 +6754,7 @@
       "Health Regen 3",
       "Attack Speed 10%"
     ],
-    "passive": "Adaptive Stat: +30 Strength or +45 Intelligence (based on highest item stat). Heal yourself or an ally with an Ability: \u2022 +7.5% Attack Speed \u2022 +5% Attack Damage \u2022 Buff lasts 6s, Stacks up to 3x",
+    "passive": "Adaptive Stat: +30 Strength or +45 Intelligence (based on highest item stat). Heal yourself or an ally with an Ability: • +7.5% Attack Speed • +5% Attack Damage • Buff lasts 6s, Stacks up to 3x",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -4824,7 +6802,7 @@
       "Physical Protection Item 55",
       "Max Health 150"
     ],
-    "passive": "Enemies Within 8.8m: -10% Physical Protection. Range Scaling Debuff: \u2022 +50% at Close Range \u2022 -50% at Maximum Range",
+    "passive": "Enemies Within 8.8m: -10% Physical Protection. Range Scaling Debuff: • +50% at Close Range • -50% at Maximum Range",
     "categoriesSeen": [
       "Tier 3"
     ],
@@ -4849,11 +6827,11 @@
       "Magical Protection Item 60",
       "Max Health 150"
     ],
-    "passive": "Enemies Within 8.8m: -10% Magical Protection. Range Scaling Debuff: \u2022 +50% at Close Range \u2022 -50% at Maximum Range",
+    "passive": "Enemies Within 8.8m: -10% Magical Protection. Range Scaling Debuff: • +50% at Close Range • -50% at Maximum Range",
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 25
+    "sampleCount": 26
   },
   {
     "name": "War Banner",
@@ -4874,7 +6852,7 @@
       "Magical Protection Item 30",
       "Attack Speed 30%"
     ],
-    "passive": "Kill or Assist Minion or Jungle Monster: You and allies within 8.8m gain: \u2022 +1% Health Heal \u2022 +1.25% Mana Restore \u2022 +3.5% Movement Speed \u2022 +6.5% Attack Speed Movement and Attack Speed Buff lasts 10s, Stacks up to 6 times. Requires Level 20.",
+    "passive": "Kill or Assist Minion or Jungle Monster: You and allies within 8.8m gain: • +1% Health Heal • +1.25% Mana Restore • +3.5% Movement Speed • +6.5% Attack Speed Movement and Attack Speed Buff lasts 10s, Stacks up to 6 times. Requires Level 20.",
     "categoriesSeen": [
       "Starter"
     ],
@@ -4899,11 +6877,33 @@
       "Magical Protection Item 10",
       "Attack Speed 10%"
     ],
-    "passive": "Kill or Assist Minion or Jungle Monster; You and Allied Gods within 8.8m gain: \u2022 +0.5% Movement Speed \u2022 +1% Attack Speed \u2022 Buff lasts 10s, Stacks up to 6 times Assist Minion or Jungle Monster; You and Allied Gods within 8.8m: \u2022 Heal 7 Health Requires Level 20 to upgrade.",
+    "passive": "Kill or Assist Minion or Jungle Monster; You and Allied Gods within 8.8m gain: • +0.5% Movement Speed • +1% Attack Speed • Buff lasts 10s, Stacks up to 6 times Assist Minion or Jungle Monster; You and Allied Gods within 8.8m: • Heal 7 Health Requires Level 20 to upgrade.",
     "categoriesSeen": [
       "Starter"
     ],
     "sampleCount": 26
+  },
+  {
+    "name": "Warrior's Axe",
+    "displayName": "Warrior's Axe",
+    "slug": "warriors-axe",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/warriors-axe",
+    "pageTitle": "Warrior's Axe",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/warriors-axe?v=bbecd935",
+    "summary": "",
+    "cost": 650,
+    "itemType": "Starter",
+    "tags": [
+      "Starter"
+    ],
+    "stats": [
+      "Physical Protection 10",
+      "Magical Protection 10"
+    ],
+    "passive": "Adaptive Stat: +10 Strength or +20 Intelligence (based on highest item stat). Damage a God: • +20 (+2 per Level) Bonus True Damage • +40 (+1 per Level) Heal Hits only one God per activation Requires Level 20 to upgrade. Cooldown: 8s",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Wish-Granting Pearl",
@@ -4929,7 +6929,7 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 1
+    "sampleCount": 3
   },
   {
     "name": "Wyrmskin Hide",
@@ -4959,9 +6959,9 @@
     "sampleCount": 12
   },
   {
-    "name": "Xibalban Effigy New",
+    "name": "Xibalban Effigy",
     "displayName": "Xibalban Effigy",
-    "slug": "xibalban-effigy-new",
+    "slug": "xibalban-effigy",
     "source": "smitebrain",
     "sourceUrl": "https://smitebrain.com/items/xibalban-effigy",
     "pageTitle": "Xibalban Effigy",
@@ -4979,11 +6979,61 @@
       "Max Mana 300",
       "Mana Regen 4"
     ],
-    "passive": "On Use: Take 50% Damage for 4s. \u2022 After: Take Physical Damage equal to mitigated Damage \u2022 Cannot drop below 5% Health Cooldown: 90s During Moonlight Phase: \u2022 Only 50% of the mitigated Damage is dealt back",
+    "passive": "On Use: Take 50% Damage for 4s. • After: Take Physical Damage equal to mitigated Damage • Cannot drop below 5% Health Cooldown: 90s During Moonlight Phase: • Only 50% of the mitigated Damage is dealt back",
+    "categoriesSeen": [],
+    "sampleCount": 0
+  },
+  {
+    "name": "Xibalban Effigy New",
+    "displayName": "Xibalban Effigy",
+    "slug": "xibalban-effigy",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/xibalban-effigy",
+    "pageTitle": "Xibalban Effigy",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/xibalban-effigy?v=65e57103",
+    "summary": "",
+    "cost": 2750,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Physical Protection 30",
+      "Magical Protection 30",
+      "Max Mana 300",
+      "Mana Regen 4"
+    ],
+    "passive": "On Use: Take 50% Damage for 4s. • After: Take Physical Damage equal to mitigated Damage • Cannot drop below 5% Health Cooldown: 90s During Moonlight Phase: • Only 50% of the mitigated Damage is dealt back",
     "categoriesSeen": [
       "Tier 3"
     ],
     "sampleCount": 3
+  },
+  {
+    "name": "Yogi's Necklace",
+    "displayName": "Yogi's Necklace",
+    "slug": "yogis-necklace",
+    "source": "smitebrain",
+    "sourceUrl": "https://smitebrain.com/items/yogis-necklace",
+    "pageTitle": "Yogi's Necklace",
+    "imageUrl": "https://smitebrain.com/cdn-cgi/image//https://images.smitebrain.com/images/items/icons/yogis-necklace?v=79e924b5",
+    "summary": "",
+    "cost": 2250,
+    "itemType": "Defensive Tier 3",
+    "tags": [
+      "Defensive",
+      "Tier 3"
+    ],
+    "stats": [
+      "Max Health 325",
+      "Max Mana 250",
+      "Health Regen 6",
+      "Mana Regen 6"
+    ],
+    "passive": "Heal +0.5% of Max Health per second.",
+    "categoriesSeen": [],
+    "sampleCount": 0
   },
   {
     "name": "Yogis Necklace",
@@ -5010,7 +7060,7 @@
     "categoriesSeen": [
       "Tier 3"
     ],
-    "sampleCount": 235
+    "sampleCount": 238
   },
   {
     "name": "Zisurru",
@@ -5029,7 +7079,7 @@
     "categoriesSeen": [
       "Tier 2"
     ],
-    "sampleCount": 9
+    "sampleCount": 11
   },
   {
     "name": "Zither",

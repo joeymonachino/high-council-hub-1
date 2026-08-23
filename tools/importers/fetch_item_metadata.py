@@ -57,6 +57,13 @@ SMITEBRAIN_ITEM_SLUG_ALIASES = {
     'draconic scales': ['draconic-scale'],
     'erosbow': ['eros-bow'],
     'gladiator shield': ['gladiators-shield'],
+    "gladiator's shield": ['gladiators-shield'],
+    'dwarf forged plate physical': ['dwarven-plate'],
+    'restorative amanita': ['amanita-charm'],
+    'design temp t3 new sun beam bow': ['sun-beam-bow'],
+    "shogun's ofuda": ['shoguns-ofuda'],
+    'ragnaroks wake': ['ragnaroks-wake'],
+    "ragnarok's wake": ['ragnaroks-wake'],
     'hand of the abyss': ['bracer-of-the-abyss'],
     'hideofthe nemean lion': ['hide-of-the-nemean-lion'],
     'items t3 omen drum': ['omen-drum'],
@@ -276,12 +283,54 @@ def empty_metadata(name: str) -> dict[str, Any]:
     return {"name": name, "displayName": name, "slug": item_slug(name), "source": "history", "sourceUrl": "", "summary": "", "cost": None, "itemType": "", "tags": [], "stats": [], "passive": ""}
 
 
+def collect_smitebrain_catalog_items() -> dict[str, dict[str, Any]]:
+    """Collect every current item listed by SmiteBrain so the catalog is complete."""
+    response = requests.get(BASE_URL, headers=HEADERS, timeout=30)
+    response.raise_for_status()
+    response.encoding = "utf-8"
+    catalog: dict[str, dict[str, Any]] = {}
+    for href, label in re.findall(r'<a[^>]+href="(/items/[^"]+)"[^>]*>([\s\S]*?)</a>', response.text, flags=re.I):
+        name = strip_tags(label)
+        if not name or name.lower() in {"items", "builds", "gods", "tier list", "skins", "lab"}:
+            continue
+        key = name.lower()
+        catalog.setdefault(
+            key,
+            {
+                "name": clean_item_display_name(name),
+                "images": set(),
+                "categories": set(),
+                "sampleCount": 0,
+                "sourceHref": href,
+            },
+        )
+    return catalog
+
+
+def merge_item_sources(*sources: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    merged: dict[str, dict[str, Any]] = {}
+    for source in sources:
+        for key, row in source.items():
+            name = clean_item_display_name(str(row.get("name") or key))
+            merged_key = name.lower()
+            target = merged.setdefault(merged_key, {"name": name, "images": set(), "categories": set(), "sampleCount": 0})
+            target["sampleCount"] = int(target.get("sampleCount") or 0) + int(row.get("sampleCount") or 0)
+            target["images"].update(row.get("images") or [])
+            target["categories"].update(row.get("categories") or [])
+            if row.get("sourceHref"):
+                target["sourceHref"] = row.get("sourceHref")
+    return merged
+
+
 def fetch_metadata(name: str, timeout: int = 20) -> dict[str, Any]:
     slug = item_slug(name)
     candidates = [slug]
     candidates.extend(SMITEBRAIN_ITEM_SLUG_ALIASES.get(str(name or "").strip().lower(), []))
     if "-s-" in slug:
         candidates.append(slug.replace("-s-", "s-"))
+    possessive_slug = tracker_slug(name)
+    if possessive_slug and possessive_slug != slug:
+        candidates.append(possessive_slug)
     if slug.endswith("-s"):
         candidates.append(slug[:-2] + "s")
     last_error = ""
@@ -291,7 +340,9 @@ def fetch_metadata(name: str, timeout: int = 20) -> dict[str, Any]:
             response = requests.get(url, headers=HEADERS, timeout=timeout)
             response.encoding = "utf-8"
             if response.status_code == 200 and ("SmiteBrain" in response.text or "SMITE 2 Item" in response.text):
-                return parse_item_page(name, response.text, url)
+                metadata = parse_item_page(name, response.text, url)
+                metadata["slug"] = candidate
+                return metadata
             last_error = f"{response.status_code} {url}"
         except requests.RequestException as exc:
             last_error = str(exc)
@@ -354,13 +405,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--limit", type=int, default=0, help="Optional limit for testing.")
     parser.add_argument("--sleep", type=float, default=0.15, help="Delay between item page requests.")
     parser.add_argument("--no-fetch", action="store_true", help="Only collect names/images/sample counts from stored match history; do not call an item website.")
+    parser.add_argument("--include-smitebrain-catalog", action="store_true", help="Seed every item listed on SmiteBrain, not just items seen in council match history.")
+    parser.add_argument("--catalog-only", action="store_true", help="Use the SmiteBrain item list only; skip match-history item collection.")
     parser.add_argument("--upsert", action="store_true", help="Upsert generated rows into the Supabase item_metadata table.")
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    used = collect_used_items()
+    used = {} if args.catalog_only else collect_used_items()
+    catalog = collect_smitebrain_catalog_items() if (args.include_smitebrain_catalog or args.catalog_only) else {}
+    used = merge_item_sources(catalog, used) if catalog else used
     usage_rows = sorted(used.values(), key=lambda row: str(row.get("name") or "").lower())
     if args.limit:
         usage_rows = usage_rows[: args.limit]
@@ -387,5 +442,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 
 
