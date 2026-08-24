@@ -650,7 +650,9 @@
       "name": "Cleric's Cloak",
       "beginnerType": "Utility",
       "tags": [
-        "Tier 2"
+        "Tier 2",
+        "Tenacity",
+        "Crowd Control"
       ],
       "reviewed": false,
       "metadataFingerprint": "a357d9dd0d1d7aff",
@@ -1019,7 +1021,9 @@
         "Tier 3",
         "Hybrid",
         "Magical Damage",
-        "Health"
+        "Health",
+        "Tenacity",
+        "Crowd Control"
       ],
       "reviewed": false,
       "metadataFingerprint": "3f451dea2e049f34",
@@ -1686,6 +1690,7 @@
         "Defense",
         "Physical Protection",
         "Magical Protection",
+        "Tenacity",
         "Crowd Control",
         "Anti-Burst",
         "Tier 3"

@@ -125,7 +125,7 @@ CURATED = {
     "Kinetic Cuirass": ["Hybrid", "Physical Protection", "Health", "Physical Damage", "Basic Attack", "Bruiser", "Tier 3"],
     "Leviathan's Hide": ["Defense", "Health", "Physical Protection", "Magical Protection", "Debuff", "Anti-Burst", "Tier 3"],
     "Lifebinder": ["Hybrid", "Magical Damage", "Health", "Healing", "Sustain", "Teamfight", "Tier 3"],
-    "Mantle of Discord": ["Defense", "Physical Protection", "Magical Protection", "Crowd Control", "Anti-Burst", "Tier 3"],
+    "Mantle of Discord": ["Defense", "Physical Protection", "Magical Protection", "Tenacity", "Crowd Control", "Anti-Burst", "Tier 3"],
     "Midgardian Mail": ["Defense", "Physical Protection", "Health", "Debuff", "Anti-Basic Attack", "Tier 3"],
     "Mystical Mail": ["Defense", "Physical Protection", "Health", "Aura", "Anti-Shield", "Teamfight", "Tier 3"],
     "Oni Hunter's Garb": ["Defense", "Magical Protection", "Health", "Mitigation", "Anti-Burst", "Tier 3"],
@@ -276,6 +276,7 @@ def tags_from_stats_type(row):
     if re.search(r"Max Health|Health Regen", stats, re.I): tags.append("Health")
     if re.search(r"Max Mana|Mana Regen", stats, re.I): tags.append("Mana")
     if re.search(r"Cooldown", stats, re.I): tags.append("Cooldown")
+    if re.search(r"Tenacity|Crowd Control Reduction|CCR", stats, re.I): tags.extend(["Tenacity", "Crowd Control"])
     if re.search(r"Attack Speed", stats, re.I): tags.extend(["Basic Attack", "Attack Speed"])
     if re.search(r"Crit", stats, re.I): tags.extend(["Basic Attack", "Crit"])
     if re.search(r"Lifesteal", stats, re.I): tags.extend(["Lifesteal", "Sustain"])
