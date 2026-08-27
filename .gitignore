@@ -12,3 +12,6 @@ data/har_files/
 data/supabase_backups/
 data/backups/
 data/generated/*_test.json
+
+.vercel
+.env*
