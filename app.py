@@ -12,6 +12,7 @@ import random
 import re
 import time
 from datetime import datetime, timezone
+from io import BytesIO
 from pathlib import Path
 from statistics import mean
 from typing import Any
@@ -3279,7 +3280,6 @@ def load_app_state() -> dict[str, Any]:
         "ratings": ("council_ratings", {"select": "*"}),
         "rankings": ("personal_rankings", {"select": "*"}),
         "history": ("rating_history", {"select": "*", "order": "changed_at.desc", "limit": "120"}),
-        "item_metadata": ("item_metadata", {"select": "name,display_name,slug,source,source_url,image_url,summary,cost,item_type,tags,stats,passive,categories_seen,sample_count,updated_at", "order": "name.asc"}),
     }
     bootstrap_results: dict[str, list[dict[str, Any]]] = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(bootstrap_reads)) as executor:
@@ -3291,9 +3291,6 @@ def load_app_state() -> dict[str, Any]:
             except Exception as exc:  # noqa: BLE001
                 bootstrap_results[key] = []
                 errors.append(f"{key} fallback: {exc}")
-
-    item_metadata_rows = load_item_metadata_rows(bootstrap_results.get("item_metadata"))
-    item_taxonomy = load_json_snapshot("item_taxonomy.json")
 
     meta_rows = bootstrap_results.get("meta") or json_meta_rows
     if bootstrap_results.get("meta"):
@@ -3319,8 +3316,6 @@ def load_app_state() -> dict[str, Any]:
         "catalog": catalog,
         "all_rankings": all_rankings,
         "recent_history": merged_history[:120],
-        "item_metadata": item_metadata_rows,
-        "item_taxonomy": item_taxonomy,
         "errors": errors,
         "stats": {
             "total_gods": total_gods,
@@ -3740,8 +3735,8 @@ def index():
     return render_template("index.html")
 
 
-# This route returns the initial app payload needed to render every tab and the
-# rank editor without additional page loads.
+# This route returns only the data needed by the four primary views and the
+# unchanged rank editor. Match-heavy profiles remain lazy-loaded separately.
 @app.route("/api/bootstrap")
 def api_bootstrap():
     state = load_app_state()
@@ -3759,11 +3754,203 @@ def api_bootstrap():
             "gods": state["catalog"],
             "allRankings": state["all_rankings"],
             "recentHistory": state["recent_history"],
-            "itemMetadata": state["item_metadata"],
-            "itemTaxonomy": state.get("item_taxonomy", {}),
             "errors": state["errors"],
         }
     )
+
+
+# This route exports the same authoritative ratings, profile summaries, god
+# performance, chemistry records, and match rows used by the app. It does not
+# recalculate ranking order or match outcomes.
+@app.route("/api/export.xlsx")
+def api_export_xlsx():
+    from openpyxl import Workbook
+    from openpyxl.styles import Alignment, Font, PatternFill
+    from openpyxl.worksheet.table import Table, TableStyleInfo
+    from openpyxl.utils import get_column_letter
+
+    state = load_app_state()
+    profiles = load_rater_stats()
+    match_rows = load_all_match_summary_rows(timeout=8, limit=MATCH_HISTORY_UI_ROW_LIMIT)
+
+    workbook = Workbook()
+    workbook.remove(workbook.active)
+    gold = "E7C46A"
+    dark = "111820"
+    charcoal = "26313D"
+    pale = "F4E8C2"
+
+    def excel_datetime(value: Any) -> datetime | str:
+        if not value:
+            return ""
+        try:
+            parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+            if parsed.tzinfo:
+                parsed = parsed.astimezone(timezone.utc).replace(tzinfo=None)
+            return parsed
+        except (TypeError, ValueError):
+            return str(value)
+
+    def percent(value: Any) -> float | None:
+        return round(float(value) / 100, 4) if value is not None and value != "" else None
+
+    def write_table(sheet, headers: list[str], rows: list[list[Any]], table_name: str, start_row: int = 1) -> None:
+        for column, header in enumerate(headers, 1):
+            cell = sheet.cell(start_row, column, header)
+            cell.fill = PatternFill("solid", fgColor=dark)
+            cell.font = Font(color="FFFFFF", bold=True)
+            cell.alignment = Alignment(vertical="center")
+        for row_index, values in enumerate(rows, start_row + 1):
+            for column, value in enumerate(values, 1):
+                sheet.cell(row_index, column, value)
+        sheet.freeze_panes = f"A{start_row + 1}"
+        sheet.auto_filter.ref = f"A{start_row}:{get_column_letter(len(headers))}{max(sheet.max_row, start_row)}"
+        if rows:
+            table = Table(displayName=table_name, ref=f"A{start_row}:{get_column_letter(len(headers))}{sheet.max_row}")
+            table.tableStyleInfo = TableStyleInfo(name="TableStyleMedium2", showRowStripes=True, showColumnStripes=False)
+            sheet.add_table(table)
+        for column, header in enumerate(headers, 1):
+            values = [str(sheet.cell(row, column).value or "") for row in range(start_row, min(sheet.max_row, start_row + 250) + 1)]
+            sheet.column_dimensions[get_column_letter(column)].width = min(max(max(map(len, values), default=len(header)) + 2, 11), 34)
+            if "Win Rate" in header:
+                for row in range(start_row + 1, sheet.max_row + 1):
+                    sheet.cell(row, column).number_format = "0.0%"
+            if header in {"Date", "Last Played"}:
+                for row in range(start_row + 1, sheet.max_row + 1):
+                    sheet.cell(row, column).number_format = "yyyy-mm-dd hh:mm"
+
+    overview = workbook.create_sheet("Overview")
+    overview.sheet_view.showGridLines = False
+    overview["A1"] = "High Council Hub Export"
+    overview["A1"].font = Font(size=20, bold=True, color=dark)
+    overview["A2"] = "Generated"
+    overview["B2"] = datetime.now(timezone.utc).replace(tzinfo=None)
+    overview["B2"].number_format = "yyyy-mm-dd hh:mm"
+    overview["A3"] = "Source"
+    overview["B3"] = "Existing app ratings, rankings, stored match summaries, and chemistry logic"
+    summary_rows = []
+    for player in PLAYERS:
+        profile = profiles.get(player, {})
+        metrics = profile.get("metrics") or {}
+        summary_rows.append([
+            player,
+            metrics.get("matches") or 0,
+            metrics.get("wins") or 0,
+            metrics.get("losses") or 0,
+            percent(metrics.get("winRate")),
+            metrics.get("kdaRatio"),
+            metrics.get("damagePerMin"),
+            metrics.get("hoursPlayed"),
+        ])
+    write_table(
+        overview,
+        ["Player", "Matches", "Wins", "Losses", "Win Rate", "KDA", "Damage / Min", "Hours"],
+        summary_rows,
+        "OverviewPlayers",
+        start_row=5,
+    )
+    overview.column_dimensions["B"].width = max(overview.column_dimensions["B"].width or 0, 18)
+
+    ratings = workbook.create_sheet("Ratings & Rankings")
+    rating_rows = []
+    for god in sorted(state["catalog"], key=lambda row: (int(row.get("Rank") or 9999), str(row.get("God") or ""))):
+        values = [god.get("Rank"), god.get("God"), god.get("Tier"), god.get("Rating")]
+        for player in PLAYERS:
+            values.extend([god.get(player) or None, state["all_rankings"].get(player, {}).get(god.get("God"))])
+        rating_rows.append(values)
+    rating_headers = ["Council Rank", "God", "Tier", "Council Rating"]
+    for player in PLAYERS:
+        rating_headers.extend([f"{player} Rating", f"{player} Rank"])
+    write_table(ratings, rating_headers, rating_rows, "CouncilRatings")
+
+    player_stats = workbook.create_sheet("Player Stats")
+    metric_headers = ["Player", "Matches", "Wins", "Losses", "Win Rate", "K/D", "KDA", "Damage / Min", "Gold / Min", "XP / Min", "Wards / Match", "Hours"]
+    metric_rows = []
+    for player in PLAYERS:
+        metrics = profiles.get(player, {}).get("metrics") or {}
+        metric_rows.append([player, metrics.get("matches") or 0, metrics.get("wins") or 0, metrics.get("losses") or 0, percent(metrics.get("winRate")), metrics.get("kdRatio"), metrics.get("kdaRatio"), metrics.get("damagePerMin"), metrics.get("goldPerMin"), metrics.get("xpPerMin"), metrics.get("wardsPerMatch"), metrics.get("hoursPlayed")])
+    write_table(player_stats, metric_headers, metric_rows, "PlayerStats")
+
+    god_stats = workbook.create_sheet("God Performance")
+    god_stat_rows = []
+    for player in PLAYERS:
+        for god in profiles.get(player, {}).get("topGods") or []:
+            god_stat_rows.append([player, god.get("name"), god.get("role"), god.get("pantheon"), god.get("gamesPlayed") or 0, god.get("wins") or 0, (god.get("gamesPlayed") or 0) - (god.get("wins") or 0), percent(god.get("winRate")), god.get("kdRatio"), god.get("kdaRatio"), god.get("damagePerMin"), god.get("goldPerMin"), god.get("xpPerMin")])
+    write_table(god_stats, ["Player", "God", "Role", "Pantheon", "Matches", "Wins", "Losses", "Win Rate", "K/D", "KDA", "Damage / Min", "Gold / Min", "XP / Min"], god_stat_rows, "GodPerformance")
+
+    chemistry = workbook.create_sheet("Chemistry")
+    chemistry_rows: list[list[Any]] = []
+    seen_chemistry: set[str] = set()
+    for player in PLAYERS:
+        records = profiles.get(player, {}).get("chemistry") or {}
+        for category, key in [("Duo record", "duoOnlyRecords"), ("Trio/group record", "sharedGroups")]:
+            for record in records.get(key) or []:
+                members = record.get("members") or [player, record.get("player")]
+                members = sorted({str(member) for member in members if member})
+                if category == "Trio/group record" and len(members) < 3:
+                    continue
+                signature = f"{category}|{'|'.join(members)}"
+                if signature in seen_chemistry:
+                    continue
+                seen_chemistry.add(signature)
+                chemistry_rows.append([category, " + ".join(members), record.get("label") or "", record.get("games") or 0, record.get("wins") or 0, record.get("losses") or 0, percent(record.get("winRate"))])
+        for category, key in [("Duo god combo", "duoCombos"), ("Trio/group god combo", "groupGodRecords")]:
+            for record in records.get(key) or []:
+                members = record.get("members") or [player, record.get("teammate")]
+                members = sorted({str(member) for member in members if member})
+                if category == "Trio/group god combo" and len(members) < 3:
+                    continue
+                god_map = record.get("participantGods") or {}
+                if not god_map and category == "Duo god combo":
+                    god_map = {player: record.get("playerGod"), record.get("teammate"): record.get("teammateGod")}
+                assignments = " / ".join(f"{member}: {god_map.get(member) or 'Unknown'}" for member in members)
+                signature = f"{category}|{assignments}"
+                if signature in seen_chemistry:
+                    continue
+                seen_chemistry.add(signature)
+                chemistry_rows.append([category, " + ".join(members), assignments, record.get("games") or 0, record.get("wins") or 0, record.get("losses") or 0, percent(record.get("winRate"))])
+    write_table(chemistry, ["Type", "Members", "Gods / Detail", "Matches", "Wins", "Losses", "Win Rate"], chemistry_rows, "ChemistryRecords")
+
+    history = workbook.create_sheet("Match History")
+    history_rows = []
+    for row in match_rows:
+        record_key = str(row.get("_summaryRecordKey") or "")
+        player = record_key.split(":", 1)[0] if ":" in record_key else ""
+        history_rows.append([
+            player,
+            excel_datetime(row.get("startedAt") or row.get("startTimestamp")),
+            "Win" if row.get("won") else "Loss",
+            row.get("godName"),
+            row.get("playedRole"),
+            row.get("kills") or 0,
+            row.get("deaths") or 0,
+            row.get("assists") or 0,
+            row.get("queueType"),
+            row.get("partyLabel"),
+            row.get("aspectName"),
+            round(float(row.get("matchDurationSeconds") or 0) / 60, 1),
+            row.get("totalDamage") or 0,
+            row.get("totalGoldEarned") or 0,
+            row.get("totalXp") or 0,
+            row.get("totalWardsPlaced") or 0,
+            row.get("matchId"),
+        ])
+    write_table(history, ["Player", "Date", "Result", "God", "Role", "Kills", "Deaths", "Assists", "Queue", "Party", "Aspect", "Minutes", "Damage", "Gold", "XP", "Wards", "Match ID"], history_rows, "MatchHistory")
+
+    for sheet in workbook.worksheets:
+        sheet.sheet_properties.pageSetUpPr.fitToPage = True
+        sheet.sheet_view.showGridLines = False
+        for row in sheet.iter_rows(min_row=1, max_row=min(sheet.max_row, 4)):
+            for cell in row:
+                if cell.value and cell.row < 5 and sheet.title == "Overview":
+                    cell.font = Font(color=charcoal, bold=cell.column == 1 or cell.row == 1, size=cell.font.sz or 11)
+        sheet.sheet_properties.tabColor = gold
+
+    output = BytesIO()
+    workbook.save(output)
+    output.seek(0)
+    filename = f"high-council-hub-{datetime.now(timezone.utc).date().isoformat()}.xlsx"
+    return send_file(output, as_attachment=True, download_name=filename, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
 
 

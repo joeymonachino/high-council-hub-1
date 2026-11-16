@@ -1280,8 +1280,6 @@ async function loadBootstrap() {
     state.recentHistory = payload.recentHistory || [];
     state.errors = payload.errors || [];
     state.stats = payload.stats || {};
-    state.itemMetadata = payload.itemMetadata || [];
-    state.itemTaxonomy = payload.itemTaxonomy || {};
     state.analytics.god = payload.gods[0]?.God || "";
     state.analytics.players = [...payload.config.players];
     initializeRankerState();
@@ -1347,7 +1345,7 @@ async function loadRaterStats({ force = false } = {}) {
 }
 
 function maybeLoadHeavyTabData() {
-    const heavyTabs = new Set(["items", "rater-stats", "chemistry", "council-scroll"]);
+    const heavyTabs = new Set(["rater-stats", "chemistry"]);
     if (!heavyTabs.has(state.activeTab) || state.raterStats.loaded || state.raterStats.loading) return;
     loadRaterStats().then(() => renderAll());
 }
@@ -1937,12 +1935,10 @@ function openGodDetail(godName) {
     const topPerformance = [...playedRows].sort((a, b) => Number(b.winRate || 0) - Number(a.winRate || 0) || b.wins - a.wins || b.games - a.games)[0] || null;
     const mostPlayedRow = [...playedRows].sort((a, b) => b.games - a.games || Number(b.winRate || 0) - Number(a.winRate || 0))[0] || null;
     const sections = [
-        { key: "council", label: "Council" },
-        { key: "ownership", label: "Ownership" },
+        { key: "council", label: "Ratings" },
         { key: "performance", label: "Performance" },
-        { key: "synergy", label: "Synergy" },
+        { key: "synergy", label: "Chemistry" },
         { key: "recent", label: "Recent" },
-        { key: "builds", label: "Aspects & Items" },
         { key: "edit", label: "Rate & Rank" },
     ];
     if (!sections.some((section) => section.key === state.godDetail.section)) {
@@ -2663,9 +2659,8 @@ function renderRaterStatsTab() {
     }
     const selectedPlayer = state.raterStats.selectedPlayer;
     const sections = [
-        { key: "profile", label: "Profile" },
-        { key: "favorites", label: "Favorites" },
-        { key: "all-gods", label: "All Gods" },
+        { key: "profile", label: "Overview" },
+        { key: "all-gods", label: "God Performance" },
         { key: "matchups", label: "Matchups" },
         { key: "details", label: "Details" },
     ];
@@ -3107,10 +3102,10 @@ function renderChemistryTab() {
         const receiptsTimeline = renderChemistryReceiptsTimeline(insights, isMobile);
         const nemesisSection = renderChemistryNemesisSection(insights);
         const sections = [
-            { key: "trinity", label: "Trinity" },
-            { key: "matrix", label: "Pairings" },
-            { key: "nemesis", label: "Nemesis" },
-            { key: "timeline", label: "Receipts" },
+            { key: "trinity", label: "Trios" },
+            { key: "matrix", label: "Duos" },
+            { key: "nemesis", label: "Opponents" },
+            { key: "timeline", label: "Matches" },
         ];
         if (!sections.some((section) => section.key === state.chemistry.section)) {
             state.chemistry.section = "trinity";
@@ -4379,7 +4374,7 @@ function renderDataHealthTab() {
 // This helper keeps the tab strip, visible panel, and contextual filter bar
 // in sync with state.activeTab so filters only appear where they affect results.
 function renderTabs() {
-    const visibleTabs = new Set(["index", "items", "rater-stats", "chemistry", "analytics", "h2h", "council-scroll", "data-health", "ranker"]);
+    const visibleTabs = new Set(["index", "rater-stats", "chemistry", "ranker"]);
     if (!visibleTabs.has(state.activeTab)) {
         state.activeTab = "index";
     }
@@ -4401,10 +4396,6 @@ function renderTabs() {
         panel.classList.toggle("active", panel.id === `tab-${state.activeTab}`);
     });
 
-    if (state.activeTab === "data-health" && !state.dataHealth.loaded && !state.dataHealth.loading) {
-        renderDataHealthTab();
-        loadDataHealth().then(() => renderDataHealthTab());
-    }
 }
 
 // This helper refreshes every view after data or filters change.
@@ -4412,19 +4403,9 @@ function renderAll() {
     applyFilters();
     renderHeroStats();
     renderStatusBanner();
-    renderPodium();
-    renderSidebar();
     renderIndexTab();
-    renderItemsTab();
-    renderRankingsTab();
-    renderFavoritesTab();
     renderRaterStatsTab();
     renderChemistryTab();
-    renderTierlistTab();
-    renderAnalyticsTab();
-    renderH2hTab();
-    renderCouncilScrollTab();
-    renderDataHealthTab();
     renderRankerTab();
     renderTabs();
 }
@@ -4437,7 +4418,6 @@ async function refreshData() {
     const selectedPlayer = state.ranker.selectedPlayer;
     const lastSavedByPlayer = { ...state.ranker.lastSavedByPlayer };
     await loadBootstrap();
-    await loadAnalyticsHistory();
     state.ranker.unlocked = { ...state.ranker.unlocked, ...unlockedState };
     state.ranker.selectedPlayer = selectedPlayer;
     state.ranker.lastSavedByPlayer = { ...state.ranker.lastSavedByPlayer, ...lastSavedByPlayer };
@@ -4483,8 +4463,8 @@ function handleInitialGodDeepLink() {
     return true;
 }
 
-// This block boots the whole frontend: gather elements, load data, fetch the
-// initial analytics history, and render every tab.
+// This block boots the lean frontend and leaves match-heavy stats lazy-loaded
+// until the player or chemistry view is opened.
 document.addEventListener("DOMContentLoaded", async () => {
     cacheElements();
     configureResponsiveDefaults();
@@ -4492,7 +4472,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
         await loadBootstrap();
-        await loadAnalyticsHistory();
         clearRaterStatsCache();
         renderAll();
         handleInitialGodDeepLink();

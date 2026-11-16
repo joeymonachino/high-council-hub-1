@@ -5,15 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SMITE 2 | High Council Hub</title>
 
-    <!-- This block loads the typefaces that carry the marble-and-gold
-         mythology styling across headings, labels, and body copy. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Forum&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- These stylesheets load from broad shell rules to feature-specific rules. -->
+    <!-- The lean hub uses local/system fonts so the shell is readable immediately. -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='items.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='rater-profile.css') }}">
 
     <!-- Vercel Web Analytics -->
@@ -31,39 +24,39 @@
                 <div class="brand-mark">HC</div>
                 <div>
                     <div class="brand-title">High Council</div>
-                    <div class="brand-subtitle">SMITE 2 Friend Hub</div>
+                    <div class="brand-subtitle">SMITE 2 Records</div>
                 </div>
             </div>
 
             <nav class="rail-nav" id="tab-strip">
-                <button class="tab-btn active" data-tab="index" data-mobile-label="Gods"><span>Gods</span></button>
-                <button class="tab-btn" data-tab="items" data-mobile-label="Items"><span>Items</span></button>
-                <button class="tab-btn" data-tab="rater-stats" data-mobile-label="Raters"><span>Rater Profile</span></button>
+                <button class="tab-btn active" data-tab="index" data-mobile-label="Ratings"><span>Ratings &amp; Rankings</span></button>
+                <button class="tab-btn" data-tab="rater-stats" data-mobile-label="Players"><span>Player Stats</span></button>
                 <button class="tab-btn" data-tab="chemistry" data-mobile-label="Chem"><span>Chemistry</span></button>
-                <button class="tab-btn" data-tab="analytics" data-mobile-label="Data"><span>Analytics</span></button>
-                <button class="tab-btn" data-tab="h2h" data-mobile-label="H2H"><span>H2H</span></button>
-                <button class="tab-btn" data-tab="council-scroll" data-mobile-label="Scroll"><span>Council Scroll</span></button>
                 <button class="tab-btn" data-tab="ranker" data-mobile-label="Rank"><span>Rate &amp; Rank</span></button>
             </nav>
 
-            <div class="rail-status rail-admin-link">
-                <button class="tab-btn rail-admin-btn" data-tab="data-health" data-mobile-label="Health"><span>Data Health</span></button>
+            <div class="rail-status">
+                <a class="btn-secondary export-link" href="/api/export.xlsx">Export Excel</a>
             </div>
         </aside>
 
         <main class="main-column main-v2">
             <header class="topbar-v2">
                 <div>
-                    <p class="eyebrow">The Hall Of Olympus</p>
+                    <p class="eyebrow">Council Record Book</p>
                     <h1>High Council Hub</h1>
-                    <p class="hero-text">Council ratings, match receipts, and the gods your group actually wins with.</p>
+                    <p class="hero-text">Ratings, player performance, and the combinations that actually work.</p>
                 </div>
-                <div class="topbar-stat-row" id="hero-stats"></div>
+                <div class="topbar-actions">
+                    <div class="topbar-stat-row" id="hero-stats"></div>
+                    <a class="btn-primary export-link topbar-export" href="/api/export.xlsx">Export Excel</a>
+                </div>
             </header>
 
             <div id="status-banner"></div>
 
-            <section class="filter-panel-v2" id="filters-details">
+            <details class="filter-panel-v2" id="filters-details">
+                <summary>Filter gods</summary>
                 <form id="filters-form" class="filters-grid filters-grid-v2">
                     <label class="field field-search">
                         <span>Search God</span>
@@ -100,20 +93,12 @@
                         <button class="btn-secondary" id="filters-reset" type="button">Clear</button>
                     </div>
                 </form>
-            </section>
+            </details>
 
             <section class="tab-content">
                 <section class="tab-panel active" id="tab-index"></section>
-                <section class="tab-panel" id="tab-items"></section>
-                <section class="tab-panel" id="tab-rankings"></section>
-                <section class="tab-panel" id="tab-favorites"></section>
                 <section class="tab-panel" id="tab-rater-stats"></section>
                 <section class="tab-panel" id="tab-chemistry"></section>
-                <section class="tab-panel" id="tab-tierlist"></section>
-                <section class="tab-panel" id="tab-analytics"></section>
-                <section class="tab-panel" id="tab-h2h"></section>
-                <section class="tab-panel" id="tab-data-health"></section>
-                <section class="tab-panel" id="tab-council-scroll"></section>
                 <section class="tab-panel" id="tab-ranker"></section>
             </section>
         </main>
@@ -126,13 +111,9 @@
         </section>
     </div>
 
-    <!-- These scripts load the custom frontend in layers: shared state/helpers,
-         the main controller, and feature modules that stay available before
-         DOMContentLoaded runs. -->
+    <!-- Only the shared state and four core views are loaded on the client. -->
     <script src="{{ url_for('static', filename='core.js') }}" defer></script>
     <script src="{{ url_for('static', filename='app.js') }}" defer></script>
-    <script src="{{ url_for('static', filename='items.js') }}" defer></script>
-    <script src="{{ url_for('static', filename='council-scroll.js') }}" defer></script>
 </body>
 </html>
 
