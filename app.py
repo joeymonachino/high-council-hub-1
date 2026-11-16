@@ -11,7 +11,7 @@ import os
 import random
 import re
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from pathlib import Path
 from statistics import mean
@@ -3959,11 +3959,131 @@ def api_export_xlsx():
 def api_data_health():
     return jsonify(build_data_health_report())
 
-# This route returns the live SmiteSource-derived rater stats used by the
-# dedicated profile tab, while keeping the fetch logic hidden server-side.
+# These helpers build a read-only analysis window over stored summary rows.
+# The default all-time profile still comes from load_rater_stats(), so none of
+# the saved rating, ranking, or match-tally behavior is changed by filters.
+def analysis_datetime(value: Any) -> datetime | None:
+    if not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+        return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+    except (TypeError, ValueError):
+        return None
+
+
+def filter_analysis_rows(rows: list[dict[str, Any]], range_key: str, date_from: str = "", date_to: str = "") -> list[dict[str, Any]]:
+    grouped: dict[str, list[dict[str, Any]]] = {player: [] for player in PLAYERS}
+    for row in rows:
+        player = str(row.get("_summaryRecordKey") or "").split(":", 1)[0]
+        if player in grouped and is_joust_queue(str(row.get("queueType") or row.get("gameMode") or "")):
+            grouped[player].append(row)
+
+    now = datetime.now(timezone.utc)
+    start = analysis_datetime(date_from)
+    end = analysis_datetime(f"{date_to}T23:59:59+00:00") if date_to else None
+    if range_key == "90d":
+        start = now - timedelta(days=90)
+
+    filtered: list[dict[str, Any]] = []
+    for player, player_rows in grouped.items():
+        player_rows.sort(key=lambda row: str(row.get("startedAt") or row.get("startTimestamp") or ""), reverse=True)
+        if range_key == "30matches":
+            player_rows = player_rows[:30]
+        elif range_key in {"90d", "custom"}:
+            player_rows = [
+                row for row in player_rows
+                if (not start or (analysis_datetime(row.get("startedAt") or row.get("startTimestamp")) or datetime.min.replace(tzinfo=timezone.utc)) >= start)
+                and (not end or (analysis_datetime(row.get("startedAt") or row.get("startTimestamp")) or datetime.max.replace(tzinfo=timezone.utc)) <= end)
+            ]
+        filtered.extend(player_rows)
+    filtered.sort(key=lambda row: str(row.get("startedAt") or row.get("startTimestamp") or ""), reverse=True)
+    return filtered
+
+
+def profiles_from_analysis_rows(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    grouped: dict[str, list[dict[str, Any]]] = {player: [] for player in PLAYERS}
+    for row in rows:
+        player = str(row.get("_summaryRecordKey") or "").split(":", 1)[0]
+        if player in grouped:
+            grouped[player].append(row)
+
+    profiles: dict[str, dict[str, Any]] = {}
+    for player in PLAYERS:
+        profile_url = SMITESOURCE_PROFILE_LINKS.get(player, "")
+        profiles[player] = summarize_stored_match_rows(player, grouped[player], profile_url, smitesource_player_uuid(profile_url))
+
+    identity_map = {
+        player: {
+            "displayName": str(profile.get("displayName") or player),
+            "hirezPlayerUuid": str(profile.get("selfHirezPlayerUuid") or ""),
+            "names": list({
+                player,
+                str(profile.get("displayName") or player).strip(),
+                *[str(name).strip() for name in (COUNCIL_PLAYER_ALIASES.get(player, {}).get("names") or []) if str(name).strip()],
+            }),
+            "ids": list({
+                str(profile.get("selfHirezPlayerUuid") or "").strip(),
+                *[str(value).strip() for value in (COUNCIL_PLAYER_ALIASES.get(player, {}).get("ids") or []) if str(value).strip()],
+            }),
+        }
+        for player, profile in profiles.items()
+        if profile.get("linked")
+    }
+    for player, profile in profiles.items():
+        profile["chemistry"] = build_council_chemistry(
+            player,
+            str(profile.get("selfHirezPlayerUuid") or ""),
+            identity_map,
+            grouped[player],
+        )
+        profile.pop("selfHirezPlayerUuid", None)
+        profile.pop("_rawMatchRows", None)
+    return profiles
+
+
+def compact_analysis_match(row: dict[str, Any]) -> dict[str, Any]:
+    normalized = normalize_smitesource_match(row)
+    normalized.update(
+        {
+            "player": str(row.get("_summaryRecordKey") or "").split(":", 1)[0],
+            "partySize": int(row.get("partySize") or 0),
+            "partyLabel": str(row.get("partyLabel") or ""),
+            "aspectName": str(row.get("aspectName") or ""),
+        }
+    )
+    return normalized
+
+
+# This route returns the live stored-history analysis used by Player Stats,
+# Chemistry, and the compact match browser.
 @app.route("/api/rater-stats")
 def api_rater_stats():
-    return jsonify({"profiles": load_rater_stats()})
+    range_key = str(request.args.get("range") or "all").lower()
+    if range_key not in {"all", "90d", "30matches", "custom"}:
+        range_key = "all"
+    date_from = str(request.args.get("from") or "")
+    date_to = str(request.args.get("to") or "")
+    try:
+        all_rows = load_all_match_summary_rows(timeout=8, limit=MATCH_HISTORY_UI_ROW_LIMIT)
+    except Exception:
+        all_rows = []
+    filtered_rows = filter_analysis_rows(all_rows, range_key, date_from, date_to)
+    profiles = load_rater_stats() if range_key == "all" else profiles_from_analysis_rows(filtered_rows)
+    latest_by_player = {
+        player: next((str(row.get("startedAt") or row.get("startTimestamp") or "") for row in filtered_rows if str(row.get("_summaryRecordKey") or "").startswith(f"{player}:")), "")
+        for player in PLAYERS
+    }
+    latest_values = [value for value in latest_by_player.values() if value]
+    return jsonify(
+        {
+            "profiles": profiles,
+            "matches": [compact_analysis_match(row) for row in filtered_rows],
+            "filter": {"range": range_key, "from": date_from, "to": date_to},
+            "lastUpdated": max(latest_values) if latest_values else "",
+            "lastUpdatedByPlayer": latest_by_player,
+        }
+    )
 
 
 # This route backfills full SmiteSource match history into Supabase so the

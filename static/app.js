@@ -258,7 +258,7 @@ function renderChemistryTrinityShowcase(insights, isMobile) {
         <section class="chemistry-trinity-shell">
             <article class="chemistry-trinity-hero panel">
                 <div class="chemistry-trinity-copy">
-                    <p class="eyebrow">Joust Trinity</p>
+                    <p class="eyebrow">Exact Trio</p>
                     <h3>Joey, Jami, and Darian</h3>
                     <p class="chemistry-trinity-blurb">The core stack in one clean read: trio record, the comp that actually wins, the comp that slips, and the picks each of you keep showing up on.</p>
                     <div class="chemistry-trinity-pillrow">
@@ -367,7 +367,7 @@ function renderChemistrySynergyMatrix(insights, isMobile) {
                 <article class="chemistry-matrix-card chemistry-pair-hero panel">
                     <div class="chemistry-matrix-head">
                         <div>
-                            <p class="eyebrow">Focused Pairing</p>
+                            <p class="eyebrow">Exact Duo</p>
                             <h3>${escapeHtml(label)}</h3>
                         </div>
                         <div class="chemistry-matrix-record">${pairRecord ? formatRecord(pairRecord) : "?"}</div>
@@ -1149,6 +1149,48 @@ function bindStaticEvents() {
 
     });
 
+    document.addEventListener("change", async (event) => {
+        if (event.target.matches("[data-analysis-range]")) {
+            state.raterStats.range = event.target.value || "all";
+            if (state.raterStats.range === "custom" && !state.raterStats.dateFrom) {
+                const today = new Date();
+                const from = new Date(today);
+                from.setDate(from.getDate() - 90);
+                state.raterStats.dateFrom = from.toISOString().slice(0, 10);
+                state.raterStats.dateTo = today.toISOString().slice(0, 10);
+            }
+            state.raterStats.loaded = false;
+            await loadRaterStats({ force: true });
+            renderAll();
+            return;
+        }
+        if (event.target.matches("[data-analysis-from], [data-analysis-to]")) {
+            if (event.target.matches("[data-analysis-from]")) state.raterStats.dateFrom = event.target.value;
+            if (event.target.matches("[data-analysis-to]")) state.raterStats.dateTo = event.target.value;
+            state.raterStats.loaded = false;
+            await loadRaterStats({ force: true });
+            renderAll();
+            return;
+        }
+        if (event.target.matches("[data-analysis-min-games]")) {
+            state.raterStats.minGames = Number(event.target.value || 1);
+            renderRaterStatsTab();
+            renderChemistryTab();
+            return;
+        }
+        const matchFilterMap = {
+            "data-match-player": "matchPlayer",
+            "data-match-god": "matchGod",
+            "data-match-result": "matchResult",
+            "data-match-party": "matchParty",
+        };
+        const attribute = Object.keys(matchFilterMap).find((name) => event.target.hasAttribute(name));
+        if (attribute) {
+            state.raterStats[matchFilterMap[attribute]] = event.target.value || "All";
+            renderRaterStatsTab();
+        }
+    });
+
     if (elements.godModalClose) {
         elements.godModalClose.addEventListener("click", closeGodDetail);
     }
@@ -1280,8 +1322,6 @@ async function loadBootstrap() {
     state.recentHistory = payload.recentHistory || [];
     state.errors = payload.errors || [];
     state.stats = payload.stats || {};
-    state.analytics.god = payload.gods[0]?.God || "";
-    state.analytics.players = [...payload.config.players];
     initializeRankerState();
     renderFilterOptions();
 }
@@ -1325,8 +1365,16 @@ async function loadRaterStats({ force = false } = {}) {
     if (state.raterStats.loaded && !force) return;
     state.raterStats.loading = true;
     try {
-        const payload = await api("/api/rater-stats");
+        const params = new URLSearchParams({ range: state.raterStats.range || "all" });
+        if (state.raterStats.range === "custom") {
+            if (state.raterStats.dateFrom) params.set("from", state.raterStats.dateFrom);
+            if (state.raterStats.dateTo) params.set("to", state.raterStats.dateTo);
+        }
+        const payload = await api(`/api/rater-stats?${params.toString()}`);
         state.raterStats.profiles = payload.profiles || payload || {};
+        state.raterStats.matches = payload.matches || [];
+        state.raterStats.lastUpdated = payload.lastUpdated || "";
+        state.raterStats.lastUpdatedByPlayer = payload.lastUpdatedByPlayer || {};
         state.raterStats.error = "";
         state.raterStats.cacheHydrated = false;
         persistRaterStatsCache();
@@ -2386,7 +2434,9 @@ function buildRaterProfile(player) {
         .sort((a, b) => (b[player] - a[player]) || (b.Rating - a.Rating) || a.God.localeCompare(b.God));
     const councilTopGods = ratedGods.slice(0, 3);
     const external = state.raterStats.profiles?.[player] || {};
-    const signature = state.gods.find((god) => god.God === external.topGods?.[0]?.name) || councilTopGods[0] || null;
+    const filteredTopGods = (external.topGods || []).filter((god) => Number(god.gamesPlayed || 0) >= Number(state.raterStats.minGames || 1));
+    const filteredGodStats = Object.fromEntries(filteredTopGods.map((god) => [god.name, god]));
+    const signature = state.gods.find((god) => god.God === filteredTopGods?.[0]?.name) || councilTopGods[0] || null;
     const favoriteRole = favoriteDimensionForPlayer(player, "Role");
     const favoritePantheon = favoriteDimensionForPlayer(player, "Pantheon");
     const archetype = playerArchetype(player);
@@ -2412,8 +2462,8 @@ function buildRaterProfile(player) {
         error: external.error || "",
         displayName: external.displayName || player,
         metrics: external.metrics || {},
-        topGods: external.topGods || [],
-        godStats: external.godStats || {},
+        topGods: filteredTopGods,
+        godStats: filteredGodStats,
         topRoles: external.topRoles || [],
         opponentMatchups: external.opponentMatchups || {},
         buildStats: external.buildStats || {},
@@ -2433,6 +2483,70 @@ function buildRaterProfile(player) {
         pantheonBias,
         recentHistory,
     };
+}
+
+function renderAnalysisControls() {
+    const custom = state.raterStats.range === "custom";
+    return `
+        <div class="analysis-toolbar" aria-label="Analysis filters">
+            <label class="field"><span>History</span><select data-analysis-range>
+                <option value="all" ${state.raterStats.range === "all" ? "selected" : ""}>Entire history</option>
+                <option value="90d" ${state.raterStats.range === "90d" ? "selected" : ""}>Last 90 days</option>
+                <option value="30matches" ${state.raterStats.range === "30matches" ? "selected" : ""}>Last 30 matches</option>
+                <option value="custom" ${custom ? "selected" : ""}>Custom dates</option>
+            </select></label>
+            ${custom ? `<label class="field"><span>From</span><input type="date" data-analysis-from value="${escapeHtml(state.raterStats.dateFrom)}"></label><label class="field"><span>To</span><input type="date" data-analysis-to value="${escapeHtml(state.raterStats.dateTo)}"></label>` : ""}
+            <label class="field"><span>Minimum sample</span><select data-analysis-min-games>
+                ${[1, 3, 5, 10].map((value) => `<option value="${value}" ${Number(state.raterStats.minGames) === value ? "selected" : ""}>${value} match${value === 1 ? "" : "es"}</option>`).join("")}
+            </select></label>
+        </div>
+    `;
+}
+
+function renderFreshnessNote(player = "") {
+    const latest = player ? state.raterStats.lastUpdatedByPlayer?.[player] : state.raterStats.lastUpdated;
+    if (!latest) return `<div class="analysis-freshness warning">No stored match date is available for this view.</div>`;
+    const latestDate = new Date(latest);
+    const newestDate = new Date(state.raterStats.lastUpdated || latest);
+    const lagDays = Math.max(0, Math.round((newestDate - latestDate) / 86400000));
+    const warning = player && lagDays >= 30 ? ` • ${lagDays} days behind the newest council history` : "";
+    return `<div class="analysis-freshness ${warning ? "warning" : ""}">Last stored match: ${escapeHtml(formatDateTime(latest))}${escapeHtml(warning)}</div>`;
+}
+
+function renderMatchBrowser() {
+    const matches = state.raterStats.matches || [];
+    const gods = [...new Set(matches.map((match) => match.godName).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+    const partyType = (match) => Number(match.partySize || 0) >= 3 ? "Trio+" : Number(match.partySize || 0) === 2 ? "Duo" : "Solo";
+    const filtered = matches.filter((match) => {
+        if (state.raterStats.matchPlayer !== "All" && match.player !== state.raterStats.matchPlayer) return false;
+        if (state.raterStats.matchGod !== "All" && match.godName !== state.raterStats.matchGod) return false;
+        if (state.raterStats.matchResult !== "All" && (match.won ? "Win" : "Loss") !== state.raterStats.matchResult) return false;
+        if (state.raterStats.matchParty !== "All" && partyType(match) !== state.raterStats.matchParty) return false;
+        return true;
+    });
+    const rows = filtered.slice(0, 150).map((match) => `
+        <tr>
+            <td>${escapeHtml(formatDateTime(match.startedAt))}</td>
+            <td><strong style="color:${playerColor(match.player)}">${escapeHtml(match.player)}</strong></td>
+            <td>${escapeHtml(match.godName)}</td>
+            <td class="${match.won ? "movement-up" : "movement-down"}">${match.won ? "Win" : "Loss"}</td>
+            <td>${formatMetric(match.kills)}/${formatMetric(match.deaths)}/${formatMetric(match.assists)}</td>
+            <td>${escapeHtml(partyType(match))}</td>
+        </tr>
+    `).join("");
+    return `
+        <section class="rater-profile-panel">
+            <div class="section-head"><div><p class="eyebrow">Match Browser</p><h3>Stored Match History</h3></div><span class="summary-pill">${filtered.length} matches</span></div>
+            <div class="match-browser-filters">
+                <label class="field"><span>Player</span><select data-match-player><option>All</option>${state.config.players.map((player) => `<option ${state.raterStats.matchPlayer === player ? "selected" : ""}>${escapeHtml(player)}</option>`).join("")}</select></label>
+                <label class="field"><span>God</span><select data-match-god><option>All</option>${gods.map((god) => `<option ${state.raterStats.matchGod === god ? "selected" : ""}>${escapeHtml(god)}</option>`).join("")}</select></label>
+                <label class="field"><span>Result</span><select data-match-result>${["All", "Win", "Loss"].map((value) => `<option ${state.raterStats.matchResult === value ? "selected" : ""}>${value}</option>`).join("")}</select></label>
+                <label class="field"><span>Party</span><select data-match-party>${["All", "Solo", "Duo", "Trio+"].map((value) => `<option ${state.raterStats.matchParty === value ? "selected" : ""}>${value}</option>`).join("")}</select></label>
+            </div>
+            <div class="detail-table-wrap"><table class="table compact-table"><thead><tr><th>Date</th><th>Player</th><th>God</th><th>Result</th><th>K/D/A</th><th>Party</th></tr></thead><tbody>${rows || `<tr><td colspan="6">No matches fit these filters.</td></tr>`}</tbody></table></div>
+            ${filtered.length > 150 ? `<p class="rank-meta">Showing the newest 150 matching rows.</p>` : ""}
+        </section>
+    `;
 }
 
 // This helper formats a compact wins-losses record for the stat rows.
@@ -2662,6 +2776,7 @@ function renderRaterStatsTab() {
         { key: "profile", label: "Overview" },
         { key: "all-gods", label: "God Performance" },
         { key: "matchups", label: "Matchups" },
+        { key: "matches", label: "Matches" },
         { key: "details", label: "Details" },
     ];
     if (!sections.some((section) => section.key === state.raterStats.section)) {
@@ -2749,15 +2864,17 @@ function renderRaterStatsTab() {
         ? `<div class="status-banner">Rater stats hit an issue: ${escapeHtml(state.raterStats.error)}. Council-derived profile insights are still available below.</div>`
         : "";
 
-    const sectionMap = { profile: profileSection, favorites: favoritesSection, "all-gods": allGodsSection, matchups: matchupsSection, details: detailsSection };
+    const sectionMap = { profile: profileSection, favorites: favoritesSection, "all-gods": allGodsSection, matchups: matchupsSection, matches: renderMatchBrowser(), details: detailsSection };
 
     elements.tabRaterStats.innerHTML = `
         <div class="panel tab-overview-panel">
             <div class="panel-heading panel-heading-inline">
-                <div><p class="eyebrow">Council Member Lens</p><h2>Rater Profile</h2></div>
-                <span class="summary-pill">One rater at a time</span>
+                <div><p class="eyebrow">Council Member Lens</p><h2>Player Stats</h2></div>
+                <span class="summary-pill">Display filters only</span>
             </div>
             ${banner}
+            ${renderAnalysisControls()}
+            ${renderFreshnessNote(selectedPlayer)}
             <div class="subtab-shell rater-profile-shell">
                 <div class="subtab-bar rater-player-tabs" role="tablist" aria-label="Rater profiles">
                     ${state.config.players.map((player) => `<button class="subtab-btn ${selectedPlayer === player ? 'active' : ''}" type="button" data-rater-player="${escapeHtml(player)}" role="tab" aria-selected="${selectedPlayer === player ? 'true' : 'false'}">${escapeHtml(player)}</button>`).join('')}
@@ -2978,17 +3095,19 @@ function buildChemistryInsights() {
         winRate: record.games ? Math.round((record.wins / record.games) * 1000) / 10 : 0,
     });
 
-    const duoRecords = [...duoMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
-    const duoComboRecords = [...duoComboMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
-    const trioComboRecords = [...trioComboMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
-    const classRecords = [...classMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
-    const duoClassComboRecords = [...duoClassComboMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
-    const trioClassComboRecords = [...trioClassComboMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
-    const queueRecords = [...queueMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
-    const trioQueueRecords = [...trioQueueMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
-    const groupRecords = [...groupMap.values()].map(finish).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
-    const opponentGodRecords = [...opponentGodMap.values()].map(finish).sort((a, b) => b.games - a.games || a.winRate - b.winRate || a.label.localeCompare(b.label));
-    const opponentCompRecords = [...opponentCompMap.values()].map(finish).sort((a, b) => b.games - a.games || a.winRate - b.winRate || a.label.localeCompare(b.label));
+    const minGames = Number(state.raterStats.minGames || 1);
+    const sample = (record) => Number(record.games || 0) >= minGames;
+    const duoRecords = [...duoMap.values()].map(finish).filter(sample).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const duoComboRecords = [...duoComboMap.values()].map(finish).filter(sample).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const trioComboRecords = [...trioComboMap.values()].map(finish).filter(sample).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const classRecords = [...classMap.values()].map(finish).filter(sample).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const duoClassComboRecords = [...duoClassComboMap.values()].map(finish).filter(sample).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const trioClassComboRecords = [...trioClassComboMap.values()].map(finish).filter(sample).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const queueRecords = [...queueMap.values()].map(finish).filter(sample).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const trioQueueRecords = [...trioQueueMap.values()].map(finish).filter(sample).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const groupRecords = [...groupMap.values()].map(finish).filter(sample).sort((a, b) => b.games - a.games || b.winRate - a.winRate || a.label.localeCompare(b.label));
+    const opponentGodRecords = [...opponentGodMap.values()].map(finish).filter(sample).sort((a, b) => b.games - a.games || a.winRate - b.winRate || a.label.localeCompare(b.label));
+    const opponentCompRecords = [...opponentCompMap.values()].map(finish).filter(sample).sort((a, b) => b.games - a.games || a.winRate - b.winRate || a.label.localeCompare(b.label));
     const recentSessions = [...sessionMap.values()].sort((a, b) => new Date(b.startedAt) - new Date(a.startedAt));
 
     const duoFloor = duoRecords.filter((record) => record.games >= 2);
@@ -3089,6 +3208,8 @@ function renderChemistryTab() {
                     <h2>Chemistry</h2>
                 </div>
                 ${chemistryBanner}
+                ${renderAnalysisControls()}
+                ${renderFreshnessNote()}
                 ${emptyState("No Chemistry Data Yet", "No duo, trio, or shared-session chemistry has been loaded into the client yet.")}
             </div>
         `;
@@ -3155,6 +3276,8 @@ function renderChemistryTab() {
                 <h2>Chemistry</h2>
             </div>
             ${chemistryBanner}
+            ${renderAnalysisControls()}
+            ${renderFreshnessNote()}
             ${chemistryContent}
             ${renderBackToTop()}
         </div>

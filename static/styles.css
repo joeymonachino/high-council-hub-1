@@ -9136,6 +9136,44 @@ h4,
     color: var(--v2-gold-2);
 }
 
+.analysis-toolbar,
+.match-browser-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin: 14px 0;
+    padding: 12px;
+    border: 1px solid var(--v2-line);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.analysis-toolbar .field,
+.match-browser-filters .field {
+    margin: 0;
+}
+
+.analysis-toolbar select,
+.analysis-toolbar input,
+.match-browser-filters select {
+    min-height: 40px;
+    color: var(--v2-text);
+    border: 1px solid var(--v2-line);
+    border-radius: 10px;
+    background: #0f151e;
+}
+
+.analysis-freshness {
+    margin: -4px 0 14px;
+    color: var(--v2-muted);
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+.analysis-freshness.warning {
+    color: #e8b66d;
+}
+
 @media (max-width: 760px) {
     .aspect-toggle-row {
         margin-left: -2px;

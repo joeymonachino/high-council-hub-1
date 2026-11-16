@@ -12,15 +12,9 @@ const state = {
     recentHistory: [],
     errors: [],
     stats: {},
-    itemTaxonomy: {},
-    dataHealth: {
-        report: null,
-        loaded: false,
-        loading: false,
-        error: "",
-    },
     raterStats: {
         profiles: {},
+        matches: [],
         loaded: false,
         loading: false,
         error: "",
@@ -30,6 +24,16 @@ const state = {
         selectedPlayer: "Joey",
         section: "profile",
         godSort: "played",
+        range: "all",
+        dateFrom: "",
+        dateTo: "",
+        minGames: 1,
+        lastUpdated: "",
+        lastUpdatedByPlayer: {},
+        matchPlayer: "All",
+        matchGod: "All",
+        matchResult: "All",
+        matchParty: "All",
     },
     chemistry: {
         section: "trinity",
@@ -43,29 +47,6 @@ const state = {
         pantheon: "",
         attackType: "",
         damageType: "",
-    },
-    items: {
-        search: "",
-        category: "Starter + Tier 3",
-        filters: [],
-        sort: "Most used",
-        selected: "",
-        section: "overview",
-    },
-    analytics: {
-        god: "",
-        players: [],
-        rows: [],
-        section: "overview",
-    },
-    h2h: {
-        a: "Joey",
-        b: "Darian",
-        mode: "performance",
-    },
-    activity: {
-        player: "All",
-        type: "All",
     },
     ranker: {
         selectedPlayer: "Joey",
@@ -86,11 +67,6 @@ const state = {
         section: "council",
         editPlayer: "Joey",
         buildAspect: "All",
-    },
-    councilScroll: {
-        section: "players",
-        emailing: false,
-        emailMessage: "",
     },
     ui: {
         isMobile: false,
@@ -185,7 +161,9 @@ function formatMetric(value, digits = 0, suffix = "") {
 // modules so paired records are easy to scan at a glance.
 function formatRecord(record) {
     if (!record || !Number.isFinite(Number(record.games)) || Number(record.games) <= 0) return "—";
-    return `${record.wins}-${record.losses} • ${formatMetric(record.winRate, 1, "%")}`;
+    const games = Number(record.games);
+    const confidence = games >= 20 ? "Strong sample" : games >= 8 ? "Reliable" : games >= 3 ? "Building" : "Low sample";
+    return `${record.wins}-${record.losses} • ${formatMetric(record.winRate, 1, "%")} • ${games} games • ${confidence}`;
 }
 
 // This helper looks up a god's metadata from the already-loaded council
